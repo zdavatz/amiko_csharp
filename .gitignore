@@ -1,0 +1,5 @@
+*.db
+AmiKoWindows/obj/
+AmiKoWindows/bin/
+packages/
+AmiKoWindows/dbs/drug_interactions_csv_de.csv

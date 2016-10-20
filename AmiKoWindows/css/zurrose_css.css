@@ -1,0 +1,17 @@
+#compare {margin-left:5px;margin-right:5px;margin-top:20px;margin-bottom:20px;font-family:"Verdana","Arial","Tahoma","Helvetica","Geneva","sans-serif";color:black;}
+#compare a {text-decoration:none;color:black;}
+#compare div p {font-size:0.85em;}
+#compare table {font-family:"Verdana","sans-serif";font-size:0.85em;margin-top:0.9em;margin-bottom:0.9em;}
+#compare td {font-family:"Verdana","sans-serif";font-size:0.85em;padding:0.4em;}
+#compare td p {font-family:"Verdana","sans-serif";font-size:0.85em;}
+#compare button {cursor:pointer;border:none;background-color:transparent;}
+#compare input {font-family:"Verdana","sans-serif";font-size:1.0em;}
+#compare select {font-family:"Verdana","sans-serif";font-size:1.0em;}
+#compare .footnote {font-weight:normal;font-style:normal;font-size:0.7em;margin-top:0.25em;margin-bottom:0.0em;}
+#compare .container {background-color:#ffffff;}
+#compare .center {font-size:0.85em;margin-left:auto;margin-right:auto;}
+#compare .left {font-size:0.85em;margin:16px;}
+#compare .right {font-size:0.85em;margin-right:16px;}
+#compare .tooltip div {display:none;color:#000;padding:3px;cursor:pointer;text-decoration:none;}
+#compare .tooltip:hover div {display:block;position:absolute;left:30%;font-size:0.75em;background-color:#efefff;border:2px solid;border-color:#fff;margin:6px;padding:6px;}
+#buttons button {cursor:pointer;background-color:#dcdcfa;border:2px solid;border-color:#fff;font:bold 0.85em/100px;border-radius:50px;} 
