@@ -41,8 +41,33 @@ namespace AmiKoWindows
         public string SectionTitles { get; set; }
         public string Content { get; set; }
         public string Packages { get; set; }
+        public bool IsFavorite { get; set; }
 
-        public List<string> UpdatedSectionTitles()
+        public List<TitleItem> ListOfSectionTitleItems()
+        {
+            List<TitleItem> listOfTitleItems = new List<TitleItem>();
+            using (var id = ListOfSectionIds().GetEnumerator())
+            using (var title = ListOfSectionTitles().GetEnumerator())
+            {
+                while (id.MoveNext() && title.MoveNext())
+                {
+                    listOfTitleItems.Add(new TitleItem
+                    {
+                        Id = id.Current,
+                        Title = title.Current
+                    });
+                }
+            }
+            return listOfTitleItems;
+        }
+
+        public List<string> ListOfSectionIds()
+        {
+            List<string> listOfSectionIds = SectionIds?.Split(',').ToList();
+            return listOfSectionIds;
+        }
+
+        public List<string> ListOfSectionTitles()
         {
             List<string> listOfSectionTitles = SectionTitles?.Split(';').ToList();
             for (int i=0; i<listOfSectionTitles.Count; ++i)

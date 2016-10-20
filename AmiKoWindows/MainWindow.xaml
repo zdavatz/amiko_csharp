@@ -16,6 +16,9 @@
 
     <Window.Resources>
         <ResourceDictionary>
+            <Style TargetType="{x:Type Window}">
+                <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/Roboto-Regular.ttf"/>
+            </Style>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/AmiKoStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -36,21 +39,21 @@
                 <Border DockPanel.Dock="Top" Background="White" BorderBrush="LightGray" BorderThickness="1 1 1 1">
                     <ToolBarTray Orientation="Horizontal">
                         <ToolBar ToolBarTray.IsLocked="True">
-                            <Button Name="Compendium" Click="StateButtonClick" Margin="6,6,0,6">
+                            <Button Name="Compendium" Click="StateButton_Click" Margin="6,6,0,6">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="16" Source="./images/aips32x32_dark.png" />
                                     <Label VerticalAlignment="Center">Kompendium</Label>
                                 </StackPanel>
                             </Button>
                             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                            <Button Name="Favorites" Click="StateButtonClick" Margin="0,6,0,6">
+                            <Button Name="Favorites" Click="StateButton_Click" Margin="0,6,0,6">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="16" Source="./images/favorites32x32_dark.png" />
                                     <Label VerticalAlignment="Center">Favoriten</Label>
                                 </StackPanel>
                             </Button>
                             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                            <Button Name="Interactions" Click="StateButtonClick" Margin="0,6,0,6">
+                            <Button Name="Interactions" Click="StateButton_Click" Margin="0,6,0,6">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="16" Source="./images/interactions32x32_dark.png" />
                                     <Label VerticalAlignment="Center">Interaktionen</Label>
@@ -69,32 +72,34 @@
                     </Grid.ColumnDefinitions>
                     <DockPanel Grid.Column="0" LastChildFill="True">
                         <DockPanel DockPanel.Dock="Top" Height="52" Background="White">
-                            <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchTextBox}" TextChanged="SearchBoxTextChanged"
+                            <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchTextBox}" TextChanged="SearchBox_TextChanged"
                                      Controls:TextBoxHelper.Watermark="{Binding Path=SearchTextBoxWaterMark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                      Margin="4,0,4,0">
                             </TextBox>
                         </DockPanel>
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Title"  Click="QueryButtonClick">Präparat</Button>
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Author" Click="QueryButtonClick">Inhaberin</Button>
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="AtcCode" Click="QueryButtonClick">Wirkstoff / ATC</Button>
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="RegNr" Click="QueryButtonClick">Zulassungsnummer</Button>
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Application" Click="QueryButtonClick">Therapie</Button>
+                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Title"  Click="QueryButton_Click">Präparat</Button>
+                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Author" Click="QueryButton_Click">Inhaberin</Button>
+                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="AtcCode" Click="QueryButton_Click">Wirkstoff / ATC</Button>
+                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="RegNr" Click="QueryButton_Click">Zulassungsnummer</Button>
+                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Application" Click="QueryButton_Click">Therapie</Button>
                         <ListBox x:Name="SearchResult" 
                                  Style="{StaticResource SearchListBox}" ItemContainerStyle="{StaticResource SearchListBoxItem}"
                                  ItemsSource="{Binding Path=SearchResultItems}"  
-                                 SelectionChanged="OnSearchItemSelection" Margin="4,8,4,0">
+                                 SelectionChanged="OnSearchItem_Selection" Margin="4,8,4,0">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                         <CheckBox Style="{StaticResource ListCheckBox}" 
+                                                  IsChecked="{Binding Path=IsFavorite, Mode=TwoWay}"
+                                                  Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Checked"
                                                   Height="14" Margin="0,0,4,0"/>
                                         <StackPanel Orientation="Vertical">
                                             <TextBlock Text="{Binding Path=Text}" VerticalAlignment="Center"/>
                                             <ListBox Style="{StaticResource SearchListBoxChild}" ItemContainerStyle="{StaticResource SearchListBoxChildItem}"
                                                      ItemsSource="{Binding Path=ChildItems}" 
-                                                     SelectionChanged="OnSearchChildItemSelection"
+                                                     SelectionChanged="OnSearchChildItem_Selection"
                                                      ScrollViewer.CanContentScroll="False"
-                                                     PreviewMouseDown="OnSearchResultChildPreviewMouseDown">
+                                                     PreviewMouseDown="OnSearchResultChild_PreviewMouseDown">
                                             <ListBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Style="{StaticResource SearchListBoxChildItemText}" 
@@ -112,11 +117,12 @@
                     <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="1" Width="5"/>
                     <WebBrowser x:Name="Browser" local:BrowserBehavior.Html="{Binding Path=HtmlText}" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,10,0"/>
                     <ListBox x:Name="SectionTitles" ItemsSource="{Binding Path=SectionTitles}" Grid.Column="3" 
-                             BorderThickness="1 0 1 0" BorderBrush="LightGray" Margin="4,0,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                             BorderThickness="1 0 1 0" BorderBrush="LightGray" Margin="4,0,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             SelectionChanged="OnSectionTitle_Selection">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Height="20" Orientation="Vertical">
-                                    <TextBlock Text="{Binding Path=Text}" Height="18" VerticalAlignment="Center" Foreground="Black"/>
+                                    <TextBlock Text="{Binding Path=Title}" Height="18" VerticalAlignment="Center" Foreground="Black"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

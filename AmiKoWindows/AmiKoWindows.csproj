@@ -125,7 +125,9 @@
     </Page>
     <Compile Include="AmiKo.Source\Article.cs" />
     <Compile Include="AmiKo.Source\Constants.cs" />
+    <Compile Include="AmiKo.Source\DataStore.cs" />
     <Compile Include="AmiKo.Source\FachInfo.cs" />
+    <Compile Include="AmiKo.Source\Favorites.cs" />
     <Compile Include="AmiKo.Source\MainSqlDb.cs" />
     <Compile Include="AmiKo.Source\UIState.cs" />
     <Compile Include="AmiKo.Source\UpdateDb.cs" />
@@ -178,6 +180,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Resource Include="Fonts\Roboto-Regular.ttf" />
     <Resource Include="Resources\Entypo.ttf" />
   </ItemGroup>
   <ItemGroup>

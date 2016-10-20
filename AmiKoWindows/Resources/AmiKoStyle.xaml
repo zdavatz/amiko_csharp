@@ -3,11 +3,11 @@
                     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro">
 
     <Style x:Key="QuerySelectButton" TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButton}">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Regular" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="Background" Value="White" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="FontWeight" Value="Regular" />
         <Setter Property="Margin" Value="4,4,4,0" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="Controls:ButtonHelper.PreserveTextCase" Value="True" />

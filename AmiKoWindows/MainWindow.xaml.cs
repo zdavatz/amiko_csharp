@@ -19,13 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using MahApps.Metro.Controls;
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
 
 namespace AmiKoWindows
 {
@@ -71,7 +67,7 @@ namespace AmiKoWindows
             */
         }
 
-        private void SearchBoxTextChanged(object sender, TextChangedEventArgs e)
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             // ... Get control that raised this event.
             var textBox = sender as TextBox;
@@ -82,7 +78,14 @@ namespace AmiKoWindows
                 // Change the data context of the status bar
                 this.StatusBar.DataContext = _sqlDb;
                 string searchQueryType = _uiState.SearchQueryType();
-                _sqlDb?.Search(searchQueryType, text);
+                if (_uiState.GetState() == UIState.State.Compendium)
+                {
+                    _sqlDb?.Search(searchQueryType, text);
+                }
+                else if (_uiState.GetState() == UIState.State.Favorites)
+                {
+
+                }
             }
         }
 
@@ -91,7 +94,7 @@ namespace AmiKoWindows
          * to circumnavigate the SelectionChanged event which is only fired when the currently
          * selected item is different from the previous one.
          */
-        private void OnSearchResultChildPreviewMouseDown(object sender, RoutedEventArgs e)
+        private void OnSearchResultChild_PreviewMouseDown(object sender, RoutedEventArgs e)
         {
             var item = ItemsControl.ContainerFromElement(sender as ListBox, e.OriginalSource as DependencyObject) as ListBoxItem;
             if (item != null)
@@ -104,7 +107,7 @@ namespace AmiKoWindows
          * This event handler is called when the user selects the title in the search result.
          */
         static long? _searchSelectionItemId = 0;
-        private async void OnSearchItemSelection(object sender, SelectionChangedEventArgs e)
+        private async void OnSearchItem_Selection(object sender, SelectionChangedEventArgs e)
         {
             ListBox searchResultList = sender as ListBox;
             if (searchResultList?.Items.Count > 0)
@@ -134,7 +137,7 @@ namespace AmiKoWindows
          * This event handler is called when the user selects a package
          */
         static long? _searchSelectionChildItemId = 0;
-        private async void OnSearchChildItemSelection(object sender, SelectionChangedEventArgs e)
+        private async void OnSearchChildItem_Selection(object sender, SelectionChangedEventArgs e)
         {
             ListBox searchResultList = sender as ListBox;
             if (searchResultList?.Items.Count > 0)
@@ -149,9 +152,12 @@ namespace AmiKoWindows
                     if (_searchSelectionChildItemId != selection.Id)
                     {
                         _searchSelectionChildItemId = selection.Id;
-                        string html = await _sqlDb.GetFachInfoFromId(_searchSelectionChildItemId);  
-                        // Load html in browser window
-                        _fachInfo.ShowHtml(html);
+                        if (_searchSelectionChildItemId != null)
+                        {
+                            string html = await _sqlDb.GetFachInfoFromId(_searchSelectionChildItemId);
+                            // Load html in browser window
+                            _fachInfo.ShowHtml(html);
+                        }
                     }
 
                     sw.Stop();
@@ -160,7 +166,38 @@ namespace AmiKoWindows
             }
         }
 
-        private void StateButtonClick(object sender, RoutedEventArgs e)
+        /**
+        * Event handler called when the user selects a section title, injects javascript into Browser window
+        */
+        private void OnSectionTitle_Selection(object sender, SelectionChangedEventArgs e)
+        {
+            ListBox searchTitlesList = sender as ListBox;
+            if (searchTitlesList?.Items.Count > 0)
+            {
+                TitleItem sectionTitle = searchTitlesList.SelectedItem as TitleItem;
+                // Inject javascript to move to anchor
+                if (sectionTitle.Id != null)
+                {
+                    var jsCode = "document.getElementById('" + sectionTitle.Id + "').scrollIntoView(true);";
+                    this.Browser.InvokeScript("execScript", new Object[] { jsCode, "JavaScript" });
+                }
+            }
+        }
+
+        private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckBox favoriteCheckBox = sender as CheckBox;
+
+            object fav = favoriteCheckBox.DataContext;
+            if (fav?.GetType() == typeof(Item))
+            {
+                Item item = fav as Item;
+                Article article = await _sqlDb.GetArticleWithId(item.Id);
+                _sqlDb.UpdateFavorites(article);
+            }
+        }
+
+        private void StateButton_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
@@ -180,7 +217,7 @@ namespace AmiKoWindows
             }
         }
 
-        private void QueryButtonClick(object sender, RoutedEventArgs e)
+        private void QueryButton_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
@@ -190,38 +227,31 @@ namespace AmiKoWindows
             {
                 this.SearchTextBox.DataContext = _uiState;
                 _uiState.SetQuery(UIState.Query.Title);
-                _sqlDb.Sort("title");
+                _sqlDb.UpdateSearchResults("title");
             }
             else if (source.Name.Equals("Author"))
             {
                 this.SearchTextBox.DataContext = _uiState;
                 _uiState.SetQuery(UIState.Query.Author);
-                _sqlDb.Sort("author");
+                _sqlDb.UpdateSearchResults("author");
             }
             else if (source.Name.Equals("AtcCode"))
             {
                 this.SearchTextBox.DataContext = _uiState;
                 _uiState.SetQuery(UIState.Query.AtcCode);
-                _sqlDb.Sort("atc");
+                _sqlDb.UpdateSearchResults("atc");
             }
             else if (source.Name.Equals("RegNr"))
             {
                 this.SearchTextBox.DataContext = _uiState;
                 _uiState.SetQuery(UIState.Query.Regnr);
-                _sqlDb.Sort("regnr");
+                _sqlDb.UpdateSearchResults("regnr");
             }
             else if (source.Name.Equals("Application"))
             {
                 this.SearchTextBox.DataContext = _uiState;
                 _uiState.SetQuery(UIState.Query.Application);
-                _sqlDb.Sort("application");
-            }
-            else if (source.Name.Equals("Update"))
-            {
-                UpdateDb update = new UpdateDb();
-                // Changed data context
-                // this.ProgressBar.DataContext = update;
-                update.doIt();
+                _sqlDb.UpdateSearchResults("application");
             }
         }
     }

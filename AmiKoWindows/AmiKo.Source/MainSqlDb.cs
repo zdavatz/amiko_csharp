@@ -34,10 +34,27 @@ namespace AmiKoWindows
 {
     class ChildItem
     {
+        // Properties, must be public (these are not fields!)
         public long? Id { get; set; }
         public string Ean { get; set; }
         public string Text { get; set; }
         public string Color { get; set; }
+    }
+
+    class Item
+    {
+        // Properties, must be public (these are not fields!)
+        public long? Id { get; set; }
+        public string Text { get; set; }
+        public bool IsFavorite { get; set; }
+        public ChildItemsObservableCollection ChildItems { get; set; }
+    }
+
+    class TitleItem
+    {
+        // Properties, must be public (these are not fields!)
+        public string Id { get; set; }
+        public string Title { get; set; }
     }
 
     class ChildItemsObservableCollection : ObservableCollection<ChildItem>
@@ -84,17 +101,31 @@ namespace AmiKoWindows
                     });
                 }
             }
+
             _suppressNotification = false;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
-    }
 
-    class Item
-    {
-        // Properties, must be public (not fields!)
-        public long? Id { get; set; }
-        public string Text { get; set; }
-        public ChildItemsObservableCollection ChildItems { get; set; }
+        public void AddRange(IEnumerable<string> list)
+        {
+            if (list == null)
+                throw new ArgumentNullException("list");
+
+            _suppressNotification = true;
+            foreach (string str in list)
+            {
+                if (str != string.Empty)
+                {
+                    Add(new ChildItem()
+                    {
+                        Text = str,
+                        Color = "Gray"
+                    });
+                }
+            }
+            _suppressNotification = false;
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
     }
 
     class ItemsObservableCollection : ObservableCollection<Item>
@@ -126,6 +157,7 @@ namespace AmiKoWindows
                     {
                         Id = article.Id,
                         Text = article.Title,
+                        IsFavorite = article.IsFavorite,
                         ChildItems = ci
                     });
                 }
@@ -138,7 +170,71 @@ namespace AmiKoWindows
                     {
                         Id = article.Id,
                         Text = article.Title,
-                        ChildItems = new ChildItemsObservableCollection{ new ChildItem() { Text = article.Author } }
+                        IsFavorite = article.IsFavorite,
+                        ChildItems = new ChildItemsObservableCollection
+                        {
+                            new ChildItem() { Text = article.Author, Color="Gray" }
+                        }
+                    });
+                }
+            }
+            else if (type.Equals("atc"))
+            {
+                foreach (Article article in list)
+                {
+                    ChildItemsObservableCollection ci = new ChildItemsObservableCollection();
+                    // ATC code + ATC name
+                    string atcCode = article?.AtcCode.Replace(";"," - ");
+                    // ATC class
+                    string[] atc1 = article?.AtcClass.Split(';');
+                    string atcClass = (atc1.Length > 1) ? atc1[1] : "";
+                    // ATC Subgroup
+                    string atcSubClass = (atcClass.Length > 2) ? atc1[2] : "";
+                    string[] atc2 = atcSubClass?.Split('#');
+                    string subGroup = (atc2.Length > 1) ? atc2[1] : "";
+
+                    List<string> listOfAtcInfo = new List<string> { atcCode, subGroup, atcClass };
+                    ci.AddRange(listOfAtcInfo);
+
+                    Add(new Item()
+                    {
+                        Id = article.Id,
+                        Text = article.Title,
+                        IsFavorite = article.IsFavorite,
+                        ChildItems = ci
+                    });
+                }
+            }
+            else if (type.Equals("regnr"))
+            {
+                foreach (Article article in list)
+                {
+                    Add(new Item()
+                    {
+                        Id = article.Id,
+                        Text = article.Title,
+                        IsFavorite = article.IsFavorite,
+                        ChildItems = new ChildItemsObservableCollection
+                        {
+                            new ChildItem() { Text = article.Regnrs, Color="Gray" }
+                        }
+                    });
+                }
+            }
+            else if (type.Equals("application"))
+            {
+                foreach (Article article in list)
+                {
+                    ChildItemsObservableCollection ci = new ChildItemsObservableCollection();
+                    List<string> listOfApplications = article?.Application.Split(';').ToList();
+                    ci.AddRange(listOfApplications);
+
+                    Add(new Item()
+                    {
+                        Id = article.Id,
+                        Text = article.Title,
+                        IsFavorite = article.IsFavorite,
+                        ChildItems = ci
                     });
                 }
             }
@@ -157,6 +253,35 @@ namespace AmiKoWindows
                 Add(new Item()
                 {
                     Text = str
+                });
+            }
+            _suppressNotification = false;
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+    }
+
+    class TitlesObservableCollection : ObservableCollection<TitleItem>
+    {
+        private bool _suppressNotification = false;
+
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (!_suppressNotification)
+                base.OnCollectionChanged(e);
+        }
+
+        public void AddRange(IEnumerable<TitleItem> list)
+        {
+            if (list == null)
+                throw new ArgumentNullException("list");
+
+            _suppressNotification = true;
+            foreach (TitleItem item in list)
+            {
+                Add(new TitleItem()
+                {
+                    Id = item.Id,
+                    Title = item.Title
                 });
             }
             _suppressNotification = false;
@@ -199,6 +324,7 @@ namespace AmiKoWindows
 
         private SQLiteConnection _db;
         private List<Article> _foundArticles = new List<Article>();
+        private Favorites _favorites = new Favorites();
 
         /**
          * Properties
@@ -245,8 +371,8 @@ namespace AmiKoWindows
             }
         }
 
-        private ItemsObservableCollection _sectionTitles = new ItemsObservableCollection();
-        public ItemsObservableCollection SectionTitles
+        private TitlesObservableCollection _sectionTitles = new TitlesObservableCollection();
+        public TitlesObservableCollection SectionTitles
         {
             get { return _sectionTitles; }
             private set
@@ -300,6 +426,7 @@ namespace AmiKoWindows
             article.PackInfo = reader[KEY_PACK_INFO] as string;
             article.AddInfo = reader[KEY_ADD_INFO] as string;
             article.Packages = reader[KEY_PACKAGES] as string;
+            article.IsFavorite = _favorites.Contains(article.Regnrs);
 
             return article;
         }
@@ -325,6 +452,7 @@ namespace AmiKoWindows
             article.SectionTitles = reader[KEY_SECTION_TITLES] as string;
             article.Content = reader[KEY_CONTENT] as string;
             article.Packages = reader[KEY_PACKAGES] as string;
+            article.IsFavorite = _favorites.Contains(article.Regnrs);
 
             return article;
         }
@@ -332,12 +460,23 @@ namespace AmiKoWindows
         /**
          * Public functions
          */
+        public async void UpdateFavorites(Article article)
+        {
+            if (_favorites.Contains(article?.Regnrs))
+                _favorites.Remove(article);
+            else
+                _favorites.Add(article);
+            // Save list of favorites to file
+            await _favorites.Save();
+        }
+
         public async Task<string> GetFachInfoFromId(long? id)
         {
             Article article = await GetArticleWithId(id);
 
+            // List of section titles
             SectionTitles.Clear();
-            List<string> listOfSectionTitles = article.UpdatedSectionTitles();
+            List<TitleItem> listOfSectionTitles = article.ListOfSectionTitleItems();
             SectionTitles.AddRange(listOfSectionTitles);
 
             return article.Content;
@@ -348,7 +487,7 @@ namespace AmiKoWindows
             Article article = await GetArticleWithEan(ean);
 
             SectionTitles.Clear();
-            List<string> listOfSectionTitles = article.UpdatedSectionTitles();
+            List<TitleItem> listOfSectionTitles = article.ListOfSectionTitleItems();
             SectionTitles.AddRange(listOfSectionTitles);
 
             return article.Content;
@@ -393,14 +532,14 @@ namespace AmiKoWindows
                 default:
                     break;
             }
-            Sort(type);
+            UpdateSearchResults(type);
             sw.Stop();
 
             int count = _foundArticles.Count;
             StatusBarText = string.Format("{0} Suchresultate in {1} Sekunden", count, sw.ElapsedMilliseconds / 1000.0);
         }
 
-        public void Sort(string type)
+        public void UpdateSearchResults(string type)
         {
             SearchResultItems.Clear();
             SearchResultItems.AddRange(type, _foundArticles);

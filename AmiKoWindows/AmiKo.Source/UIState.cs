@@ -52,10 +52,6 @@ namespace AmiKoWindows
         }
 
         /**
-         * Private functions
-         */
-
-        /**
          * Public functions
          */
         public void SetState(State uiState)
