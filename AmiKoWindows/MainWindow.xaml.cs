@@ -82,6 +82,17 @@ namespace AmiKoWindows
         }
 
         /**
+         * Listens to click events in search box
+         */
+        private void OnSearchTextBox_PreviewMouseDown(object sender, RoutedEventArgs e)
+        {
+            this.SearchTextBox.Text = "";
+            // Change the data context of the status bar
+            this.StatusBar.DataContext = _sqlDb;
+            _sqlDb?.Search(_uiState, "");
+        }
+
+        /**
          * Little hack to deselect the currently selected item in list. This is necessary
          * to circumnavigate the SelectionChanged event which is only fired when the currently
          * selected item is different from the previous one.

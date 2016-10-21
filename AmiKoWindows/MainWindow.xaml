@@ -27,8 +27,8 @@
     
     <Grid x:Name="grid1">
         <Border BorderBrush="LightGray" BorderThickness="1">
-            <Menu x:Name="menu" Background="#FF4F7B8F" HorizontalAlignment="Stretch" Height="32" VerticalAlignment="Top">
-                <MenuItem Header="File" Background="#FF4F7B8F" Foreground="White">
+            <Menu x:Name="menu" Background="LightSlateGray" HorizontalAlignment="Stretch" Height="32" VerticalAlignment="Top">
+                <MenuItem Header="File" Background="LightSlateGray" Foreground="White">
                     <MenuItem Command="New"></MenuItem>
                     <MenuItem Command="Save"></MenuItem>
                 </MenuItem>
@@ -72,7 +72,8 @@
                     </Grid.ColumnDefinitions>
                     <DockPanel Grid.Column="0" LastChildFill="True">
                         <DockPanel DockPanel.Dock="Top" Height="52" Background="White">
-                            <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchTextBox}" TextChanged="SearchBox_TextChanged"
+                            <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchTextBox}" 
+                                     TextChanged="SearchBox_TextChanged" PreviewMouseDown="OnSearchTextBox_PreviewMouseDown"
                                      Controls:TextBoxHelper.Watermark="{Binding Path=SearchTextBoxWaterMark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                      Margin="4,0,4,0">
                             </TextBox>
@@ -104,7 +105,8 @@
                                                     <DataTemplate>
                                                         <TextBlock Style="{StaticResource SearchListBoxChildItemText}" 
                                                                    Text="{Binding Path=Text}" 
-                                                                   Foreground="{Binding Path=Color}"/>
+                                                                   Foreground="{Binding Path=Color}"
+                                                                   TextDecorations="{Binding Path=Decoration}"/>
                                                     </DataTemplate>
                                                 </ListBox.ItemTemplate>
                                             </ListBox>
@@ -117,12 +119,13 @@
                     <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="1" Width="5"/>
                     <WebBrowser x:Name="Browser" local:BrowserBehavior.Html="{Binding Path=HtmlText}" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,10,0"/>
                     <ListBox x:Name="SectionTitles" ItemsSource="{Binding Path=SectionTitles}" Grid.Column="3" 
-                             BorderThickness="1 0 1 0" BorderBrush="LightGray" Margin="4,0,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             BorderThickness="1 0 1 0" BorderBrush="LightGray" Margin="4,0,0,0" Padding="0,24,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                              SelectionChanged="OnSectionTitle_Selection">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Height="20" Orientation="Vertical">
-                                    <TextBlock Text="{Binding Path=Title}" Height="18" VerticalAlignment="Center" Foreground="Black"/>
+                                    <TextBlock Text="{Binding Path=Title}" Foreground="{Binding Path=Color}"
+                                               Height="18" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

@@ -17,9 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-using System;
-using System.IO;
-
 namespace AmiKoWindows
 {
     public class Constants
@@ -48,17 +45,5 @@ namespace AmiKoWindows
         public static readonly string[] SectionTitlesFR = { "Composition", "Forme galénique", "Contre-indications", "Indications",
 			"Posologie", "Précautions", "Interactions", "Grossesse/All.", "Conduite", "Effets indésir.", "Surdosage", "Propriétés/Effets",
 			"Cinétique", "Préclinique", "Remarques", "Numéro d'autorisation", "Présentation", "Titulaire", "Mise à jour" };
-
-        public static string AppLocalDataFolder()
-        {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                , Constants.APP_NAME);
-        }
-
-        public static string AppRoamingDataFolder()
-        {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
-                , Constants.APP_NAME);
-        }
     }
 }

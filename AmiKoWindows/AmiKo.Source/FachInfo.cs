@@ -46,7 +46,7 @@ namespace AmiKoWindows
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        // Source object used for data binding
+        // Source object used for data binding, this is a property
         private string _htmlText;
         public string HtmlText
         {
@@ -63,7 +63,11 @@ namespace AmiKoWindows
 
         public void ShowHtml(string htmlStr)
         {
-            string headStr = "<head>" + "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>" + _cssStr + "</head>"; 
+            string headStr = "<head>" 
+                + "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>" 
+                // + "<link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Roboto&subset=latin,latin-ext'>"
+                + _cssStr
+                + "</head>"; 
             HtmlText = headStr + htmlStr;
         }
 
