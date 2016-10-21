@@ -138,104 +138,127 @@ namespace AmiKoWindows
                 base.OnCollectionChanged(e);
         }
 
-        public void AddRange(string type, IEnumerable<Article> list)
+        public void AddRange(UIState uiState, IEnumerable<Article> list)
         {
             if (list == null)
                 throw new ArgumentNullException("list");
 
             _suppressNotification = true;
+            string type = uiState.SearchQueryType();
+            UIState.State state = uiState.GetState();
+
             if (type.Equals("title"))
             {
                 foreach (Article article in list)
                 {
-                    List<string> packInfoList = article.PackInfo.Split('\n').ToList();
-                    List<string> packagesList = article.Packages.Split('\n').ToList();
-                    ChildItemsObservableCollection ci = new ChildItemsObservableCollection();
-                    ci.AddRange(article.Id, packInfoList, packagesList);
-
-                    Add(new Item()
+                    bool cond = (state == UIState.State.Compendium) || (state == UIState.State.Favorites && article.IsFavorite);
+                    if (cond)
                     {
-                        Id = article.Id,
-                        Text = article.Title,
-                        IsFavorite = article.IsFavorite,
-                        ChildItems = ci
-                    });
+                        List<string> packInfoList = article.PackInfo.Split('\n').ToList();
+                        List<string> packagesList = article.Packages.Split('\n').ToList();
+                        ChildItemsObservableCollection ci = new ChildItemsObservableCollection();
+                        ci.AddRange(article.Id, packInfoList, packagesList);
+
+                        Add(new Item()
+                        {
+                            Id = article.Id,
+                            Text = article.Title,
+                            IsFavorite = article.IsFavorite,
+                            ChildItems = ci
+                        });
+                    }
                 }
             }
             else if (type.Equals("author"))
             {
                 foreach (Article article in list)
                 {
-                    Add(new Item()
+                    bool cond = (state == UIState.State.Compendium) || (state == UIState.State.Favorites && article.IsFavorite);
+                    if (cond)
                     {
-                        Id = article.Id,
-                        Text = article.Title,
-                        IsFavorite = article.IsFavorite,
-                        ChildItems = new ChildItemsObservableCollection
+                        Add(new Item()
                         {
-                            new ChildItem() { Text = article.Author, Color="Gray" }
-                        }
-                    });
+                            Id = article.Id,
+                            Text = article.Title,
+                            IsFavorite = article.IsFavorite,
+                            ChildItems = new ChildItemsObservableCollection
+                            {
+                                new ChildItem() { Text = article.Author, Color="Gray" }
+                            }
+                        });
+                    }
                 }
             }
             else if (type.Equals("atc"))
             {
                 foreach (Article article in list)
                 {
-                    ChildItemsObservableCollection ci = new ChildItemsObservableCollection();
-                    // ATC code + ATC name
-                    string atcCode = article?.AtcCode.Replace(";"," - ");
-                    // ATC class
-                    string[] atc1 = article?.AtcClass.Split(';');
-                    string atcClass = (atc1.Length > 1) ? atc1[1] : "";
-                    // ATC Subgroup
-                    string atcSubClass = (atcClass.Length > 2) ? atc1[2] : "";
-                    string[] atc2 = atcSubClass?.Split('#');
-                    string subGroup = (atc2.Length > 1) ? atc2[1] : "";
-
-                    List<string> listOfAtcInfo = new List<string> { atcCode, subGroup, atcClass };
-                    ci.AddRange(listOfAtcInfo);
-
-                    Add(new Item()
+                    bool cond = (state == UIState.State.Compendium) || (state == UIState.State.Favorites && article.IsFavorite);
+                    if (cond)
                     {
-                        Id = article.Id,
-                        Text = article.Title,
-                        IsFavorite = article.IsFavorite,
-                        ChildItems = ci
-                    });
+                        ChildItemsObservableCollection ci = new ChildItemsObservableCollection();
+                        // ATC code + ATC name
+                        string atcCode = article?.AtcCode.Replace(";", " - ");
+                        // ATC class
+                        string[] atc1 = article?.AtcClass.Split(';');
+                        string atcClass = (atc1.Length > 1) ? atc1[1] : "";
+                        // ATC Subgroup
+                        string atcSubClass = (atcClass.Length > 2) ? atc1[2] : "";
+                        string[] atc2 = atcSubClass?.Split('#');
+                        string subGroup = (atc2.Length > 1) ? atc2[1] : "";
+
+                        List<string> listOfAtcInfo = new List<string> { atcCode, subGroup, atcClass };
+                        ci.AddRange(listOfAtcInfo);
+
+                        Add(new Item()
+                        {
+                            Id = article.Id,
+                            Text = article.Title,
+                            IsFavorite = article.IsFavorite,
+                            ChildItems = ci
+                        });
+                    }
                 }
             }
             else if (type.Equals("regnr"))
             {
                 foreach (Article article in list)
                 {
-                    Add(new Item()
+                    bool cond = (state == UIState.State.Compendium) || (state == UIState.State.Favorites && article.IsFavorite);
+                    if (cond)
                     {
-                        Id = article.Id,
-                        Text = article.Title,
-                        IsFavorite = article.IsFavorite,
-                        ChildItems = new ChildItemsObservableCollection
+                        Add(new Item()
                         {
-                            new ChildItem() { Text = article.Regnrs, Color="Gray" }
-                        }
-                    });
+                            Id = article.Id,
+                            Text = article.Title,
+                            IsFavorite = article.IsFavorite,
+                            ChildItems = new ChildItemsObservableCollection
+                            {
+                                new ChildItem() { Text = article.Regnrs, Color="Gray" }
+                            }
+                        });
+                    }
                 }
             }
             else if (type.Equals("application"))
             {
                 foreach (Article article in list)
                 {
-                    ChildItemsObservableCollection ci = new ChildItemsObservableCollection();
-                    List<string> listOfApplications = article?.Application.Split(';').ToList();
-                    ci.AddRange(listOfApplications);
-
-                    Add(new Item()
+                    bool cond = (state == UIState.State.Compendium) || (state == UIState.State.Favorites && article.IsFavorite);
+                    if (cond)
                     {
-                        Id = article.Id,
-                        Text = article.Title,
-                        IsFavorite = article.IsFavorite,
-                        ChildItems = ci
-                    });
+                        ChildItemsObservableCollection ci = new ChildItemsObservableCollection();
+                        List<string> listOfApplications = article?.Application.Split(';').ToList();
+                        ci.AddRange(listOfApplications);
+
+                        Add(new Item()
+                        {
+                            Id = article.Id,
+                            Text = article.Title,
+                            IsFavorite = article.IsFavorite,
+                            ChildItems = ci
+                        });
+                    }
                 }
             }
             _suppressNotification = false;
@@ -500,12 +523,13 @@ namespace AmiKoWindows
             await ConnectToDB(db_path);
         }
 
-        public async void Search(string type, string query)
+        public async void Search(UIState state, string query)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
             _foundArticles.Clear();
+            string type = state.SearchQueryType();
             switch (type)
             {
                 case "title":
@@ -532,17 +556,17 @@ namespace AmiKoWindows
                 default:
                     break;
             }
-            UpdateSearchResults(type);
+            UpdateSearchResults(state);
             sw.Stop();
 
             int count = _foundArticles.Count;
             StatusBarText = string.Format("{0} Suchresultate in {1} Sekunden", count, sw.ElapsedMilliseconds / 1000.0);
         }
 
-        public void UpdateSearchResults(string type)
+        public void UpdateSearchResults(UIState state)
         {
             SearchResultItems.Clear();
-            SearchResultItems.AddRange(type, _foundArticles);
+            SearchResultItems.AddRange(state, _foundArticles);
         }
 
         public async Task<Article> GetArticleWithId(long? id)

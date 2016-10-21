@@ -51,6 +51,11 @@ namespace AmiKoWindows
         {
         }
 
+        public UIState(Query query)
+        {
+            _query = query;
+        }
+
         /**
          * Public functions
          */

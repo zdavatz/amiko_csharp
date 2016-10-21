@@ -77,15 +77,7 @@ namespace AmiKoWindows
             {
                 // Change the data context of the status bar
                 this.StatusBar.DataContext = _sqlDb;
-                string searchQueryType = _uiState.SearchQueryType();
-                if (_uiState.GetState() == UIState.State.Compendium)
-                {
-                    _sqlDb?.Search(searchQueryType, text);
-                }
-                else if (_uiState.GetState() == UIState.State.Favorites)
-                {
-
-                }
+                _sqlDb?.Search(_uiState, text);
             }
         }
 
@@ -203,15 +195,17 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            if (source.Equals("Compendium"))
+            if (source.Name.Equals("Compendium"))
             {
                 _uiState.SetState(UIState.State.Compendium);
+                _sqlDb.UpdateSearchResults(_uiState);
             }
-            else if (source.Equals("Favorites"))
+            else if (source.Name.Equals("Favorites"))
             {
                 _uiState.SetState(UIState.State.Favorites);
+                _sqlDb.UpdateSearchResults(_uiState);
             }
-            else if (source.Equals("Interactions"))
+            else if (source.Name.Equals("Interactions"))
             {
                 _uiState.SetState(UIState.State.Interactions);
             }
@@ -223,36 +217,20 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
+            this.SearchTextBox.DataContext = _uiState;
+
             if (source.Name.Equals("Title"))
-            {
-                this.SearchTextBox.DataContext = _uiState;
                 _uiState.SetQuery(UIState.Query.Title);
-                _sqlDb.UpdateSearchResults("title");
-            }
             else if (source.Name.Equals("Author"))
-            {
-                this.SearchTextBox.DataContext = _uiState;
                 _uiState.SetQuery(UIState.Query.Author);
-                _sqlDb.UpdateSearchResults("author");
-            }
             else if (source.Name.Equals("AtcCode"))
-            {
-                this.SearchTextBox.DataContext = _uiState;
                 _uiState.SetQuery(UIState.Query.AtcCode);
-                _sqlDb.UpdateSearchResults("atc");
-            }
             else if (source.Name.Equals("RegNr"))
-            {
-                this.SearchTextBox.DataContext = _uiState;
                 _uiState.SetQuery(UIState.Query.Regnr);
-                _sqlDb.UpdateSearchResults("regnr");
-            }
             else if (source.Name.Equals("Application"))
-            {
-                this.SearchTextBox.DataContext = _uiState;
                 _uiState.SetQuery(UIState.Query.Application);
-                _sqlDb.UpdateSearchResults("application");
-            }
+
+            _sqlDb.UpdateSearchResults(_uiState);
         }
     }
 
