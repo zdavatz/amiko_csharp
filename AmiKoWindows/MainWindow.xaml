@@ -85,8 +85,8 @@
                         <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Application" Click="QueryButton_Click">Therapie</Button>
                         <ListBox x:Name="SearchResult" 
                                  Style="{StaticResource SearchListBox}" ItemContainerStyle="{StaticResource SearchListBoxItem}"
-                                 ItemsSource="{Binding Path=SearchResultItems}"  
-                                 SelectionChanged="OnSearchItem_Selection" Margin="4,8,4,0">
+                                 ItemsSource="{Binding Path=SearchResultItems}" SelectionChanged="OnSearchItem_Selection" 
+                                 Margin="4,8,4,0" Padding="0,8,0,0">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
@@ -101,12 +101,11 @@
                                                      SelectionChanged="OnSearchChildItem_Selection"
                                                      ScrollViewer.CanContentScroll="False"
                                                      PreviewMouseDown="OnSearchResultChild_PreviewMouseDown">
-                                            <ListBox.ItemTemplate>
+                                                <ListBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Style="{StaticResource SearchListBoxChildItemText}" 
                                                                    Text="{Binding Path=Text}" 
-                                                                   Foreground="{Binding Path=Color}"
-                                                                   TextDecorations="{Binding Path=Decoration}"/>
+                                                                   Foreground="{Binding Path=Color}" TextDecorations="{Binding Path=Decoration}"/>
                                                     </DataTemplate>
                                                 </ListBox.ItemTemplate>
                                             </ListBox>
@@ -135,7 +134,10 @@
         </Border>
         <StatusBar x:Name="StatusBar" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Height="28">
             <StatusBarItem DockPanel.Dock="Left" Margin="0,0,0,0" Width="Auto">
-                <TextBlock Text="{Binding Path=StatusBarText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="{Binding Path=NetworkStatusText}" Foreground="White"></TextBlock>
+            </StatusBarItem>
+            <StatusBarItem DockPanel.Dock="Left" Margin="0,0,0,0" Width="Auto">
+                <TextBlock Text="{Binding Path=DatabaseStatusText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
             </StatusBarItem>
         </StatusBar>
         <!--

@@ -360,9 +360,9 @@ namespace AmiKoWindows
         private List<Article> _foundArticles = new List<Article>();
         private Favorites _favorites = new Favorites();
 
-        /**
-         * Properties
-         */
+        // 
+        // Properties
+        // 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void OnPropertyChanged(string propertyName)
@@ -374,21 +374,6 @@ namespace AmiKoWindows
         [CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private string _statusBarText;
-        public string StatusBarText
-        {
-            get { return _statusBarText; }
-            set
-            {
-                if (value != _statusBarText)
-                {
-                    _statusBarText = value;
-                    NotifyPropertyChanged();
-                    // OnPropertyChanged("StatusBarText");
-                }
-            }
         }
 
         private ItemsObservableCollection _searchResultItems = new ItemsObservableCollection();
@@ -534,7 +519,7 @@ namespace AmiKoWindows
             await ConnectToDB(db_path);
         }
 
-        public async void Search(UIState state, string query)
+        public async Task<Tuple<long,long>> Search(UIState state, string query)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -570,8 +555,10 @@ namespace AmiKoWindows
             UpdateSearchResults(state);
             sw.Stop();
 
-            int count = _foundArticles.Count;
-            StatusBarText = string.Format("{0} Suchresultate in {1} Sekunden", count, sw.ElapsedMilliseconds / 1000.0);
+            long numArticles = _foundArticles.Count;
+            long elapsedTime = sw.ElapsedMilliseconds / 1000;
+
+            return new Tuple<long, long>(numArticles, elapsedTime);
         }
 
         public void UpdateSearchResults(UIState state)

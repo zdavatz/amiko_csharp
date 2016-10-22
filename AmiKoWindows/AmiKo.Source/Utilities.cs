@@ -26,14 +26,12 @@ namespace AmiKoWindows
     {
         public static string AppLocalDataFolder()
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                , Constants.APP_NAME);
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Constants.APP_NAME);
         }
 
         public static string AppRoamingDataFolder()
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
-                , Constants.APP_NAME);
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.APP_NAME);
         }
     }
 }

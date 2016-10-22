@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-using MahApps.Metro.Controls;
 using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using MahApps.Metro.Controls;
 
 namespace AmiKoWindows
 {
@@ -30,9 +30,16 @@ namespace AmiKoWindows
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        class ExtendedDataContext
+        {
+            public Network Network { get; set; }
+            public MainSqlDb MainSqlDb { get; set; }
+        }
+
         UIState _uiState;
         MainSqlDb _sqlDb;
         FachInfo _fachInfo;
+        StatusBarHelper _statusBarHelper;
 
         public MainWindow()
         {
@@ -40,7 +47,6 @@ namespace AmiKoWindows
 
             // Initialize state machine
             _uiState = new UIState();
-            // Set data context
             this.SearchTextBox.DataContext = _uiState;
             // Set state machine
             _uiState.SetState(UIState.State.Compendium);
@@ -49,14 +55,15 @@ namespace AmiKoWindows
             // Initialize SQLite DB
             _sqlDb = new MainSqlDb();
             _sqlDb.StartSQLite();
-            // Set data context
             this.SearchResult.DataContext = _sqlDb;
             this.SectionTitles.DataContext = _sqlDb;
 
             // Initialize expert info browser frame
             _fachInfo = new FachInfo();
-            // Set data context
             this.Browser.DataContext = _fachInfo;
+
+            _statusBarHelper = new StatusBarHelper();
+            this.StatusBar.DataContext = _statusBarHelper;
         }
 
         private void MainWindowLoaded(object sender, RoutedEventArgs e)
@@ -65,9 +72,10 @@ namespace AmiKoWindows
             Uri iconUri = new Uri("./images/desitin_icon.ico", UriKind.RelativeOrAbsolute); //make sure your path is correct, and the icon set as Resource
             this.Icon = BitmapFrame.Create(iconUri, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
             */
+            _statusBarHelper.IsConnectedToInternet();
         }
 
-        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             // ... Get control that raised this event.
             var textBox = sender as TextBox;
@@ -76,20 +84,20 @@ namespace AmiKoWindows
             if (text.Length > 0)
             {
                 // Change the data context of the status bar
-                this.StatusBar.DataContext = _sqlDb;
-                _sqlDb?.Search(_uiState, text);
+                Tuple<long, long> res = await _sqlDb?.Search(_uiState, text);
+                _statusBarHelper.UpdateDatabaseSearchText(res);
             }
         }
 
         /**
          * Listens to click events in search box
          */
-        private void OnSearchTextBox_PreviewMouseDown(object sender, RoutedEventArgs e)
+        private async void OnSearchTextBox_PreviewMouseDown(object sender, RoutedEventArgs e)
         {
             this.SearchTextBox.Text = "";
             // Change the data context of the status bar
-            this.StatusBar.DataContext = _sqlDb;
-            _sqlDb?.Search(_uiState, "");
+            Tuple<long, long> res = await _sqlDb?.Search(_uiState, "");
+            _statusBarHelper.UpdateDatabaseSearchText(res);
         }
 
         /**
