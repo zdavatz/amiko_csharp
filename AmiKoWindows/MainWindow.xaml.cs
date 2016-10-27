@@ -228,6 +228,17 @@ namespace AmiKoWindows
             {
                 _uiState.SetState(UIState.State.Interactions);
             }
+            else if (source.Name.Equals("Sponsor"))
+            {
+                /*
+                MessageBoxResult result = MessageBox.Show("Do you want to close this window?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Console.WriteLine("Clicked YES");
+                }
+                */
+
+            }
         }
 
         private void QueryButton_Click(object sender, RoutedEventArgs e)

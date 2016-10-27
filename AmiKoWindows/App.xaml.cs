@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace AmiKoWindows
 {
@@ -17,8 +19,18 @@ namespace AmiKoWindows
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            SplashScreen splash = new SplashScreen();
+            splash.Show();
+            MainWindow main = new MainWindow();
+
+            Thread.Sleep(500);
+
+            splash.Close();
+
             AllocConsole();
             Console.WriteLine("And so it begins");
+
+            main.Show();
         }
     }
 }

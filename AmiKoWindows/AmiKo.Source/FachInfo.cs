@@ -25,9 +25,12 @@ namespace AmiKoWindows
 {
     class FachInfo : INotifyPropertyChanged
     {
+        #region Private Fields
         string _appFolder;
         string _cssStr;
+        #endregion
 
+        #region Constructors
         public FachInfo()
         {
             _appFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -38,14 +41,18 @@ namespace AmiKoWindows
                 _cssStr = "<style>" + File.ReadAllText(cssFilePath) + "</style>";
             }
         }
+        #endregion
 
+        #region Event Handlers
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
 
+        #region Dependency Properties
         // Source object used for data binding, this is a property
         private string _htmlText;
         public string HtmlText
@@ -60,7 +67,9 @@ namespace AmiKoWindows
                 }
             }
         }
+        #endregion
 
+        #region Public Functions
         public void ShowHtml(string htmlStr)
         {
             string headStr = "<head>" 
@@ -80,5 +89,6 @@ namespace AmiKoWindows
                 HtmlText = html;
             }
         }
+        #endregion
     }
 }

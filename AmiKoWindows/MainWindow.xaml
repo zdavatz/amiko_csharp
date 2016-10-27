@@ -7,7 +7,8 @@
         xmlns:local="clr-namespace:AmiKoWindows"
         mc:Ignorable="d"
         Loaded="MainWindowLoaded"
-        Title="AmiKoWindows" Height="1024" Width="1280"
+        TitleCaps="False" Title="AmiKo Desitin" 
+        Height="1024" Width="1280" Topmost="True"
         GlowBrush="Black"
         BorderThickness="1"                       
         WindowStartupLocation="CenterScreen"
@@ -21,48 +22,102 @@
             </Style>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/AmiKoStyle.xaml" />
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    
-    <Grid x:Name="grid1">
-        <Border BorderBrush="LightGray" BorderThickness="1">
-            <Menu x:Name="menu" Background="LightSlateGray" HorizontalAlignment="Stretch" Height="32" VerticalAlignment="Top">
-                <MenuItem Header="File" Background="LightSlateGray" Foreground="White">
-                    <MenuItem Command="New"></MenuItem>
-                    <MenuItem Command="Save"></MenuItem>
-                </MenuItem>
-            </Menu>
-        </Border>
-        <Border Margin="0,32,0,28" Padding="0" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch">
+
+    <Controls:MetroWindow.Flyouts>
+        <Controls:FlyoutsControl ItemsSource="{Binding Flyouts}">
+            <Controls:Flyout x:Name="FlyoutMenu" Header="Menu" Position="Left" Width="200" IsOpen="False" 
+                             IsAutoCloseEnabled="True">
+                <Border  BorderBrush="White" BorderThickness="0 1 0 0">
+                    <StackPanel Orientation="Vertical">
+                        <MenuItem Header="Update" Foreground="White" Height="28" Margin="10, 20, 10, 10" Cursor="Hand">
+                            <MenuItem.Icon>
+                                <Rectangle Height="16" Width="16" Fill="White">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Visual="{StaticResource appbar_refresh}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Report" Foreground="White" Height="28" Margin="10" Cursor="Hand">
+                            <MenuItem.Icon>
+                                <Rectangle Height="16" Width="16" Fill="White">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Visual="{StaticResource appbar_book}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Settings" Foreground="White" Height="28" Margin="10" Cursor="Hand">
+                            <MenuItem.Icon>
+                                <Rectangle Height="16" Width="16" Fill="White">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Visual="{StaticResource appbar_settings}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Feedback" Foreground="White" Height="28" Margin="10" Cursor="Hand">
+                            <MenuItem.Icon>
+                                <Rectangle Height="16" Width="16" Fill="White">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Visual="{StaticResource appbar_inbox_out}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="About" Foreground="White" Height="28" Margin="10" Cursor="Hand">
+                            <MenuItem.Icon>
+                                <Rectangle  Height="16" Width="16" Fill="White">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Visual="{StaticResource appbar_information_circle}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </StackPanel>
+                </Border>
+            </Controls:Flyout>
+        </Controls:FlyoutsControl>
+    </Controls:MetroWindow.Flyouts>
+
+    <Controls:MetroWindow.LeftWindowCommands>
+        <Controls:WindowCommands>
+            <ToggleButton Style="{StaticResource FlyoutToggleButton}" IsChecked="{Binding ElementName=FlyoutMenu, Path=IsOpen}" Cursor="Hand">
+            </ToggleButton>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.LeftWindowCommands>
+
+    <Grid x:Name="MainGrid">
+        <Border Margin="0,0,0,28" Padding="0" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch">
             <DockPanel LastChildFill="True">
                 <Border DockPanel.Dock="Top" Background="White" BorderBrush="LightGray" BorderThickness="1 1 1 1">
-                    <ToolBarTray Orientation="Horizontal">
-                        <ToolBar ToolBarTray.IsLocked="True">
-                            <Button Name="Compendium" Click="StateButton_Click" Margin="6,6,0,6">
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Width="16" Source="./images/aips32x32_dark.png" />
-                                    <Label VerticalAlignment="Center">Kompendium</Label>
-                                </StackPanel>
-                            </Button>
-                            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                            <Button Name="Favorites" Click="StateButton_Click" Margin="0,6,0,6">
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Width="16" Source="./images/favorites32x32_dark.png" />
-                                    <Label VerticalAlignment="Center">Favoriten</Label>
-                                </StackPanel>
-                            </Button>
-                            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                            <Button Name="Interactions" Click="StateButton_Click" Margin="0,6,0,6">
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Width="16" Source="./images/interactions32x32_dark.png" />
-                                    <Label VerticalAlignment="Center">Interaktionen</Label>
-                                </StackPanel>
-                            </Button>
-                            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                        </ToolBar>
-                    </ToolBarTray>
-                  </Border>
+                    <ToolBar ToolBarTray.IsLocked="True">
+                        <Button Name="Compendium" Cursor="Hand" Click="StateButton_Click" Margin="6,6,0,6">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Width="16" Source="./images/aips32x32_dark.png" />
+                                <Label VerticalAlignment="Center">Kompendium</Label>
+                            </StackPanel>
+                        </Button>
+                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                        <Button Name="Favorites" Cursor="Hand" Click="StateButton_Click" Margin="0,6,0,6">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Width="16" Source="./images/favorites32x32_dark.png" />
+                                <Label VerticalAlignment="Center">Favoriten</Label>
+                            </StackPanel>
+                        </Button>
+                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                        <Button Name="Interactions" Cursor="Hand" Click="StateButton_Click" Margin="0,6,0,6">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Width="16" Source="./images/interactions32x32_dark.png" />
+                                <Label VerticalAlignment="Center">Interaktionen</Label>
+                            </StackPanel>
+                        </Button>
+                    </ToolBar>
+                </Border>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*" MinWidth="300"/>
@@ -73,16 +128,17 @@
                     <DockPanel Grid.Column="0" LastChildFill="True">
                         <DockPanel DockPanel.Dock="Top" Height="52" Background="White">
                             <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchTextBox}" 
+                                     Cursor="Pen"
                                      TextChanged="SearchBox_TextChanged" PreviewMouseDown="OnSearchTextBox_PreviewMouseDown"
                                      Controls:TextBoxHelper.Watermark="{Binding Path=SearchTextBoxWaterMark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                      Margin="4,0,4,0">
                             </TextBox>
                         </DockPanel>
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Title"  Click="QueryButton_Click">Präparat</Button>
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Author" Click="QueryButton_Click">Inhaberin</Button>
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="AtcCode" Click="QueryButton_Click">Wirkstoff / ATC</Button>
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="RegNr" Click="QueryButton_Click">Zulassungsnummer</Button>
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Application" Click="QueryButton_Click">Therapie</Button>
+                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Title" Cursor="Hand" Click="QueryButton_Click">Präparat</Button>
+                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Author" Cursor="Hand" Click="QueryButton_Click">Inhaberin</Button>
+                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="AtcCode" Cursor="Hand" Click="QueryButton_Click">Wirkstoff / ATC</Button>
+                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="RegNr" Cursor="Hand" Click="QueryButton_Click">Zulassungsnummer</Button>
+                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Application" Cursor="Hand" Click="QueryButton_Click">Therapie</Button>
                         <ListBox x:Name="SearchResult" 
                                  Style="{StaticResource SearchListBox}" ItemContainerStyle="{StaticResource SearchListBoxItem}"
                                  ItemsSource="{Binding Path=SearchResultItems}" SelectionChanged="OnSearchItem_Selection" 

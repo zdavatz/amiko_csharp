@@ -119,6 +119,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SplashScreen.xaml.cs">
+      <DependentUpon>SplashScreen.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -154,6 +157,10 @@
     <Page Include="Resources\IconsNonShared.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SplashScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -191,6 +198,7 @@
     <None Include="AmiKo.Config\App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="images\menu_button.png" />
     <Resource Include="css\amiko_stylesheet.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -206,6 +214,7 @@
     <Content Include="images\amiko_icon.png" />
     <Resource Include="images\desitin_icon.ico" />
     <Resource Include="images\desitin_icon.png" />
+    <Resource Include="images\desitin_splash.png" />
     <Content Include="images\favorites32x32_dark.png" />
     <Content Include="images\favorites32x32_gray.png" />
     <Content Include="images\interactions32x32_dark.png" />

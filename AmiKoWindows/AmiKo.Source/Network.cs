@@ -25,16 +25,16 @@ namespace AmiKoWindows
 {
     class Network : INotifyPropertyChanged
     {
-        // 
-        // Properties
-        // 
+        #region Event Handlers
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
 
+        #region Dependency Properties
         private string _networkStatusText;
         public string NetworkStatusText
         {
@@ -48,10 +48,9 @@ namespace AmiKoWindows
                 }
             }
         }
+        #endregion
 
-        // 
-        // Statics
-        //
+        #region Static Functions
         public static bool CheckForInternetConnection()
         {
             try
@@ -82,10 +81,9 @@ namespace AmiKoWindows
                 return false;
             }
         }
+        #endregion
 
-        //
-        // Functions
-        //
+        #region Public Functions
         public long PingRoundTripTimeInMilliSeconds(string url)
         {
             Ping ping = new Ping();
@@ -93,5 +91,6 @@ namespace AmiKoWindows
             PingReply reply = ping.Send(url, 1000, buffer, new PingOptions());
             return reply.RoundtripTime;
         }
+        #endregion
     }
 }
