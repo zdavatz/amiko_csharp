@@ -5,11 +5,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AmiKoWindows")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("AmiKo Desitin")]
+[assembly: AssemblyDescription("Arzneimittel-Kompendium für Windows")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AmiKoWindows")]
+[assembly: AssemblyCompany("Ywesee")]
+[assembly: AssemblyProduct("AmiKo Desitin")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

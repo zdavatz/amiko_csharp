@@ -12,7 +12,7 @@
         Title="SplashScreen" Height="1024" Width="1280">
     <Grid>
         <DockPanel>
-            <Image Width="1000" DockPanel.Dock="Top" Source="./images/desitin_splash.png" />
+            <Image Width="1000" DockPanel.Dock="Top" Source="../images/desitin_splash.png" />
             <TextBlock DockPanel.Dock="Bottom" HorizontalAlignment="Center">Loading... please wait.</TextBlock>
         </DockPanel>
     </Grid>

@@ -76,9 +76,7 @@
                     <Image x:Name="toggleButtonImage" Source="../images/desitin_icon.png" Height="20"></Image>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
-                            <!--
-                            <Setter TargetName="toggleButtonImage" Property="Opacity" Value="0."/>
-                            -->
+                            <!-- <Setter TargetName="toggleButtonImage" Property="Opacity" Value="0."/> -->
                             <Setter TargetName="toggleButtonImage" Property="Source" Value="../images/menu_button.png"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="False">

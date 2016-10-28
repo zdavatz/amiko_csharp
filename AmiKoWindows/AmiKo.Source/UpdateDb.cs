@@ -20,26 +20,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace AmiKoWindows
 {
     class UpdateDb : INotifyPropertyChanged
     {
+        #region Private Fields
         string _filename;
         long _filesize;
+        #endregion
 
+        #region Properties
         public object Errors
         {
             get;
             private set;
         }
+        #endregion
 
+        #region Class Extensions
         /**
          * Extend from List<T> and add a custom Add method to initialize T
          */
@@ -50,15 +54,33 @@ namespace AmiKoWindows
                 Add(new Tuple<T1, T2, T3>(item, item2, item3));
             }
         }
+        #endregion
 
+        #region Event Handlers
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
 
+        #region Dependency Properties
         // Source object used for data binding
+        private string _text;
+        public string Text
+        {
+            get { return _text; }
+            set
+            {
+                if (value != _text)
+                {
+                    _text = value;
+                    OnPropertyChanged("Text");
+                }
+            }
+        }
+
         private double _currentProgress;
         public double CurrentProgress
         {
@@ -73,39 +95,30 @@ namespace AmiKoWindows
             }
         }
 
-        public async void doIt()
+        private string _buttonContent;
+        public string ButtonContent
         {
-            string app_folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            // Default is "de"
-            var list_of_files = new TupleList<string, string, string>
+            get { return _buttonContent; }
+            set
             {
-                { "Report", "http://pillbox.oddb.org/amiko_report_de.html", app_folder + @"\dbs\amiko_report_de.html" },
-                { "Interaktionen", "http://pillbox.oddb.org/drug_interactions_csv_de.zip", app_folder + @"\dbs\drug_interactions_csv_de.csv.zip" },
-                { "Datenbank", "http://pillbox.oddb.org/amiko_db_full_idx_de.zip", app_folder + @"\dbs\amiko_db_full_idx_de.db.zip" },
-            };
-
-            // Generate list of tasks
-            var tasks = list_of_files
-                .Select(f => StartDownload(f.Item1, f.Item2, f.Item3))
-                .ToList();
-
-            foreach (Task t in tasks)
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                await t;
-                sw.Stop();
-                Console.WriteLine("File {0}, time = {1}ms", _filename, sw.ElapsedMilliseconds);
+                if (value != _buttonContent)
+                {
+                    _buttonContent = value;
+                    OnPropertyChanged("ButtonContent");
+                }
             }
-            Console.WriteLine("Download finished.");
         }
 
-        private Task StartDownload(string title, string url, string filename)
+        #endregion
+
+        #region Private Methods
+        private Task StartDownloadAndExtract(string title, string url, string filename)
         {
+            string filepath = Path.Combine(Utilities.AppRoamingDataFolder(), filename);
             // Starts task backed by background thread (located in thread pool)
             return Task.Run(() =>
             {
+                // Download
                 try
                 {
                     var uri = new System.Uri(url);
@@ -113,7 +126,7 @@ namespace AmiKoWindows
                     {
                         wb.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DownloadProgressChanged);
                         wb.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadDataCompleted);
-                        wb.DownloadFileAsync(uri, filename);
+                        wb.DownloadFileAsync(uri, filepath);
                         while (wb.IsBusy) ;
                         _filename = filename;
                     }
@@ -122,6 +135,21 @@ namespace AmiKoWindows
                 {
                     Console.WriteLine("Failed to download file: {0}", filename);
                 }
+
+                // Decompress if necessary
+                if (_filename.EndsWith("zip"))
+                {
+                    Text = string.Format("Unzipping database... ");
+                    string unzippedFilepath = filepath.Replace(".zip", "");
+                    if (File.Exists(unzippedFilepath))
+                        File.Delete(unzippedFilepath);
+                    // Unzip
+                    ZipFile.ExtractToDirectory(filepath, Utilities.AppRoamingDataFolder());
+                    // Remove file
+                    if (File.Exists(filepath))
+                        File.Delete(filepath);
+                 }
+
             });
         }
 
@@ -130,12 +158,55 @@ namespace AmiKoWindows
             double bytesIn = (double)e.BytesReceived; // = double.Parse(e.BytesReceived.ToString());
             double totalBytes = (double)e.TotalBytesToReceive; // = double.Parse(e.TotalBytesToReceive.ToString());
             double percentage = bytesIn / totalBytes * 100;
+            Text = string.Format("Downloading database... {0:0}kB out of {1:0}kB", bytesIn*0.001, totalBytes*0.001); 
             CurrentProgress = percentage;
             _filesize = (long)totalBytes;
         }
 
         private void DownloadDataCompleted(object sender, AsyncCompletedEventArgs e)
         {
+            // Text = string.Format("Neue AmiKo Datenbank mit X Fachinfos und Y Interaktionen erfolgreich geladen!");
         }
+        #endregion
+
+        #region Public Methods
+        public async Task doIt()
+        {
+            ButtonContent = "Cancel";
+
+            // Default is "de"
+            var listOfFiles = new TupleList<string, string, string>
+                {
+                    { "Report", "http://pillbox.oddb.org/amiko_report_de.html", @"amiko_report_de.html" },
+                    { "Interaktionen", "http://pillbox.oddb.org/drug_interactions_csv_de.zip", @"drug_interactions_csv_de.csv.zip" },
+                    { "Datenbank", "http://pillbox.oddb.org/amiko_db_full_idx_de.zip", @"amiko_db_full_idx_de.db.zip" },
+                };
+
+            await Task.Run(async () =>
+            {
+                // Generate list of download/unzip tasks
+                var tasks = listOfFiles
+                    .Select(f => StartDownloadAndExtract(f.Item1, f.Item2, f.Item3))
+                    .ToList();
+
+                foreach (Task t in tasks)
+                {
+                    await t;
+                }
+            });
+
+            // Extract number of articles and number of interactions
+            string filepath = Path.Combine(Utilities.AppRoamingDataFolder(), @"amiko_db_full_idx_de.db");
+            if (File.Exists(filepath))
+            {
+                DatabaseHelper db = new DatabaseHelper();
+                await db.OpenDB(filepath);
+                long? numDbRecords = await db.GetNumRecords("amikodb");
+                Text = string.Format("Neue AmiKo Datenbank mit {0} Fachinfos und Y Interaktionen erfolgreich geladen!", numDbRecords);
+            }
+
+            ButtonContent = "OK";
+        }
+        #endregion
     }
 }

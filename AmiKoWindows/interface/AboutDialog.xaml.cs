@@ -17,65 +17,69 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-using System;
 using System.ComponentModel;
+using System.Windows;
+using MahApps.Metro.Controls;
 
 namespace AmiKoWindows
 {
     /// <summary>
-    /// Helper class to bind UI properties to different classes
+    /// Interaction logic for AboutDialog.xaml
     /// </summary>
-    class StatusBarHelper : INotifyPropertyChanged
+    public partial class AboutDialog : MetroWindow, INotifyPropertyChanged
     {
-        // 
-        // Properties
-        // 
+        #region Event Handlers
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
 
-        private string _networkStatusText;
-        public string NetworkStatusText
+        #region Dependency Properties
+        // Source object used for data binding, this is a property
+        private string _appTitle;
+        public string AppTitle
         {
-            get { return _networkStatusText; }
+            get { return _appTitle; }
             set
             {
-                if (value != _networkStatusText)
+                if (value != _appTitle)
                 {
-                    _networkStatusText = value;
-                    OnPropertyChanged("NetworkStatusText");
+                    _appTitle = value;
+                    OnPropertyChanged("AppTitle");
                 }
             }
         }
 
-        private string _databaseStatusText;
-        public string DatabaseStatusText
+        // Source object used for data binding, this is a property
+        private string _appVersion;
+        public string AppVersion
         {
-            get { return _databaseStatusText; }
+            get { return _appVersion; }
             set
             {
-                if (value != _databaseStatusText)
+                if (value != _appVersion)
                 {
-                    _databaseStatusText = value;
-                    OnPropertyChanged("DatabaseStatusText");
+                    _appVersion = value;
+                    OnPropertyChanged("AppVersion");
                 }
             }
         }
+        #endregion
 
-        // 
-        // Functions
-        // 
-        public void IsConnectedToInternet()
+        public AboutDialog()
         {
-            NetworkStatusText = Network.CheckForInternetConnection2() ? "Online" : "Offline";
+            InitializeComponent();
+            MyAboutDialog.DataContext = this;
+            AppTitle = Utilities.AppName();
+            AppVersion = Utilities.AppVersion();
         }
 
-        public void UpdateDatabaseSearchText(Tuple<long, double> result)
+        private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            DatabaseStatusText = string.Format("{0} Suchresultate in {1:0.000} Sekunden", result.Item1, result.Item2);
+            this.Close();
         }
     }
 }

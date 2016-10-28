@@ -31,7 +31,7 @@ namespace AmiKoWindows
 
         public Favorites()
         {
-            _userDataDir = Utilities.AppLocalDataFolder();
+            _userDataDir = Utilities.AppRoamingDataFolder();
             CheckDir(_userDataDir);
             // Load favorites from persistent storage
             Load();

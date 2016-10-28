@@ -356,7 +356,7 @@ namespace AmiKoWindows
         static readonly string PACKAGES_TABLE = String.Format("{0},{1},{2},{3},{4}",
             KEY_ROWID, KEY_TITLE, KEY_AUTHOR, KEY_REGNRS, KEY_PACKAGES);
 
-        private SQLiteConnection _db;
+        private DatabaseHelper _db = new DatabaseHelper();
         private List<Article> _foundArticles = new List<Article>();
         private Favorites _favorites = new Favorites();
 
@@ -407,26 +407,6 @@ namespace AmiKoWindows
         /**
          * Private functions
          */
-        private async Task ConnectToDB(string db_path)
-        {
-            if (_db != null)
-                return;
-
-            await Task.Run(() =>
-            {
-                if (File.Exists(db_path))
-                {
-                    _db = new SQLiteConnection("Data Source=" + db_path);
-                    _db.Open();
-                }
-            });
-        }
-
-        private void CloseDB()
-        {
-            _db.Close();
-        }
-
         private Article CursorToShortArticle(SQLiteDataReader reader)
         {
             Article article = new Article();
@@ -476,9 +456,18 @@ namespace AmiKoWindows
             return article;
         }
 
-        /**
-         * Public functions
-         */
+        #region Public Functions
+        public void ClearSectionTitles()
+        {
+            SectionTitles.Clear();
+        }
+
+        public void UpdateSearchResults(UIState state)
+        {
+            SearchResultItems.Clear();
+            SearchResultItems.AddRange(state, _foundArticles);
+        }
+
         public async void UpdateFavorites(Article article)
         {
             if (_favorites.Contains(article?.Regnrs))
@@ -514,17 +503,15 @@ namespace AmiKoWindows
 
         public async void StartSQLite()
         {
-            string app_folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string db_path = app_folder + @"\dbs\amiko_db_full_idx_de.db";
-            await ConnectToDB(db_path);
+            string appFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string dbPath = appFolder + Constants.AIPS_DB_BASE + "de.db";
+            await _db.OpenDB(dbPath);
         }
 
-        public async Task<Tuple<long,long>> Search(UIState state, string query)
+        public async Task<long> Search(UIState state, string query)
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             _foundArticles.Clear();
+
             string type = state.SearchQueryType();
             switch (type)
             {
@@ -553,18 +540,8 @@ namespace AmiKoWindows
                     break;
             }
             UpdateSearchResults(state);
-            sw.Stop();
 
-            long numArticles = _foundArticles.Count;
-            long elapsedTime = sw.ElapsedMilliseconds / 1000;
-
-            return new Tuple<long, long>(numArticles, elapsedTime);
-        }
-
-        public void UpdateSearchResults(UIState state)
-        {
-            SearchResultItems.Clear();
-            SearchResultItems.AddRange(state, _foundArticles);
+            return _foundArticles.Count;
         }
 
         public async Task<Article> GetArticleWithId(long? id)
@@ -573,10 +550,9 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                if (_db.State != System.Data.ConnectionState.Open)
-                    _db.Open();
+                _db.ReOpenIfNecessary();
 
-                using (SQLiteCommand com = new SQLiteCommand(_db))
+                using (SQLiteCommand com = _db.Command())
                 {
                     com.CommandText = "SELECT * FROM " + DATABASE_TABLE + " WHERE "
                         + KEY_ROWID + " LIKE " + "'" + id + "'";
@@ -600,10 +576,9 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                if (_db.State != System.Data.ConnectionState.Open)
-                    _db.Open();
+                _db.ReOpenIfNecessary();
 
-                using (SQLiteCommand com = new SQLiteCommand(_db))
+                using (SQLiteCommand com = _db.Command())
                 {
                     com.CommandText = "SELECT * FROM " + DATABASE_TABLE + " WHERE "
                         + KEY_PACKAGES + " LIKE " + "'%" + eancode + "%'";
@@ -627,10 +602,9 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                using (SQLiteCommand com = new SQLiteCommand(_db))
+                using (SQLiteCommand com = _db.Command())
                 {
-                    if (_db.State != System.Data.ConnectionState.Open)
-                        _db.Open();
+                    _db.ReOpenIfNecessary();
 
                     if (title.Length > 2)
                     {
@@ -663,10 +637,9 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                using (SQLiteCommand com = new SQLiteCommand(_db))
+                using (SQLiteCommand com = _db.Command())
                 {
-                    if (_db.State != System.Data.ConnectionState.Open)
-                        _db.Open();
+                    _db.ReOpenIfNecessary();
 
                     com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
                         + KEY_AUTHOR + " LIKE " + "'" + author + "%'";
@@ -690,10 +663,9 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                using (SQLiteCommand com = new SQLiteCommand(_db))
+                using (SQLiteCommand com = _db.Command())
                 {
-                    if (_db.State != System.Data.ConnectionState.Open)
-                        _db.Open();
+                    _db.ReOpenIfNecessary();
 
                     com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
                         + KEY_ATCCODE + " like " + "'%;" + atccode + "%' or "
@@ -724,10 +696,9 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                using (SQLiteCommand com = new SQLiteCommand(_db))
+                using (SQLiteCommand com = _db.Command())
                 {
-                    if (_db.State != System.Data.ConnectionState.Open)
-                        _db.Open();
+                    _db.ReOpenIfNecessary();
 
                     com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
                         + KEY_SUBSTANCES + " LIKE " + "'%, " + ingredient + "%' or "
@@ -752,10 +723,9 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                using (SQLiteCommand com = new SQLiteCommand(_db))
+                using (SQLiteCommand com = _db.Command())
                 {
-                    if (_db.State != System.Data.ConnectionState.Open)
-                        _db.Open();
+                    _db.ReOpenIfNecessary();
 
                     com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
                         + KEY_REGNRS + " LIKE " + "'%, " + regnr + "%' or "
@@ -780,10 +750,9 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                using (SQLiteCommand com = new SQLiteCommand(_db))
+                using (SQLiteCommand com = _db.Command())
                 {
-                    if (_db.State != System.Data.ConnectionState.Open)
-                        _db.Open();
+                    _db.ReOpenIfNecessary();
 
                     com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE " 
                         + KEY_APPLICATION + " LIKE " + "'%," + application + "%' OR " 
@@ -812,10 +781,9 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                using (SQLiteCommand com = new SQLiteCommand(_db))
+                using (SQLiteCommand com = _db.Command())
                 {
-                    if (_db.State != System.Data.ConnectionState.Open)
-                        _db.Open();
+                    _db.ReOpenIfNecessary();
 
                     com.CommandText = "SELECT " + PACKAGES_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
                         + KEY_PACKAGES + " LIKE " + "'%" + eancode + "%'";
@@ -832,5 +800,6 @@ namespace AmiKoWindows
 
             return medTitles;
         }
+        #endregion
     }
 }

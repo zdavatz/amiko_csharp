@@ -19,19 +19,62 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace AmiKoWindows
 {
     class Utilities
     {
+        public static string AppName()
+        {
+            object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+            if (attributes.Length > 0)
+            {
+                AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)attributes[0];
+                if (titleAttribute.Title != "")
+                {
+                    return titleAttribute.Title;
+                }
+            }
+            return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+        }
+
+        public static string AppVersion()
+        {
+            object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyVersionAttribute), false);
+            if (attributes.Length > 0)
+            {
+                AssemblyVersionAttribute versionAttribute = (AssemblyVersionAttribute)attributes[0];
+                if (versionAttribute.Version != "")
+                {
+                    return versionAttribute.Version;
+                }
+            }
+            return "1.0.0";
+        }
+
+        public static string AppCompany()
+        {
+            object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
+            if (attributes.Length > 0)
+            {
+                AssemblyCompanyAttribute versionAttribute = (AssemblyCompanyAttribute)attributes[0];
+                if (versionAttribute.Company != "")
+                {
+                    return versionAttribute.Company;
+                }
+            }
+            return "Ywesee";
+        }
+
         public static string AppLocalDataFolder()
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Constants.APP_NAME);
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppCompany(), AppName());
         }
 
         public static string AppRoamingDataFolder()
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.APP_NAME);
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppCompany(), AppName());
         }
     }
 }

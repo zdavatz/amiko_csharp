@@ -27,20 +27,13 @@ namespace AmiKoWindows
     {
         #region Private Fields
         string _appFolder;
+        string _reportStr;
         string _cssStr;
         #endregion
 
-        #region Constructors
-        public FachInfo()
-        {
-            _appFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            // Load important files
-            string cssFilePath = _appFolder + Constants.CSS_SHEET;
-            if (File.Exists(cssFilePath))
-            {
-                _cssStr = "<style>" + File.ReadAllText(cssFilePath) + "</style>";
-            }
-        }
+        #region Properties
+        string ReportFilePath { get; set; }
+        string CssFilePath { get; set; }
         #endregion
 
         #region Event Handlers
@@ -69,8 +62,26 @@ namespace AmiKoWindows
         }
         #endregion
 
-        #region Public Functions
-        public void ShowHtml(string htmlStr)
+        #region Constructors
+        public FachInfo()
+        {
+            _appFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            // Load important files
+            CssFilePath = _appFolder + Constants.CSS_SHEET;
+            if (File.Exists(CssFilePath))
+            {
+                _cssStr = "<style>" + File.ReadAllText(CssFilePath) + "</style>";
+            }
+            ReportFilePath = _appFolder + Constants.REPORT_FILE_BASE + "de.html";
+            if (File.Exists(ReportFilePath))
+            {
+                _reportStr = File.ReadAllText(ReportFilePath);
+            }
+          }
+        #endregion
+
+        #region Public Methods
+        public void ShowFull(string htmlStr)
         {
             string headStr = "<head>" 
                 + "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>" 
@@ -78,6 +89,12 @@ namespace AmiKoWindows
                 + _cssStr
                 + "</head>"; 
             HtmlText = headStr + htmlStr;
+        }
+
+        public void ShowReport()
+        {
+            if (ReportFilePath.Length>0)
+                System.Diagnostics.Process.Start(ReportFilePath);
         }
 
         public void LoadHtmlFromFile(string fileName)

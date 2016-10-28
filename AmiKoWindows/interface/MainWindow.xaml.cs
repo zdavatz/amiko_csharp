@@ -84,8 +84,13 @@ namespace AmiKoWindows
             if (text.Length > 0)
             {
                 // Change the data context of the status bar
-                Tuple<long, long> res = await _sqlDb?.Search(_uiState, text);
-                _statusBarHelper.UpdateDatabaseSearchText(res);
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                long numArticles = await _sqlDb?.Search(_uiState, text);
+                sw.Stop();
+                double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
+
+                _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numArticles, elapsedTime));
             }
         }
 
@@ -96,8 +101,12 @@ namespace AmiKoWindows
         {
             this.SearchTextBox.Text = "";
             // Change the data context of the status bar
-            Tuple<long, long> res = await _sqlDb?.Search(_uiState, "");
-            _statusBarHelper.UpdateDatabaseSearchText(res);
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            long numArticles = await _sqlDb?.Search(_uiState, "");
+            sw.Stop();
+            double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
+            _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numArticles, elapsedTime));
         }
 
         /**
@@ -135,7 +144,7 @@ namespace AmiKoWindows
                         _searchSelectionItemId = selection.Id;
                         string html = await _sqlDb.GetFachInfoFromId(_searchSelectionItemId);
                         // Load html in browser window
-                        _fachInfo.ShowHtml(html);
+                        _fachInfo.ShowFull(html);
                     }
 
                     sw.Stop();
@@ -167,7 +176,7 @@ namespace AmiKoWindows
                         {
                             string html = await _sqlDb.GetFachInfoFromId(_searchSelectionChildItemId);
                             // Load html in browser window
-                            _fachInfo.ShowHtml(html);
+                            _fachInfo.ShowFull(html);
                         }
                     }
 
@@ -208,6 +217,43 @@ namespace AmiKoWindows
             }
         }
 
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var source = e.OriginalSource as FrameworkElement;
+            if (source == null)
+                return;
+
+            var name = source.Name;
+            if (name.Equals("Update"))
+            {
+                ProgressDialog progressDialog = new ProgressDialog();
+                progressDialog.UpdateDbAsync();
+                progressDialog.ShowDialog();
+            }
+            else if (name.Equals("Report"))
+            {
+                _fachInfo.ShowReport();
+            }
+            else if (name.Equals("Settings"))
+            {
+                MessageBoxResult result = MessageBox.Show("Do you want to close this window?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Console.WriteLine("Clicked YES");
+                }
+            }
+            else if (name.Equals("Feedback"))
+            {
+                var url = "mailto:zdavatz@ywesee.com?subject=AmiKo%20Desitin%20Feedback";
+                Process.Start(url);
+            }
+            else if (name.Equals("About"))
+            {
+                AboutDialog aboutDialog = new AboutDialog();
+                aboutDialog.ShowDialog();
+            }
+        }
+
         private void StateButton_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
@@ -227,17 +273,6 @@ namespace AmiKoWindows
             else if (source.Name.Equals("Interactions"))
             {
                 _uiState.SetState(UIState.State.Interactions);
-            }
-            else if (source.Name.Equals("Sponsor"))
-            {
-                /*
-                MessageBoxResult result = MessageBox.Show("Do you want to close this window?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.Yes)
-                {
-                    Console.WriteLine("Clicked YES");
-                }
-                */
-
             }
         }
 
