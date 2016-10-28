@@ -195,15 +195,27 @@ namespace AmiKoWindows
                 }
             });
 
-            // Extract number of articles and number of interactions
+            long? numArticles = 0;
+            int numInteractions = 0;
+
+            // Extract number of articles
             string filepath = Path.Combine(Utilities.AppRoamingDataFolder(), @"amiko_db_full_idx_de.db");
             if (File.Exists(filepath))
             {
                 DatabaseHelper db = new DatabaseHelper();
                 await db.OpenDB(filepath);
-                long? numDbRecords = await db.GetNumRecords("amikodb");
-                Text = string.Format("Neue AmiKo Datenbank mit {0} Fachinfos und Y Interaktionen erfolgreich geladen!", numDbRecords);
+                numArticles = await db.GetNumRecords("amikodb");
             }
+            // Extract number of interactions
+            filepath = Path.Combine(Utilities.AppRoamingDataFolder(), @"drug_interactions_csv_de.csv");
+            if (File.Exists(filepath))
+            {
+                string[] lines = File.ReadAllLines(filepath);
+                numInteractions = lines.Length;
+            }
+
+            Text = string.Format("Neue AmiKo Datenbank mit {0} Fachinfos und {1} Interaktionen erfolgreich geladen!"
+                , numArticles, numInteractions);
 
             ButtonContent = "OK";
         }

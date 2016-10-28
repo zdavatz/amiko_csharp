@@ -15,7 +15,7 @@
         RenderOptions.ClearTypeHint="Enabled"
         TextOptions.TextFormattingMode="Display"
         Title="Updating database" TitleCaps="False"
-        Height="160" Width="300">
+        Height="160" Width="500">
     <Grid>
         <StackPanel Orientation="Vertical">
             <TextBlock Margin="10" Text="{Binding Path=Text}"></TextBlock>

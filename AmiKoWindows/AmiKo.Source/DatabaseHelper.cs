@@ -53,15 +53,17 @@ namespace AmiKoWindows
 
         public async Task<long?> GetNumRecords(string table)
         {
+            long? numRecords = 0;
+
             await Task.Run(() =>
             {
-                using (SQLiteCommand com = Command("SELECT COUNT(*) FROM " + table))
+                using (SQLiteCommand com = new SQLiteCommand("SELECT COUNT(*) FROM " + table, _db))
                 {
-                    return com.ExecuteScalar() as long?;
+                    numRecords = com.ExecuteScalar() as long?;
                 }
             });
 
-            return 0;
+            return numRecords;
         }
 
         #endregion
