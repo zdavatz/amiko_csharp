@@ -19,8 +19,12 @@
     <Grid>
         <StackPanel Orientation="Vertical">
             <TextBlock Margin="10" Text="{Binding Path=Text}"></TextBlock>
-            <ProgressBar Name="ProgressBar" Value="{Binding Path=CurrentProgress, UpdateSourceTrigger=PropertyChanged}"
+            <Grid>
+                <ProgressBar Name="ProgressBar" Value="{Binding Path=CurrentProgress, UpdateSourceTrigger=PropertyChanged}"
                          Margin="10" Minimum="0" Maximum="100" Height="24" HorizontalAlignment="Stretch" />
+                <TextBlock Text="{Binding ElementName=ProgressBar, Path=Value, StringFormat={}{0:0}%}" 
+                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Grid>
             <Button Margin="10,10,10,16" Click="Button_Click" Content="{Binding Path=ButtonContent}"></Button>
         </StackPanel>
     </Grid>
