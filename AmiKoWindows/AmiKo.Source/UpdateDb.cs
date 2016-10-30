@@ -139,8 +139,8 @@ namespace AmiKoWindows
                 // Decompress if necessary
                 if (_filename.EndsWith("zip"))
                 {
-                    Text = string.Format("Unzipping database... ");
                     string unzippedFilepath = filepath.Replace(".zip", "");
+                    Text = string.Format("Unzipping {0}... ", _filename.Replace(".zip", ""));
                     if (File.Exists(unzippedFilepath))
                         File.Delete(unzippedFilepath);
                     // Unzip
@@ -165,7 +165,6 @@ namespace AmiKoWindows
 
         private void DownloadDataCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            // Text = string.Format("Neue AmiKo Datenbank mit X Fachinfos und Y Interaktionen erfolgreich geladen!");
         }
         #endregion
 
@@ -199,7 +198,7 @@ namespace AmiKoWindows
             int numInteractions = 0;
 
             // Extract number of articles
-            string filepath = Path.Combine(Utilities.AppRoamingDataFolder(), @"amiko_db_full_idx_de.db");
+            string filepath = Utilities.SQLiteDBPath();
             if (File.Exists(filepath))
             {
                 DatabaseHelper db = new DatabaseHelper();
@@ -207,15 +206,14 @@ namespace AmiKoWindows
                 numArticles = await db.GetNumRecords("amikodb");
             }
             // Extract number of interactions
-            filepath = Path.Combine(Utilities.AppRoamingDataFolder(), @"drug_interactions_csv_de.csv");
+            filepath = Utilities.InteractionsPath();
             if (File.Exists(filepath))
             {
                 string[] lines = File.ReadAllLines(filepath);
                 numInteractions = lines.Length;
             }
 
-            Text = string.Format("Neue AmiKo Datenbank mit {0} Fachinfos und {1} Interaktionen erfolgreich geladen!"
-                , numArticles, numInteractions);
+            Text = string.Format("Neue AmiKo Datenbank mit {0} Fachinfos und {1} Interaktionen erfolgreich geladen!", numArticles, numInteractions);
 
             ButtonContent = "OK";
         }

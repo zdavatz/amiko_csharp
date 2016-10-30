@@ -54,7 +54,7 @@ namespace AmiKoWindows
 
             // Initialize SQLite DB
             _sqlDb = new MainSqlDb();
-            _sqlDb.StartSQLite();
+            _sqlDb.Init();
             this.SearchResult.DataContext = _sqlDb;
             this.SectionTitles.DataContext = _sqlDb;
 
@@ -217,7 +217,7 @@ namespace AmiKoWindows
             }
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private async void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
@@ -226,13 +226,16 @@ namespace AmiKoWindows
             var name = source.Name;
             if (name.Equals("Update"))
             {
+                _sqlDb.Close();
                 ProgressDialog progressDialog = new ProgressDialog();
                 progressDialog.UpdateDbAsync();
                 progressDialog.ShowDialog();
+                // Re-init db
+                 _sqlDb.Init();
             }
             else if (name.Equals("Report"))
             {
-                _fachInfo.ShowReport();
+                await _fachInfo.ShowReport();
             }
             else if (name.Equals("Settings"))
             {

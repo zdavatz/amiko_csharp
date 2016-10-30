@@ -1,4 +1,5 @@
-﻿using System.Data.SQLite;
+﻿using System;
+using System.Data.SQLite;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -23,12 +24,12 @@ namespace AmiKoWindows
                 {
                     _db = new SQLiteConnection("Data Source=" + dbPath);
                     _db.Open();
-                    return _db;
                 }
-                return null;
+                return _db;
             });
             return null;
         }
+
         public SQLiteConnection ReOpenIfNecessary()
         {
             if (_db.State != System.Data.ConnectionState.Open)
@@ -39,6 +40,8 @@ namespace AmiKoWindows
         public void CloseDB()
         {
             _db.Close();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         public SQLiteCommand Command()

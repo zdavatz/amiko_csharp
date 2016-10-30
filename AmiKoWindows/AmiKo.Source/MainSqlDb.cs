@@ -356,7 +356,7 @@ namespace AmiKoWindows
         static readonly string PACKAGES_TABLE = String.Format("{0},{1},{2},{3},{4}",
             KEY_ROWID, KEY_TITLE, KEY_AUTHOR, KEY_REGNRS, KEY_PACKAGES);
 
-        private DatabaseHelper _db = new DatabaseHelper();
+        private DatabaseHelper _db;
         private List<Article> _foundArticles = new List<Article>();
         private Favorites _favorites = new Favorites();
 
@@ -457,6 +457,31 @@ namespace AmiKoWindows
         }
 
         #region Public Functions
+        public async void Init()
+        {
+            string dbName = Constants.AIPS_DB_BASE + "de.db";
+            string dbPath = Path.Combine(Utilities.AppRoamingDataFolder(), dbName);
+            if (!File.Exists(dbPath))
+                dbPath = Path.Combine(Utilities.AppExecutingFolder(), "dbs", dbName);
+
+            if (File.Exists(dbPath))
+            {
+                _db = new DatabaseHelper();
+                await _db.OpenDB(dbPath);
+            }
+            else
+            {
+                // Cannot open main sqlite database!
+                // Todo: generate friendly message (msgbox...)
+            }
+        }
+
+        public void Close()
+        {
+            if (_db != null)
+                _db.CloseDB();
+        }         
+
         public void ClearSectionTitles()
         {
             SectionTitles.Clear();
@@ -499,13 +524,6 @@ namespace AmiKoWindows
             SectionTitles.AddRange(listOfSectionTitles);
 
             return article.Content;
-        }
-
-        public async void StartSQLite()
-        {
-            string appFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string dbPath = appFolder + Constants.AIPS_DB_BASE + "de.db";
-            await _db.OpenDB(dbPath);
         }
 
         public async Task<long> Search(UIState state, string query)

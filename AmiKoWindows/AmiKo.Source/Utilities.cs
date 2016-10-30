@@ -67,6 +67,11 @@ namespace AmiKoWindows
             return "Ywesee";
         }
 
+        public static string AppExecutingFolder()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
+
         public static string AppLocalDataFolder()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppCompany(), AppName());
@@ -75,6 +80,16 @@ namespace AmiKoWindows
         public static string AppRoamingDataFolder()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppCompany(), AppName());
+        }
+
+        public static string SQLiteDBPath()
+        {
+            return Path.Combine(Utilities.AppRoamingDataFolder(), @"amiko_db_full_idx_de.db");
+        }
+
+        public static string InteractionsPath()
+        {
+            return Path.Combine(Utilities.AppRoamingDataFolder(), @"drug_interactions_csv_de.csv");
         }
     }
 }

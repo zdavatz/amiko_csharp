@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace AmiKoWindows
 {
@@ -27,12 +28,10 @@ namespace AmiKoWindows
     {
         #region Private Fields
         string _appFolder;
-        string _reportStr;
         string _cssStr;
         #endregion
 
         #region Properties
-        string ReportFilePath { get; set; }
         string CssFilePath { get; set; }
         #endregion
 
@@ -72,11 +71,6 @@ namespace AmiKoWindows
             {
                 _cssStr = "<style>" + File.ReadAllText(CssFilePath) + "</style>";
             }
-            ReportFilePath = _appFolder + Constants.REPORT_FILE_BASE + "de.html";
-            if (File.Exists(ReportFilePath))
-            {
-                _reportStr = File.ReadAllText(ReportFilePath);
-            }
           }
         #endregion
 
@@ -91,10 +85,19 @@ namespace AmiKoWindows
             HtmlText = headStr + htmlStr;
         }
 
-        public void ShowReport()
+        public async Task ShowReport()
         {
-            if (ReportFilePath.Length>0)
-                System.Diagnostics.Process.Start(ReportFilePath);
+            string reportName = Constants.REPORT_FILE_BASE + "de.html";
+            string reportPath = Path.Combine(Utilities.AppRoamingDataFolder(), reportName);
+            if (!File.Exists(reportPath))
+                reportPath = Path.Combine(Utilities.AppExecutingFolder(), "dbs", reportName);
+            if (File.Exists(reportPath))
+            {
+                await Task.Run(() =>
+                {
+                    System.Diagnostics.Process.Start(reportPath);
+                });
+            }
         }
 
         public void LoadHtmlFromFile(string fileName)
