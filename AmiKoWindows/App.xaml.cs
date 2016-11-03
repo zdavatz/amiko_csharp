@@ -20,12 +20,12 @@ namespace AmiKoWindows
         protected override void OnStartup(StartupEventArgs e)
         {
             SplashScreen splash = new SplashScreen();
-            splash.Show();
+            // splash.Show();
             MainWindow main = new MainWindow();
 
             Thread.Sleep(500);
 
-            splash.Close();
+            // splash.Close();
 
             AllocConsole();
             Console.WriteLine("And so it begins");

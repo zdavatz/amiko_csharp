@@ -139,8 +139,8 @@ namespace AmiKoWindows
                 // Decompress if necessary
                 if (_filename.EndsWith("zip"))
                 {
-                    string unzippedFilepath = filepath.Replace(".zip", "");
                     Text = string.Format("Unzipping {0}... ", _filename.Replace(".zip", ""));
+                    string unzippedFilepath = filepath.Replace(".zip", "");
                     if (File.Exists(unzippedFilepath))
                         File.Delete(unzippedFilepath);
                     // Unzip

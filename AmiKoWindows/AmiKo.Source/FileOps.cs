@@ -22,7 +22,7 @@ using System.Xml.Serialization;
 
 namespace AmiKoWindows
 {
-    class DataStore
+    class FileOps
     {
         /// <summary>
         /// Writes the given object instance to an XML file.

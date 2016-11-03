@@ -25,6 +25,11 @@ namespace AmiKoWindows
 {
     class Utilities
     {
+        public static string AppLanguage()
+        {
+            return "de";
+        }
+
         public static string AppName()
         {
             object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
@@ -84,12 +89,28 @@ namespace AmiKoWindows
 
         public static string SQLiteDBPath()
         {
-            return Path.Combine(Utilities.AppRoamingDataFolder(), @"amiko_db_full_idx_de.db");
+            string dbName = Constants.AIPS_DB_BASE + "de.db";
+            string dbPath = Path.Combine(Utilities.AppRoamingDataFolder(), dbName);
+            if (!File.Exists(dbPath))
+                dbPath = Path.Combine(Utilities.AppExecutingFolder(), "dbs", dbName);
+            return dbPath;
         }
 
         public static string InteractionsPath()
         {
-            return Path.Combine(Utilities.AppRoamingDataFolder(), @"drug_interactions_csv_de.csv");
+            string path = Path.Combine(Utilities.AppRoamingDataFolder(), @"drug_interactions_csv_de.csv");
+            if (!File.Exists(path))
+                path = Path.Combine(Utilities.AppExecutingFolder(), "dbs", @"drug_interactions_csv_de.csv");
+            return path;
+        }
+
+        public static string ReportPath()
+        {
+            string reportName = Constants.REPORT_FILE_BASE + "de.html";
+            string reportPath = Path.Combine(Utilities.AppRoamingDataFolder(), reportName);
+            if (!File.Exists(reportPath))
+                reportPath = Path.Combine(Utilities.AppExecutingFolder(), "dbs", reportName);
+            return reportPath;
         }
     }
 }

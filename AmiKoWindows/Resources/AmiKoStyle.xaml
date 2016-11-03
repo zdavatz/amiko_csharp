@@ -88,6 +88,15 @@
         </Setter>
     </Style>
 
+    <Style x:Key="StateSelectButton" TargetType="{x:Type Button}"  BasedOn="{StaticResource MetroButton}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Regular" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
     <Style x:Key="QuerySelectButton" TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButton}">
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontWeight" Value="Regular" />
@@ -100,8 +109,8 @@
     </Style>
 
     <Style x:Key="SearchTextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MetroTextBox}">
-        <Setter Property="Height" Value="40"/>
-        <Setter Property="Background" Value="AliceBlue"/>
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Background" Value="AliceBlue" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="True" />
         <Setter Property="Controls:TextBoxHelper.UseFloatingWatermark" Value="True" />

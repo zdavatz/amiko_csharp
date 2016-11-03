@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace AmiKoWindows
 {
-    class UIState : INotifyPropertyChanged
+    public class UIState : INotifyPropertyChanged
     {
         public enum State
         {
@@ -67,6 +67,21 @@ namespace AmiKoWindows
         public State GetState()
         {
             return _uiState;
+        }
+
+        public bool IsCompendium()
+        {
+            return _uiState == State.Compendium;
+        }
+
+        public bool IsFavorites()
+        {
+            return _uiState == State.Favorites;
+        }
+
+        public bool IsInteractions()
+        {
+            return _uiState == State.Interactions;
         }
 
         public void SetQuery(Query query)

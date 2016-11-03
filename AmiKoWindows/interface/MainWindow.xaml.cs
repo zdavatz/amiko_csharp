@@ -39,6 +39,7 @@ namespace AmiKoWindows
         UIState _uiState;
         MainSqlDb _sqlDb;
         FachInfo _fachInfo;
+        InteractionsCart _interactions;
         StatusBarHelper _statusBarHelper;
 
         public MainWindow()
@@ -56,11 +57,14 @@ namespace AmiKoWindows
             _sqlDb = new MainSqlDb();
             _sqlDb.Init();
             this.SearchResult.DataContext = _sqlDb;
-            this.SectionTitles.DataContext = _sqlDb;
 
             // Initialize expert info browser frame
             _fachInfo = new FachInfo();
-            this.Browser.DataContext = _fachInfo;
+
+            // Initialize interactions cart
+            _interactions = new InteractionsCart();
+            this.Browser.ObjectForScripting = _interactions;
+            _interactions.LoadFiles();
 
             _statusBarHelper = new StatusBarHelper();
             this.StatusBar.DataContext = _statusBarHelper;
@@ -124,7 +128,7 @@ namespace AmiKoWindows
         }
 
         /**
-         * This event handler is called when the user selects the title in the search result.
+         * This event handler is called when the user selects the title in the search result
          */
         static long? _searchSelectionItemId = 0;
         private async void OnSearchItem_Selection(object sender, SelectionChangedEventArgs e)
@@ -142,13 +146,25 @@ namespace AmiKoWindows
                     if (_searchSelectionItemId != selection.Id)
                     {
                         _searchSelectionItemId = selection.Id;
-                        string html = await _sqlDb.GetFachInfoFromId(_searchSelectionItemId);
-                        // Load html in browser window
-                        _fachInfo.ShowFull(html);
+                        if (_uiState.IsCompendium() || _uiState.IsFavorites())
+                        {
+                            Article a = await _sqlDb.GetArticleFromId(_searchSelectionItemId);
+                            this.Browser.DataContext = _fachInfo;
+                            this.SectionTitles.DataContext = _fachInfo;
+                            _fachInfo.ShowFull(a);   // Load html in browser window
+                        }
+                        else if (_uiState.IsInteractions())
+                        {
+                            Article a = await _sqlDb.GetArticleWithId(_searchSelectionItemId);
+                            this.Browser.DataContext = _interactions;
+                            this.SectionTitles.DataContext = _interactions;
+                            _interactions.AddArticle(a);
+                            _interactions.ShowBasket();
+                        }
                     }
 
                     sw.Stop();
-                    Console.WriteLine("Item " + _searchSelectionItemId + " -> " + sw.ElapsedMilliseconds + "ms");
+                    // Console.WriteLine("Item " + _searchSelectionItemId + " -> " + sw.ElapsedMilliseconds + "ms");
                 }
             }
         }
@@ -174,14 +190,18 @@ namespace AmiKoWindows
                         _searchSelectionChildItemId = selection.Id;
                         if (_searchSelectionChildItemId != null)
                         {
-                            string html = await _sqlDb.GetFachInfoFromId(_searchSelectionChildItemId);
-                            // Load html in browser window
-                            _fachInfo.ShowFull(html);
+                            if (_uiState.IsCompendium() || _uiState.IsFavorites())
+                            {
+                                Article a = await _sqlDb.GetArticleFromId(_searchSelectionChildItemId);
+                                this.Browser.DataContext = _fachInfo;
+                                this.SectionTitles.DataContext = _fachInfo;
+                                _fachInfo.ShowFull(a);   // Load html in browser window
+                            }
                         }
                     }
 
                     sw.Stop();
-                    Console.WriteLine("ChildItem " + _searchSelectionChildItemId + "/" + selection.Id + " -> " + sw.ElapsedMilliseconds + "ms");
+                    // Console.WriteLine("ChildItem " + _searchSelectionChildItemId + "/" + selection.Id + " -> " + sw.ElapsedMilliseconds + "ms");
                 }
             }
         }
@@ -235,6 +255,7 @@ namespace AmiKoWindows
             }
             else if (name.Equals("Report"))
             {
+                this.Browser.DataContext = _fachInfo;
                 await _fachInfo.ShowReport();
             }
             else if (name.Equals("Settings"))
@@ -276,6 +297,7 @@ namespace AmiKoWindows
             else if (source.Name.Equals("Interactions"))
             {
                 _uiState.SetState(UIState.State.Interactions);
+                _sqlDb.UpdateSearchResults(_uiState);
             }
         }
 

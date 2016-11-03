@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace AmiKoWindows
 {
-    class Article
+    public class Article
     {
         public long? Id { get; set; }
         public long? CustomerId { get; set; }

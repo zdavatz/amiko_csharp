@@ -124,6 +124,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AmiKo.Source\DatabaseHelper.cs" />
+    <Compile Include="AmiKo.Source\FileOps.cs" />
+    <Compile Include="AmiKo.Source\InteractionsCart.cs" />
+    <Compile Include="AmiKo.Source\Items.cs" />
     <Compile Include="interface\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
@@ -144,7 +147,6 @@
     <Compile Include="AmiKo.Source\Article.cs" />
     <Compile Include="AmiKo.Source\Colors.cs" />
     <Compile Include="AmiKo.Source\Constants.cs" />
-    <Compile Include="AmiKo.Source\DataStore.cs" />
     <Compile Include="AmiKo.Source\FachInfo.cs" />
     <Compile Include="AmiKo.Source\Favorites.cs" />
     <Compile Include="AmiKo.Source\MainSqlDb.cs" />
@@ -217,6 +219,8 @@
     <None Include="AmiKo.Config\App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="images\trash_icon_2.png" />
+    <Content Include="jscripts\interaction_callbacks.js" />
     <Resource Include="images\menu_button.png" />
     <Resource Include="css\amiko_stylesheet.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

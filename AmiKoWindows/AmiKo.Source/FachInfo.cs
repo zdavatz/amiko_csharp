@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
@@ -27,7 +28,6 @@ namespace AmiKoWindows
     class FachInfo : INotifyPropertyChanged
     {
         #region Private Fields
-        string _appFolder;
         string _cssStr;
         #endregion
 
@@ -59,14 +59,27 @@ namespace AmiKoWindows
                 }
             }
         }
+
+        private TitlesObservableCollection _sectionTitles = new TitlesObservableCollection();
+        public TitlesObservableCollection SectionTitles
+        {
+            get { return _sectionTitles; }
+            private set
+            {
+                if (value != _sectionTitles)
+                {
+                    _sectionTitles = value;
+                    // OnPropertyChanged is not necessary here...
+                }
+            }
+        }
         #endregion
 
         #region Constructors
         public FachInfo()
         {
-            _appFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             // Load important files
-            CssFilePath = _appFolder + Constants.CSS_SHEET;
+            CssFilePath = Utilities.AppExecutingFolder() + Constants.CSS_SHEET;
             if (File.Exists(CssFilePath))
             {
                 _cssStr = "<style>" + File.ReadAllText(CssFilePath) + "</style>";
@@ -75,22 +88,23 @@ namespace AmiKoWindows
         #endregion
 
         #region Public Methods
-        public void ShowFull(string htmlStr)
+        public void ShowFull(Article a)
         {
+            string htmlStr = a.Content;
+
             string headStr = "<head>" 
                 + "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>" 
                 // + "<link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Roboto&subset=latin,latin-ext'>"
                 + _cssStr
                 + "</head>"; 
             HtmlText = headStr + htmlStr;
+
+            SetSectionTitles(a);
         }
 
         public async Task ShowReport()
         {
-            string reportName = Constants.REPORT_FILE_BASE + "de.html";
-            string reportPath = Path.Combine(Utilities.AppRoamingDataFolder(), reportName);
-            if (!File.Exists(reportPath))
-                reportPath = Path.Combine(Utilities.AppExecutingFolder(), "dbs", reportName);
+            string reportPath = Utilities.ReportPath();
             if (File.Exists(reportPath))
             {
                 await Task.Run(() =>
@@ -100,9 +114,16 @@ namespace AmiKoWindows
             }
         }
 
-        public void LoadHtmlFromFile(string fileName)
+        public void SetSectionTitles(Article a)
         {
-            string filePath = _appFolder + @"\htmls\" + fileName;
+            SectionTitles.Clear();  
+            // List of section titles
+            List<TitleItem> listOfSectionTitles = a.ListOfSectionTitleItems();
+            SectionTitles.AddRange(listOfSectionTitles);
+        }
+
+        public void LoadHtmlFromFile(string filePath)
+        {
             if (File.Exists(filePath))
             {
                 string html = File.ReadAllText(filePath);

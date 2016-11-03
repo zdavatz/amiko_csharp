@@ -52,7 +52,7 @@ namespace AmiKoWindows
         {
             string favoritesFile = Path.Combine(_userDataDir, "favorites.txt");
             if (File.Exists(favoritesFile))
-                _setOfRegNrs = DataStore.ReadFromXmlFile<HashSet<string>>(favoritesFile);
+                _setOfRegNrs = FileOps.ReadFromXmlFile<HashSet<string>>(favoritesFile);
         }
 
         public async Task Save()
@@ -62,7 +62,7 @@ namespace AmiKoWindows
                 if (_setOfRegNrs.Count > 0)
                 {
                     string favoritesFile = Path.Combine(_userDataDir, "favorites.txt");
-                    DataStore.WriteToXmlFile<HashSet<string>>(favoritesFile, _setOfRegNrs, false);
+                    FileOps.WriteToXmlFile<HashSet<string>>(favoritesFile, _setOfRegNrs, false);
                 }
             });
         }

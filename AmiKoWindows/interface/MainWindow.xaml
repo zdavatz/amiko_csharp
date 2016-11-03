@@ -104,21 +104,21 @@
             <DockPanel LastChildFill="True">
                 <Border DockPanel.Dock="Top" Background="White" BorderBrush="LightGray" BorderThickness="1 1 1 1">
                     <ToolBar ToolBarTray.IsLocked="True">
-                        <Button Name="Compendium" Cursor="Hand" Click="StateButton_Click" Margin="6,6,0,6">
+                        <Button Name="Compendium" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="6,6,0,6">
                             <StackPanel Orientation="Horizontal">
                                 <Image Width="16" Source="../images/aips32x32_dark.png" />
                                 <Label VerticalAlignment="Center">Kompendium</Label>
                             </StackPanel>
                         </Button>
                         <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                        <Button Name="Favorites" Cursor="Hand" Click="StateButton_Click" Margin="0,6,0,6">
+                        <Button Name="Favorites" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
                             <StackPanel Orientation="Horizontal">
                                 <Image Width="16" Source="../images/favorites32x32_dark.png" />
                                 <Label VerticalAlignment="Center">Favoriten</Label>
                             </StackPanel>
                         </Button>
                         <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                        <Button Name="Interactions" Cursor="Hand" Click="StateButton_Click" Margin="0,6,0,6">
+                        <Button Name="Interactions" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
                             <StackPanel Orientation="Horizontal">
                                 <Image Width="16" Source="../images/interactions32x32_dark.png" />
                                 <Label VerticalAlignment="Center">Interaktionen</Label>
