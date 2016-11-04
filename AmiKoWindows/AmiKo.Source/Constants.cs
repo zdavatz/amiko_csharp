@@ -26,7 +26,7 @@ namespace AmiKoWindows
         public const string REPORT_FILE_BASE = @"amiko_report_";
         public const string IMG_FOLDER = @"images";	
 	    public const string JS_FOLDER = @"jscripts";
-        public const string CSS_SHEET = @"./css/amiko_stylesheet.css";
+        public const string CSS_SHEET = @"./css/fachinfo_css.css";
         public const string INTERACTIONS_SHEET = @"./css/interactions_css.css";
         public const string SHOPPING_SHEET = @"./css/shopping_css.css";
         public const string ROSE_SHEET = @"./css/zurrose_css.css";

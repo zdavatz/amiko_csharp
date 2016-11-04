@@ -29,6 +29,7 @@ namespace AmiKoWindows
 {
     class MainSqlDb : INotifyPropertyChanged
     {
+        #region Constants
         const string KEY_ROWID = "_id";
         const string KEY_TITLE = "title";
         const string KEY_AUTHOR = "auth";
@@ -49,24 +50,25 @@ namespace AmiKoWindows
         const string KEY_PACKAGES = "packages";
 
         const string DATABASE_TABLE = "amikodb";
+        #endregion
 
-        /**
-         * Table columns used for fast queries
-         */
+        #region Readonlys
+        // Table columns used for fast queries
         static readonly string SHORT_TABLE = String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}",
             KEY_ROWID, KEY_TITLE, KEY_AUTHOR, KEY_ATCCODE, KEY_SUBSTANCES, KEY_REGNRS, KEY_ATCCLASS, KEY_THERAPY,
             KEY_APPLICATION, KEY_INDICATIONS, KEY_CUSTOMER_ID, KEY_PACK_INFO, KEY_ADD_INFO, KEY_PACKAGES);
 
         static readonly string PACKAGES_TABLE = String.Format("{0},{1},{2},{3},{4}",
             KEY_ROWID, KEY_TITLE, KEY_AUTHOR, KEY_REGNRS, KEY_PACKAGES);
+        #endregion
 
+        #region Private Fields
         private DatabaseHelper _db;
         private List<Article> _foundArticles = new List<Article>();
         private Favorites _favorites = new Favorites();
+        #endregion
 
-        // 
-        // Properties
-        // 
+        #region Event Handlers
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void OnPropertyChanged(string propertyName)
@@ -79,7 +81,9 @@ namespace AmiKoWindows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
 
+        #region Dependency Properties
         private ItemsObservableCollection _searchResultItems = new ItemsObservableCollection();
         public ItemsObservableCollection SearchResultItems
         {
@@ -93,6 +97,7 @@ namespace AmiKoWindows
                 }
             }
         }
+        #endregion
 
         #region Public Methods
         public async void Init()

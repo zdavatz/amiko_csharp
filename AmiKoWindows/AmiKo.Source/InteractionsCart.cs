@@ -116,20 +116,23 @@ namespace AmiKoWindows
 
         public void ShowBasket()
         {
-            int medCount = 1;
-
-            // Build interaction basket table
-            string basketHtmlStr = "<h3>Interaktionenkorb</h3>";
-            basketHtmlStr += "<table id=\"Interaktionen\" width=\"98%25\">";
             if (_articleBasket.Count > 0)
             {
+                int medCount = 1;
+                // Build interaction basket table
+                string basketHtmlStr = "<h3>Interaktionenkorb</h3>";
+                basketHtmlStr += "<table id=\"Interaktionen\" width=\"98%25\">";
+
                 foreach (var kvp in _articleBasket)
                 {
                     string title = kvp.Key;
                     Article a = kvp.Value;
                     Tuple<string, string> atcInfo = GetAtcInfo(a);
 
-                    basketHtmlStr += "<tr>";
+                    if (medCount % 2 == 0)
+                        basketHtmlStr += "<tr style=\"background-color:lavender;\">";
+                    else
+                        basketHtmlStr += "<tr style=\"background-color:white;\">";
                     basketHtmlStr += "<td>" + medCount + "</td>"
                             + "<td>" + title + " </td> "
                             + "<td>" + atcInfo.Item1 + "</td>"
@@ -141,72 +144,80 @@ namespace AmiKoWindows
                     medCount++;
                 }
                 basketHtmlStr += "</table>";
+
+                string interactionsHtmlStr = "";
+                string deleteAllButtonStr = "";
+                bool interactionsPresent = false;
+                if (medCount > 1)
+                {
+                    interactionsHtmlStr = Interactions();
+                    if (interactionsHtmlStr.Length > 0)
+                        interactionsPresent = true;
+
+                    if (Utilities.AppLanguage().Equals("de"))
+                    {
+                        deleteAllButtonStr = "alle löschen";
+                    }
+                    else if (Utilities.AppLanguage().Equals("fr"))
+                    {
+                        deleteAllButtonStr = "tout supprimer";
+                    }
+                    deleteAllButtonStr = "<div id=\"Delete_all\"><input type=\"button\" value=\"" + deleteAllButtonStr + "\" onclick=\"deleteRow('DeleteAll',this)\" /></div>";
+                }
+
+                string topNoteHtmlStr = "";
+                string legendHtmlStr = "";
+                if (!interactionsPresent && medCount > 1)
+                {
+                    // Add note to indicate that there are no interactions
+                    if (Utilities.AppLanguage().Equals("de"))
+                        topNoteHtmlStr = "<p class=\"paragraph0\">Zur Zeit sind keine Interaktionen zwischen diesen Medikamenten in der EPha.ch-Datenbank vorhanden. Weitere Informationen finden Sie in der Fachinformation.</p><br><br>";
+                    else if (Utilities.AppLanguage().Equals("fr"))
+                        topNoteHtmlStr = "<p class=\"paragraph0\">Il n’y a aucune information dans la banque de données EPha.ch à propos d’une interaction entre les médicaments sélectionnés. Veuillez consulter les informations professionelles.</p><br><br>";
+                }
+                else if (medCount > 1)
+                {
+                    legendHtmlStr = ColorLegend();
+                }
+
+                string bottomNoteHtmlStr = "";
+                if (Utilities.AppLanguage().Equals("de"))
+                {
+                    bottomNoteHtmlStr += "<p class=\"footnote\">1. Datenquelle: Public Domain Daten von EPha.ch.</p> " +
+                        "<p class=\"footnote\">2. Unterstützt durch:  IBSA Institut Biochimique SA.</p>";
+                }
+                else if (Utilities.AppLanguage().Equals("fr"))
+                {
+                    bottomNoteHtmlStr += "<p class=\"footnote\">1. Source des données: données du domaine publique de EPha.ch</p> " +
+                        "<p class=\"footnote\">2. Soutenu par: IBSA Institut Biochimique SA.</p>";
+                }
+
+                HtmlText = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />"
+                    + "<script language=\"javascript\">" + _jscriptStr + "</script>"
+                    + "<style>" + _cssStr + "</style>" + "</head>"
+                    + "<body><div id=\"interactions\">"
+                    + basketHtmlStr + deleteAllButtonStr + "<br><br>"
+                    + topNoteHtmlStr
+                    + interactionsHtmlStr + "<br>"
+                    + legendHtmlStr + "<br>"
+                    + bottomNoteHtmlStr
+                    + "</div></body></html>";
             }
             else
             {
+                string basketHtmlStr = "";
                 // Medikamentenkorb ist leer
                 if (Utilities.AppLanguage().Equals("de"))
-                    basketHtmlStr = "<div>Ihr Medikamentenkorb ist leer.<br><br></div>";
+                    basketHtmlStr = "<p class=\"paragraph0\">Ihr Medikamentenkorb ist leer.</p>";
                 else if (Utilities.AppLanguage().Equals("fr"))
-                    basketHtmlStr = "<div>Votre panier de médicaments est vide.<br><br></div>";
-            }
+                    basketHtmlStr = "<p class=\"paragraph0\">Votre panier de médicaments est vide.</p>";
 
-            string interactionsHtmlStr = "";
-            bool interactionsPresent = false;
-            if (medCount > 1)
-            {
-                interactionsHtmlStr = Interactions();
-                if (interactionsHtmlStr.Length > 0)
-                    interactionsPresent = true;
+                HtmlText = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />"
+                    + "<style>" + _cssStr + "</style>" + "</head>"
+                    + "<body><div id=\"interactions\">" 
+                    + basketHtmlStr 
+                    + "</div></body></html>";
             }
-
-            string deleteAllButtonStr = "";
-            string topNoteHtmlStr = "";
-            string legendHtmlStr = "";
-            if (!interactionsPresent)
-            {
-                // Add note to indicate that there are no interactions
-                if (Utilities.AppLanguage().Equals("de"))
-                    topNoteHtmlStr = "<p class=\"paragraph0\">Zur Zeit sind keine Interaktionen zwischen diesen Medikamenten in der EPha.ch-Datenbank vorhanden. Weitere Informationen finden Sie in der Fachinformation.</p><br><br>";
-                else if (Utilities.AppLanguage().Equals("fr"))
-                    topNoteHtmlStr = "<p class=\"paragraph0\">Il n’y a aucune information dans la banque de données EPha.ch à propos d’une interaction entre les médicaments sélectionnés. Veuillez consulter les informations professionelles.</p><br><br>";
-            }
-            else
-            {
-                if (Utilities.AppLanguage().Equals("de"))
-                {
-                    deleteAllButtonStr = "alle löschen";
-                }
-                else if (Utilities.AppLanguage().Equals("fr"))
-                {
-                    deleteAllButtonStr = "tout supprimer";
-                }
-                deleteAllButtonStr = "<div id=\"Delete_all\"><input type=\"button\" value=\"" + deleteAllButtonStr + "\" onclick=\"deleteRow('DeleteAll',this)\" /></div>";
-                legendHtmlStr = ColorLegend();
-            }
-
-            string bottomNoteHtmlStr = "";
-            if (Utilities.AppLanguage().Equals("de"))
-            {
-                bottomNoteHtmlStr += "<p class=\"footnote\">1. Datenquelle: Public Domain Daten von EPha.ch.</p> " +
-                    "<p class=\"footnote\">2. Unterstützt durch:  IBSA Institut Biochimique SA.</p>";
-            }
-            else if (Utilities.AppLanguage().Equals("fr"))
-            {
-                bottomNoteHtmlStr += "<p class=\"footnote\">1. Source des données: données du domaine publique de EPha.ch</p> " +
-                    "<p class=\"footnote\">2. Soutenu par: IBSA Institut Biochimique SA.</p>";
-            }
-
-            HtmlText = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />" 
-                + "<script language=\"javascript\">" + _jscriptStr + "</script>"
-                + "<style>" + _cssStr + "</style>" +"</head>"
-                + "<body><div id=\"interactions\">"
-                + basketHtmlStr + deleteAllButtonStr + "<br><br>" 
-                + topNoteHtmlStr
-                + interactionsHtmlStr + "<br>" 
-                + legendHtmlStr + "<br>" 
-                + bottomNoteHtmlStr 
-                + "</div></body></html>";
         }
 
         public void AddArticle(Article a)

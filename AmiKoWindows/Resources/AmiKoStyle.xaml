@@ -88,13 +88,33 @@
         </Setter>
     </Style>
 
-    <Style x:Key="StateSelectButton" TargetType="{x:Type Button}"  BasedOn="{StaticResource MetroButton}">
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Style x:Key="{x:Static ToolBar.SeparatorStyleKey}" TargetType="{x:Type Separator}">
+        <Setter Property="Margin" Value="4,2,4,2"/>
+        <Setter Property="Focusable" Value="false"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Separator}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            Background="{TemplateBinding Background}" 
+                            Height="24" 
+                            SnapsToDevicePixels="true"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="StateSelectButton" TargetType="{x:Type ToggleButton}" >
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontWeight" Value="Regular" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Cursor" Value="Hand" />
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="true">
+                <Setter Property="Background" Value="LightGray"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="QuerySelectButton" TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButton}">
@@ -110,7 +130,7 @@
 
     <Style x:Key="SearchTextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MetroTextBox}">
         <Setter Property="Height" Value="40" />
-        <Setter Property="Background" Value="AliceBlue" />
+        <Setter Property="Background" Value="Lavender" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="True" />
         <Setter Property="Controls:TextBoxHelper.UseFloatingWatermark" Value="True" />

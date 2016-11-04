@@ -60,6 +60,8 @@ namespace AmiKoWindows
 
             // Initialize expert info browser frame
             _fachInfo = new FachInfo();
+            this.Browser.DataContext = _fachInfo;
+            this.SectionTitles.DataContext = _fachInfo;
 
             // Initialize interactions cart
             _interactions = new InteractionsCart();
@@ -149,15 +151,11 @@ namespace AmiKoWindows
                         if (_uiState.IsCompendium() || _uiState.IsFavorites())
                         {
                             Article a = await _sqlDb.GetArticleFromId(_searchSelectionItemId);
-                            this.Browser.DataContext = _fachInfo;
-                            this.SectionTitles.DataContext = _fachInfo;
                             _fachInfo.ShowFull(a);   // Load html in browser window
                         }
                         else if (_uiState.IsInteractions())
                         {
                             Article a = await _sqlDb.GetArticleWithId(_searchSelectionItemId);
-                            this.Browser.DataContext = _interactions;
-                            this.SectionTitles.DataContext = _interactions;
                             _interactions.AddArticle(a);
                             _interactions.ShowBasket();
                         }
@@ -193,8 +191,6 @@ namespace AmiKoWindows
                             if (_uiState.IsCompendium() || _uiState.IsFavorites())
                             {
                                 Article a = await _sqlDb.GetArticleFromId(_searchSelectionChildItemId);
-                                this.Browser.DataContext = _fachInfo;
-                                this.SectionTitles.DataContext = _fachInfo;
                                 _fachInfo.ShowFull(a);   // Load html in browser window
                             }
                         }
@@ -260,11 +256,7 @@ namespace AmiKoWindows
             }
             else if (name.Equals("Settings"))
             {
-                MessageBoxResult result = MessageBox.Show("Do you want to close this window?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.Yes)
-                {
-                    Console.WriteLine("Clicked YES");
-                }
+                // TODO
             }
             else if (name.Equals("Feedback"))
             {
@@ -288,16 +280,32 @@ namespace AmiKoWindows
             {
                 _uiState.SetState(UIState.State.Compendium);
                 _sqlDb.UpdateSearchResults(_uiState);
+                this.Browser.DataContext = _fachInfo;
+                this.SectionTitles.DataContext = _fachInfo;
+                this.Compendium.IsChecked = true;
+                this.Favorites.IsChecked = false;
+                this.Interactions.IsChecked = false;
             }
             else if (source.Name.Equals("Favorites"))
             {
                 _uiState.SetState(UIState.State.Favorites);
                 _sqlDb.UpdateSearchResults(_uiState);
+                this.Browser.DataContext = _fachInfo;
+                this.SectionTitles.DataContext = _fachInfo;
+                this.Compendium.IsChecked = false;
+                this.Favorites.IsChecked = true;
+                this.Interactions.IsChecked = false;
             }
             else if (source.Name.Equals("Interactions"))
             {
                 _uiState.SetState(UIState.State.Interactions);
                 _sqlDb.UpdateSearchResults(_uiState);
+                this.Browser.DataContext = _interactions;
+                this.SectionTitles.DataContext = _interactions;
+                this.Compendium.IsChecked = false;
+                this.Favorites.IsChecked = false;
+                this.Interactions.IsChecked = true;
+                _interactions.ShowBasket();
             }
         }
 

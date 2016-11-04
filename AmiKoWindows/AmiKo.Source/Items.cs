@@ -168,11 +168,23 @@ namespace AmiKoWindows
                     }
                     else if (uiState.IsInteractions())
                     {
+                        // Calculate number of child items (number of packages)
+                        var packagesList = article.Packages.Split('\n');
+                        int numPacks = packagesList.Length - 1;
+                        string numPackagesStr = "1 Packung";
+                        if (numPacks==0 || numPacks>1)
+                            numPackagesStr = string.Format("{0} Packungen", numPacks);
+                        ChildItemsObservableCollection ci = new ChildItemsObservableCollection();
+
                         Add(new Item()
                         {
                             Id = article.Id,
                             Text = article.Title,
-                            IsFavorite = article.IsFavorite
+                            IsFavorite = article.IsFavorite,
+                            ChildItems = new ChildItemsObservableCollection
+                            {
+                                new ChildItem() { Text = numPackagesStr, Color=Colors.SearchBoxChildItems }
+                            }
                         });
                     }
                 }

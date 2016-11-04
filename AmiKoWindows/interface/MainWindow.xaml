@@ -104,34 +104,35 @@
             <DockPanel LastChildFill="True">
                 <Border DockPanel.Dock="Top" Background="White" BorderBrush="LightGray" BorderThickness="1 1 1 1">
                     <ToolBar ToolBarTray.IsLocked="True">
-                        <Button Name="Compendium" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="6,6,0,6">
+                        <ToggleButton Name="Compendium" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="6,6,0,6">
                             <StackPanel Orientation="Horizontal">
                                 <Image Width="16" Source="../images/aips32x32_dark.png" />
                                 <Label VerticalAlignment="Center">Kompendium</Label>
                             </StackPanel>
-                        </Button>
+                        </ToggleButton>
                         <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                        <Button Name="Favorites" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
+                        <ToggleButton Name="Favorites" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
                             <StackPanel Orientation="Horizontal">
                                 <Image Width="16" Source="../images/favorites32x32_dark.png" />
                                 <Label VerticalAlignment="Center">Favoriten</Label>
                             </StackPanel>
-                        </Button>
+                        </ToggleButton>
                         <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                        <Button Name="Interactions" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
+                        <ToggleButton Name="Interactions" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
                             <StackPanel Orientation="Horizontal">
                                 <Image Width="16" Source="../images/interactions32x32_dark.png" />
                                 <Label VerticalAlignment="Center">Interaktionen</Label>
                             </StackPanel>
-                        </Button>
+                        </ToggleButton>
                     </ToolBar>
                 </Border>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*" MinWidth="300"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="4*"/>
-                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="4*" MinWidth="450"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="1*" MinWidth="150"/>
                     </Grid.ColumnDefinitions>
                     <DockPanel Grid.Column="0" LastChildFill="True">
                         <DockPanel DockPanel.Dock="Top" Height="52" Background="White">
@@ -179,10 +180,11 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </DockPanel>
-                    <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="1" Width="5"/>
-                    <WebBrowser x:Name="Browser" local:BrowserBehavior.Html="{Binding Path=HtmlText}" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,10,0"/>
-                    <ListBox x:Name="SectionTitles" ItemsSource="{Binding Path=SectionTitles}" Grid.Column="3" 
-                             BorderThickness="1 0 1 0" BorderBrush="LightGray" Margin="4,0,0,0" Padding="0,24,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="1" Width="4"/>
+                    <WebBrowser x:Name="Browser" local:BrowserBehavior.Html="{Binding Path=HtmlText}" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,8,0"/>
+                    <GridSplitter HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="3" Width="4"/>
+                    <ListBox x:Name="SectionTitles" ItemsSource="{Binding Path=SectionTitles}" Grid.Column="4" 
+                             BorderThickness="0" BorderBrush="LightGray" Margin="4,0,0,0" Padding="0,24,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                              SelectionChanged="OnSectionTitle_Selection">
                         <ListBox.ItemTemplate>
                             <DataTemplate>

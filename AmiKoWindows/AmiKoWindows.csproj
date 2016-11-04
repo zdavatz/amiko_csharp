@@ -17,11 +17,11 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>publish\</PublishUrl>
+    <PublishUrl>D:\Projects\Pharmax\AmiKoWindows\AmiKoWindows\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Background</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
@@ -30,6 +30,7 @@
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -52,10 +53,33 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>amiko_icon.ico</ApplicationIcon>
+    <ApplicationIcon>images\amiko_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>AmiKoWindows.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>9F3FA6F4C4CFFA827FFDEF3E654B9C825BB88103</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>DigiCert_ywesee.p12</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>false</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -203,15 +227,18 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="App.config" />
-    <None Include="dbs\amiko_db_full_idx_de.db" />
-    <None Include="dbs\drug_interactions_csv_de.csv" />
+    <Content Include="dbs\amiko_db_full_idx_de.db" />
+    <Content Include="dbs\drug_interactions_csv_de.csv" />
+    <None Include="DigiCert_ywesee.p12" />
     <None Include="packages.config" />
     <None Include="PostBuild.bat" />
+    <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="README.md" />
     <Resource Include="fonts\Roboto-Regular.ttf" />
     <Resource Include="Resources\Entypo.ttf" />
   </ItemGroup>
@@ -219,12 +246,13 @@
     <None Include="AmiKo.Config\App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="make_exe.txt" />
     <Resource Include="images\trash_icon_2.png" />
     <Content Include="jscripts\interaction_callbacks.js" />
     <Resource Include="images\menu_button.png" />
-    <Resource Include="css\amiko_stylesheet.css">
+    <Content Include="css\fachinfo_css.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    </Content>
     <Content Include="css\amiko_stylesheet_old.css" />
     <Content Include="css\interactions_css.css" />
     <Content Include="css\shopping_css.css" />
