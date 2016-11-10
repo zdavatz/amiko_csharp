@@ -22,6 +22,8 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using MahApps.Metro.Controls;
+using System.Windows.Navigation;
+using System.Threading.Tasks;
 
 namespace AmiKoWindows
 {
@@ -41,6 +43,8 @@ namespace AmiKoWindows
         FachInfo _fachInfo;
         InteractionsCart _interactions;
         StatusBarHelper _statusBarHelper;
+
+        static bool _willNavigate = false;
 
         public MainWindow()
         {
@@ -72,13 +76,47 @@ namespace AmiKoWindows
             this.StatusBar.DataContext = _statusBarHelper;
         }
 
-        private void MainWindowLoaded(object sender, RoutedEventArgs e)
+        private async void MainWindowLoaded(object sender, RoutedEventArgs e)
         {
             /*
             Uri iconUri = new Uri("./images/desitin_icon.ico", UriKind.RelativeOrAbsolute); //make sure your path is correct, and the icon set as Resource
             this.Icon = BitmapFrame.Create(iconUri, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
             */
             _statusBarHelper.IsConnectedToInternet();
+            // 
+            await _sqlDb?.Search(_uiState, "");
+        }
+
+        private void WebBrowser_LoadCompleted(object sender, NavigationEventArgs e)
+        {
+            /*
+            string script = "document.body.style.overflow ='hidden'";
+            WebBrowser wb = (WebBrowser)sender;
+            wb.InvokeScript("execScript", new Object[] { script, "JavaScript" });
+            */
+        }
+
+        private async void WebBrowser_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
+            // First page needs to be loaded in webBrowser control
+            if (!_willNavigate)
+            {
+                _willNavigate = true;
+                return;
+            }
+
+            await Task.Run(() =>
+            {
+                // Cancel navigation to the clicked link in the webBrowser control
+                e.Cancel = true;
+                // Open new window
+                if (e.Uri != null)
+                {
+                    var startInfo = new ProcessStartInfo { FileName = e.Uri?.ToString() };
+                    Process.Start(startInfo);
+                }
+                e.Cancel = false;
+            });
         }
 
         private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -95,7 +133,6 @@ namespace AmiKoWindows
                 long numArticles = await _sqlDb?.Search(_uiState, text);
                 sw.Stop();
                 double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
-
                 _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numArticles, elapsedTime));
             }
         }

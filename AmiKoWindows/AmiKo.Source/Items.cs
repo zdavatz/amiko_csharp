@@ -87,7 +87,8 @@ namespace AmiKoWindows
                     if (packages.Length > 9)
                         ean = packages[9];
 
-                    string decoration = (author.Contains("ibsa") || author.Contains("desitin")) ? "Underline" : "";
+                    // author.Contains("ibsa")
+                    string decoration = author.Contains("desitin") ? "Underline" : "";
 
                     if (item != string.Empty)
                     {

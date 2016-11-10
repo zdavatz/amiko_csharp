@@ -136,8 +136,7 @@
                     </Grid.ColumnDefinitions>
                     <DockPanel Grid.Column="0" LastChildFill="True">
                         <DockPanel DockPanel.Dock="Top" Height="52" Background="White">
-                            <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchTextBox}" 
-                                     Cursor="Pen"
+                            <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchTextBox}" Cursor="Hand"
                                      TextChanged="SearchBox_TextChanged" PreviewMouseDown="OnSearchTextBox_PreviewMouseDown"
                                      Controls:TextBoxHelper.Watermark="{Binding Path=SearchTextBoxWaterMark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                      Margin="4,0,4,0">
@@ -181,11 +180,13 @@
                         </ListBox>
                     </DockPanel>
                     <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="1" Width="4"/>
-                    <WebBrowser x:Name="Browser" local:BrowserBehavior.Html="{Binding Path=HtmlText}" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,8,0"/>
+                    <WebBrowser x:Name="Browser" local:BrowserBehavior.Html="{Binding Path=HtmlText}" Navigating="WebBrowser_Navigating"
+                                LoadCompleted="WebBrowser_LoadCompleted"
+                                Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,8,0"/>
                     <GridSplitter HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="3" Width="4"/>
-                    <ListBox x:Name="SectionTitles" ItemsSource="{Binding Path=SectionTitles}" Grid.Column="4" 
-                             BorderThickness="0" BorderBrush="LightGray" Margin="4,0,0,0" Padding="0,24,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                             SelectionChanged="OnSectionTitle_Selection">
+                    <ListBox x:Name="SectionTitles" 
+                             Style="{StaticResource SectionTitlesListBox}" ItemsSource="{Binding Path=SectionTitles}" 
+                             Grid.Column="4" Margin="4,0,0,0" Padding="0,24,0,0" SelectionChanged="OnSectionTitle_Selection">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Height="20" Orientation="Vertical">

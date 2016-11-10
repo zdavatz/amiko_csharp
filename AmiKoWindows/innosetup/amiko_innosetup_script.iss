@@ -7,7 +7,8 @@
 #define MyPublisher "ywesee GmbH"
 #define MyAppExe "AmiKo Desitin.exe"
 #define MyAppURL "http://www.ywesee.com/AmiKo/Desktop"
-#define MyWorkingDir = "D:\Projects\Pharmax\AmiKoWindows\AmiKoWindows\bin\Executable"
+#define MyWorkingDir "D:\Projects\Pharmax\AmiKoWindows\AmiKoWindows\bin\Executable"
+#define MyIcon "amiko_icon.ico"
 
 [Code]
 function IsRegularUser(): Boolean;
@@ -39,7 +40,7 @@ DefaultDirName={code:DefDirRoot}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 OutputDir={#MyWorkingDir}
 OutputBaseFilename=amikodesitin_setup
-SetupIconFile={#MyWorkingDir}\amiko_icon.ico
+SetupIconFile={#MyWorkingDir}\{#MyIcon}
 Compression=lzma
 SolidCompression=yes
 VersionInfoDescription={#MyAppName} Setup
@@ -62,10 +63,10 @@ Source: "{#MyWorkingDir}\{#MyAppFolder}\*"; Excludes: "*.pdb"; DestDir: "{app}";
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExe}"; IconFileName: "{app}\images\amiko_icon.ico"
+Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExe}"; IconFileName: "{app}\images\{#MyIcon}"
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExe}"; IconFileName: "{app}\images\amiko_icon.ico"; Tasks: desktopicon
+Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExe}"; IconFileName: "{app}\images\{#MyIcon}"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#MyAppExe}"; Description: "{cm:LaunchProgram,{#MyAppName}}"; Flags: nowait postinstall skipifsilent

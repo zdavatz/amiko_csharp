@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace AmiKoWindows
@@ -28,10 +28,12 @@ namespace AmiKoWindows
     class FachInfo : INotifyPropertyChanged
     {
         #region Private Fields
+        string _jscriptStr;
         string _cssStr;
         #endregion
 
         #region Properties
+        string JscriptPath { get; set; }
         string CssFilePath { get; set; }
         #endregion
 
@@ -79,12 +81,17 @@ namespace AmiKoWindows
         public FachInfo()
         {
             // Load important files
+            JscriptPath = Path.Combine(Utilities.AppExecutingFolder(), Constants.JS_FOLDER, "main_callbacks.js");
+            if (File.Exists(JscriptPath))
+            {
+                _jscriptStr = "<script language=\"javascript\">" + File.ReadAllText(JscriptPath) + "</script>";
+            }
             CssFilePath = Utilities.AppExecutingFolder() + Constants.CSS_SHEET;
             if (File.Exists(CssFilePath))
             {
                 _cssStr = "<style>" + File.ReadAllText(CssFilePath) + "</style>";
             }
-          }
+        }
         #endregion
 
         #region Public Methods
@@ -95,6 +102,7 @@ namespace AmiKoWindows
             string headStr = "<head>" 
                 + "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>" 
                 // + "<link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Roboto&subset=latin,latin-ext'>"
+                + _jscriptStr
                 + _cssStr
                 + "</head>"; 
             HtmlText = headStr + htmlStr;
