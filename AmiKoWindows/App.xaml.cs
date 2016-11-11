@@ -1,8 +1,5 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Threading;
+﻿using System.Threading;
 using System.Windows;
-using System.Windows.Media.Imaging;
 
 namespace AmiKoWindows
 {
@@ -23,7 +20,7 @@ namespace AmiKoWindows
             SplashScreen splash = new SplashScreen();
             splash.Show();
             MainWindow main = new MainWindow();
-            Thread.Sleep(500);
+            Thread.Sleep(1000);
             splash.Close();
             /*
             AllocConsole();

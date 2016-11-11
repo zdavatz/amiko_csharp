@@ -3,12 +3,12 @@
 
 #define MyAppFolder "../Release"
 #define MyAppName "AmiKo Desitin"
-#define MyVersion "1.0.0"
+#define MyVersion "1.0.1"
 #define MyPublisher "ywesee GmbH"
 #define MyAppExe "AmiKo Desitin.exe"
 #define MyAppURL "http://www.ywesee.com/AmiKo/Desktop"
 #define MyWorkingDir "D:\Projects\Pharmax\AmiKoWindows\AmiKoWindows\bin\Executable"
-#define MyIcon "amiko_icon.ico"
+#define MyIcon "desitin_icon.ico"
 
 [Code]
 function IsRegularUser(): Boolean;
