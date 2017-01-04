@@ -86,6 +86,8 @@ namespace AmiKoWindows
         {
             _interactionsDict = ReadInteractions(Utilities.InteractionsPath());
 
+            Console.Out.WriteLine(">> OK: Opened interactions db located in {0}\n", Utilities.InteractionsPath());
+
             string path = Path.Combine(Utilities.AppExecutingFolder(), Constants.JS_FOLDER, "interaction_callbacks.js");
             _jscriptStr = File.ReadAllText(path);
 
@@ -279,7 +281,7 @@ namespace AmiKoWindows
                             strDict.Add(token[0] + '-' + token[1], token[2]);
                     }
                 }
-                catch (FileNotFoundException e)
+                catch (FileNotFoundException)
                 {
                     //
                 }

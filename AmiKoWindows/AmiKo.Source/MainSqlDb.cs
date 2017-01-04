@@ -107,11 +107,14 @@ namespace AmiKoWindows
             {
                 _db = new DatabaseHelper();
                 await _db.OpenDB(dbPath);
+                long? numArticles = await _db.GetNumRecords("amikodb");
+                Console.Out.WriteLine(">> OK: Opened sqlite db with {0} items located in {1}", numArticles, dbPath);
             }
             else
             {
                 // Cannot open main sqlite database!
                 // Todo: generate friendly message (msgbox...)
+                Console.Out.WriteLine(">> ERR: Unable to open sqlite db located in {0}", dbPath);
             }
         }
 
@@ -135,6 +138,11 @@ namespace AmiKoWindows
                 _favorites.Add(article);
             // Save list of favorites to file
             await _favorites.Save();
+            // Update list of found articles
+            foreach (Article a in _foundArticles)
+            {
+                a.IsFavorite = _favorites.Contains(a?.Regnrs);
+            }
         }
 
         public async Task<Article> GetArticleFromEan(string ean)

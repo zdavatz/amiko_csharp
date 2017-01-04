@@ -8,9 +8,9 @@ using System.Windows;
 [assembly: AssemblyTitle("AmiKo Desitin")]
 [assembly: AssemblyDescription("Arzneimittel-Kompendium für Windows")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Ywesee")]
+[assembly: AssemblyCompany("ywesee")]
 [assembly: AssemblyProduct("AmiKo Desitin")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCopyright("Copyright © 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -49,5 +49,7 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
+[assembly: AssemblyVersion("1.0.2.0")]
+[assembly: AssemblyFileVersion("1.0.2.0")]
+[assembly: Guid("3F71A827-F362-4FF2-A406-EA63C19EA85B")]
+

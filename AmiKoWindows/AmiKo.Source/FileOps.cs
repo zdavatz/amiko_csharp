@@ -39,14 +39,14 @@ namespace AmiKoWindows
             TextWriter writer = null;
             try
             {
-                var serializer = new XmlSerializer(typeof(T));
                 writer = new StreamWriter(filePath, append);
+                var serializer = new XmlSerializer(typeof(T));
                 serializer.Serialize(writer, objectToWrite);
             }
             finally
             {
-                if (writer != null)
-                    writer.Close();
+                // Let's clean up in any case
+                writer?.Close();
             }
         }
 
@@ -62,14 +62,14 @@ namespace AmiKoWindows
             TextReader reader = null;
             try
             {
-                var serializer = new XmlSerializer(typeof(T));
                 reader = new StreamReader(filePath);
+                var serializer = new XmlSerializer(typeof(T));
                 return (T)serializer.Deserialize(reader);
             }
             finally
             {
-                if (reader != null)
-                    reader.Close();
+                // Let's clean up in any case
+                reader?.Close();
             }
         }
     }

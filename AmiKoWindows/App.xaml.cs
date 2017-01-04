@@ -20,12 +20,13 @@ namespace AmiKoWindows
             SplashScreen splash = new SplashScreen();
             splash.Show();
             MainWindow main = new MainWindow();
-            Thread.Sleep(1000);
+            Thread.Sleep(3000);
             splash.Close();
             /*
             AllocConsole();
             Console.WriteLine("And so it begins");
             */
+
             main.Show();
         }
     }

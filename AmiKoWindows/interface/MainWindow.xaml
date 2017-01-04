@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Loaded="MainWindowLoaded"
         Title="AmiKo Desitin" TitleCaps="False"
-        Height="1024" Width="1280"
+        Height="1080" Width="1920"
         GlowBrush="Black"
         EnableDWMDropShadow="True"
         BorderThickness="1"       
