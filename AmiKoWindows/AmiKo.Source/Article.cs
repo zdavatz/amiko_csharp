@@ -69,11 +69,15 @@ namespace AmiKoWindows
 
         public List<string> ListOfSectionTitles()
         {
+            string[] sectionsTitles = Constants.SectionTitlesDE;
+            if (Utilities.AppLanguage().Equals("fr"))
+                sectionsTitles = Constants.SectionTitlesFR;
+
             List<string> listOfSectionTitles = SectionTitles?.Split(';').ToList();
             for (int i=0; i<listOfSectionTitles.Count; ++i)
             {
                 string s = listOfSectionTitles[i];
-                foreach (string t in Constants.SectionTitlesDE)
+                foreach (string t in sectionsTitles)
                 {
                     string titleA = s.Replace(" ", "");
                     string titleB = Title.Replace(" ", "");

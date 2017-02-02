@@ -123,6 +123,9 @@ namespace AmiKoWindows
                 int medCount = 1;
                 // Build interaction basket table
                 string basketHtmlStr = "<h3>Interaktionenkorb</h3>";
+                if (Utilities.AppLanguage().Equals("fr"))
+                    basketHtmlStr = "<h3>Panier de médicaments</h3>";
+
                 basketHtmlStr += "<table id=\"Interaktionen\" width=\"98%25\">";
 
                 foreach (var kvp in _articleBasket)
@@ -207,11 +210,9 @@ namespace AmiKoWindows
             }
             else
             {
-                string basketHtmlStr = "";
+                string basketHtmlStr = "<p class=\"paragraph0\">Ihr Medikamentenkorb ist leer.</p>";
                 // Medikamentenkorb ist leer
-                if (Utilities.AppLanguage().Equals("de"))
-                    basketHtmlStr = "<p class=\"paragraph0\">Ihr Medikamentenkorb ist leer.</p>";
-                else if (Utilities.AppLanguage().Equals("fr"))
+                if (Utilities.AppLanguage().Equals("fr"))
                     basketHtmlStr = "<p class=\"paragraph0\">Votre panier de médicaments est vide.</p>";
 
                 HtmlText = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />"

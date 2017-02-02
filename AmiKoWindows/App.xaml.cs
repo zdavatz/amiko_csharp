@@ -15,10 +15,21 @@ namespace AmiKoWindows
         [DllImport("Kernel32")]
         public static extern void FreeConsole();
         */
+        App()
+        {
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             SplashScreen splash = new SplashScreen();
             splash.Show();
+
+#if AMIKO
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("de-CH");
+#elif COMED
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("fr-CH");
+#endif
+
             MainWindow main = new MainWindow();
             Thread.Sleep(3000);
             splash.Close();

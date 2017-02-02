@@ -6,12 +6,12 @@
   <Identity Name="yweseeGmbH.AmiKo"
     Version="1.0.4.0"
     ProcessorArchitecture="x64"
-    Publisher="CN=3F71A827-F362-4FF2-A406-EA63C19EA85B" />
-    <!--Publisher="CN=ywesee GmbH, O=ywesee GmbH, L=Zürich, C=CH" />-->
+    Publisher="CN=ywesee GmbH, O=ywesee GmbH, L=Zürich, C=CH" />
+    <!--Publisher="CN=3F71A827-F362-4FF2-A406-EA63C19EA85B" />-->
     <Properties>
     <DisplayName>AmiKo Desitin</DisplayName>
     <PublisherDisplayName>ywesee GmbH</PublisherDisplayName>
-    <Description>No.1 Arzneimittelkompendium Schweiz</Description>
+    <Description>No.1 Arzneimittelkompendium der Schweiz</Description>
     <Logo>store\assets\desitin_logo.50x50.png</Logo>
   </Properties>
   <Resources>
@@ -21,11 +21,10 @@
     <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14316.0" MaxVersionTested="10.0.14316.0" />
   </Dependencies>
   <Capabilities>
-    <Capability Name="internetClient"/>
     <rescap:Capability Name="runFullTrust"/>
   </Capabilities>
   <Applications>
-    <Application Id="App" Executable="AmiKo Desitin.exe" EntryPoint="Windows.FullTrustApplication">
+    <Application Id="yweseeGmbH.AmiKo" Executable="AmiKo Desitin.exe" EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
        BackgroundColor="#464646"
        DisplayName="AmiKo Desitin"

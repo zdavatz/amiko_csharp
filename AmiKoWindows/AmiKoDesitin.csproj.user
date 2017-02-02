@@ -2,7 +2,7 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <PublishUrlHistory>D:\Projects\Pharmax\AmiKoWindows\AmiKoWindows\publish\|publish\</PublishUrlHistory>
-    <InstallUrlHistory>http://www.dynamicdevices.ch/downloads/pillbox/</InstallUrlHistory>
+    <InstallUrlHistory>http://www.dynamicdevices.ch/downloads/pillbox/amikodesitin/|http://www.dynamicdevices.ch/downloads/pillbox/</InstallUrlHistory>
     <SupportUrlHistory />
     <UpdateUrlHistory />
     <BootstrapperUrlHistory />

@@ -118,117 +118,117 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="about" xml:space="preserve">
-    <value>AmiKo Desitin</value>
+    <value>CoMed Desitin</value>
   </data>
   <data name="appTitle" xml:space="preserve">
-    <value>AmiKo Desitin</value>
+    <value>CoMed Desitin</value>
   </data>
   <data name="article" xml:space="preserve">
-    <value>Artikel</value>
+    <value>Article</value>
   </data>
   <data name="beenden" xml:space="preserve">
-    <value>Beenden</value>
+    <value>Terminer</value>
   </data>
   <data name="butAtccode" xml:space="preserve">
-    <value>Wirkstoff / ATC Code</value>
+    <value>Principe Actif / Code ATC</value>
   </data>
   <data name="butAuthor" xml:space="preserve">
-    <value>Inhaberin</value>
+    <value>Titulaire</value>
   </data>
   <data name="butIngredient" xml:space="preserve">
-    <value>Wirkstoff</value>
+    <value>Principe Actif</value>
   </data>
   <data name="butRegnr" xml:space="preserve">
-    <value>Zulassungsnummer</value>
+    <value>Nombre Enregistration</value>
   </data>
   <data name="butTherapy" xml:space="preserve">
-    <value>Therapie</value>
+    <value>Thérapie</value>
   </data>
   <data name="butTitle" xml:space="preserve">
-    <value>Präparat</value>
+    <value>Spécialité</value>
   </data>
   <data name="category" xml:space="preserve">
-    <value>Kat</value>
+    <value>Cat</value>
   </data>
   <data name="compendium" xml:space="preserve">
-    <value>Kompendium</value>
+    <value>Compendium</value>
   </data>
   <data name="datei" xml:space="preserve">
-    <value>Datei</value>
+    <value>Fichier</value>
   </data>
   <data name="ean" xml:space="preserve">
     <value>EAN</value>
   </data>
   <data name="fachinfo" xml:space="preserve">
-    <value>Fachinformation</value>
+    <value>Notice Infopro</value>
   </data>
   <data name="favorites" xml:space="preserve">
-    <value>Favoriten</value>
+    <value>Favorites</value>
   </data>
   <data name="feedback" xml:space="preserve">
     <value>Feedback</value>
   </data>
   <data name="help" xml:space="preserve">
-    <value>Hilfe</value>
+    <value>Aide</value>
   </data>
   <data name="info" xml:space="preserve">
     <value>SwissMed</value>
   </data>
   <data name="interactions" xml:space="preserve">
-    <value>Interaktionen</value>
+    <value>Interactions</value>
   </data>
   <data name="makeCsv" xml:space="preserve">
-    <value>CSV erstellen</value>
+    <value>créer CSV</value>
   </data>
   <data name="makePdf" xml:space="preserve">
-    <value>PDF erstellen</value>
+    <value>créer PDF</value>
   </data>
   <data name="medbasket" xml:space="preserve">
-    <value>Medikamentenkorb</value>
+    <value>Panier de médicaments</value>
   </data>
   <data name="newDb" xml:space="preserve">
-    <value>Neue Datenbank verfügbar!</value>
+    <value>Nouvelle banque de données disponible!</value>
   </data>
   <data name="noclick" xml:space="preserve">
-    <value>Bitte wählen Sie ein Produkt.</value>
+    <value>Choisir un article, s'il vous plait.</value>
   </data>
   <data name="nofachinfo" xml:space="preserve">
-    <value>Keine Fachinformation in der Datenbank.</value>
+    <value>Aucune notice infopro dans banque de données.</value>
   </data>
   <data name="nopacks" xml:space="preserve">
-    <value>keine Packungen</value>
+    <value>aucune présentation</value>
   </data>
   <data name="packs" xml:space="preserve">
-    <value>Packungen</value>
+    <value>présentation</value>
   </data>
   <data name="position" xml:space="preserve">
-    <value>Pos</value>
+    <value>pos</value>
   </data>
   <data name="price" xml:space="preserve">
-    <value>Preis</value>
+    <value>prix</value>
   </data>
   <data name="print" xml:space="preserve">
-    <value>Drucken</value>
+    <value>Imprimer</value>
   </data>
   <data name="quantity" xml:space="preserve">
-    <value>Menge</value>
+    <value>Qté</value>
   </data>
   <data name="report" xml:space="preserve">
     <value>Error Report</value>
   </data>
   <data name="result" xml:space="preserve">
-    <value>Suchresultat</value>
+    <value>Résultat de la recherche</value>
   </data>
   <data name="search" xml:space="preserve">
-    <value>Suche</value>
+    <value>Recherche</value>
   </data>
   <data name="settings" xml:space="preserve">
-    <value>Einstellungen</value>
+    <value>Paramètres</value>
   </data>
   <data name="subscribe" xml:space="preserve">
-    <value>Abonnieren</value>
+    <value>Abonnement</value>
   </data>
   <data name="update" xml:space="preserve">
-    <value>Aktualisieren</value>
+    <value>Misa à jour</value>
   </data>
 </root>

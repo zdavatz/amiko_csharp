@@ -24,6 +24,7 @@ namespace AmiKoWindows
         // Important folders and files
         public const string AIPS_DB_BASE = @"amiko_db_full_idx_";
         public const string REPORT_FILE_BASE = @"amiko_report_";
+        public const string INTERACTIONS_CSV_BASE = @"drug_interactions_csv_";
         public const string IMG_FOLDER = @"images";	
 	    public const string JS_FOLDER = @"jscripts";
         public const string CSS_SHEET = @"./css/fachinfo_css.css";
@@ -36,6 +37,7 @@ namespace AmiKoWindows
 			"Dosierung/Anwendung", "Vorsichtsmassnahmen", "Interaktionen", "Schwangerschaft", "Fahrtüchtigkeit", "Unerwünschte Wirk.",
 			"Überdosierung", "Eig./Wirkung", "Kinetik", "Präklinik", "Sonstige Hinweise", "Zulassungsnummer", "Packungen", "Inhaberin",
 			"Stand der Information" };
+
         // French section title abbrevations
         public static readonly string[] SectionTitlesFR = { "Composition", "Forme galénique", "Contre-indications", "Indications",
 			"Posologie", "Précautions", "Interactions", "Grossesse/All.", "Conduite", "Effets indésir.", "Surdosage", "Propriétés/Effets",

@@ -27,6 +27,11 @@ namespace AmiKoWindows
     {
         public static string AppLanguage()
         {
+            var culture = System.Globalization.CultureInfo.CurrentUICulture.ToString();
+            if (culture.Equals("de-CH"))
+                return "de";
+            else if (culture.Equals("fr-CH"))
+                return "fr";
             return "de";
         }
 
@@ -90,26 +95,36 @@ namespace AmiKoWindows
         public static string SQLiteDBPath()
         {
             string dbName = Constants.AIPS_DB_BASE + "de.db";
-            string dbPath = Path.Combine(Utilities.AppRoamingDataFolder(), dbName);
+            if (AppLanguage().Equals("fr"))
+                dbName = Constants.AIPS_DB_BASE + "fr.db";
+
+            string dbPath = Path.Combine(AppRoamingDataFolder(), dbName);
             if (!File.Exists(dbPath))
-                dbPath = Path.Combine(Utilities.AppExecutingFolder(), "dbs", dbName);
+                dbPath = Path.Combine(AppExecutingFolder(), "dbs", dbName);
             return dbPath;
         }
 
         public static string InteractionsPath()
         {
-            string path = Path.Combine(Utilities.AppRoamingDataFolder(), @"drug_interactions_csv_de.csv");
+            string interactionsName = Constants.INTERACTIONS_CSV_BASE + "de.csv";
+            if (AppLanguage().Equals("fr"))
+                interactionsName = Constants.INTERACTIONS_CSV_BASE + "fr.csv";
+
+            string path = Path.Combine(AppRoamingDataFolder(), interactionsName);
             if (!File.Exists(path))
-                path = Path.Combine(Utilities.AppExecutingFolder(), "dbs", @"drug_interactions_csv_de.csv");
+                path = Path.Combine(AppExecutingFolder(), "dbs", interactionsName);
             return path;
         }
 
         public static string ReportPath()
         {
             string reportName = Constants.REPORT_FILE_BASE + "de.html";
-            string reportPath = Path.Combine(Utilities.AppRoamingDataFolder(), reportName);
+            if (AppLanguage().Equals("fr"))
+                reportName = Constants.REPORT_FILE_BASE + "fr.html";
+
+            string reportPath = Path.Combine(AppRoamingDataFolder(), reportName);
             if (!File.Exists(reportPath))
-                reportPath = Path.Combine(Utilities.AppExecutingFolder(), "dbs", reportName);
+                reportPath = Path.Combine(AppExecutingFolder(), "dbs", reportName);
             return reportPath;
         }
     }

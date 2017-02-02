@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmiKoWindows", "AmiKoWindows\AmiKoWindows.csproj", "{5D7DBE7B-A8B3-4988-AAE8-6419EACFD15D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmiKoDesitin", "AmiKoWindows\AmiKoDesitin.csproj", "{5D7DBE7B-A8B3-4988-AAE8-6419EACFD15D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoMedDesitin", "AmiKoWindows\CoMedDesitin.csproj", "{170A60E6-3152-4E72-97B6-E7378E22CD3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +36,22 @@ Global
 		{5D7DBE7B-A8B3-4988-AAE8-6419EACFD15D}.Release|x64.Build.0 = Release|Any CPU
 		{5D7DBE7B-A8B3-4988-AAE8-6419EACFD15D}.Release|x86.ActiveCfg = Release|Any CPU
 		{5D7DBE7B-A8B3-4988-AAE8-6419EACFD15D}.Release|x86.Build.0 = Release|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Debug|ARM.Build.0 = Debug|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Debug|x64.Build.0 = Debug|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Debug|x86.Build.0 = Debug|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Release|ARM.ActiveCfg = Release|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Release|ARM.Build.0 = Release|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Release|x64.ActiveCfg = Release|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Release|x64.Build.0 = Release|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Release|x86.ActiveCfg = Release|Any CPU
+		{170A60E6-3152-4E72-97B6-E7378E22CD3F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -181,6 +181,17 @@ namespace AmiKoWindows
                     { "Datenbank", "http://pillbox.oddb.org/amiko_db_full_idx_de.zip", @"amiko_db_full_idx_de.db.zip" },
                 };
 
+            if (Utilities.AppLanguage().Equals("fr"))
+            {
+                listOfFiles = new TupleList<string, string, string>
+                {
+                    { "Report", "http://pillbox.oddb.org/amiko_report_fr.html", @"amiko_report_fr.html" },
+                    { "Interaktionen", "http://pillbox.oddb.org/drug_interactions_csv_fr.zip", @"drug_interactions_csv_fr.csv.zip" },
+                    { "Datenbank", "http://pillbox.oddb.org/amiko_db_full_idx_fr.zip", @"amiko_db_full_idx_fr.db.zip" },
+                };
+
+            }
+
             await Task.Run(async () =>
             {
                 // Generate list of download/unzip tasks
@@ -213,7 +224,10 @@ namespace AmiKoWindows
                 numInteractions = lines.Length;
             }
 
-            Text = string.Format("Neue AmiKo Datenbank mit {0} Fachinfos und {1} Interaktionen erfolgreich geladen!", numArticles, numInteractions);
+            if (Utilities.AppLanguage().Equals("de"))
+                Text = string.Format("Neue AmiKo Datenbank mit {0} Fachinfos und {1} Interaktionen erfolgreich geladen!", numArticles, numInteractions);
+            else if (Utilities.AppLanguage().Equals("fr"))
+                Text = string.Format("Nouvelle base de données avec {0} notice infopro et {1} interactions chargée avec succès!", numArticles, numInteractions);
 
             ButtonContent = "OK";
         }

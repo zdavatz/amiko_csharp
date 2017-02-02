@@ -86,23 +86,25 @@ namespace AmiKoWindows
 
         public void SetQuery(Query query)
         {
+            string search = Properties.Resources.search + " ";
+
             _query = query;
             switch (query)
             {
                 case Query.Title:
-                    SearchTextBoxWaterMark = "Suche Präparat...";
+                    SearchTextBoxWaterMark = search + Properties.Resources.butTitle + "...";
                     break;
                 case Query.Author:
-                    SearchTextBoxWaterMark = "Suche Inhaberin...";
+                    SearchTextBoxWaterMark = search + Properties.Resources.butAuthor + "...";
                     break;
                 case Query.AtcCode:
-                    SearchTextBoxWaterMark = "Suche Wirkstoff / ATC...";
+                    SearchTextBoxWaterMark = search + Properties.Resources.butAtccode + "...";
                     break;
                 case Query.Regnr:
-                    SearchTextBoxWaterMark = "Suche Zulassungsnummer...";
+                    SearchTextBoxWaterMark = search + Properties.Resources.butRegnr + "...";
                     break;
                 case Query.Application:
-                    SearchTextBoxWaterMark = "Suche Therapie...";
+                    SearchTextBoxWaterMark = search + Properties.Resources.butTherapy + "...";
                     break;
                 default:
                     break;

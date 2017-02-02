@@ -22,7 +22,7 @@ namespace AmiKoWindows.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace AmiKoWindows.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AmiKoWindows.Properties.Resources", typeof(Resources).Assembly);
@@ -51,12 +51,354 @@ namespace AmiKoWindows.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AmiKo Desitin.
+        /// </summary>
+        public static string about {
+            get {
+                return ResourceManager.GetString("about", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AmiKo Desitin.
+        /// </summary>
+        public static string appTitle {
+            get {
+                return ResourceManager.GetString("appTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Artikel.
+        /// </summary>
+        public static string article {
+            get {
+                return ResourceManager.GetString("article", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beenden.
+        /// </summary>
+        public static string beenden {
+            get {
+                return ResourceManager.GetString("beenden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wirkstoff / ATC Code.
+        /// </summary>
+        public static string butAtccode {
+            get {
+                return ResourceManager.GetString("butAtccode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inhaberin.
+        /// </summary>
+        public static string butAuthor {
+            get {
+                return ResourceManager.GetString("butAuthor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wirkstoff.
+        /// </summary>
+        public static string butIngredient {
+            get {
+                return ResourceManager.GetString("butIngredient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zulassungsnummer.
+        /// </summary>
+        public static string butRegnr {
+            get {
+                return ResourceManager.GetString("butRegnr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Therapie.
+        /// </summary>
+        public static string butTherapy {
+            get {
+                return ResourceManager.GetString("butTherapy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Präparat.
+        /// </summary>
+        public static string butTitle {
+            get {
+                return ResourceManager.GetString("butTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kat.
+        /// </summary>
+        public static string category {
+            get {
+                return ResourceManager.GetString("category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kompendium.
+        /// </summary>
+        public static string compendium {
+            get {
+                return ResourceManager.GetString("compendium", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Datei.
+        /// </summary>
+        public static string datei {
+            get {
+                return ResourceManager.GetString("datei", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EAN.
+        /// </summary>
+        public static string ean {
+            get {
+                return ResourceManager.GetString("ean", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fachinformation.
+        /// </summary>
+        public static string fachinfo {
+            get {
+                return ResourceManager.GetString("fachinfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favoriten.
+        /// </summary>
+        public static string favorites {
+            get {
+                return ResourceManager.GetString("favorites", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Feedback.
+        /// </summary>
+        public static string feedback {
+            get {
+                return ResourceManager.GetString("feedback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hilfe.
+        /// </summary>
+        public static string help {
+            get {
+                return ResourceManager.GetString("help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SwissMed.
+        /// </summary>
+        public static string info {
+            get {
+                return ResourceManager.GetString("info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interaktionen.
+        /// </summary>
+        public static string interactions {
+            get {
+                return ResourceManager.GetString("interactions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CSV erstellen.
+        /// </summary>
+        public static string makeCsv {
+            get {
+                return ResourceManager.GetString("makeCsv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PDF erstellen.
+        /// </summary>
+        public static string makePdf {
+            get {
+                return ResourceManager.GetString("makePdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medikamentenkorb.
+        /// </summary>
+        public static string medbasket {
+            get {
+                return ResourceManager.GetString("medbasket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Neue Datenbank verfügbar!.
+        /// </summary>
+        public static string newDb {
+            get {
+                return ResourceManager.GetString("newDb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte wählen Sie ein Produkt..
+        /// </summary>
+        public static string noclick {
+            get {
+                return ResourceManager.GetString("noclick", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keine Fachinformation in der Datenbank..
+        /// </summary>
+        public static string nofachinfo {
+            get {
+                return ResourceManager.GetString("nofachinfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to keine Packungen.
+        /// </summary>
+        public static string nopacks {
+            get {
+                return ResourceManager.GetString("nopacks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packungen.
+        /// </summary>
+        public static string packs {
+            get {
+                return ResourceManager.GetString("packs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pos.
+        /// </summary>
+        public static string position {
+            get {
+                return ResourceManager.GetString("position", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preis.
+        /// </summary>
+        public static string price {
+            get {
+                return ResourceManager.GetString("price", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drucken.
+        /// </summary>
+        public static string print {
+            get {
+                return ResourceManager.GetString("print", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Menge.
+        /// </summary>
+        public static string quantity {
+            get {
+                return ResourceManager.GetString("quantity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Report.
+        /// </summary>
+        public static string report {
+            get {
+                return ResourceManager.GetString("report", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suchresultat.
+        /// </summary>
+        public static string result {
+            get {
+                return ResourceManager.GetString("result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suche.
+        /// </summary>
+        public static string search {
+            get {
+                return ResourceManager.GetString("search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Einstellungen.
+        /// </summary>
+        public static string settings {
+            get {
+                return ResourceManager.GetString("settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Abonnieren.
+        /// </summary>
+        public static string subscribe {
+            get {
+                return ResourceManager.GetString("subscribe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aktualisieren.
+        /// </summary>
+        public static string update {
+            get {
+                return ResourceManager.GetString("update", resourceCulture);
             }
         }
     }
