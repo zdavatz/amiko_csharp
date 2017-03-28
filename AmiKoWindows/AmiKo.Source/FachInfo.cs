@@ -18,18 +18,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
+using System.Security.Permissions;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System;
 
 namespace AmiKoWindows
 {
-    class FachInfo : INotifyPropertyChanged
+    [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
+    [ComVisible(true)]
+    public class FachInfo : HtmlBase
     {
         #region Private Fields
         string _jscriptStr;
         string _cssStr;
+        MainWindow _mainWindow;
+        MainSqlDb _sqlDb;
         #endregion
 
         #region Properties
@@ -37,56 +42,19 @@ namespace AmiKoWindows
         string CssFilePath { get; set; }
         #endregion
 
-        #region Event Handlers
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
-
-        #region Dependency Properties
-        // Source object used for data binding, this is a property
-        private string _htmlText;
-        public string HtmlText
-        {
-            get { return _htmlText; }
-            set
-            {
-                if (value != _htmlText)
-                {
-                    _htmlText = value;
-                    OnPropertyChanged("HtmlText");
-                }
-            }
-        }
-
-        private TitlesObservableCollection _sectionTitles = new TitlesObservableCollection();
-        public TitlesObservableCollection SectionTitles
-        {
-            get { return _sectionTitles; }
-            private set
-            {
-                if (value != _sectionTitles)
-                {
-                    _sectionTitles = value;
-                    // OnPropertyChanged is not necessary here...
-                }
-            }
-        }
-        #endregion
-
         #region Constructors
-        public FachInfo()
+        public FachInfo(MainWindow mainWindow, MainSqlDb sqlDb)
         {
+            _mainWindow = mainWindow;
+            _sqlDb = sqlDb;
+
             // Load important files
             JscriptPath = Path.Combine(Utilities.AppExecutingFolder(), Constants.JS_FOLDER, "main_callbacks.js");
             if (File.Exists(JscriptPath))
             {
                 _jscriptStr = "<script language=\"javascript\">" + File.ReadAllText(JscriptPath) + "</script>";
             }
-            CssFilePath = Utilities.AppExecutingFolder() + Constants.CSS_SHEET;
+            CssFilePath = Path.Combine(Utilities.AppExecutingFolder(), Constants.CSS_SHEET);
             if (File.Exists(CssFilePath))
             {
                 _cssStr = "<style>" + File.ReadAllText(CssFilePath) + "</style>";
@@ -95,6 +63,26 @@ namespace AmiKoWindows
         #endregion
 
         #region Public Methods
+        public async void JSNotify(string cmd, object o)
+        {
+            if (cmd.Equals("displayFachinfo"))
+            {
+                string ean = o as string;
+                if (ean != null)
+                {
+                    ean = ean.Trim();
+                    Article a = await _sqlDb.GetArticleWithRegnr(ean);
+                    if (a != null)
+                    {
+                        Console.WriteLine(a.Title);
+                        // Refresh UI
+                        _mainWindow.SetState(UIState.State.Compendium);
+                        ShowFull(a);
+                    }
+                }
+            }
+        }
+
         public void ShowFull(Article a)
         {
             string htmlStr = a.Content;
@@ -112,8 +100,18 @@ namespace AmiKoWindows
 
         public async Task ShowReport()
         {
+            /* This is a solution to the local storage issue for Windows Store Apps which is not using UWP
+             */ 
             string reportPath = Utilities.ReportPath();
+            // First part could be omitted... WEIRD!!
             if (File.Exists(reportPath))
+            {
+                await Task.Run(() =>
+                {
+                    System.Diagnostics.Process.Start(reportPath);
+                });
+            }
+            else
             {
                 await Task.Run(() =>
                 {

@@ -8,12 +8,12 @@ namespace AmiKoWindows
     {
         public enum State
         {
-            Compendium, Favorites, Interactions, Shopping
+            Compendium, Favorites, Interactions, Shopping, FullTextSearch
         };
 
         public enum Query
         {
-            Title, Author, AtcCode, Ingredient, Regnr, Application, EanCode
+            Title, Author, AtcCode, Ingredient, Regnr, Application, EanCode, Fulltext
         }
 
         private State _uiState = State.Compendium;
@@ -84,6 +84,11 @@ namespace AmiKoWindows
             return _uiState == State.Interactions;
         }
 
+        public bool IsFullTextSearch()
+        {
+            return _uiState == State.FullTextSearch;
+        }
+
         public void SetQuery(Query query)
         {
             string search = Properties.Resources.search + " ";
@@ -105,6 +110,9 @@ namespace AmiKoWindows
                     break;
                 case Query.Application:
                     SearchTextBoxWaterMark = search + Properties.Resources.butTherapy + "...";
+                    break;
+                case Query.Fulltext:
+                    SearchTextBoxWaterMark = search + Properties.Resources.butFulltext + "...";
                     break;
                 default:
                     break;
@@ -130,6 +138,8 @@ namespace AmiKoWindows
                 return "ingredient";
             else if (_query == Query.Application)
                 return "application";
+            else if (_query == Query.Fulltext)
+                return "fulltext";
             return "title";
         }
     }

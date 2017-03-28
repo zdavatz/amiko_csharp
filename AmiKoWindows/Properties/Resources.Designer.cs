@@ -115,6 +115,15 @@ namespace AmiKoWindows.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Volltext.
+        /// </summary>
+        public static string butFulltext {
+            get {
+                return ResourceManager.GetString("butFulltext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Wirkstoff.
         /// </summary>
         public static string butIngredient {

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -51,11 +52,14 @@ namespace AmiKoWindows
             {
                 while (id.MoveNext() && title.MoveNext())
                 {
-                    listOfTitleItems.Add(new TitleItem
+                    if (title.Current?.Length > 0)
                     {
-                        Id = id.Current,
-                        Title = title.Current
-                    });
+                        listOfTitleItems.Add(new TitleItem
+                        {
+                            Id = id.Current,
+                            Title = title.Current
+                        });
+                    }
                 }
             }
             return listOfTitleItems;
@@ -101,6 +105,29 @@ namespace AmiKoWindows
                 }        
             }
             return listOfSectionTitles;
+        }
+
+        public Dictionary<int, string> IndexToTitlesMap()
+        {
+            Dictionary<int, string> dict = new Dictionary<int, string>();
+
+            using (var iter1 = ListOfSectionIds().GetEnumerator())
+            using (var iter2 = ListOfSectionTitles().GetEnumerator())
+            {
+                while (iter1.MoveNext() && iter2.MoveNext())
+                {
+                    string section_id = iter1.Current?.Replace("section", "").Replace("Section", "");
+                    if (section_id.Length > 0)
+                    {
+                        string title = iter2.Current;
+                        int id = Convert.ToInt32(section_id);
+                        if (title.Length > 0)
+                            dict[id] = title;
+                    }
+                }
+            }
+
+            return dict;
         }
     }
 }

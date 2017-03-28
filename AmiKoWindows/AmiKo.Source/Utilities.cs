@@ -104,6 +104,18 @@ namespace AmiKoWindows
             return dbPath;
         }
 
+        public static string FrequencyDBPath()
+        {
+            string dbName = Constants.FREQUENCY_DB_BASE + "de.db";
+            if (AppLanguage().Equals("fr"))
+                dbName = Constants.FREQUENCY_DB_BASE + "fr.db";
+
+            string dbPath = Path.Combine(AppRoamingDataFolder(), dbName);
+            if (!File.Exists(dbPath))
+                dbPath = Path.Combine(AppExecutingFolder(), "dbs", dbName);
+            return dbPath;
+        }
+
         public static string InteractionsPath()
         {
             string interactionsName = Constants.INTERACTIONS_CSV_BASE + "de.csv";
@@ -118,6 +130,7 @@ namespace AmiKoWindows
 
         public static string ReportPath()
         {
+            /*
             string reportName = Constants.REPORT_FILE_BASE + "de.html";
             if (AppLanguage().Equals("fr"))
                 reportName = Constants.REPORT_FILE_BASE + "fr.html";
@@ -125,6 +138,10 @@ namespace AmiKoWindows
             string reportPath = Path.Combine(AppRoamingDataFolder(), reportName);
             if (!File.Exists(reportPath))
                 reportPath = Path.Combine(AppExecutingFolder(), "dbs", reportName);
+            */
+            string reportPath = "http://pillbox.oddb.org/amiko_report_de.html";
+            if (AppLanguage().Equals("fr"))
+                reportPath = "http://pillbox.oddb.org/amiko_report_fr.html";
             return reportPath;
         }
     }

@@ -24,6 +24,7 @@ using System.Windows.Controls;
 using MahApps.Metro.Controls;
 using System.Windows.Navigation;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace AmiKoWindows
 {
@@ -40,7 +41,9 @@ namespace AmiKoWindows
 
         UIState _uiState;
         MainSqlDb _sqlDb;
+        FullTextDb _fullTextDb;
         FachInfo _fachInfo;
+        FullTextSearch _fullTextSearch;
         InteractionsCart _interactions;
         StatusBarHelper _statusBarHelper;
 
@@ -60,19 +63,101 @@ namespace AmiKoWindows
             // Initialize SQLite DB
             _sqlDb = new MainSqlDb();
             _sqlDb.Init();
-            this.SearchResult.DataContext = _sqlDb;
 
             // Initialize expert info browser frame
-            _fachInfo = new FachInfo();
-            this.Browser.DataContext = _fachInfo;
-            this.SectionTitles.DataContext = _fachInfo;
+            _fachInfo = new FachInfo(this, _sqlDb);
+
+            // Initialize Fulltext DB
+            _fullTextDb = new FullTextDb();
+            _fullTextDb.Init();
+            _fullTextSearch = new FullTextSearch();
 
             // Initialize interactions cart
             _interactions = new InteractionsCart();
-            this.Browser.ObjectForScripting = _interactions;
             _interactions.LoadFiles();
 
             _statusBarHelper = new StatusBarHelper();
+
+            // Set data context
+            SetDataContext(UIState.State.Compendium);
+        }
+
+        public void SetState(string state)
+        {
+            if (state.Equals("Compendium"))
+            {
+                SetState(UIState.State.Compendium);
+            }
+            else if (state.Equals("Favorites"))
+            {
+                SetState(UIState.State.Favorites);
+            }
+            else if (state.Equals("Interactions"))
+            {
+                SetState(UIState.State.Interactions);
+                _interactions.ShowBasket();
+            }
+            else if (state.Equals("FullText"))
+            {
+                SetState(UIState.State.FullTextSearch);
+            }
+        }
+
+        public void SetState(UIState.State state)
+        {
+            _uiState.SetState(state);
+            SetDataContext(state);
+
+            if (state == UIState.State.Compendium)
+            {
+                _sqlDb.UpdateSearchResults(_uiState);
+                this.Compendium.IsChecked = true;
+                this.Favorites.IsChecked = false;
+                this.Interactions.IsChecked = false;
+            }
+            else if (state == UIState.State.Favorites)
+            {
+                _sqlDb.UpdateSearchResults(_uiState);
+                this.Compendium.IsChecked = false;
+                this.Favorites.IsChecked = true;
+                this.Interactions.IsChecked = false;
+            }
+            else if (state == UIState.State.Interactions)
+            {
+                _sqlDb.UpdateSearchResults(_uiState);
+                this.Compendium.IsChecked = false;
+                this.Favorites.IsChecked = false;
+                this.Interactions.IsChecked = true;
+                _interactions.ShowBasket();
+            }
+            else if (state == UIState.State.FullTextSearch)
+            {
+                _uiState.SetQuery(UIState.Query.Fulltext);
+            }
+        }
+
+        public void SetDataContext(UIState.State state)
+        {
+            if (state == UIState.State.Compendium || state == UIState.State.Favorites)
+            {
+                this.SearchResult.DataContext = _sqlDb;
+                this.Browser.DataContext = _fachInfo;
+                this.SectionTitles.DataContext = _fachInfo;
+                this.Browser.ObjectForScripting = _fachInfo;
+
+            }
+            else if (state == UIState.State.Interactions)
+            {
+                this.Browser.DataContext = _interactions;
+                this.SectionTitles.DataContext = _interactions;
+                this.Browser.ObjectForScripting = _interactions;
+            }
+            else if (state == UIState.State.FullTextSearch)
+            {
+                this.SearchResult.DataContext = _fullTextDb;
+                this.Browser.DataContext = _fullTextSearch;
+                this.SectionTitles.DataContext = _fullTextSearch;
+            }
             this.StatusBar.DataContext = _statusBarHelper;
         }
 
@@ -130,10 +215,14 @@ namespace AmiKoWindows
                 // Change the data context of the status bar
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                long numArticles = await _sqlDb?.Search(_uiState, text);
+                long numResults = 0;
+                if (_uiState.IsFullTextSearch())
+                    numResults = await _fullTextDb?.Search(_uiState, text);
+                else
+                    numResults = await _sqlDb?.Search(_uiState, text);
                 sw.Stop();
                 double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
-                _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numArticles, elapsedTime));
+                _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numResults, elapsedTime));
             }
         }
 
@@ -145,11 +234,14 @@ namespace AmiKoWindows
             this.SearchTextBox.Text = "";
             // Change the data context of the status bar
             Stopwatch sw = new Stopwatch();
-            sw.Start();
-            long numArticles = await _sqlDb?.Search(_uiState, "");
+            long numResults = 0;
+            if (_uiState.IsFullTextSearch())
+                numResults = await _fullTextDb?.Search(_uiState, "");
+            else
+                numResults = await _sqlDb?.Search(_uiState, "");
             sw.Stop();
             double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
-            _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numArticles, elapsedTime));
+            _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numResults, elapsedTime));
         }
 
         /**
@@ -170,6 +262,7 @@ namespace AmiKoWindows
          * This event handler is called when the user selects the title in the search result
          */
         static long? _searchSelectionItemId = 0;
+        static string _searchSelectionItemHash = "";
         private async void OnSearchItem_Selection(object sender, SelectionChangedEventArgs e)
         {
             ListBox searchResultList = sender as ListBox;
@@ -180,25 +273,47 @@ namespace AmiKoWindows
                 {
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
+                    int numResults = 0;
 
                     Item selection = selectedItem as Item;
-                    if (_searchSelectionItemId != selection.Id)
+                    if (_uiState.IsFullTextSearch())
                     {
-                        _searchSelectionItemId = selection.Id;
-                        if (_uiState.IsCompendium() || _uiState.IsFavorites())
+                        if (_searchSelectionItemHash != selection.Hash)
                         {
-                            Article a = await _sqlDb.GetArticleFromId(_searchSelectionItemId);
-                            _fachInfo.ShowFull(a);   // Load html in browser window
+                            _searchSelectionItemHash = selection.Hash;
+                            FullTextEntry entry = await _fullTextDb.GetEntryWithHash(_searchSelectionItemHash);
+                            List<Article> listOfArticles = await _sqlDb.SearchListOfRegNrs(entry.GetRegnrsAsList());
+                            if (listOfArticles != null)
+                            {
+                                _fullTextSearch.Filter = "";
+                                _fullTextSearch.ShowTableWithArticles(listOfArticles, entry.RegChaptersDict);
+                                numResults = listOfArticles.Count;
+                            }
                         }
-                        else if (_uiState.IsInteractions())
+                    }
+                    else
+                    {
+                        if (_searchSelectionItemId != selection.Id)
                         {
-                            Article a = await _sqlDb.GetArticleWithId(_searchSelectionItemId);
-                            _interactions.AddArticle(a);
-                            _interactions.ShowBasket();
+                            _searchSelectionItemId = selection.Id;
+                            if (_uiState.IsCompendium() || _uiState.IsFavorites())
+                            {
+                                Article a = await _sqlDb.GetArticleFromId(_searchSelectionItemId);
+                                _fachInfo.ShowFull(a);   // Load html in browser window
+                            }
+                            else if (_uiState.IsInteractions())
+                            {
+                                Article a = await _sqlDb.GetArticleWithId(_searchSelectionItemId);
+                                _interactions.AddArticle(a);
+                                _interactions.ShowBasket();
+                            }
                         }
                     }
 
                     sw.Stop();
+                    double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
+                    if (numResults > 0)
+                        _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numResults, elapsedTime));
                     // Console.WriteLine("Item " + _searchSelectionItemId + " -> " + sw.ElapsedMilliseconds + "ms");
                 }
             }
@@ -247,12 +362,21 @@ namespace AmiKoWindows
             ListBox searchTitlesList = sender as ListBox;
             if (searchTitlesList?.Items.Count > 0)
             {
-                TitleItem sectionTitle = searchTitlesList.SelectedItem as TitleItem;
-                // Inject javascript to move to anchor
-                if (sectionTitle.Id != null)
+                TitleItem sectionTitle = searchTitlesList.SelectedItem as TitleItem;               
+                if (sectionTitle!=null && sectionTitle.Id != null)
                 {
-                    var jsCode = "document.getElementById('" + sectionTitle.Id + "').scrollIntoView(true);";
-                    this.Browser.InvokeScript("execScript", new Object[] { jsCode, "JavaScript" });
+                    if (!_uiState.IsFullTextSearch())
+                    {
+                        // Inject javascript to move to anchor
+                        var jsCode = "document.getElementById('" + sectionTitle.Id + "').scrollIntoView(true);";
+                        this.Browser.InvokeScript("execScript", new Object[] { jsCode, "JavaScript" });
+                    }
+                    else
+                    {
+                        // Set filter
+                        _fullTextSearch.Filter = sectionTitle.Id;
+                        _fullTextSearch.UpdateTable();
+                    }
                 }
             }
         }
@@ -280,11 +404,13 @@ namespace AmiKoWindows
             if (name.Equals("Update"))
             {
                 _sqlDb.Close();
+                _fullTextDb.Close();
                 ProgressDialog progressDialog = new ProgressDialog();
                 progressDialog.UpdateDbAsync();
                 progressDialog.ShowDialog();
                 // Re-init db
                  _sqlDb.Init();
+                _fullTextDb.Init();
             }
             else if (name.Equals("Report"))
             {
@@ -313,37 +439,7 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            if (source.Name.Equals("Compendium"))
-            {
-                _uiState.SetState(UIState.State.Compendium);
-                _sqlDb.UpdateSearchResults(_uiState);
-                this.Browser.DataContext = _fachInfo;
-                this.SectionTitles.DataContext = _fachInfo;
-                this.Compendium.IsChecked = true;
-                this.Favorites.IsChecked = false;
-                this.Interactions.IsChecked = false;
-            }
-            else if (source.Name.Equals("Favorites"))
-            {
-                _uiState.SetState(UIState.State.Favorites);
-                _sqlDb.UpdateSearchResults(_uiState);
-                this.Browser.DataContext = _fachInfo;
-                this.SectionTitles.DataContext = _fachInfo;
-                this.Compendium.IsChecked = false;
-                this.Favorites.IsChecked = true;
-                this.Interactions.IsChecked = false;
-            }
-            else if (source.Name.Equals("Interactions"))
-            {
-                _uiState.SetState(UIState.State.Interactions);
-                _sqlDb.UpdateSearchResults(_uiState);
-                this.Browser.DataContext = _interactions;
-                this.SectionTitles.DataContext = _interactions;
-                this.Compendium.IsChecked = false;
-                this.Favorites.IsChecked = false;
-                this.Interactions.IsChecked = true;
-                _interactions.ShowBasket();
-            }
+            SetState(source.Name);
         }
 
         private void QueryButton_Click(object sender, RoutedEventArgs e)
@@ -353,6 +449,8 @@ namespace AmiKoWindows
                 return;
 
             this.SearchTextBox.DataContext = _uiState;
+            this.SearchResult.DataContext = _sqlDb;
+            this.SectionTitles.DataContext = _fachInfo;
 
             if (source.Name.Equals("Title"))
                 _uiState.SetQuery(UIState.Query.Title);
@@ -364,6 +462,10 @@ namespace AmiKoWindows
                 _uiState.SetQuery(UIState.Query.Regnr);
             else if (source.Name.Equals("Application"))
                 _uiState.SetQuery(UIState.Query.Application);
+            else if (source.Name.Equals("Fulltext"))
+            {
+                SetState(UIState.State.FullTextSearch);
+            }
 
             _sqlDb.UpdateSearchResults(_uiState);
         }

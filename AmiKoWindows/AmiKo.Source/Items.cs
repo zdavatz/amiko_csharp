@@ -39,6 +39,7 @@ namespace AmiKoWindows
     {
         // Properties, must be public (these are not fields!)
         public long? Id { get; set; }
+        public string Hash { get; set; }
         public string Text { get; set; }
         public bool IsFavorite { get; set; }
         public ChildItemsObservableCollection ChildItems { get; set; }
@@ -296,6 +297,33 @@ namespace AmiKoWindows
                             Text = article.Title,
                             IsFavorite = article.IsFavorite,
                             ChildItems = ci
+                        });
+                    }
+                }
+            }
+            _suppressNotification = false;
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        public void AddRange(UIState uiState, IEnumerable<FullTextEntry> list)
+        {
+            if (list == null)
+                throw new ArgumentNullException("list");
+
+            _suppressNotification = true;
+            string type = uiState.SearchQueryType();
+
+            if (type.Equals("fulltext"))
+            {
+                foreach (FullTextEntry entry in list)
+                {
+                    bool cond = uiState.IsFullTextSearch();
+                    if (cond)
+                    {
+                        Add(new Item()
+                        {
+                            Hash = entry.Hash,
+                            Text = entry.GetKeywordPlus()
                         });
                     }
                 }

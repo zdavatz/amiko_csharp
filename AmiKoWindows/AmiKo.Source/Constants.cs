@@ -23,12 +23,14 @@ namespace AmiKoWindows
     {
         // Important folders and files
         public const string AIPS_DB_BASE = @"amiko_db_full_idx_";
+        public const string FREQUENCY_DB_BASE = @"amiko_frequency_";
         public const string REPORT_FILE_BASE = @"amiko_report_";
         public const string INTERACTIONS_CSV_BASE = @"drug_interactions_csv_";
         public const string IMG_FOLDER = @"images";	
 	    public const string JS_FOLDER = @"jscripts";
         public const string CSS_SHEET = @"./css/fachinfo_css.css";
         public const string INTERACTIONS_SHEET = @"./css/interactions_css.css";
+        public const string FULLTEXT_SHEET = @"./css/fulltext_style_css.css";
         public const string SHOPPING_SHEET = @"./css/shopping_css.css";
         public const string ROSE_SHEET = @"./css/zurrose_css.css";
 

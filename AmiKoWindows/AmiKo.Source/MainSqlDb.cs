@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace AmiKoWindows
 {
-    class MainSqlDb : INotifyPropertyChanged
+    public class MainSqlDb : INotifyPropertyChanged
     {
         #region Constants
         const string KEY_ROWID = "_id";
@@ -60,6 +60,10 @@ namespace AmiKoWindows
 
         static readonly string PACKAGES_TABLE = String.Format("{0},{1},{2},{3},{4}",
             KEY_ROWID, KEY_TITLE, KEY_AUTHOR, KEY_REGNRS, KEY_PACKAGES);
+
+        static readonly string FT_SEARCH_TABLE = String.Format("{0},{1},{2},{3},{4},{5}",
+            KEY_ROWID, KEY_TITLE, KEY_AUTHOR, KEY_REGNRS, KEY_SECTION_IDS, KEY_SECTION_TITLES);
+
         #endregion
 
         #region Private Fields
@@ -202,7 +206,7 @@ namespace AmiKoWindows
                 using (SQLiteCommand com = _db.Command())
                 {
                     com.CommandText = "SELECT * FROM " + DATABASE_TABLE + " WHERE "
-                        + KEY_ROWID + " LIKE " + "'" + id + "'";
+                        + KEY_ROWID + " LIKE '" + id + "'";
 
                     using (SQLiteDataReader reader = com.ExecuteReader())
                     {
@@ -228,7 +232,34 @@ namespace AmiKoWindows
                 using (SQLiteCommand com = _db.Command())
                 {
                     com.CommandText = "SELECT * FROM " + DATABASE_TABLE + " WHERE "
-                        + KEY_PACKAGES + " LIKE " + "'%" + eancode + "%'";
+                        + KEY_PACKAGES + " LIKE '%" + eancode + "%'";
+
+                    using (SQLiteDataReader reader = com.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            med = CursorToArticle(reader);
+                        }
+                    }
+                }
+            });
+
+            return med;
+        }
+
+        public async Task<Article> GetArticleWithRegnr(string regnr)
+        {
+            Article med = new Article();
+
+            await Task.Run(() =>
+            {
+                _db.ReOpenIfNecessary();
+
+                using (SQLiteCommand com = _db.Command())
+                {
+                    com.CommandText = "SELECT * FROM " + DATABASE_TABLE + " WHERE "
+                        + KEY_REGNRS + " LIKE '%, " + regnr + "%' OR "
+                        + KEY_REGNRS + " LIKE '" + regnr + "%'";
 
                     using (SQLiteDataReader reader = com.ExecuteReader())
                     {
@@ -256,13 +287,13 @@ namespace AmiKoWindows
                     if (title.Length > 2)
                     {
                         com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
-                            + KEY_TITLE + " LIKE " + "'" + title + "%' OR "
-                            + KEY_TITLE + " LIKE " + "'%" + title + "%'";
+                            + KEY_TITLE + " LIKE '" + title + "%' OR "
+                            + KEY_TITLE + " LIKE '%" + title + "%'";
                     }
                     else
                     {
                         com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
-                            + KEY_TITLE + " LIKE " + "'" + title + "%'";
+                            + KEY_TITLE + " LIKE '" + title + "%'";
                     }
 
                     using (SQLiteDataReader reader = com.ExecuteReader())
@@ -289,7 +320,7 @@ namespace AmiKoWindows
                     _db.ReOpenIfNecessary();
 
                     com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
-                        + KEY_AUTHOR + " LIKE " + "'" + author + "%'";
+                        + KEY_AUTHOR + " LIKE '" + author + "%'";
 
                     using (SQLiteDataReader reader = com.ExecuteReader())
                     {
@@ -315,14 +346,14 @@ namespace AmiKoWindows
                     _db.ReOpenIfNecessary();
 
                     com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
-                        + KEY_ATCCODE + " like " + "'%;" + atccode + "%' or "
-                        + KEY_ATCCODE + " like " + "'" + atccode + "%' or "
-                        + KEY_ATCCODE + " like " + "'% " + atccode + "%' or "
-                        + KEY_ATCCLASS + " like " + "'" + atccode + "%' or "
-                        + KEY_ATCCLASS + " like " + "'%;" + atccode + "%' or "
-                        + KEY_ATCCLASS + " like " + "'%#" + atccode + "%' or "
-                        + KEY_SUBSTANCES + " like " + "'%, " + atccode + "%' or "
-                        + KEY_SUBSTANCES + " like " + "'" + atccode + "%'";
+                        + KEY_ATCCODE + " like '%;" + atccode + "%' OR "
+                        + KEY_ATCCODE + " like '" + atccode + "%' OR "
+                        + KEY_ATCCODE + " like '% " + atccode + "%' OR "
+                        + KEY_ATCCLASS + " like '" + atccode + "%' OR "
+                        + KEY_ATCCLASS + " like '%;" + atccode + "%' OR "
+                        + KEY_ATCCLASS + " like '%#" + atccode + "%' OR "
+                        + KEY_SUBSTANCES + " like '%, " + atccode + "%' OR "
+                        + KEY_SUBSTANCES + " like '" + atccode + "%'";
 
                     using (SQLiteDataReader reader = com.ExecuteReader())
                     {
@@ -348,7 +379,7 @@ namespace AmiKoWindows
                     _db.ReOpenIfNecessary();
 
                     com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
-                        + KEY_SUBSTANCES + " LIKE " + "'%, " + ingredient + "%' or "
+                        + KEY_SUBSTANCES + " LIKE '%, " + ingredient + "%' OR "
                         + KEY_SUBSTANCES + " LIKE " + "'" + ingredient + "%'";
 
                     using (SQLiteDataReader reader = com.ExecuteReader())
@@ -375,14 +406,80 @@ namespace AmiKoWindows
                     _db.ReOpenIfNecessary();
 
                     com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
-                        + KEY_REGNRS + " LIKE " + "'%, " + regnr + "%' or "
-                        + KEY_REGNRS + " LIKE " + "'" + regnr + "%'";
+                        + KEY_REGNRS + " LIKE '%, " + regnr + "%' OR "
+                        + KEY_REGNRS + " LIKE '" + regnr + "%'";
 
                     using (SQLiteDataReader reader = com.ExecuteReader())
                     {
                         while (reader.Read())
                         {
                             medTitles.Add(CursorToShortArticle(reader));
+                        }
+                    }
+                }
+            });
+
+            return medTitles;
+        }
+
+        public async Task<List<Article>> SearchListOfRegNrs(List<string> listOfRegnrs)
+        {
+            List<Article> medTitles = new List<Article>();
+
+            await Task.Run(() =>
+            {
+                using (SQLiteCommand com = _db.Command())
+                {
+                    _db.ReOpenIfNecessary();
+
+                    const int N = 40;   // Size of chunks
+                    int A = (listOfRegnrs.Count / N) * N;
+                    List<string> listA = listOfRegnrs.GetRange(0, A); // First list, contains most of the articles
+                    List<string> listB = listOfRegnrs.GetRange(A, listOfRegnrs.Count - A); // Second list, left overs
+                    int count = 0;
+                    string subQuery = "";
+                    // Loop through first list
+                    foreach (string reg in listA)
+                    {
+                        subQuery += KEY_REGNRS + " LIKE '%, " + reg + "%' OR "
+                            + KEY_REGNRS + " LIKE '" + reg + "%'";
+                        count++;
+                        if (count % N == 0)
+                        {
+                            com.CommandText = "SELECT " + FT_SEARCH_TABLE + " FROM " + DATABASE_TABLE + " WHERE " + subQuery;
+                            using (SQLiteDataReader reader = com.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    medTitles.Add(CursorToVeryShortArticle(reader));
+                                }
+                            }
+                            subQuery = "";
+                        }
+                        else
+                        {
+                            subQuery += " OR ";
+                        }
+                    }
+                    // Loop through second list (the rest)
+                    foreach (string reg in listB)
+                    {
+                        subQuery += KEY_REGNRS + " LIKE '%, " + reg + "%' OR " 
+                            + KEY_REGNRS + " LIKE '" + reg + "%' OR ";
+                    }
+                    string query = "";
+                    if (subQuery.Length > 4)
+                    {
+                        query = "SELECT " + FT_SEARCH_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
+                            + subQuery.Substring(0, subQuery.Length - 4);
+                    }
+
+                    com.CommandText = query;
+                    using (SQLiteDataReader reader = com.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            medTitles.Add(CursorToVeryShortArticle(reader));
                         }
                     }
                 }
@@ -402,12 +499,12 @@ namespace AmiKoWindows
                     _db.ReOpenIfNecessary();
 
                     com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE " 
-                        + KEY_APPLICATION + " LIKE " + "'%," + application + "%' OR " 
-                        + KEY_APPLICATION + " LIKE " + "'" + application + "%' OR " 
-                        + KEY_APPLICATION + " LIKE " + "'% " + application + "%' OR " 
-                        + KEY_APPLICATION + " LIKE " + "'%;" + application + "%' OR "
-                        + KEY_INDICATIONS + " LIKE " + "'" + application + "%' OR "
-                        + KEY_INDICATIONS + " LIKE " + "'%;" + application + "%'";
+                        + KEY_APPLICATION + " LIKE '%," + application + "%' OR " 
+                        + KEY_APPLICATION + " LIKE '" + application + "%' OR " 
+                        + KEY_APPLICATION + " LIKE '% " + application + "%' OR " 
+                        + KEY_APPLICATION + " LIKE '%;" + application + "%' OR "
+                        + KEY_INDICATIONS + " LIKE '" + application + "%' OR "
+                        + KEY_INDICATIONS + " LIKE '%;" + application + "%'";
 
                     using (SQLiteDataReader reader = com.ExecuteReader())
                     {
@@ -433,7 +530,7 @@ namespace AmiKoWindows
                     _db.ReOpenIfNecessary();
 
                     com.CommandText = "SELECT " + PACKAGES_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
-                        + KEY_PACKAGES + " LIKE " + "'%" + eancode + "%'";
+                        + KEY_PACKAGES + " LIKE '%" + eancode + "%'";
 
                     using (SQLiteDataReader reader = com.ExecuteReader())
                     {
@@ -450,6 +547,20 @@ namespace AmiKoWindows
         #endregion
 
         #region Private Methods
+        private Article CursorToVeryShortArticle(SQLiteDataReader reader)
+        {
+            Article article = new Article();
+
+            article.Id = reader[KEY_ROWID] as long?;
+            article.Title = reader[KEY_TITLE] as string;
+            article.Author = reader[KEY_AUTHOR] as string;
+            article.Regnrs = reader[KEY_REGNRS] as string;
+            article.SectionIds = reader[KEY_SECTION_IDS] as string;
+            article.SectionTitles = reader[KEY_SECTION_TITLES] as string;
+
+            return article;
+        }
+
         private Article CursorToShortArticle(SQLiteDataReader reader)
         {
             Article article = new Article();

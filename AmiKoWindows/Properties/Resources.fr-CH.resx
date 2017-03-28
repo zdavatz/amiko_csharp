@@ -135,6 +135,9 @@
   <data name="butAuthor" xml:space="preserve">
     <value>Titulaire</value>
   </data>
+  <data name="butFulltext" xml:space="preserve">
+    <value>Plein Texte</value>
+  </data>
   <data name="butIngredient" xml:space="preserve">
     <value>Principe Actif</value>
   </data>

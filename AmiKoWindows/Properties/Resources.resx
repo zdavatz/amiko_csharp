@@ -135,6 +135,9 @@
   <data name="butAuthor" xml:space="preserve">
     <value>Inhaberin</value>
   </data>
+  <data name="butFulltext" xml:space="preserve">
+    <value>Volltext</value>
+  </data>
   <data name="butIngredient" xml:space="preserve">
     <value>Wirkstoff</value>
   </data>

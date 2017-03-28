@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -40,6 +39,12 @@ namespace AmiKoWindows
         {
             get;
             private set;
+        }
+
+        public bool DownloadingCompleted
+        {
+            get;
+            set;
         }
         #endregion
 
@@ -108,49 +113,49 @@ namespace AmiKoWindows
                 }
             }
         }
-
         #endregion
 
         #region Private Methods
-        private Task StartDownloadAndExtract(string title, string url, string filename)
+        private void StartDownloadAndExtract(string title, string url, string filename)
         {
             string filepath = Path.Combine(Utilities.AppRoamingDataFolder(), filename);
+            _filename = filename;
+
             // Starts task backed by background thread (located in thread pool)
-            return Task.Run(() =>
+            // Download
+            try
             {
-                // Download
-                try
+                var uri = new Uri(url);
+                using (WebClient wb = new WebClient())
                 {
-                    var uri = new System.Uri(url);
-                    using (WebClient wb = new WebClient())
-                    {
-                        wb.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DownloadProgressChanged);
-                        wb.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadDataCompleted);
-                        wb.DownloadFileAsync(uri, filepath);
-                        while (wb.IsBusy) ;
-                        _filename = filename;
-                    }
+                    wb.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DownloadProgressChanged);
+                    wb.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadDataCompleted);
+                    wb.DownloadFileAsync(uri, filepath);
+                    while (wb.IsBusy) ;
                 }
-                catch (Exception)
-                {
-                    Console.WriteLine("Failed to download file: {0}", filename);
-                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Failed to download file: {0}", filename);
+            }
 
-                // Decompress if necessary
-                if (_filename.EndsWith("zip"))
-                {
-                    Text = string.Format("Unzipping {0}... ", _filename.Replace(".zip", ""));
-                    string unzippedFilepath = filepath.Replace(".zip", "");
-                    if (File.Exists(unzippedFilepath))
-                        File.Delete(unzippedFilepath);
-                    // Unzip
-                    ZipFile.ExtractToDirectory(filepath, Utilities.AppRoamingDataFolder());
-                    // Remove file
-                    if (File.Exists(filepath))
-                        File.Delete(filepath);
-                 }
+            if (DownloadingCompleted)
+                return;
 
-            });
+            // Decompress if necessary
+            if (_filename.EndsWith("zip"))
+            {
+                Text = string.Format("Unzipping {0}... ", _filename.Replace(".zip", ""));
+                string unzippedFilepath = filepath.Replace(".zip", "");
+                // Remove old zip file if it exists
+                if (File.Exists(unzippedFilepath))
+                    File.Delete(unzippedFilepath);
+                // Unzip to app roaming folder
+                ZipFile.ExtractToDirectory(filepath, Utilities.AppRoamingDataFolder());
+                // Remove file
+                if (File.Exists(filepath))
+                    File.Delete(filepath);
+            }
         }
 
         private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
@@ -158,7 +163,7 @@ namespace AmiKoWindows
             double bytesIn = (double)e.BytesReceived; // = double.Parse(e.BytesReceived.ToString());
             double totalBytes = (double)e.TotalBytesToReceive; // = double.Parse(e.TotalBytesToReceive.ToString());
             double percentage = bytesIn / totalBytes * 100;
-            Text = string.Format("Downloading database... {0:0}kB out of {1:0}kB", bytesIn*0.001, totalBytes*0.001); 
+            Text = string.Format("Downloading {0}... {1:0}kB out of {2:0}kB", _filename.Replace(".zip", ""), bytesIn *0.001, totalBytes*0.001);
             CurrentProgress = percentage;
             _filesize = (long)totalBytes;
         }
@@ -178,7 +183,8 @@ namespace AmiKoWindows
                 {
                     { "Report", "http://pillbox.oddb.org/amiko_report_de.html", @"amiko_report_de.html" },
                     { "Interaktionen", "http://pillbox.oddb.org/drug_interactions_csv_de.zip", @"drug_interactions_csv_de.csv.zip" },
-                    { "Datenbank", "http://pillbox.oddb.org/amiko_db_full_idx_de.zip", @"amiko_db_full_idx_de.db.zip" },
+                    { "Hauptdatenbank", "http://pillbox.oddb.org/amiko_db_full_idx_de.zip", @"amiko_db_full_idx_de.db.zip" },
+                    { "Volltext-Suchbegriffe", "http://pillbox.oddb.org/amiko_frequency_de.db.zip", @"amiko_frequency_de.db.zip" }
                 };
 
             if (Utilities.AppLanguage().Equals("fr"))
@@ -186,35 +192,54 @@ namespace AmiKoWindows
                 listOfFiles = new TupleList<string, string, string>
                 {
                     { "Report", "http://pillbox.oddb.org/amiko_report_fr.html", @"amiko_report_fr.html" },
-                    { "Interaktionen", "http://pillbox.oddb.org/drug_interactions_csv_fr.zip", @"drug_interactions_csv_fr.csv.zip" },
-                    { "Datenbank", "http://pillbox.oddb.org/amiko_db_full_idx_fr.zip", @"amiko_db_full_idx_fr.db.zip" },
+                    { "Interactions", "http://pillbox.oddb.org/drug_interactions_csv_fr.zip", @"drug_interactions_csv_fr.csv.zip" },
+                    { "Base des données principale", "http://pillbox.oddb.org/amiko_db_full_idx_fr.zip", @"amiko_db_full_idx_fr.db.zip" },
+                    { "Mots-clés", "http://pillbox.oddb.org/amiko_frequency_fr.db.zip", @"amiko_frequency_fr.db.zip" }
                 };
-
             }
 
-            await Task.Run(async () =>
+            DownloadingCompleted = false;
+            await Task.Run(() =>
             {
                 // Generate list of download/unzip tasks
-                var tasks = listOfFiles
-                    .Select(f => StartDownloadAndExtract(f.Item1, f.Item2, f.Item3))
-                    .ToList();
-
-                foreach (Task t in tasks)
+                var actions = new List<Action>();
+                foreach (var f in listOfFiles)
                 {
-                    await t;
+                    actions.Add(new Action(() => { StartDownloadAndExtract(f.Item1, f.Item2, f.Item3); }));      
+                }
+                foreach (Action a in actions)
+                {
+                    a();
                 }
             });
 
             long? numArticles = 0;
+            long? numSearchTerms = 0;
             int numInteractions = 0;
 
             // Extract number of articles
             string filepath = Utilities.SQLiteDBPath();
             if (File.Exists(filepath))
             {
-                DatabaseHelper db = new DatabaseHelper();
-                await db.OpenDB(filepath);
-                numArticles = await db.GetNumRecords("amikodb");
+                if (!DownloadingCompleted)
+                {
+                    DatabaseHelper db = new DatabaseHelper();
+                    await db.OpenDB(filepath);
+                    numArticles = await db.GetNumRecords("amikodb");
+                    db.CloseDB();
+                }
+            }
+            // Extract number of fulltext search terms
+            filepath = Utilities.FrequencyDBPath();
+            if (File.Exists(filepath))
+            {
+                if (!DownloadingCompleted)
+                {
+                    DatabaseHelper db = new DatabaseHelper();
+                    await db.OpenDB(filepath);
+                    numSearchTerms = await db.GetNumRecords("frequency");
+                    db.CloseDB();
+                }
             }
             // Extract number of interactions
             filepath = Utilities.InteractionsPath();
@@ -225,10 +250,13 @@ namespace AmiKoWindows
             }
 
             if (Utilities.AppLanguage().Equals("de"))
-                Text = string.Format("Neue AmiKo Datenbank mit {0} Fachinfos und {1} Interaktionen erfolgreich geladen!", numArticles, numInteractions);
+                Text = string.Format("Neue AmiKo Datenbank mit:\n- {0} Fachinfos\n- {1} Suchbegriffen\n- {2} Interaktionen\n erfolgreich geladen!"
+                    , numArticles, numSearchTerms, numInteractions);
             else if (Utilities.AppLanguage().Equals("fr"))
-                Text = string.Format("Nouvelle base de données avec {0} notice infopro et {1} interactions chargée avec succès!", numArticles, numInteractions);
+                Text = string.Format("Nouvelle base de données avec:\n- {0} notes infopro\n- {1} mot-clés\n- {2} interactions\n chargée avec succès!"
+                    , numArticles, numSearchTerms, numInteractions);
 
+            DownloadingCompleted = true;
             ButtonContent = "OK";
         }
         #endregion

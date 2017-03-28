@@ -15,10 +15,10 @@
         RenderOptions.ClearTypeHint="Enabled"
         TextOptions.TextFormattingMode="Display"
         Title="Updating database" TitleCaps="False"
-        Height="160" Width="500">
+        Height="220" Width="500">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <TextBlock Margin="10" Text="{Binding Path=Text}"></TextBlock>
+            <TextBlock Margin="10" Height="80" Text="{Binding Path=Text}"></TextBlock>
             <Grid>
                 <ProgressBar Name="ProgressBar" Value="{Binding Path=CurrentProgress, UpdateSourceTrigger=PropertyChanged}"
                          Margin="10" Minimum="0" Maximum="100" Height="24" HorizontalAlignment="Stretch" />

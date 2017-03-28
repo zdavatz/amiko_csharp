@@ -44,7 +44,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\AmiKo\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;AMIKO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -156,6 +156,10 @@
     </ApplicationDefinition>
     <Compile Include="AmiKo.Source\DatabaseHelper.cs" />
     <Compile Include="AmiKo.Source\FileOps.cs" />
+    <Compile Include="AmiKo.Source\FullTextDb.cs" />
+    <Compile Include="AmiKo.Source\FullTextEntry.cs" />
+    <Compile Include="AmiKo.Source\FullTextSearch.cs" />
+    <Compile Include="AmiKo.Source\HtmlBase.cs" />
     <Compile Include="AmiKo.Source\InteractionsCart.cs" />
     <Compile Include="AmiKo.Source\Items.cs" />
     <Compile Include="interface\AboutDialog.xaml.cs">
@@ -236,20 +240,24 @@
     <Resource Include="store\de\assets\desitin_logo.44x44.png" />
     <Resource Include="store\de\assets\desitin_logo.50x50.png" />
     <None Include="dbs\de\amiko_db_full_idx_de.db" />
+    <None Include="dbs\de\amiko_frequency_de.db" />
     <None Include="dbs\de\drug_interactions_csv_de.csv" />
     <None Include="PreBuild.bat" />
     <None Include="store\de\appx.manifest" />
     <None Include="store\de\appx.packing.bat" />
     <Resource Include="desitin_icon.ico" />
+    <Content Include="css\fulltext_style_css.css" />
     <Content Include="dbs\de\amiko_report_de.html" />
     <Content Include="jscripts\main_callbacks.js" />
     <EmbeddedResource Include="Properties\Resources.de-CH.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.de-CH.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="packages.config" />

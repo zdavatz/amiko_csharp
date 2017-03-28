@@ -31,7 +31,7 @@ namespace AmiKoWindows
 #endif
 
             MainWindow main = new MainWindow();
-            Thread.Sleep(3000);
+            Thread.Sleep(1000);
             splash.Close();
             /*
             AllocConsole();

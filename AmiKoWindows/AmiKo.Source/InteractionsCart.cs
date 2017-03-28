@@ -22,7 +22,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.ComponentModel;
 using System.Security.Permissions;
 using System.Runtime.InteropServices;
 
@@ -30,7 +29,7 @@ namespace AmiKoWindows
 {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
     [ComVisible(true)]
-    public class InteractionsCart : INotifyPropertyChanged
+    public class InteractionsCart : HtmlBase
     {
         #region Private Fields
         Dictionary<string, string> _interactionsDict = new Dictionary<string, string>();
@@ -41,47 +40,21 @@ namespace AmiKoWindows
         string _imagesFolder;
         #endregion
 
-        #region Event Handlers
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
-
-        #region Dependency Properties
-        // Source object used for data binding, this is a property
-        private string _htmlText;
-        public string HtmlText
-        {
-            get { return _htmlText; }
-            set
-            {
-                if (value != _htmlText)
-                {
-                    _htmlText = value;
-                    OnPropertyChanged("HtmlText");
-                }
-            }
-        }
-
-        private TitlesObservableCollection _sectionTitles = new TitlesObservableCollection();
-        public TitlesObservableCollection SectionTitles
-        {
-            get { return _sectionTitles; }
-            private set
-            {
-                if (value != _sectionTitles)
-                {
-                    _sectionTitles = value;
-                    // OnPropertyChanged is not necessary here...
-                }
-            }
-        }
-        #endregion
-
         #region Public Methods
+        public void JSNotify(string cmd, object o)
+        {
+            if (cmd.Equals("deleteSingleRow"))
+            {
+                string row = o as string;
+                row = row.Trim();
+                RemoveArticle(row);
+            }
+            else if (cmd.Equals("deleteAllRows"))
+            {
+                RemoveAllArticles();
+            }
+        }
+
         public void LoadFiles()
         {
             _interactionsDict = ReadInteractions(Utilities.InteractionsPath());
@@ -95,25 +68,6 @@ namespace AmiKoWindows
             _cssStr = File.ReadAllText(path);
 
             _imagesFolder = Path.Combine(Utilities.AppExecutingFolder(), Constants.IMG_FOLDER);
-        }
-
-        public void JSNotify(string cmd, object o)
-        {
-            if (cmd.Equals("deleteSingleRow"))
-            {
-                string row = o as string;
-                row = row.Trim();
-                if (_articleBasket.ContainsKey(row))
-                {
-                    _articleBasket.Remove(row);
-                    ShowBasket();
-                }
-            }
-            else if (cmd.Equals("deleteAllRows"))
-            {
-                _articleBasket.Clear();
-                ShowBasket();
-            }
         }
 
         public void ShowBasket()
@@ -231,16 +185,31 @@ namespace AmiKoWindows
                 _articleBasket.Add(title, a);
         }
 
-        public void DeleteArticle(Article a)
+        public void RemoveArticle(string row)
+        {
+            if (_articleBasket.ContainsKey(row))
+            {
+                _articleBasket.Remove(row);
+                // Refresh UI
+                ShowBasket();
+            }
+        }
+
+        public void RemoveArticle(Article a)
         {
             string title = ClampedTitle(a);
             if (_articleBasket.ContainsKey(title))
+            {
                 _articleBasket.Remove(title);
+                // Refresh UI
+                ShowBasket();
+            }
         }
 
-        public void DeleteAllArticles()
+        public void RemoveAllArticles()
         {
             _articleBasket.Clear();
+            ShowBasket();
         }
         #endregion
 

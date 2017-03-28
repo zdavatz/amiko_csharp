@@ -1,0 +1,31 @@
+﻿#fulltext {
+    margin-left: -40px;
+    margin-right: 0px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color:#555555;
+}
+    #fulltext div p {
+        font-size: 0.8em;
+    }
+    #fulltext p {
+        margin-top: 0em;
+        margin-bottom: 0em;
+    }
+    #fulltext ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    #fulltext li {
+        display: block;
+        padding: 0.25em 0.25em 0.25em 0.25em;
+        vertical-align: middle;
+    }
+        #fulltext li:hover {
+            cursor: pointer;
+            background-color: #eeeeee;
+        }
+        #fulltext li a:hover {
+            text-decoration: underline;
+        }

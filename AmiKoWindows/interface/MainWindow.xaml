@@ -148,6 +148,7 @@
                         <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="AtcCode" Cursor="Hand" Click="QueryButton_Click" Content="{x:Static p:Resources.butAtccode}" />
                         <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="RegNr" Cursor="Hand" Click="QueryButton_Click" Content="{x:Static p:Resources.butRegnr}"/>
                         <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Application" Cursor="Hand" Click="QueryButton_Click" Content="{x:Static p:Resources.butTherapy}"/>
+                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Fulltext" Cursor="Hand" Click="QueryButton_Click" Content="{x:Static p:Resources.butFulltext}"/>
                         <ListBox x:Name="SearchResult" 
                                  Style="{StaticResource SearchListBox}" ItemContainerStyle="{StaticResource SearchListBoxItem}"
                                  ItemsSource="{Binding Path=SearchResultItems}" SelectionChanged="OnSearchItem_Selection" 
