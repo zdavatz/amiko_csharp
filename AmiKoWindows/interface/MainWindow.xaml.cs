@@ -161,6 +161,11 @@ namespace AmiKoWindows
             this.StatusBar.DataContext = _statusBarHelper;
         }
 
+        public string SearchFieldText()
+        {
+            return this.SearchTextBox.Text;
+        }
+
         private async void MainWindowLoaded(object sender, RoutedEventArgs e)
         {
             /*
@@ -375,6 +380,7 @@ namespace AmiKoWindows
                     {
                         // Set filter
                         _fullTextSearch.Filter = sectionTitle.Id;
+                        // Update result table
                         _fullTextSearch.UpdateTable();
                     }
                 }

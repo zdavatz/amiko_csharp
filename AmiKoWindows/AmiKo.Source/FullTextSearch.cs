@@ -93,9 +93,8 @@ namespace AmiKoWindows
                     string content_chapters = "";
 
                     string anchor = "?";
-                    string key = "";
                     string regnr = a.Regnrs?.Split(',')[0];
-                    content_title = "<a onclick=\"displayFachinfo('" + regnr + "','" + key + "','" + anchor + "')\">"
+                    content_title = "<a onclick=\"displayFachinfo('" + regnr + "','" + anchor + "')\">"
                         + "<span style=\"font-size:0.8em\"><b>" + a.Title + "</b></span></a>"
                         + "<span style=\"font-size:0.7em\"> | " + a.Author + "</span><br>";
 
@@ -119,7 +118,7 @@ namespace AmiKoWindows
                                         anchor = "Section" + c;
                                     }
                                     content_chapters += "<span style=\"font-size:0.75em; color:#0099cc\">"
-                                        + "<a onclick=\"displayFachinfo('" + regnr + "','" + key + "','" + anchor + "')\">" + chapterStr + "</a>"
+                                        + "<a onclick=\"displayFachinfo('" + regnr + "','" + anchor + "')\">" + chapterStr + "</a>"
                                         + "</span><br>";
                                     filtered = false;
                                 }

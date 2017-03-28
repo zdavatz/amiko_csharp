@@ -35,6 +35,7 @@ namespace AmiKoWindows
         string _cssStr;
         MainWindow _mainWindow;
         MainSqlDb _sqlDb;
+        string _searchKey;
         #endregion
 
         #region Properties
@@ -63,31 +64,50 @@ namespace AmiKoWindows
         #endregion
 
         #region Public Methods
-        public async void JSNotify(string cmd, object o)
+        public async void JSNotify(string cmd, object o1, object o2)
         {
             if (cmd.Equals("displayFachinfo"))
             {
-                string ean = o as string;
-                if (ean != null)
+                string ean = o1 as string;
+                string anchor = o2 as string;
+                if (ean != null && anchor != null)
                 {
+                    Console.WriteLine(anchor);
                     ean = ean.Trim();
                     Article a = await _sqlDb.GetArticleWithRegnr(ean);
                     if (a != null)
                     {
-                        Console.WriteLine(a.Title);
-                        // Refresh UI
                         _mainWindow.SetState(UIState.State.Compendium);
+                        SetSearchKey(_mainWindow.SearchFieldText());
                         ShowFull(a);
                     }
                 }
             }
         }
 
+        public void SetSearchKey(string key)
+        {
+            _searchKey = key;
+        }
+
+        private string HighlightContent(string content)
+        {
+            string highlight = _searchKey;
+            if (highlight != null && highlight.Length > 3)
+            {
+                // Marks the keyword in the html
+                content = content.Replace(highlight, "<span style=\"background-color: yellow\">" + highlight + "</span>");
+                string firstUpper = highlight.Substring(0, 1).ToUpper() + highlight.Substring(1, highlight.Length - 1);
+                content = content.Replace(firstUpper, "<span style=\"background-color: yellow\">" + firstUpper + "</span>");
+            }
+            return content;
+        }
+
         public void ShowFull(Article a)
         {
-            string htmlStr = a.Content;
+            string htmlStr = HighlightContent(a.Content);
 
-            string headStr = "<head>" 
+            string headStr = "<!DOCTYPE html><head>"
                 + "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>" 
                 // + "<link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Roboto&subset=latin,latin-ext'>"
                 + _jscriptStr
