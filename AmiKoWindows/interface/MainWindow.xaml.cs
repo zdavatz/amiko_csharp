@@ -78,6 +78,8 @@ namespace AmiKoWindows
 
             _statusBarHelper = new StatusBarHelper();
 
+            this.Spinner.Spin = false;
+
             // Set data context
             SetDataContext(UIState.State.Compendium);
         }
@@ -124,6 +126,8 @@ namespace AmiKoWindows
             }
             else if (state == UIState.State.Interactions)
             {
+                if (_uiState.GetQuery() == UIState.Query.Fulltext)
+                    _uiState.SetQuery(UIState.Query.Title);
                 _sqlDb.UpdateSearchResults(_uiState);
                 this.Compendium.IsChecked = false;
                 this.Favorites.IsChecked = false;
@@ -132,6 +136,9 @@ namespace AmiKoWindows
             }
             else if (state == UIState.State.FullTextSearch)
             {
+                this.Compendium.IsChecked = true;
+                this.Favorites.IsChecked = false;
+                this.Interactions.IsChecked = false;
                 _uiState.SetQuery(UIState.Query.Fulltext);
             }
         }
@@ -148,6 +155,7 @@ namespace AmiKoWindows
             }
             else if (state == UIState.State.Interactions)
             {
+                this.SearchResult.DataContext = _sqlDb;
                 this.Browser.DataContext = _interactions;
                 this.SectionTitles.DataContext = _interactions;
                 this.Browser.ObjectForScripting = _interactions;
@@ -161,9 +169,31 @@ namespace AmiKoWindows
             this.StatusBar.DataContext = _statusBarHelper;
         }
 
+        /**
+         * Injects javascript into the current browser
+         */
+        public void InjectJS(string jsCode)
+        {
+            this.Browser.InvokeScript("execScript", new Object[] { jsCode, "JavaScript" });
+        }
+
         public string SearchFieldText()
         {
             return this.SearchTextBox.Text;
+        }
+
+        private void SetSpinnerEnabled(bool enabled)
+        {
+            if (enabled)
+            {
+                this.Spinner.Visibility = Visibility.Visible;
+                this.Spinner.Spin = true;
+            }
+            else
+            {
+                this.Spinner.Visibility = Visibility.Hidden;
+                this.Spinner.Spin = false;
+            }
         }
 
         private async void MainWindowLoaded(object sender, RoutedEventArgs e)
@@ -280,6 +310,8 @@ namespace AmiKoWindows
                     sw.Start();
                     int numResults = 0;
 
+                    SetSpinnerEnabled(true);
+
                     Item selection = selectedItem as Item;
                     if (_uiState.IsFullTextSearch())
                     {
@@ -309,11 +341,16 @@ namespace AmiKoWindows
                             else if (_uiState.IsInteractions())
                             {
                                 Article a = await _sqlDb.GetArticleWithId(_searchSelectionItemId);
-                                _interactions.AddArticle(a);
-                                _interactions.ShowBasket();
+                                if (a?.Id != null)
+                                {
+                                    _interactions.AddArticle(a);
+                                    _interactions.ShowBasket();
+                                }
                             }
                         }
                     }
+
+                    SetSpinnerEnabled(false);
 
                     sw.Stop();
                     double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
@@ -339,6 +376,8 @@ namespace AmiKoWindows
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
 
+                    SetSpinnerEnabled(true);
+
                     ChildItem selection = selectedItem as ChildItem;
                     if (_searchSelectionChildItemId != selection.Id)
                     {
@@ -352,6 +391,8 @@ namespace AmiKoWindows
                             }
                         }
                     }
+
+                    SetSpinnerEnabled(false);
 
                     sw.Stop();
                     // Console.WriteLine("ChildItem " + _searchSelectionChildItemId + "/" + selection.Id + " -> " + sw.ElapsedMilliseconds + "ms");
@@ -373,8 +414,8 @@ namespace AmiKoWindows
                     if (!_uiState.IsFullTextSearch())
                     {
                         // Inject javascript to move to anchor
-                        var jsCode = "document.getElementById('" + sectionTitle.Id + "').scrollIntoView(true);";
-                        this.Browser.InvokeScript("execScript", new Object[] { jsCode, "JavaScript" });
+                        string jsCode = "document.getElementById('" + sectionTitle.Id + "').scrollIntoView(true);";
+                        InjectJS(jsCode);
                     }
                     else
                     {
@@ -395,8 +436,11 @@ namespace AmiKoWindows
             if (fav?.GetType() == typeof(Item))
             {
                 Item item = fav as Item;
-                Article article = await _sqlDb.GetArticleWithId(item.Id);
-                _sqlDb.UpdateFavorites(article);
+                if (item.Id != null)
+                {
+                    Article article = await _sqlDb.GetArticleWithId(item.Id);
+                    _sqlDb.UpdateFavorites(article);
+                }
             }
         }
 
@@ -454,9 +498,8 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            this.SearchTextBox.DataContext = _uiState;
-            this.SearchResult.DataContext = _sqlDb;
-            this.SectionTitles.DataContext = _fachInfo;
+            if (_uiState.IsFullTextSearch())
+                SetState(UIState.State.Compendium);
 
             if (source.Name.Equals("Title"))
                 _uiState.SetQuery(UIState.Query.Title);
@@ -478,7 +521,7 @@ namespace AmiKoWindows
     }
 
     /// <summary>
-    /// Register depency property for browser
+    /// Register dependency property for browser
     /// </summary>
     public static class BrowserBehavior
     {

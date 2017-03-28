@@ -76,8 +76,11 @@ namespace AmiKoWindows
         public void Remove(Article article)
         {
             var regnrs = article?.Regnrs;
-            _setOfRegNrs.Remove(regnrs);
-            _setOfArticles.RemoveWhere(a => a.Regnrs.Equals(regnrs));
+            if (regnrs != null)
+            {
+                _setOfRegNrs.Remove(regnrs);
+                _setOfArticles.RemoveWhere(a => a.Regnrs.Equals(regnrs));
+            }
         }
 
         public bool Contains(string regnrs)

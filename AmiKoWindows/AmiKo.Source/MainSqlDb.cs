@@ -139,7 +139,10 @@ namespace AmiKoWindows
             if (_favorites.Contains(article?.Regnrs))
                 _favorites.Remove(article);
             else
-                _favorites.Add(article);
+            {
+                if (article.Regnrs != null)
+                    _favorites.Add(article);
+            }
             // Save list of favorites to file
             await _favorites.Save();
             // Update list of found articles

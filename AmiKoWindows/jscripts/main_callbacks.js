@@ -20,10 +20,6 @@ function displayFachinfo(ean, anchor) {
  */
 function moveToHighlight(anchor) {
     if (typeof anchor !== 'undefined') {
-        var id = document.getElementById(anchor);
-        if (id !== null && id.hasAttribute('id')) {
-            id = id.getElementsByTagName('mark');
-            $(window).scrollTop($(id).offset().top - 120);
-        }
+        document.getElementById(anchor).scrollIntoView(true);
     }
 }

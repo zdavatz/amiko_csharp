@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:p="clr-namespace:AmiKoWindows.Properties"
         xmlns:local="clr-namespace:AmiKoWindows"
         mc:Ignorable="d"
@@ -99,7 +100,7 @@
             </ToggleButton>
         </Controls:WindowCommands>
     </Controls:MetroWindow.LeftWindowCommands>
-
+    
     <Grid x:Name="MainGrid">
         <Border Margin="0,0,0,28" Padding="0" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch">
             <DockPanel LastChildFill="True">
@@ -182,13 +183,13 @@
                         </ListBox>
                     </DockPanel>
                     <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="1" Width="4"/>
-                    <WebBrowser x:Name="Browser" local:BrowserBehavior.Html="{Binding Path=HtmlText}" Navigating="WebBrowser_Navigating"
-                                LoadCompleted="WebBrowser_LoadCompleted"
-                                Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,8,0"/>
+                    <WebBrowser x:Name="Browser" local:BrowserBehavior.Html="{Binding Path=HtmlText}" 
+                            Navigating="WebBrowser_Navigating" LoadCompleted="WebBrowser_LoadCompleted"
+                            Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,8,0"/>
                     <GridSplitter HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="3" Width="4"/>
                     <ListBox x:Name="SectionTitles" 
-                             Style="{StaticResource SectionTitlesListBox}" ItemsSource="{Binding Path=SectionTitles}" 
-                             Grid.Column="4" Margin="4,0,0,0" Padding="0,24,0,0" SelectionChanged="OnSectionTitle_Selection">
+                            Style="{StaticResource SectionTitlesListBox}" ItemsSource="{Binding Path=SectionTitles}" 
+                            Grid.Column="4" Margin="4,0,0,0" Padding="0,24,0,0" SelectionChanged="OnSectionTitle_Selection">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Height="20" Orientation="Vertical">
@@ -206,8 +207,11 @@
                 <TextBlock Text="{Binding Path=NetworkStatusText}" Foreground="White"></TextBlock>
             </StatusBarItem>
             <StatusBarItem DockPanel.Dock="Left" Margin="0,0,0,0" Width="Auto">
-                <TextBlock Text="{Binding Path=DatabaseStatusText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="{Binding Path=DatabaseStatusText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4,0,0,0" VerticalAlignment="Center" 
+                           HorizontalAlignment="Left"></TextBlock>
             </StatusBarItem>
+            <fa:ImageAwesome DockPanel.Dock="Right" x:Name="Spinner" Icon="Cog" Foreground="White" Visibility="Visible" Spin="False"
+                           VerticalAlignment="Center" Margin="8,0,0,0" Height="16" Width="16" SpinDuration="2"/>
         </StatusBar>
     </Grid>
 </Controls:MetroWindow>

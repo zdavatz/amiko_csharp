@@ -22,7 +22,6 @@ using System.IO;
 using System.Security.Permissions;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using System;
 
 namespace AmiKoWindows
 {
@@ -35,7 +34,6 @@ namespace AmiKoWindows
         string _cssStr;
         MainWindow _mainWindow;
         MainSqlDb _sqlDb;
-        string _searchKey;
         #endregion
 
         #region Properties
@@ -72,40 +70,40 @@ namespace AmiKoWindows
                 string anchor = o2 as string;
                 if (ean != null && anchor != null)
                 {
-                    Console.WriteLine(anchor);
                     ean = ean.Trim();
                     Article a = await _sqlDb.GetArticleWithRegnr(ean);
                     if (a != null)
                     {
                         _mainWindow.SetState(UIState.State.Compendium);
-                        SetSearchKey(_mainWindow.SearchFieldText());
-                        ShowFull(a);
+                        ShowFull(a, _mainWindow.SearchFieldText());
+                        await Task.Delay(100);
+                        if (anchor != null && anchor != "?")
+                        {
+                            string jsCode = "moveToHighlight('" + anchor + "');";
+                            _mainWindow.InjectJS(jsCode);
+                        }
+
                     }
                 }
             }
         }
 
-        public void SetSearchKey(string key)
+        private string HighlightContent(string content, string highlight)
         {
-            _searchKey = key;
-        }
-
-        private string HighlightContent(string content)
-        {
-            string highlight = _searchKey;
             if (highlight != null && highlight.Length > 3)
             {
                 // Marks the keyword in the html
-                content = content.Replace(highlight, "<span style=\"background-color: yellow\">" + highlight + "</span>");
+                content = content.Replace(highlight, "<span id=\"mark\" style=\"background-color: yellow\">" + highlight + "</span>");
                 string firstUpper = highlight.Substring(0, 1).ToUpper() + highlight.Substring(1, highlight.Length - 1);
-                content = content.Replace(firstUpper, "<span style=\"background-color: yellow\">" + firstUpper + "</span>");
+                content = content.Replace(firstUpper, "<span id=\"mark\" style=\"background-color: yellow\">" + firstUpper + "</span>");
             }
+
             return content;
         }
 
-        public void ShowFull(Article a)
+        public void ShowFull(Article a, string highlight = "")
         {
-            string htmlStr = HighlightContent(a.Content);
+            string htmlStr = HighlightContent(a.Content, highlight);
 
             string headStr = "<!DOCTYPE html><head>"
                 + "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>" 

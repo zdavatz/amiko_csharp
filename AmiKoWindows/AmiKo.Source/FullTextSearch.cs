@@ -43,12 +43,12 @@ namespace AmiKoWindows
             string _jscriptPath = Path.Combine(Utilities.AppExecutingFolder(), Constants.JS_FOLDER, "main_callbacks.js");
             if (File.Exists(_jscriptPath))
             {
-                _jscriptStr = "<script language=\"javascript\">" + File.ReadAllText(_jscriptPath) + "</script>";
+                _jscriptStr = $"<script language=\"javascript\">{File.ReadAllText(_jscriptPath)}</script>";
             }
             string _cssFilePath = Path.Combine(Utilities.AppExecutingFolder(), Constants.FULLTEXT_SHEET);
             if (File.Exists(_cssFilePath))
             {
-                _cssStr = "<style>" + File.ReadAllText(_cssFilePath) + "</style>";
+                _cssStr = $"<style>{File.ReadAllText(_cssFilePath)}</style>";
             }
 
         }
@@ -77,11 +77,7 @@ namespace AmiKoWindows
             _dictOfRegChapters = dictOfRegChapters;
 
             string htmlStr = "";
-            string headStr = "<head>"
-                + "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>"
-                + _jscriptStr
-                + _cssStr
-                + "</head>";
+            string headStr = $"<head> <meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>{_jscriptStr}{_cssStr}</head>";
             if (_listOfArticles != null)
             {
                 int rows = 0;
@@ -94,9 +90,7 @@ namespace AmiKoWindows
 
                     string anchor = "?";
                     string regnr = a.Regnrs?.Split(',')[0];
-                    content_title = "<a onclick=\"displayFachinfo('" + regnr + "','" + anchor + "')\">"
-                        + "<span style=\"font-size:0.8em\"><b>" + a.Title + "</b></span></a>"
-                        + "<span style=\"font-size:0.7em\"> | " + a.Author + "</span><br>";
+                    content_title = $"<a onclick=\"displayFachinfo('{regnr}','{anchor}')\"> <span style=\"font-size:0.8em\"><b>{a.Title}</b></span></a> <span style=\"font-size:0.7em\"> | {a.Author}</span><br>";
 
                     bool filtered = true;
                     if (_dictOfRegChapters.ContainsKey(regnr))
@@ -117,9 +111,7 @@ namespace AmiKoWindows
                                         // These are "old" section titles, e.g. Section7900, Section8000, etc.
                                         anchor = "Section" + c;
                                     }
-                                    content_chapters += "<span style=\"font-size:0.75em; color:#0099cc\">"
-                                        + "<a onclick=\"displayFachinfo('" + regnr + "','" + anchor + "')\">" + chapterStr + "</a>"
-                                        + "</span><br>";
+                                    content_chapters += $"<span style=\"font-size:0.75em; color:#006699\"> <a onclick=\"displayFachinfo('{regnr}','{anchor}')\">{chapterStr}</a> </span><br>";
                                     filtered = false;
                                 }
                                 int count = 0;
@@ -134,9 +126,9 @@ namespace AmiKoWindows
                     {
                         string firstLetter = a.Title.Substring(0, 1).ToUpper();
                         if (rows % 2 == 0)
-                            content_style = "<li style=\"background-color:whitesmoke;\" id=\"" + firstLetter + "\">";
+                            content_style = $"<li style=\"background-color:whitesmoke;\" id=\"{firstLetter}\">";
                         else
-                            content_style = "<li style=\"background-color:white;\" id=\"" + firstLetter + "\">";
+                            content_style = $"<li style=\"background-color:white;\" id=\"{firstLetter}\">";
 
                         content += content_style + content_title + content_chapters + "</li>";
                         rows++;
@@ -146,10 +138,7 @@ namespace AmiKoWindows
                 htmlStr = content;
             }
 
-            HtmlText = "<!DOCTYPE html>"
-                + "<html>" 
-                + headStr + htmlStr 
-                + "</html>";
+            HtmlText = $"<!DOCTYPE html> <html>{headStr}{htmlStr}</html>";
 
             // Section titles
             SectionTitles.Clear();

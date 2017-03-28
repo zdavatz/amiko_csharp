@@ -197,6 +197,7 @@ namespace AmiKoWindows
 
         public void RemoveArticle(Article a)
         {
+
             string title = ClampedTitle(a);
             if (_articleBasket.ContainsKey(title))
             {
