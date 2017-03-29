@@ -165,6 +165,7 @@ namespace AmiKoWindows
                 this.SearchResult.DataContext = _fullTextDb;
                 this.Browser.DataContext = _fullTextSearch;
                 this.SectionTitles.DataContext = _fullTextSearch;
+                this.Browser.ObjectForScripting = _fachInfo;
             }
             this.StatusBar.DataContext = _statusBarHelper;
         }
