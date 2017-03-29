@@ -25,6 +25,7 @@ using MahApps.Metro.Controls;
 using System.Windows.Navigation;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.Win32;
 
 namespace AmiKoWindows
 {
@@ -46,6 +47,7 @@ namespace AmiKoWindows
         FullTextSearch _fullTextSearch;
         InteractionsCart _interactions;
         StatusBarHelper _statusBarHelper;
+        string _selectedFullTextSearchKey;
 
         static bool _willNavigate = false;
 
@@ -80,19 +82,41 @@ namespace AmiKoWindows
 
             this.Spinner.Spin = false;
 
+            // Set initial state
+            SetState(UIState.State.Compendium);
+
             // Set data context
             SetDataContext(UIState.State.Compendium);
+
+            // Set browser emulation mode. Thx Microsoft for these stupid hacks!!
+            SetBrowserEmulationMode();
         }
 
-        public void SetState(string state)
+        public async void SetState(string state)
         {
             if (state.Equals("Compendium"))
             {
-                SetState(UIState.State.Compendium);
+                if (!_uiState.FullTextQueryEnabled())
+                    SetState(UIState.State.Compendium);
+                else
+                {
+                    this.Compendium.IsChecked = true;
+                    this.Favorites.IsChecked = false;
+                    SetState(UIState.State.FullTextSearch);
+                }
             }
             else if (state.Equals("Favorites"))
             {
-                SetState(UIState.State.Favorites);
+                if (!_uiState.FullTextQueryEnabled())
+                    SetState(UIState.State.Favorites);
+                else
+                {
+                    this.Compendium.IsChecked = false;
+                    this.Favorites.IsChecked = true;
+                    SetState(UIState.State.FullTextSearch);
+                    await _fullTextDb.RetrieveFavorites();
+                    _fullTextDb.UpdateSearchResults(_uiState);
+                }
             }
             else if (state.Equals("Interactions"))
             {
@@ -136,8 +160,7 @@ namespace AmiKoWindows
             }
             else if (state == UIState.State.FullTextSearch)
             {
-                this.Compendium.IsChecked = true;
-                this.Favorites.IsChecked = false;
+                // If this.Favorites.IsChecked == true -> stay in favorites mode
                 this.Interactions.IsChecked = false;
                 _uiState.SetQuery(UIState.Query.Fulltext);
             }
@@ -145,13 +168,19 @@ namespace AmiKoWindows
 
         public void SetDataContext(UIState.State state)
         {
-            if (state == UIState.State.Compendium || state == UIState.State.Favorites)
+            if (state == UIState.State.Compendium)
             {
                 this.SearchResult.DataContext = _sqlDb;
                 this.Browser.DataContext = _fachInfo;
                 this.SectionTitles.DataContext = _fachInfo;
                 this.Browser.ObjectForScripting = _fachInfo;
-
+            }
+            else if (state == UIState.State.Favorites)
+            {
+                this.SearchResult.DataContext = _sqlDb;
+                this.Browser.DataContext = _fachInfo;
+                this.SectionTitles.DataContext = _fachInfo;
+                this.Browser.ObjectForScripting = _fachInfo;
             }
             else if (state == UIState.State.Interactions)
             {
@@ -181,6 +210,13 @@ namespace AmiKoWindows
         public string SearchFieldText()
         {
             return this.SearchTextBox.Text;
+        }
+
+        public string SelectedFullTextSearchKey()
+        {
+            // Remove parentheses
+            int idx = _selectedFullTextSearchKey.IndexOf("(");
+            return _selectedFullTextSearchKey.Substring(0, idx).Trim();
         }
 
         private void SetSpinnerEnabled(bool enabled)
@@ -271,10 +307,14 @@ namespace AmiKoWindows
             // Change the data context of the status bar
             Stopwatch sw = new Stopwatch();
             long numResults = 0;
-            if (_uiState.IsFullTextSearch())
-                numResults = await _fullTextDb?.Search(_uiState, "");
+            if (_uiState.IsFullTextSearch() || _uiState.FullTextQueryEnabled())
+            {
+                SetState(UIState.State.FullTextSearch);
+            }
             else
+            {
                 numResults = await _sqlDb?.Search(_uiState, "");
+            }
             sw.Stop();
             double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
             _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numResults, elapsedTime));
@@ -316,6 +356,8 @@ namespace AmiKoWindows
                     Item selection = selectedItem as Item;
                     if (_uiState.IsFullTextSearch())
                     {
+                        // Store selected fulltext search...
+                        _selectedFullTextSearchKey = selection.Text;
                         if (_searchSelectionItemHash != selection.Hash)
                         {
                             _searchSelectionItemHash = selection.Hash;
@@ -442,6 +484,11 @@ namespace AmiKoWindows
                     Article article = await _sqlDb.GetArticleWithId(item.Id);
                     _sqlDb.UpdateFavorites(article);
                 }
+                else if (item.Hash != null)
+                {
+                    FullTextEntry entry = await _fullTextDb.GetEntryWithHash(item.Hash);
+                    _fullTextDb.UpdateFavorites(entry);
+                }
             }
         }
 
@@ -502,6 +549,8 @@ namespace AmiKoWindows
             if (_uiState.IsFullTextSearch())
                 SetState(UIState.State.Compendium);
 
+            _sqlDb.UpdateSearchResults(_uiState);
+
             if (source.Name.Equals("Title"))
                 _uiState.SetQuery(UIState.Query.Title);
             else if (source.Name.Equals("Author"))
@@ -516,8 +565,26 @@ namespace AmiKoWindows
             {
                 SetState(UIState.State.FullTextSearch);
             }
+        }
 
-            _sqlDb.UpdateSearchResults(_uiState);
+        private void SetBrowserEmulationMode()
+        {
+            var fileName = System.IO.Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName);
+
+            if (String.Compare(fileName, "devenv.exe", true) == 0 || String.Compare(fileName, "XDesProc.exe", true) == 0)
+                return;
+            UInt32 mode = 10000;
+            SetBrowserFeatureControlKey("FEATURE_BROWSER_EMULATION", fileName, mode);
+        }
+
+        private void SetBrowserFeatureControlKey(string feature, string appName, uint value)
+        {
+            using (var key = Registry.CurrentUser.CreateSubKey(
+                String.Concat(@"Software\Microsoft\Internet Explorer\Main\FeatureControl\", feature),
+                RegistryKeyPermissionCheck.ReadWriteSubTree))
+            {
+                key.SetValue(appName, (UInt32)value, RegistryValueKind.DWord);
+            }
         }
     }
 

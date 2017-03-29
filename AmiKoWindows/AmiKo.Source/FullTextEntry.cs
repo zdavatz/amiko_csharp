@@ -27,6 +27,7 @@ namespace AmiKoWindows
         public string Keyword { get; set; }
         public string Regnrs { get; set; }
         public Dictionary<string, HashSet<string>> RegChaptersDict { get; set; }
+        public bool IsFavorite { get; set; }
 
         public string GetKeywordPlus()
         {

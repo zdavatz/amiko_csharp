@@ -36,17 +36,10 @@ namespace AmiKoWindows
         /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
         public static void WriteToXmlFile<T>(string filePath, T objectToWrite, bool append = false) where T : new()
         {
-            TextWriter writer = null;
-            try
+            using (StreamWriter writer = new StreamWriter(filePath, append))
             {
-                writer = new StreamWriter(filePath, append);
                 var serializer = new XmlSerializer(typeof(T));
                 serializer.Serialize(writer, objectToWrite);
-            }
-            finally
-            {
-                // Let's clean up in any case
-                writer?.Close();
             }
         }
 
@@ -59,17 +52,10 @@ namespace AmiKoWindows
         /// <returns>Returns a new instance of the object read from the XML file.</returns>
         public static T ReadFromXmlFile<T>(string filePath) where T : new()
         {
-            TextReader reader = null;
-            try
+            using (StreamReader reader = new StreamReader(filePath))
             {
-                reader = new StreamReader(filePath);
                 var serializer = new XmlSerializer(typeof(T));
                 return (T)serializer.Deserialize(reader);
-            }
-            finally
-            {
-                // Let's clean up in any case
-                reader?.Close();
             }
         }
     }

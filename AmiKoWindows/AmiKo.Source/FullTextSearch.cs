@@ -77,7 +77,7 @@ namespace AmiKoWindows
             _dictOfRegChapters = dictOfRegChapters;
 
             string htmlStr = "";
-            string headStr = $"<head> <meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>{_jscriptStr}{_cssStr}</head>";
+            string headStr = $"<head><meta charset='UTF-8'><meta http-equiv='X-UA-Compatible' content='IE=10'>{_jscriptStr}{_cssStr}</head>";
             if (_listOfArticles != null)
             {
                 int rows = 0;
@@ -111,7 +111,7 @@ namespace AmiKoWindows
                                         // These are "old" section titles, e.g. Section7900, Section8000, etc.
                                         anchor = "Section" + c;
                                     }
-                                    content_chapters += $"<span style=\"font-size:0.75em; color:#006699\"> <a onclick=\"displayFachinfo('{regnr}','{anchor}')\">{chapterStr}</a> </span><br>";
+                                    content_chapters += $"<span style=\"font-size:0.75em; color:#0088BB\"> <a onclick=\"displayFachinfo('{regnr}','{anchor}')\">{chapterStr}</a></span><br>";
                                     filtered = false;
                                 }
                                 int count = 0;
@@ -138,7 +138,7 @@ namespace AmiKoWindows
                 htmlStr = content;
             }
 
-            HtmlText = $"<!DOCTYPE html> <html>{headStr}{htmlStr}</html>";
+            HtmlText = $"<!DOCTYPE html><html>{headStr}{htmlStr}</html>";
 
             // Section titles
             SectionTitles.Clear();

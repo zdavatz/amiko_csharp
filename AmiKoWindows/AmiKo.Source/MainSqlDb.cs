@@ -69,7 +69,7 @@ namespace AmiKoWindows
         #region Private Fields
         private DatabaseHelper _db;
         private List<Article> _foundArticles = new List<Article>();
-        private Favorites _favorites = new Favorites();
+        private Favorites<Article> _favorites = new Favorites<Article>();
         #endregion
 
         #region Event Handlers
@@ -137,7 +137,9 @@ namespace AmiKoWindows
         public async void UpdateFavorites(Article article)
         {
             if (_favorites.Contains(article?.Regnrs))
+            {
                 _favorites.Remove(article);
+            }
             else
             {
                 if (article.Regnrs != null)

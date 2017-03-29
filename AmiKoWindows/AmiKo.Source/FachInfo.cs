@@ -75,7 +75,7 @@ namespace AmiKoWindows
                     if (a != null)
                     {
                         _mainWindow.SetState(UIState.State.Compendium);
-                        ShowFull(a, _mainWindow.SearchFieldText());
+                        ShowFull(a, _mainWindow.SelectedFullTextSearchKey());
                         await Task.Delay(100);
                         if (anchor != null && anchor != "?")
                         {
@@ -93,9 +93,9 @@ namespace AmiKoWindows
             if (highlight != null && highlight.Length > 3)
             {
                 // Marks the keyword in the html
-                content = content.Replace(highlight, "<span id=\"mark\" style=\"background-color: yellow\">" + highlight + "</span>");
+                content = content.Replace(highlight, "<span class=\"mark\" style=\"background-color: yellow\">" + highlight + "</span>");
                 string firstUpper = highlight.Substring(0, 1).ToUpper() + highlight.Substring(1, highlight.Length - 1);
-                content = content.Replace(firstUpper, "<span id=\"mark\" style=\"background-color: yellow\">" + firstUpper + "</span>");
+                content = content.Replace(firstUpper, "<span class=\"mark\" style=\"background-color: yellow\">" + firstUpper + "</span>");
             }
 
             return content;

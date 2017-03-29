@@ -1,4 +1,23 @@
-﻿using System;
+﻿/*
+Copyright (c) 2017 Max Lungarella <cybrmx@gmail.com>
+
+This file is part of AmiKoWindows.
+
+AmiKoDesk is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SQLite;
@@ -19,6 +38,10 @@ namespace AmiKoWindows
         #endregion
 
         #region Readonlys
+        #endregion
+
+        #region Private Fields
+        private Favorites<FullTextEntry> _favorites = new Favorites<FullTextEntry>();
         #endregion
 
         #region Event Handlers
@@ -86,6 +109,38 @@ namespace AmiKoWindows
         {
             SearchResultItems.Clear();
             SearchResultItems.AddRange(state, _foundEntries);
+        }
+
+        public async Task RetrieveFavorites()
+        {
+            List<string> hashes = _favorites.Ids();
+
+            _foundEntries.Clear();
+            foreach (string hash in hashes)
+            {
+                var entry = await GetEntryWithHash(hash);
+                _foundEntries.Add(entry);
+            }
+        }
+
+        public async void UpdateFavorites(FullTextEntry entry)
+        {
+            if (_favorites.Contains(entry?.Hash))
+            {
+                _favorites.Remove(entry);
+            }
+            else
+            {
+                if (entry.Hash != null)
+                    _favorites.Add(entry);
+            }
+            // Save list of favorites to file
+            await _favorites.Save();
+            // Update list of found entries
+            foreach (FullTextEntry e in _foundEntries)
+            {
+                e.IsFavorite = _favorites.Contains(e?.Hash);
+            }
         }
 
         public async Task<long> Search(UIState state, string query)
@@ -166,6 +221,7 @@ namespace AmiKoWindows
 
             entry.Hash = reader[KEY_ROWID] as string;
             entry.Keyword = reader[KEY_KEYWORD] as string;
+            entry.IsFavorite = _favorites.Contains(entry.Hash);
 
             string regnrsAndChapters = reader[KEY_REGNR] as string;
             string[] rac = regnrsAndChapters?.Split('|');

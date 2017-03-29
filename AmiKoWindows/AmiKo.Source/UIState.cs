@@ -8,7 +8,7 @@ namespace AmiKoWindows
     {
         public enum State
         {
-            Compendium, Favorites, Interactions, Shopping, FullTextSearch
+            Compendium=0x01, Favorites=0x02, Interactions=0x04, FullTextSearch=0x08
         };
 
         public enum Query
@@ -117,6 +117,11 @@ namespace AmiKoWindows
                 default:
                     break;
             }
+        }
+
+        public bool FullTextQueryEnabled()
+        {
+            return _query == Query.Fulltext;
         }
 
         public Query GetQuery()

@@ -323,7 +323,8 @@ namespace AmiKoWindows
                         Add(new Item()
                         {
                             Hash = entry.Hash,
-                            Text = entry.GetKeywordPlus()
+                            Text = entry.GetKeywordPlus(),
+                            IsFavorite = entry.IsFavorite
                         });
                     }
                 }

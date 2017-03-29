@@ -23,10 +23,13 @@ using System.Threading.Tasks;
 
 namespace AmiKoWindows
 {
-    class Favorites
+    class Favorites<T>
     {
-        HashSet<string> _setOfRegNrs = new HashSet<string>();
-        HashSet<Article> _setOfArticles = new HashSet<Article>();
+        // 1. favorites: fachinfos, registration numbers
+        // 2. favorites: hashes of search terms in frequency database
+        HashSet<string> _setOfIds = new HashSet<string>();
+        HashSet<T> _setOfEntries = new HashSet<T>();
+
         string _userDataDir;
 
         public Favorites()
@@ -44,53 +47,101 @@ namespace AmiKoWindows
             return dir;
         }
 
+        public List<string> Ids()
+        {
+            return new List<string>(_setOfIds);
+        }
+
         /*
         string local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         string roaming = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         */
         public void Load()
         {
-            string favoritesFile = Path.Combine(_userDataDir, "favorites.txt");
-            if (File.Exists(favoritesFile))
-                _setOfRegNrs = FileOps.ReadFromXmlFile<HashSet<string>>(favoritesFile);
+            if (typeof(T) == typeof(Article))
+            {
+                string favoritesFile = Path.Combine(_userDataDir, "favorites.txt");
+                if (File.Exists(favoritesFile))
+                    _setOfIds = FileOps.ReadFromXmlFile<HashSet<string>>(favoritesFile);
+            }
+            else if (typeof(T) == typeof(FullTextEntry))
+            {
+                string favoritesFile = Path.Combine(_userDataDir, "favorites_fts.txt");
+                if (File.Exists(favoritesFile))
+                    _setOfIds = FileOps.ReadFromXmlFile<HashSet<string>>(favoritesFile);
+            }
         }
 
         public async Task Save()
         {
             await Task.Run(() =>
             {
-                if (_setOfRegNrs.Count > 0)
+                if (typeof(T) == typeof(Article))
                 {
-                    string favoritesFile = Path.Combine(_userDataDir, "favorites.txt");
-                    FileOps.WriteToXmlFile<HashSet<string>>(favoritesFile, _setOfRegNrs, false);
+                    if (_setOfIds.Count > 0)
+                    {
+                        string favoritesFile = Path.Combine(_userDataDir, "favorites.txt");
+                        FileOps.WriteToXmlFile<HashSet<string>>(favoritesFile, _setOfIds, false);
+                    }
+                }
+                else if (typeof(T) == typeof(FullTextEntry))
+                {
+                    if (_setOfIds.Count > 0)
+                    {
+                        string favoritesFile = Path.Combine(_userDataDir, "favorites_fts.txt");
+                        FileOps.WriteToXmlFile<HashSet<string>>(favoritesFile, _setOfIds, false);
+                    }
                 }
             });
         }
 
-        public void Add(Article article)
+        public void Add(T entry)
         {
-            _setOfRegNrs.Add(article?.Regnrs);
-            _setOfArticles.Add(article);
+            if (typeof(T) == typeof(Article))
+            {
+                Article a = entry as Article;
+                _setOfIds.Add(a?.Regnrs);
+            }
+            else if (typeof(T) == typeof(FullTextEntry))
+            {
+                FullTextEntry e = entry as FullTextEntry;
+                _setOfIds.Add(e?.Hash);
+            }
+            _setOfEntries.Add(entry);
         }
 
-        public void Remove(Article article)
+        public void Remove(T entry)
         {
-            var regnrs = article?.Regnrs;
-            if (regnrs != null)
+            if (typeof(T) == typeof(Article))
             {
-                _setOfRegNrs.Remove(regnrs);
-                _setOfArticles.RemoveWhere(a => a.Regnrs.Equals(regnrs));
+                Article a = entry as Article;
+                var regnrs = a?.Regnrs;
+                if (regnrs != null)
+                {
+                    _setOfIds.Remove(regnrs);
+                    _setOfEntries.RemoveWhere(e1 => (e1 as Article).Regnrs.Equals(regnrs));
+                }
+            }
+            else if (typeof(T) == typeof(FullTextEntry))
+            {
+                FullTextEntry e = entry as FullTextEntry;
+                var hash = e?.Hash;
+                if (hash != null)
+                {
+                    _setOfIds.Remove(hash);
+                    _setOfEntries.RemoveWhere(e2 => (e2 as FullTextEntry).Hash.Equals(hash));
+                }
             }
         }
 
-        public bool Contains(string regnrs)
+        public bool Contains(string key)
         {
-            return _setOfRegNrs.Contains(regnrs);
+            return _setOfIds.Contains(key);
         }
 
-        public bool Contains(Article article)
+        public bool Contains(T entry)
         {
-            return _setOfArticles.Contains(article);
+            return _setOfEntries.Contains(entry);
         }
     }
 }
