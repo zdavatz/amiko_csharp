@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SQLite;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AmiKoWindows
@@ -11,6 +12,11 @@ namespace AmiKoWindows
         private string _dbPath;
 
         #region Public Methods
+        public bool IsOpen()
+        {
+            return _db.State == System.Data.ConnectionState.Open;
+        }
+
         public async Task<SQLiteConnection> OpenDB(string dbPath)
         {
             if (_db != null)
@@ -25,6 +31,7 @@ namespace AmiKoWindows
                     _db = new SQLiteConnection("Data Source=" + dbPath);
                     _db.Open();
                 }
+                while (_db.State != System.Data.ConnectionState.Open) ;
                 return _db;
             });
             return null;
@@ -68,7 +75,6 @@ namespace AmiKoWindows
 
             return numRecords;
         }
-
         #endregion
     }
 }

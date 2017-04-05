@@ -285,27 +285,30 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                using (SQLiteCommand com = _db.Command())
+                if (_db.IsOpen())
                 {
-                    _db.ReOpenIfNecessary();
+                    using (SQLiteCommand com = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
 
-                    if (title.Length > 2)
-                    {
-                        com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
-                            + KEY_TITLE + " LIKE '" + title + "%' OR "
-                            + KEY_TITLE + " LIKE '%" + title + "%'";
-                    }
-                    else
-                    {
-                        com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
-                            + KEY_TITLE + " LIKE '" + title + "%'";
-                    }
-
-                    using (SQLiteDataReader reader = com.ExecuteReader())
-                    {
-                        while (reader.Read())
+                        if (title.Length > 2)
                         {
-                            medTitles.Add(CursorToShortArticle(reader));
+                            com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
+                                + KEY_TITLE + " LIKE '" + title + "%' OR "
+                                + KEY_TITLE + " LIKE '%" + title + "%'";
+                        }
+                        else
+                        {
+                            com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
+                                + KEY_TITLE + " LIKE '" + title + "%'";
+                        }
+
+                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                medTitles.Add(CursorToShortArticle(reader));
+                            }
                         }
                     }
                 }

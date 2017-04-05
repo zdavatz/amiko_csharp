@@ -172,7 +172,7 @@
                                                     <DataTemplate>
                                                         <TextBlock Style="{StaticResource SearchListBoxChildItemText}" 
                                                                    Text="{Binding Path=Text}" 
-                                                                   Foreground="{Binding Path=Color}" TextDecorations="{Binding Path=Decoration}"/>
+                                                                   Foreground="{Binding Path=Color}"/>
                                                     </DataTemplate>
                                                 </ListBox.ItemTemplate>
                                             </ListBox>

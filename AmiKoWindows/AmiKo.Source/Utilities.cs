@@ -51,14 +51,10 @@ namespace AmiKoWindows
 
         public static string AppVersion()
         {
-            object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyVersionAttribute), false);
-            if (attributes.Length > 0)
+            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            if (version != "")
             {
-                AssemblyVersionAttribute versionAttribute = (AssemblyVersionAttribute)attributes[0];
-                if (versionAttribute.Version != "")
-                {
-                    return versionAttribute.Version;
-                }
+                return version;
             }
             return "1.0.0";
         }
