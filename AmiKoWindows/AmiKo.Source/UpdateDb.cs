@@ -116,6 +116,43 @@ namespace AmiKoWindows
         #endregion
 
         #region Private Methods
+        /// <summary>
+        /// This function is used to check specified file being used or not
+        /// </summary>
+        /// <param name="file">FileInfo of required file</param>
+        /// <returns>If that specified file is being processed 
+        /// or not found is return true</returns>
+        private static Boolean IsFileLocked(string filename)
+        {
+            FileInfo file = new FileInfo(filename);
+            FileStream stream = null;
+
+            try
+            {
+                // Don't change FileAccess to ReadWrite, because if a file is in readOnly, it fails.
+                stream = file.Open
+                (
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.None
+                );
+            }
+            catch (IOException)
+            {
+                // the file is unavailable because it is:
+                // still being written to or being processed by another thread
+                // or does not exist (has already been processed)
+                return true;
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
+            }
+
+            //file is not locked
+            return false;
+        }
         private void StartDownloadAndExtract(string title, string url, string filename)
         {
             string filepath = Path.Combine(Utilities.AppRoamingDataFolder(), filename);
@@ -148,13 +185,17 @@ namespace AmiKoWindows
                 Text = string.Format("Unzipping {0}... ", _filename.Replace(".zip", ""));
                 string unzippedFilepath = filepath.Replace(".zip", "");
                 // Remove old zip file if it exists
-                if (File.Exists(unzippedFilepath))
+                if (File.Exists(unzippedFilepath) && !IsFileLocked(unzippedFilepath))
+                {
                     File.Delete(unzippedFilepath);
+                }
                 // Unzip to app roaming folder
                 ZipFile.ExtractToDirectory(filepath, Utilities.AppRoamingDataFolder());
                 // Remove file
-                if (File.Exists(filepath))
+                if (File.Exists(filepath) && !IsFileLocked(filepath))
+                {
                     File.Delete(filepath);
+                }
             }
         }
 

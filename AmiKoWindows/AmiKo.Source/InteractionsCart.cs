@@ -248,8 +248,14 @@ namespace AmiKoWindows
                     foreach (var row in contents)
                     {
                         var token = Regex.Split(row, "\\|\\|");
-                        if (token.Length>2)
-                            strDict.Add(token[0] + '-' + token[1], token[2]);
+                        if (token.Length > 2)
+                        {
+                            var key = token[0] + '-' + token[1];
+                            if (!strDict.ContainsKey(key))
+                            {
+                                strDict.Add(key, token[2]);
+                            }
+                        }
                     }
                 }
                 catch (FileNotFoundException)
