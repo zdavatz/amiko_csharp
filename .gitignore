@@ -1,7 +1,12 @@
 *.db
+
+packages/
+
+.vs/
+.suo
+
 AmiKoWindows/obj/
 AmiKoWindows/bin/
-packages/
 AmiKoWindows/dbs/drug_interactions_csv_de.csv
 AmiKoWindows/publish/Application Files/AmiKo Desitin_1_0_4_3/images/mag_glass_16x16.png
 AmiKoWindows/publish/
