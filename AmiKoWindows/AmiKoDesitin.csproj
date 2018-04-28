@@ -289,7 +289,6 @@
     <None Include="AmiKo.Config\App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="make_exe.txt" />
     <Resource Include="images\trash_icon_2.png" />
     <Content Include="jscripts\interaction_callbacks.js" />
     <Resource Include="images\menu_button.png" />

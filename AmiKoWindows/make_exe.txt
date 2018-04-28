@@ -1,6 +1,0 @@
-1. AmiKoWindows -> Properties
-	a. Set assembly name
-	b. Set assembly information (Title, Product, Assembly version, File version)
-2. Signing
-3. Security
-4. Publish

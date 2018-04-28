@@ -33,6 +33,20 @@ Applications are available in the Microsoft store now!
 All data can be updated on daily basis.
 
 
+## Build
+
+### How to make .exe file
+
+```txt
+1. AmiKoWindows -> Properties
+	a. Set assembly name
+	b. Set assembly information (Title, Product, Assembly version, File version)
+2. Signing
+3. Security
+4. Publish
+```
+
+
 ## License
 
 `GPL-3.0`
