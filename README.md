@@ -1,12 +1,12 @@
 # AmiKo C\#
 
-AmiKo for Windows, written in C#.  
+AmiKo for Windows, written in C#.
 Applications are available in the Microsoft store now!
 
-| Language | Name |
-|----------|------|
-| German   | [AmiKo Desitin] |
-| French   | [CoMed Desitin] |
+| Name | Language |
+|------|----------|
+| [AmiKo Desitin] | Deutsch (Schweiz) |
+| [CoMed Desitin] | Français (Suisse) |
 
 [AmiKo Desitin]: https://www.microsoft.com/de-de/store/p/amiko-desitin/9wzdncrdffxc
 [CoMed Desitin]: https://www.microsoft.com/de-de/store/p/comed-desitin/9nlldb9vxmgx
@@ -16,8 +16,8 @@ Applications are available in the Microsoft store now!
 
 ### Contains
 
-* All legally registered drugs of Switzerland.
-* `15'913` Drug-Drug Interactions.
+* All legally registered drugs of Switzerland
+* `15'913` Drug-Drug Interactions
 * Full-Text-Search (FTS) with Keyword highlighting
 
 ### Search by
