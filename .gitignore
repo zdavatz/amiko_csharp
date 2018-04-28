@@ -4,6 +4,7 @@ packages/
 
 .vs/
 .suo
+*.csproj.user
 
 AmiKoWindows/obj/
 AmiKoWindows/bin/
