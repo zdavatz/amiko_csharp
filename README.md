@@ -131,8 +131,7 @@ You may want to use `Developer Command Prompt for VS 2017` (if you have it).
 `GPL-3.0`
 
 ```txt
-AmiKo Windows
-Copyright (c) 2016 Max Lungarella <cybrmx@gmail.com>
+AmiKo for Windows 10 Copyright (c) ywesee GmbH
 ```
 
 
