@@ -1,13 +1,17 @@
-*.db
-
 packages/
 
 .vs/
 .suo
 *.csproj.user
 
+*.exe
+*.pfx
+
+AmiKoWindows/dbs/**/*.zip
+AmiKoWindows/dbs/**/*.db
+AmiKoWindows/dbs/**/*.html
+AmiKoWindows/dbs/**/*.csv
+
 AmiKoWindows/obj/
 AmiKoWindows/bin/
-AmiKoWindows/dbs/drug_interactions_csv_de.csv
-AmiKoWindows/publish/Application Files/AmiKo Desitin_1_0_4_3/images/mag_glass_16x16.png
 AmiKoWindows/publish/
