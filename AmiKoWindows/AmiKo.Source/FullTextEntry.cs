@@ -1,9 +1,9 @@
 ﻿/*
-Copyright (c) 2017 Max Lungarella <cybrmx@gmail.com>
+Copyright (c) ywesee GmbH
 
-This file is part of AmiKoWindows.
+This file is part of AmiKo for Windows.
 
-AmiKoDesk is free software: you can redistribute it and/or modify
+AmiKo for Windows is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.

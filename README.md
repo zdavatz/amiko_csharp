@@ -1,4 +1,4 @@
-# AmiKo C\#
+# AmiKo Windows (aka. AmiKo C#)
 
 AmiKo for Windows, written in C#.
 Applications are available in the Microsoft store now!
