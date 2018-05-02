@@ -115,8 +115,9 @@ You may want to use `Developer Command Prompt for VS 2017` (if you have it).
 2. Confirm Signing Tab
 3. Check Security
 
-4. Set `Set as StartUp Project` (Right Click on the Solution Name)
-5. Rebuild (AmiKoDesitin and CoMedDesitin both)
+4. Set target project using `Set as StartUp Project` (Right Click on the Solution Name)
+5. Clean Solution (both projects)
+5. Rebuild target project (AmiKoDesitin or CoMedDesitin)
 
 6. Publish
 ```
