@@ -172,8 +172,8 @@ PS C:\Users\... > MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Build /p:Con
 And then, you can run `{AmiKo|CoMed}Desitin.exe` in `app.publish` directory.
 
 ```powershell
-PS C:\Users\... > .\bin\Debug\AmiKo\app.publish\AmiKo.Desitin.exe
-PS C:\Users\... > .\bin\Debug\AmiKo\app.publish\CoMed.Desitin.exe
+PS C:\Users\... > Start-Process '.\AmikoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
+PS C:\Users\... > Start-Process '.\AmikoWindows\bin\Debug\AmiKo\CoMed Desitin.exe'
 ```
 
 ##### Reference
