@@ -36,17 +36,43 @@ All data can be updated on daily basis.
 ### Requirements
 
 * Git
-* NuGet
-* MSBuild (or Visual Studio 2017)
-* .NET Core SDK
-* Windows 10 SDK
+* NuGet `>= 4.6.2`
+* MSBuild `>= 14.0`
+* .NET Core SDK (`2.1.105`)
+* .NET Core Runtime (`2.0.7`)
+* .NET Framework (`4.6.1`)
+* Windows 8.1 SDK (available from [archive](
+  https://developer.microsoft.com/en-us/windows/downloads/sdk-archive))
+
+Or just setup *Visual Studio* `>= 2015`
 
 ### Setup
 
-At first, you need to put database and csv files into `dbs` directories.
+#### Checkout the source code
+
+If you check out the source code on Linux on Windows, it seems that it must be
+**readonly** on Windows. You can still build it on there on Windows using
+MSBuild or Visual Studio etc., but you cannot modify existing files on there
+from Windows side.
+
+See: [Do not change Linux files using Windows apps and tools](
+https://blogs.msdn.microsoft.com/commandline/2016/11/17/do-not-change-linux-files-using-windows-apps-and-tools/).
+
+##### Possible Locations
+
+* Linux on Windows (Readonly on Windows)
+* Windows (Readable/Editable also on Linux on Windows via `/mnt`)
+
+#### Prepare Initial Database Files
+
+At first, you need to put database and csv files into `dbs` directories.  
+Once you have built the app with these files, you can update it via the feature
+of the app.
 
 ```bash
-$ cd dbs/de
+$ cd /path/to/project
+
+$ cd AmiKoWindows/dbs/de
 $ curl -sLO http://pillbox.oddb.org/amiko_report_de.html
 $ curl -sLO http://pillbox.oddb.org/amiko_db_full_idx_de.zip
 $ curl -sLO http://pillbox.oddb.org/amiko_frequency_de.db.zip
@@ -55,7 +81,7 @@ $ unzip amiko_db_full_idx_de.zip
 $ unzip amiko_frequency_de.db.zip
 $ unzip drug_interactions_csv_de.zip
 
-$ cd dbs/fr
+$ cd AmiKoWindows/dbs/fr
 $ curl -sLO http://pillbox.oddb.org/amiko_report_fr.html
 $ curl -sLO http://pillbox.oddb.org/amiko_db_full_idx_fr.zip
 $ curl -sLO http://pillbox.oddb.org/amiko_frequency_fr.db.zip
@@ -65,16 +91,18 @@ $ unzip amiko_frequency_fr.db.zip
 $ unzip drug_interactions_csv_fr.zip
 ```
 
-#### Dependencies (NuGet)
+#### Install Dependencies (NuGet)
 
-If you checked out the project in Linux on Windows (e.g. Debian),
-`NuGet` can't handle long path, correctly. So you need to set symbolic link
-using `mklink` and environment variable on Commant Prompt (as Administrator).
+If you have checked out the project on Linux on Windows, `NuGet` can't handle
+long path on the PowerShell on Windows, correctly. So you need to set symbolic
+link using `mklink` and environment variable on Command Prompt or PowerShell
+(using `/c`).
 
-See https://github.com/NuGet/Home/issues/3324
+See: [NuGet and long file name support #3324](
+https://github.com/NuGet/Home/issues/3324).
 
-```powershell
-# Environment variable `AmiKo` is set as:
+```txt
+# This is project location, for example environment variable `AmiKo` is set as:
 # C:\Users\<USER>\AppData\Local\Packages\TheDebian...\LocalState\rootfs
 #   \home\<user>\path\to\project
 
@@ -84,20 +112,68 @@ C:\Windows\system32> cd C:\Users\<USER>
 C:\Users\<USER>> mklink /d AmiKo %AmiKo%
 C:\Users\<USER>> cd AmiKo
 C:\Users\<USER>\AmiKo>
+```
 
-: Downloads NuGet.exe (windows x86 Commandline) here
-C:\Users\<USER>\AmiKo> NuGet.exe install "AmiKoWindows/packages.config" \
+And then, you can download packages.  
+on PowerShell:
+
+```powershell
+# Downloads nuget.exe (windows x86 Commandline) here
+C:\Users\<USER>\AmiKo> .\nuget.exe install "AmiKoWindows/packages.config" \
   -o packages/
+```
+
+On Linux on Windows, it's not affected to long path name problem.  
+on Bash (Linux on Windows with Mono):
+
+```bash
+# You can just do it (e.g. `/usr/local/bin/nuget.exe`)
+user@host:/path/to/project $ nuget install AmiKoWindows/packages.config \
+  -o packages
 ```
 
 ### Make
 
-#### MSBuild
+From this step, you may need to use PowerShell on Windows.
 
-You may want to use `Developer Command Prompt for VS 2017` (if you have it).
+#### Using MSBuild
+
+You would need to install *Microsoft Build Tools 2015* from [here](
+https://www.microsoft.com/en-us/download/details.aspx?id=48159).
+
+Use `>= 14.0` (installed one *Microsoft Build Tools 2015*). Or, you may want
+to use special command prompt like `Developer Command Prompt for VS 2017`
+bundled in Visual Studio.
+
 
 ```powershell
-> MSBuild.exe
+# Check the location of `MSBuild.exe`
+PS C:\Users\... > Resolve-Path HKLM:\SOFTWARE\Microsoft\MSBuild\ToolsVersion\* | Get-ItemProperty -Name MSBuildToolsPath
+
+MSBuildToolsPath : C:\Program Files (x86)\MSBuild\14.0\bin\amd64\
+PSPath           : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0
+...
+
+MSBuildToolsPath : C\:Windows\Microsoft.NET\Framework64\v4.0.30319\
+PSPath           : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0
+...
+```
+
+Build with `MSBuild` on PowerShell (You need to set *PATH* for `MSBuild.exe`):
+
+```powershell
+# AmiKoDesitin
+PS C:\Users\... > MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Build /p:Configuration=Debug
+
+# CoMedDesitin
+PS C:\Users\... > MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Build /p:Configuration=Debug
+```
+
+And then, you can run `{AmiKo|CoMed}Desitin.exe` in `app.publish` directory.
+
+```powershell
+PS C:\Users\... > .\bin\Debug\AmiKo\app.publish\AmiKo.Desitin.exe
+PS C:\Users\... > .\bin\Debug\AmiKo\app.publish\CoMed.Desitin.exe
 ```
 
 ##### Reference
@@ -106,7 +182,7 @@ You may want to use `Developer Command Prompt for VS 2017` (if you have it).
 * [MSBuild Command Line Reference](https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference)
 
 
-#### Visual Studio
+#### Using Visual Studio
 
 ```txt
 1. AmiKoWindows -> Navigate {AmiKoDesitin|CoMedDesitin} -> Properties (Right Click)
@@ -114,11 +190,9 @@ You may want to use `Developer Command Prompt for VS 2017` (if you have it).
   b. Set assembly information (Title, Product, Assembly version, File version)
 2. Confirm Signing Tab
 3. Check Security
-
 4. Set target project using `Set as StartUp Project` (Right Click on the Solution Name)
 5. Clean Solution (both projects)
 5. Rebuild target project (AmiKoDesitin or CoMedDesitin)
-
 6. Publish
 ```
 
@@ -132,13 +206,14 @@ You may want to use `Developer Command Prompt for VS 2017` (if you have it).
 `GPL-3.0`
 
 ```txt
-AmiKo for Windows 10 Copyright (c) ywesee GmbH
+AmiKo for Windows
+Copyright (c) ywesee GmbH
 ```
 
 
 ## Questions
 
-Please contact
+Please contact:
 
 ```txt
 zdavatz@ywesee.com
