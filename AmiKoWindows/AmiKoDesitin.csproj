@@ -1,6 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Target Name="Build">
+    <Message Text="Configuration: $(Configuration)" />
+    <Message Text="MSbuildToolsPath: $(MSbuildToolsPath)" />
+    <Message Text="SolutionDir: $(SolutionDir)" />
+    <Message Text="OutputAssembly: $(OutputPath)$(AssemblyName).exe" />
+    <MakeDir Directories="$(OutputPath)" Condition="!Exists('$(OutputPath)')" />
+    <Csc Sources="@(Compile)" OutputAssembly="$(OutputPath)$(AssemblyName).exe" />
+  </Target>
+  <PropertyGroup>
+    <SolutionDir>$([System.IO.Path]::GetDirectoryName($(MSBuildProjectDirectory)))\</SolutionDir>
+  </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
