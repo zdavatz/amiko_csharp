@@ -268,13 +268,6 @@
     <None Include="dbs\fr\amiko_frequency_fr.db" />
     <None Include="dbs\fr\drug_interactions_csv_fr.csv" />
     <Resource Include="resources\WindowsIcons-license.txt" />
-    <Content Include="..\packages/FontAwesome.4.7.0\Content/fonts\FontAwesome.otf" />
-    <Content Include="..\packages/FontAwesome.4.7.0\Content/fonts\fontawesome-webfont.ttf" />
-    <Content Include="..\packages/FontAwesome.4.7.0\Content/fonts\fontawesome-webfont.eot" />
-    <Content Include="..\packages/FontAwesome.4.7.0\Content/fonts\fontawesome-webfont.woff" />
-    <Content Include="..\packages/FontAwesome.4.7.0\Content/fonts\fontawesome-webfont.woff2" />
-    <Content Include="..\packages/FontAwesome.4.7.0\Content\Content\font-awesome.css" />
-    <Content Include="..\packages/FontAwesome.4.7.0\Content\Content\font-awesome.min.css" />
     <Content Include="fonts/Roboto-Ext.woff2" />
     <Content Include="fonts/Roboto-Regular.ttf" />
     <Content Include="fonts/Roboto.woff2" />
@@ -282,7 +275,6 @@
     <Content Include="css\fachinfo_css.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="css\amiko_stylesheet_old.css" />
     <Content Include="css\interactions_css.css" />
     <Content Include="css\shopping_css.css" />
     <Content Include="css\zurrose_css.css" />
