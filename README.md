@@ -71,6 +71,7 @@ of the app.
 
 ```bash
 $ cd /path/to/project
+% mkdir -p AmiKoWindows/dbs/{de,fr}
 
 $ cd AmiKoWindows/dbs/de
 $ curl -sLO http://pillbox.oddb.org/amiko_report_de.html
@@ -91,7 +92,14 @@ $ unzip amiko_frequency_fr.db.zip
 $ unzip drug_interactions_csv_fr.zip
 ```
 
-#### Install Dependencies (NuGet)
+#### Dependencies
+
+##### Embedded
+
+* Roboto (Apache-2.0)
+* [ModernUIIcons](https://github.com/Templarian/WindowsIcons) (CC-BY-ND-3.0)
+
+##### NuGet
 
 If you have checked out the project on Linux on Windows, `NuGet` can't handle
 long path on the PowerShell on Windows, correctly. So you need to set symbolic
@@ -172,8 +180,8 @@ PS C:\Users\... > MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Build /p:Con
 And then, you can run `{AmiKo|CoMed}Desitin.exe` in `app.publish` directory.
 
 ```powershell
-PS C:\Users\... > Start-Process '.\AmikoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
-PS C:\Users\... > Start-Process '.\AmikoWindows\bin\Debug\AmiKo\CoMed Desitin.exe'
+PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
+PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\CoMed Desitin.exe'
 ```
 
 ##### Reference

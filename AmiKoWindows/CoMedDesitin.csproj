@@ -1,6 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Target Name="Build">
+    <Message Text="Configuration: $(Configuration)" />
+    <Message Text="MSbuildToolsPath: $(MSbuildToolsPath)" />
+    <Message Text="SolutionDir: $(SolutionDir)" />
+    <Message Text="OutputAssembly: $(OutputPath)$(AssemblyName).exe" />
+    <MakeDir Directories="$(OutputPath)" Condition="!Exists('$(OutputPath)')" />
+    <Csc Sources="@(Compile)" OutputAssembly="$(OutputPath)$(AssemblyName).exe" />
+  </Target>
+  <PropertyGroup>
+    <SolutionDir>$([System.IO.Path]::GetDirectoryName($(MSBuildProjectDirectory)))\</SolutionDir>
+  </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -101,7 +112,7 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FontAwesome.WPF">
+    <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.3.0.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
@@ -243,21 +254,40 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="amiko_icon.ico" />
+    <Resource Include="desitin_icon.ico" />
     <Resource Include="store\fr\assets\desitin_logo.150x150.png" />
     <Resource Include="store\fr\assets\desitin_logo.44x44.png" />
     <Resource Include="store\fr\assets\desitin_logo.50x50.png" />
-    <None Include="dbs\fr\amiko_db_full_idx_fr.db" />
-    <None Include="dbs\fr\amiko_frequency_fr.db" />
-    <None Include="dbs\fr\drug_interactions_csv_fr.csv" />
-    <None Include="PreBuild.bat" />
     <None Include="store\fr\appx.manifest">
       <SubType>Designer</SubType>
     </None>
     <None Include="store\fr\appx.packing.bat" />
-    <Resource Include="desitin_icon.ico" />
+    <None Include="dbs\fr\amiko_report_fr.html" />
+    <None Include="dbs\fr\amiko_db_full_idx_fr.db" />
+    <None Include="dbs\fr\amiko_frequency_fr.db" />
+    <None Include="dbs\fr\drug_interactions_csv_fr.csv" />
+    <Resource Include="Resources\WindowsIcons-license.txt" />
+    <Content Include="..\packages/FontAwesome.4.7.0\Content/fonts\FontAwesome.otf" />
+    <Content Include="..\packages/FontAwesome.4.7.0\Content/fonts\fontawesome-webfont.ttf" />
+    <Content Include="..\packages/FontAwesome.4.7.0\Content/fonts\fontawesome-webfont.eot" />
+    <Content Include="..\packages/FontAwesome.4.7.0\Content/fonts\fontawesome-webfont.woff" />
+    <Content Include="..\packages/FontAwesome.4.7.0\Content/fonts\fontawesome-webfont.woff2" />
+    <Content Include="..\packages/FontAwesome.4.7.0\Content\Content\font-awesome.css" />
+    <Content Include="..\packages/FontAwesome.4.7.0\Content\Content\font-awesome.min.css" />
+    <Content Include="Fonts/Roboto-Ext.woff2" />
+    <Content Include="Fonts/Roboto-Regular.ttf" />
+    <Content Include="Fonts/Roboto.woff2" />
     <Content Include="css\fulltext_style_css.css" />
-    <Content Include="dbs\fr\amiko_report_fr.html" />
+    <Content Include="css\fachinfo_css.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="css\amiko_stylesheet_old.css" />
+    <Content Include="css\interactions_css.css" />
+    <Content Include="css\shopping_css.css" />
+    <Content Include="css\zurrose_css.css" />
     <Content Include="jscripts\main_callbacks.js" />
+    <Content Include="jscripts\interaction_callbacks.js" />
     <EmbeddedResource Include="Properties\Resources.fr-CH.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.fr-CH.Designer.cs</LastGenOutput>
@@ -268,6 +298,7 @@
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="PreBuild.bat" />
     <None Include="PostBuild.bat" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -277,22 +308,11 @@
     <AppDesigner Include="Properties\" />
     <None Include="README.md" />
     <Resource Include="fonts\Roboto-Regular.ttf" />
-    <Resource Include="Resources\Entypo.ttf" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="AmiKo.Config\App.config" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\trash_icon_2.png" />
-    <Content Include="jscripts\interaction_callbacks.js" />
     <Resource Include="images\menu_button.png" />
-    <Content Include="css\fachinfo_css.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="css\amiko_stylesheet_old.css" />
-    <Content Include="css\interactions_css.css" />
-    <Content Include="css\shopping_css.css" />
-    <Content Include="css\zurrose_css.css" />
     <Content Include="images\28-star-gy.png" />
     <Content Include="images\28-star-ye.png" />
     <Content Include="images\aips32x32_dark.png" />
@@ -308,9 +328,6 @@
     <Content Include="images\interactions32x32_gray.png" />
     <Resource Include="images\magnifying-glass.png" />
     <Content Include="images\mag_glass_16x16.png" />
-    <Resource Include="Resources\Entypo-license.txt" />
-    <Resource Include="Resources\WindowsIcons-license.txt" />
-    <Resource Include="amiko_icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
