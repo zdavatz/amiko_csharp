@@ -11,7 +11,7 @@ AmiKoWindows/dbs/**/*.zip
 AmiKoWindows/dbs/**/*.db
 AmiKoWindows/dbs/**/*.html
 AmiKoWindows/dbs/**/*.csv
-AmiKoWindows/Properties/Resources.resx
+AmiKoWindows/properties/Resources.resx
 
 AmiKoWindows/obj/
 AmiKoWindows/bin/

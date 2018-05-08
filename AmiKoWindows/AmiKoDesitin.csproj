@@ -17,7 +17,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{5D7DBE7B-A8B3-4988-AAE8-6419EACFD15D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <AppDesignerFolder>properties</AppDesignerFolder>
     <RootNamespace>AmiKoWindows</RootNamespace>
     <AssemblyName>AmiKo Desitin</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -100,7 +100,7 @@
   <PropertyGroup />
   <PropertyGroup />
   <PropertyGroup>
-    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+    <ApplicationManifest>properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -219,15 +219,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\AmiKoStyle.xaml">
+    <Page Include="resources\AmiKoStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resources\Icons.xaml">
+    <Page Include="resources\Icons.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resources\IconsNonShared.xaml">
+    <Page Include="resources\IconsNonShared.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -237,18 +237,18 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.de-CH.Designer.cs">
+    <Compile Include="properties\AssemblyInfo.cs" />
+    <Compile Include="properties\Resources.de-CH.Designer.cs">
       <DependentUpon>Resources.de-CH.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Include="properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
+    <Compile Include="properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -266,7 +266,7 @@
     <None Include="dbs\de\amiko_db_full_idx_de.db" />
     <None Include="dbs\de\amiko_frequency_de.db" />
     <None Include="dbs\de\drug_interactions_csv_de.csv" />
-    <Resource Include="Resources\WindowsIcons-license.txt" />
+    <Resource Include="resources\WindowsIcons-license.txt" />
     <Content Include="..\packages/FontAwesome.4.7.0\Content/fonts\FontAwesome.otf" />
     <Content Include="..\packages/FontAwesome.4.7.0\Content/fonts\fontawesome-webfont.ttf" />
     <Content Include="..\packages/FontAwesome.4.7.0\Content/fonts\fontawesome-webfont.eot" />
@@ -274,9 +274,9 @@
     <Content Include="..\packages/FontAwesome.4.7.0\Content/fonts\fontawesome-webfont.woff2" />
     <Content Include="..\packages/FontAwesome.4.7.0\Content\Content\font-awesome.css" />
     <Content Include="..\packages/FontAwesome.4.7.0\Content\Content\font-awesome.min.css" />
-    <Content Include="Fonts/Roboto-Ext.woff2" />
-    <Content Include="Fonts/Roboto-Regular.ttf" />
-    <Content Include="Fonts/Roboto.woff2" />
+    <Content Include="fonts/Roboto-Ext.woff2" />
+    <Content Include="fonts/Roboto-Regular.ttf" />
+    <Content Include="fonts/Roboto.woff2" />
     <Content Include="css\fulltext_style_css.css" />
     <Content Include="css\fachinfo_css.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -287,22 +287,22 @@
     <Content Include="css\zurrose_css.css" />
     <Content Include="jscripts\main_callbacks.js" />
     <Content Include="jscripts\interaction_callbacks.js" />
-    <EmbeddedResource Include="Properties\Resources.de-CH.resx">
+    <EmbeddedResource Include="properties\Resources.de-CH.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.de-CH.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Include="properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="Properties\app.manifest" />
-    <None Include="Properties\Settings.settings">
+    <None Include="properties\app.manifest" />
+    <None Include="properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <AppDesigner Include="Properties\" />
+    <AppDesigner Include="properties\" />
     <None Include="README.md" />
     <None Include="App.config" />
     <None Include="packages.config" />

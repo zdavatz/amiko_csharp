@@ -2,14 +2,14 @@
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 400;
-    src: url('../Fonts/Roboto.woff2') format('woff2');
+    src: url('../fonts/Roboto.woff2') format('woff2');
 }
 
 @font-face {
     font-family: 'Roboto-ext';
     font-style: normal;
     font-weight: 400;
-    src: url('../Fonts/Roboto-ext.woff2') format('woff2');
+    src: url('../fonts/Roboto-ext.woff2') format('woff2');
 }
 
 #menue {
@@ -28,64 +28,64 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #555555;
 }
-    #monographie .MonTitle {
-        font-size: 1.3em;
-        font-weight: bold;
-        margin-bottom: 0.2em;
-        color: #006699;
-    }
-    #monographie .absTitle {
-        font-size: 0.9em;
-        font-weight: bold;
-        font-style: normal;
-        /*text-decoration: underline;*/
-        margin-top: 0.2em;
-        margin-bottom: 0.2em;
-        padding-top: 0.3em;
-        padding-bottom: 0.05em;
-        color: #006699;
-    }
-    #monographie .untertitle {
-        font-size: 0.9em;
-        font-weight: normal;
-        margin-top: 0.5em;
-        margin-bottom: 0.0em;
-    }
-    #monographie .untertitle1 {
-        font-size: 0.9em;
-        font-weight: normal;
-        font-style: italic;
-        margin-top: 0.2em;
-        margin-bottom: 0.0em;
-    }
-    #monographie .header {
-        font-size: 0.9em;
-        font-weight: normal;
-        color: #555555;
-        text-align: left;
-        margin-bottom: 2em;
-        visibility: hidden;
-        display: none;
-    }
-    #monographie .footer {
-        font-size: 0.9em;
-        font-weight: normal;
-        color: #555555;
-        margin-top: 2.0em;
-        border-top: #888888 1px solid;
-        padding-top: 0.5em;
-    }
-    #monographie div p {
-        font-size: 0.9em;
-        color: #555555;
-    }
-    #monographie .paragraph {
-        font-weight: normal;
-        font-style: normal;
-        margin-top: 0.5em;
-        /*border:#aaaaaa 1px solid;*/
-        /*background-color:#faffff;*/
-    }
+#monographie .MonTitle {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 0.2em;
+    color: #006699;
+}
+#monographie .absTitle {
+    font-size: 0.9em;
+    font-weight: bold;
+    font-style: normal;
+    /*text-decoration: underline;*/
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    padding-top: 0.3em;
+    padding-bottom: 0.05em;
+    color: #006699;
+}
+#monographie .untertitle {
+    font-size: 0.9em;
+    font-weight: normal;
+    margin-top: 0.5em;
+    margin-bottom: 0.0em;
+}
+#monographie .untertitle1 {
+    font-size: 0.9em;
+    font-weight: normal;
+    font-style: italic;
+    margin-top: 0.2em;
+    margin-bottom: 0.0em;
+}
+#monographie .header {
+    font-size: 0.9em;
+    font-weight: normal;
+    color: #555555;
+    text-align: left;
+    margin-bottom: 2em;
+    visibility: hidden;
+    display: none;
+}
+#monographie .footer {
+    font-size: 0.9em;
+    font-weight: normal;
+    color: #555555;
+    margin-top: 2.0em;
+    border-top: #888888 1px solid;
+    padding-top: 0.5em;
+}
+#monographie div p {
+    font-size: 0.9em;
+    color: #555555;
+}
+#monographie .paragraph {
+    font-weight: normal;
+    font-style: normal;
+    margin-top: 0.5em;
+    /*border:#aaaaaa 1px solid;*/
+    /*background-color:#faffff;*/
+}
 
 .noSpacing {
     margin-top: 0em;
@@ -162,9 +162,9 @@
     margin-bottom: 0.25em;
     cursor: pointer;
 }
-    .barcode:hover {
-        background-color: #eeeeee;
-    }
+.barcode:hover {
+    background-color: #eeeeee;
+}
 
 #monographie table {
     font-family: "Roboto-ext","Roboto";
@@ -179,10 +179,10 @@
     font-family: "Roboto-ext","Roboto";
     font-size: 0.9em;
 }
-    #monographie td p {
-        font-family: "Roboto-ext","Roboto";
-        font-size: 0.9em;
-    }
+#monographie td p {
+    font-family: "Roboto-ext","Roboto";
+    font-size: 0.9em;
+}
 
 .rowSepBelow {
     border-bottom: solid 1px black;
@@ -200,38 +200,38 @@
     border-spacing: 0;
     width: 100%;
 }
-    .tblArticles .product {
-        width: 37%;
-        font-size: small;
-        vertical-align: top;
-        border-top: solid 1pt #E5E7E8;
-        border-right: solid 1pt #E5E7E8;
-    }
-    .tblArticles .productEmpty {
-        width: 37%;
-    }
-    .tblArticles .normal-right {
-        border-right: solid 1pt #E5E7E8;
-        border-top: solid 1pt #E5E7E8;
-        width: 15%;
-        text-align: right;
-        vertical-align: top;
-        font-size: small;
-    }
-    .tblArticles .normal-center {
-        border-right: solid 1pt #E5E7E8;
-        border-top: solid 1pt #E5E7E8;
-        width: 10%;
-        text-align: center;
-        vertical-align: top;
-        font-size: small;
-    }
-    .tblArticles .picture {
-        width: 15%;
-        text-align: center;
-        border-top: solid 1pt #E5E7E8;
-    }
-    .tblArticles .pictureEmpty {
-        width: 15%;
-        border-top: solid 1pt #E5E7E8;
-    }
+.tblArticles .product {
+    width: 37%;
+    font-size: small;
+    vertical-align: top;
+    border-top: solid 1pt #E5E7E8;
+    border-right: solid 1pt #E5E7E8;
+}
+.tblArticles .productEmpty {
+    width: 37%;
+}
+.tblArticles .normal-right {
+    border-right: solid 1pt #E5E7E8;
+    border-top: solid 1pt #E5E7E8;
+    width: 15%;
+    text-align: right;
+    vertical-align: top;
+    font-size: small;
+}
+.tblArticles .normal-center {
+    border-right: solid 1pt #E5E7E8;
+    border-top: solid 1pt #E5E7E8;
+    width: 10%;
+    text-align: center;
+    vertical-align: top;
+    font-size: small;
+}
+.tblArticles .picture {
+    width: 15%;
+    text-align: center;
+    border-top: solid 1pt #E5E7E8;
+}
+.tblArticles .pictureEmpty {
+    width: 15%;
+    border-top: solid 1pt #E5E7E8;
+}
