@@ -255,14 +255,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Resource Include="store\fr\assets\desitin_logo.150x150.png" />
-    <Resource Include="store\fr\assets\desitin_logo.44x44.png" />
-    <Resource Include="store\fr\assets\desitin_logo.50x50.png" />
     <None Include="Packages.config" />
-    <None Include="store\fr\appx.manifest">
+    <None Include="CoMedDesitin.appx.manifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="store\fr\appx.packing.bat" />
+    <None Include="CoMedDesitin.appx.packing.bat" />
+    <!-- Data -->
     <None Include="Data\fr\amiko_report_fr.html" />
     <None Include="Data\fr\amiko_db_full_idx_fr.db" />
     <None Include="Data\fr\amiko_frequency_fr.db" />
@@ -325,6 +323,9 @@
     <Resource Include="Resources\img\interactions32x32_gray.png" />
     <Resource Include="Resources\img\magnifying-glass.png" />
     <Resource Include="Resources\img\mag_glass_16x16.png" />
+    <Resource Include="Resources\img\logo\desitin_logo.150x150.png" />
+    <Resource Include="Resources\img\logo\desitin_logo.44x44.png" />
+    <Resource Include="Resources\img\logo\desitin_logo.50x50.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
