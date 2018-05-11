@@ -65,16 +65,18 @@ https://blogs.msdn.microsoft.com/commandline/2016/11/17/do-not-change-linux-file
 
 #### Prepare Initial Database Files
 
-At first, you need to put database and csv files into `dbs` directories.  
+At first, you need to put database and csv files into `Datta` directory.  
 Once you have built the app with these files, you can update it via the feature
 of the app.
 
 ```bash
 $ cd /path/to/project
-% mkdir -p AmiKoWindows/dbs/{de,fr}
+% mkdir -p AmiKoWindows/Data/{de,fr}
 
-$ cd AmiKoWindows/dbs/de
+# AmiKoDesitin
+$ cd AmiKoWindows/Data/de
 $ curl -sLO http://pillbox.oddb.org/amiko_report_de.html
+
 $ curl -sLO http://pillbox.oddb.org/amiko_db_full_idx_de.zip
 $ curl -sLO http://pillbox.oddb.org/amiko_frequency_de.db.zip
 $ curl -sLO http://pillbox.oddb.org/drug_interactions_csv_de.zip
@@ -82,8 +84,10 @@ $ unzip amiko_db_full_idx_de.zip
 $ unzip amiko_frequency_de.db.zip
 $ unzip drug_interactions_csv_de.zip
 
-$ cd AmiKoWindows/dbs/fr
+# CoMedDesitin
+$ cd AmiKoWindows/Data/fr
 $ curl -sLO http://pillbox.oddb.org/amiko_report_fr.html
+
 $ curl -sLO http://pillbox.oddb.org/amiko_db_full_idx_fr.zip
 $ curl -sLO http://pillbox.oddb.org/amiko_frequency_fr.db.zip
 $ curl -sLO http://pillbox.oddb.org/drug_interactions_csv_fr.zip

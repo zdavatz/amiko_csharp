@@ -96,7 +96,7 @@ namespace AmiKoWindows
 
             string dbPath = Path.Combine(AppRoamingDataFolder(), dbName);
             if (!File.Exists(dbPath))
-                dbPath = Path.Combine(AppExecutingFolder(), "dbs", dbName);
+                dbPath = Path.Combine(AppExecutingFolder(), "Data", dbName);
             return dbPath;
         }
 
@@ -108,7 +108,7 @@ namespace AmiKoWindows
 
             string dbPath = Path.Combine(AppRoamingDataFolder(), dbName);
             if (!File.Exists(dbPath))
-                dbPath = Path.Combine(AppExecutingFolder(), "dbs", dbName);
+                dbPath = Path.Combine(AppExecutingFolder(), "Data", dbName);
             return dbPath;
         }
 
@@ -120,21 +120,12 @@ namespace AmiKoWindows
 
             string path = Path.Combine(AppRoamingDataFolder(), interactionsName);
             if (!File.Exists(path))
-                path = Path.Combine(AppExecutingFolder(), "dbs", interactionsName);
+                path = Path.Combine(AppExecutingFolder(), "Data", interactionsName);
             return path;
         }
 
         public static string ReportPath()
         {
-            /*
-            string reportName = Constants.REPORT_FILE_BASE + "de.html";
-            if (AppLanguage().Equals("fr"))
-                reportName = Constants.REPORT_FILE_BASE + "fr.html";
-
-            string reportPath = Path.Combine(AppRoamingDataFolder(), reportName);
-            if (!File.Exists(reportPath))
-                reportPath = Path.Combine(AppExecutingFolder(), "dbs", reportName);
-            */
             string reportPath = "http://pillbox.oddb.org/amiko_report_de.html";
             if (AppLanguage().Equals("fr"))
                 reportPath = "http://pillbox.oddb.org/amiko_report_fr.html";

@@ -262,10 +262,10 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="store\de\appx.packing.bat" />
-    <None Include="dbs\de\amiko_report_de.html" />
-    <None Include="dbs\de\amiko_db_full_idx_de.db" />
-    <None Include="dbs\de\amiko_frequency_de.db" />
-    <None Include="dbs\de\drug_interactions_csv_de.csv" />
+    <None Include="Data\de\amiko_report_de.html" />
+    <None Include="Data\de\amiko_db_full_idx_de.db" />
+    <None Include="Data\de\amiko_frequency_de.db" />
+    <None Include="Data\de\drug_interactions_csv_de.csv" />
 
     <EmbeddedResource Include="Properties\Resources.de-CH.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
