@@ -292,7 +292,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\WindowsIcons-license.txt" />
+    <Resource Include="Resources\ModernUIIcons-License.txt" />
+    <Resource Include="Resources\Glyphish-License.txt" />
     <!-- font -->
     <Resource Include="Resources\font\Roboto-Ext.woff2" />
     <Resource Include="Resources\font\Roboto-Regular.ttf" />

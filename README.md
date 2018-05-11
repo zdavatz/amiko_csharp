@@ -102,6 +102,13 @@ $ unzip drug_interactions_csv_fr.zip
 
 * Roboto (Apache-2.0)
 * [ModernUIIcons](https://github.com/Templarian/WindowsIcons) (CC-BY-ND-3.0)
+* [Glyphish](http://www.glyphish.com) (__NOT REDISTRIBUTED__ \*)
+
+\*: We have purchased Glyphish icons and modified them for this project. It's
+not redistributed under `GPL-3.0` (as icons). Because it's not open
+source project, you cannot take them as icons from this project, can just use
+them as a part of our source code. See [Glyphish-License.txt](
+AmiKoWindows/Resources/Glyphish-License.txt).
 
 ##### NuGet
 
