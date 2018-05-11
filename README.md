@@ -180,9 +180,11 @@ Build with `MSBuild` on PowerShell (You need to set *PATH* for `MSBuild.exe`):
 
 ```powershell
 # AmiKoDesitin
+PS C:\Users\... > MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Clean
 PS C:\Users\... > MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Build /p:Configuration=Debug
 
 # CoMedDesitin
+PS C:\Users\... > MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Clean
 PS C:\Users\... > MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Build /p:Configuration=Debug
 ```
 
@@ -216,6 +218,24 @@ PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\CoMed Desitin.ex
 ##### Reference
 
 * [Compile and build in Visual Studio](https://docs.microsoft.com/en-us/visualstudio/ide/compiling-and-building-in-visual-studio)
+
+### Release
+
+#### Using MakeAppx
+
+TODO
+
+##### Reference
+
+* [Create an app package with the MakeAppx.exe tool](https://docs.microsoft.com/en-us/windows/uwp/packaging/create-app-package-with-makeappx-tool)
+
+#### Using Visual Studio
+
+TODO
+
+##### Reference
+
+* [Package a UWP app with Visual Studio](https://docs.microsoft.com/en-us/windows/uwp/packaging/packaging-uwp-apps)
 
 
 ## License
