@@ -35,9 +35,9 @@ namespace AmiKoWindows
         Dictionary<string, string> _interactionsDict = new Dictionary<string, string>();
         // Dictionary of title to article
         Dictionary<string, Article> _articleBasket = new Dictionary<string, Article>();
-        string _jscriptStr;
+        string _jsStr;
         string _cssStr;
-        string _imagesFolder;
+        string _imgFolder;
         #endregion
 
         #region Public Methods
@@ -62,12 +62,12 @@ namespace AmiKoWindows
             Console.Out.WriteLine(">> OK: Opened interactions db located in {0}\n", Utilities.InteractionsPath());
 
             string path = Path.Combine(Utilities.AppExecutingFolder(), Constants.JS_FOLDER, "interaction_callbacks.js");
-            _jscriptStr = File.ReadAllText(path);
+            _jsStr = File.ReadAllText(path);
 
             path = Path.Combine(Utilities.AppExecutingFolder(), Constants.INTERACTIONS_SHEET);
             _cssStr = File.ReadAllText(path);
 
-            _imagesFolder = Path.Combine(Utilities.AppExecutingFolder(), Constants.IMG_FOLDER);
+            _imgFolder = Path.Combine(Utilities.AppExecutingFolder(), Constants.IMG_FOLDER);
         }
 
         public void ShowBasket()
@@ -97,7 +97,7 @@ namespace AmiKoWindows
                             + "<td>" + atcInfo.Item1 + "</td>"
                             + "<td>" + atcInfo.Item2 + "</td>"
                             + "<td style=\"text-align:center;\">" + "<button type=\"button\" style=\"border:none;\" onclick=\"deleteRow('Interaktionen',this)\"><img src=\""
-                            + _imagesFolder + "/trash_icon_2.png\" /></button>" + "</td>";
+                            + _imgFolder + "/trash_icon_2.png\" /></button>" + "</td>";
 
                     basketHtmlStr += "</tr>";
                     medCount++;
@@ -152,7 +152,7 @@ namespace AmiKoWindows
                 }
 
                 HtmlText = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />"
-                    + "<script language=\"javascript\">" + _jscriptStr + "</script>"
+                    + "<script language=\"javascript\">" + _jsStr + "</script>"
                     + "<style>" + _cssStr + "</style>" + "</head>"
                     + "<body><div id=\"interactions\">"
                     + basketHtmlStr + deleteAllButtonStr + "<br><br>"
@@ -171,8 +171,8 @@ namespace AmiKoWindows
 
                 HtmlText = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />"
                     + "<style>" + _cssStr + "</style>" + "</head>"
-                    + "<body><div id=\"interactions\">" 
-                    + basketHtmlStr 
+                    + "<body><div id=\"interactions\">"
+                    + basketHtmlStr
                     + "</div></body></html>";
             }
         }

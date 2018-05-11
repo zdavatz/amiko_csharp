@@ -30,14 +30,14 @@ namespace AmiKoWindows
     public class FachInfo : HtmlBase
     {
         #region Private Fields
-        string _jscriptStr;
+        string _jsStr;
         string _cssStr;
         MainWindow _mainWindow;
         MainSqlDb _sqlDb;
         #endregion
 
         #region Properties
-        string JscriptPath { get; set; }
+        string JsPath { get; set; }
         string CssFilePath { get; set; }
         #endregion
 
@@ -48,10 +48,10 @@ namespace AmiKoWindows
             _sqlDb = sqlDb;
 
             // Load important files
-            JscriptPath = Path.Combine(Utilities.AppExecutingFolder(), Constants.JS_FOLDER, "main_callbacks.js");
-            if (File.Exists(JscriptPath))
+            JsPath = Path.Combine(Utilities.AppExecutingFolder(), Constants.JS_FOLDER, "main_callbacks.js");
+            if (File.Exists(JsPath))
             {
-                _jscriptStr = "<script language=\"javascript\">" + File.ReadAllText(JscriptPath) + "</script>";
+                _jsStr = "<script language=\"javascript\">" + File.ReadAllText(JsPath) + "</script>";
             }
             CssFilePath = Path.Combine(Utilities.AppExecutingFolder(), Constants.CSS_SHEET);
             if (File.Exists(CssFilePath))
@@ -106,11 +106,11 @@ namespace AmiKoWindows
             string htmlStr = HighlightContent(a.Content, highlight);
 
             string headStr = "<!DOCTYPE html><head>"
-                + "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>" 
+                + "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>"
                 // + "<link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Roboto&subset=latin,latin-ext'>"
-                + _jscriptStr
+                + _jsStr
                 + _cssStr
-                + "</head>"; 
+                + "</head>";
             HtmlText = headStr + htmlStr;
 
             SetSectionTitles(a);
@@ -119,7 +119,7 @@ namespace AmiKoWindows
         public async Task ShowReport()
         {
             /* This is a solution to the local storage issue for Windows Store Apps which is not using UWP
-             */ 
+             */
             string reportPath = Utilities.ReportPath();
             // First part could be omitted... WEIRD!!
             if (File.Exists(reportPath))

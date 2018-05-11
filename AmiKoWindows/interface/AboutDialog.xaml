@@ -8,7 +8,7 @@
         ResizeMode="NoResize" WindowStyle="None"
         GlowBrush="Black"
         EnableDWMDropShadow="True"
-        BorderThickness="1" 
+        BorderThickness="1"
         Topmost="True"
         WindowStartupLocation="CenterScreen"
         RenderOptions.ClearTypeHint="Enabled"
@@ -17,8 +17,8 @@
         Height="410" Width="256">
     <Grid>
         <DockPanel LastChildFill="True">
-            <Image Width="64" DockPanel.Dock="Top" Margin="16" Source="../images/desitin_icon.png" />
-            <RichTextBox x:Name="MyAboutDialog" BorderThickness="0 1 0 0" 
+            <Image Width="64" DockPanel.Dock="Top" Margin="16" Source="../Resources/img/desitin_icon.png" />
+            <RichTextBox x:Name="MyAboutDialog" BorderThickness="0 1 0 0"
                          DockPanel.Dock="Top" Height="220" HorizontalAlignment="Center" AcceptsReturn="True">
                 <RichTextBox.Resources>
                     <Style TargetType="{x:Type Paragraph}">

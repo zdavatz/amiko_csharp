@@ -26,13 +26,13 @@ namespace AmiKoWindows
         public const string FREQUENCY_DB_BASE = @"amiko_frequency_";
         public const string REPORT_FILE_BASE = @"amiko_report_";
         public const string INTERACTIONS_CSV_BASE = @"drug_interactions_csv_";
-        public const string IMG_FOLDER = @"images";	
-	    public const string JS_FOLDER = @"jscripts";
-        public const string CSS_SHEET = @"./css/fachinfo_css.css";
-        public const string INTERACTIONS_SHEET = @"./css/interactions_css.css";
-        public const string FULLTEXT_SHEET = @"./css/fulltext_style_css.css";
-        public const string SHOPPING_SHEET = @"./css/shopping_css.css";
-        public const string ROSE_SHEET = @"./css/zurrose_css.css";
+        public const string IMG_FOLDER = @"Resources/img";
+	    public const string JS_FOLDER = @"Resources/js";
+        public const string CSS_SHEET = @"Resources/css/fachinfo_css.css";
+        public const string INTERACTIONS_SHEET = @"Resources/css/interactions_css.css";
+        public const string FULLTEXT_SHEET = @"Resources/css/fulltext_style_css.css";
+        public const string SHOPPING_SHEET = @"Resources/css/shopping_css.css";
+        public const string ROSE_SHEET = @"Resources/css/zurrose_css.css";
 
         // German section title abbreviations
         public static readonly string[] SectionTitlesDE = { "Zusammensetzung", "Galenische Form", "Kontraindikationen", "Indikationen",

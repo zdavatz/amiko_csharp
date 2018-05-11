@@ -23,11 +23,11 @@
     <Window.Resources>
         <ResourceDictionary>
             <Style TargetType="{x:Type Window}">
-                <Setter Property="FontFamily" Value="pack://application:,,,/fonts/Roboto-Regular.ttf"/>
+              <Setter Property="FontFamily" Value="pack://application:,,,/Resources/font/Roboto-Regular.ttf"/>
             </Style>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/resources/AmiKoStyle.xaml" />
-                <ResourceDictionary Source="/resources/Icons.xaml" />
+                <ResourceDictionary Source="/Resources/AmiKoStyle.xaml" />
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -108,21 +108,21 @@
                     <ToolBar ToolBarTray.IsLocked="True">
                         <ToggleButton Name="Compendium" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="6,6,0,6">
                             <StackPanel Orientation="Horizontal">
-                                <Image Width="16" Source="../images/aips32x32_dark.png" />
+                                <Image Width="16" Source="../Resources/img/aips32x32_dark.png" />
                                 <Label VerticalAlignment="Center" Content="{x:Static p:Resources.compendium}" />
                             </StackPanel>
                         </ToggleButton>
                         <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                         <ToggleButton Name="Favorites" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
                             <StackPanel Orientation="Horizontal">
-                                <Image Width="16" Source="../images/favorites32x32_dark.png" />
+                                <Image Width="16" Source="../Resources/img/favorites32x32_dark.png" />
                                 <Label VerticalAlignment="Center" Content="{x:Static p:Resources.favorites}" />
                             </StackPanel>
                         </ToggleButton>
                         <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                         <ToggleButton Name="Interactions" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
                             <StackPanel Orientation="Horizontal">
-                                <Image Width="16" Source="../images/interactions32x32_dark.png" />
+                                <Image Width="16" Source="../Resources/img/interactions32x32_dark.png" />
                                 <Label VerticalAlignment="Center" Content="{x:Static p:Resources.interactions}" />
                             </StackPanel>
                         </ToggleButton>

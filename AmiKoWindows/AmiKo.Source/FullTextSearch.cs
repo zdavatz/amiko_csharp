@@ -31,7 +31,7 @@ namespace AmiKoWindows
     {
         #region Private Fields
         string _cssStr;
-        string _jscriptStr;
+        string _jsStr;
         List<Article> _listOfArticles = null;
         Dictionary<string, HashSet<string>> _dictOfRegChapters = null;
         #endregion
@@ -40,10 +40,10 @@ namespace AmiKoWindows
         public FullTextSearch()
         {
             // Load important files
-            string _jscriptPath = Path.Combine(Utilities.AppExecutingFolder(), Constants.JS_FOLDER, "main_callbacks.js");
-            if (File.Exists(_jscriptPath))
+            string _jsPath = Path.Combine(Utilities.AppExecutingFolder(), Constants.JS_FOLDER, "main_callbacks.js");
+            if (File.Exists(_jsPath))
             {
-                _jscriptStr = $"<script language=\"javascript\">{File.ReadAllText(_jscriptPath)}</script>";
+                _jsStr = $"<script language=\"javascript\">{File.ReadAllText(_jsPath)}</script>";
             }
             string _cssFilePath = Path.Combine(Utilities.AppExecutingFolder(), Constants.FULLTEXT_SHEET);
             if (File.Exists(_cssFilePath))
@@ -77,7 +77,7 @@ namespace AmiKoWindows
             _dictOfRegChapters = dictOfRegChapters;
 
             string htmlStr = "";
-            string headStr = $"<head><meta charset='UTF-8'><meta http-equiv='X-UA-Compatible' content='IE=10'>{_jscriptStr}{_cssStr}</head>";
+            string headStr = $"<head><meta charset='UTF-8'><meta http-equiv='X-UA-Compatible' content='IE=10'>{_jsStr}{_cssStr}</head>";
             if (_listOfArticles != null)
             {
                 int rows = 0;

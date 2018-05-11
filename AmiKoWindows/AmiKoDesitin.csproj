@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Target Name="Build">
+  <Target Name="Clean;Build">
     <Message Text="Configuration: $(Configuration)" />
     <Message Text="MSbuildToolsPath: $(MSbuildToolsPath)" />
     <Message Text="SolutionDir: $(SolutionDir)" />
@@ -70,7 +70,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>desitin_icon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\img\desitin_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>AmiKoWindows.App</StartupObject>
@@ -179,23 +179,6 @@
     <Compile Include="AmiKo.Source\HtmlBase.cs" />
     <Compile Include="AmiKo.Source\InteractionsCart.cs" />
     <Compile Include="AmiKo.Source\Items.cs" />
-    <Compile Include="interface\AboutDialog.xaml.cs">
-      <DependentUpon>AboutDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="interface\ProgressDialog.xaml.cs">
-      <DependentUpon>ProgressDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="interface\SplashScreen.xaml.cs">
-      <DependentUpon>SplashScreen.xaml</DependentUpon>
-    </Compile>
-    <Page Include="interface\AboutDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="interface\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="AmiKo.Source\Article.cs" />
     <Compile Include="AmiKo.Source\Colors.cs" />
     <Compile Include="AmiKo.Source\Constants.cs" />
@@ -211,6 +194,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="interface\AboutDialog.xaml.cs">
+      <DependentUpon>AboutDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="interface\ProgressDialog.xaml.cs">
+      <DependentUpon>ProgressDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="interface\SplashScreen.xaml.cs">
+      <DependentUpon>SplashScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="interface\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -219,21 +211,29 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="resources\AmiKoStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="resources\Icons.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="resources\IconsNonShared.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="interface\SplashScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="interface\AboutDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="interface\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\AmiKoStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\IconsNonShared.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -253,8 +253,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Resource Include="amiko_icon.ico" />
-    <Resource Include="desitin_icon.ico" />
     <Resource Include="store\de\assets\desitin_logo.150x150.png" />
     <Resource Include="store\de\assets\desitin_logo.44x44.png" />
     <Resource Include="store\de\assets\desitin_logo.50x50.png" />
@@ -266,19 +264,7 @@
     <None Include="dbs\de\amiko_db_full_idx_de.db" />
     <None Include="dbs\de\amiko_frequency_de.db" />
     <None Include="dbs\de\drug_interactions_csv_de.csv" />
-    <Resource Include="resources\WindowsIcons-license.txt" />
-    <Content Include="fonts/Roboto-Ext.woff2" />
-    <Content Include="fonts/Roboto-Regular.ttf" />
-    <Content Include="fonts/Roboto.woff2" />
-    <Content Include="css\fulltext_style_css.css" />
-    <Content Include="css\fachinfo_css.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="css\interactions_css.css" />
-    <Content Include="css\shopping_css.css" />
-    <Content Include="css\zurrose_css.css" />
-    <Content Include="jscripts\main_callbacks.js" />
-    <Content Include="jscripts\interaction_callbacks.js" />
+
     <EmbeddedResource Include="properties\Resources.de-CH.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.de-CH.Designer.cs</LastGenOutput>
@@ -302,25 +288,44 @@
     <None Include="PostBuild.bat" />
     <None Include="AmiKo.Config\App.config" />
   </ItemGroup>
+
   <ItemGroup>
-    <Resource Include="images\trash_icon_2.png" />
-    <Resource Include="images\menu_button.png" />
-    <Content Include="images\28-star-gy.png" />
-    <Content Include="images\28-star-ye.png" />
-    <Content Include="images\aips32x32_dark.png" />
-    <Content Include="images\aips32x32_gray.png" />
-    <Resource Include="images\amiko_icon.ico" />
-    <Content Include="images\amiko_icon.png" />
-    <Resource Include="images\desitin_icon.ico" />
-    <Resource Include="images\desitin_icon.png" />
-    <Resource Include="images\desitin_splash.png" />
-    <Content Include="images\favorites32x32_dark.png" />
-    <Content Include="images\favorites32x32_gray.png" />
-    <Content Include="images\interactions32x32_dark.png" />
-    <Content Include="images\interactions32x32_gray.png" />
-    <Resource Include="images\magnifying-glass.png" />
-    <Content Include="images\mag_glass_16x16.png" />
+    <Resource Include="Resources\WindowsIcons-license.txt" />
+    <!-- font -->
+    <Resource Include="Resources\font\Roboto-Ext.woff2" />
+    <Resource Include="Resources\font\Roboto-Regular.ttf" />
+    <Resource Include="Resources\font\Roboto.woff2" />
+    <!-- stylesheet -->
+    <Resource Include="Resources\css\fulltext_style_css.css" />
+    <Resource Include="Resources\css\interactions_css.css" />
+    <Resource Include="Resources\css\shopping_css.css" />
+    <Resource Include="Resources\css\zurrose_css.css" />
+    <Resource Include="Resources\css\fachinfo_css.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <!-- javascript -->
+    <Resource Include="Resources\js\main_callbacks.js" />
+    <Resource Include="Resources\js\interaction_callbacks.js" />
+    <!-- image -->
+    <Resource Include="Resources\img\amiko_icon.ico" />
+    <Resource Include="Resources\img\desitin_icon.ico" />
+    <Resource Include="Resources\img\trash_icon_2.png" />
+    <Resource Include="Resources\img\menu_button.png" />
+    <Resource Include="Resources\img\28-star-gy.png" />
+    <Resource Include="Resources\img\28-star-ye.png" />
+    <Resource Include="Resources\img\aips32x32_dark.png" />
+    <Resource Include="Resources\img\aips32x32_gray.png" />
+    <Resource Include="Resources\img\amiko_icon.png" />
+    <Resource Include="Resources\img\desitin_icon.png" />
+    <Resource Include="Resources\img\desitin_splash.png" />
+    <Resource Include="Resources\img\favorites32x32_dark.png" />
+    <Resource Include="Resources\img\favorites32x32_gray.png" />
+    <Resource Include="Resources\img\interactions32x32_dark.png" />
+    <Resource Include="Resources\img\interactions32x32_gray.png" />
+    <Resource Include="Resources\img\magnifying-glass.png" />
+    <Resource Include="Resources\img\mag_glass_16x16.png" />
   </ItemGroup>
+
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
       <Visible>False</Visible>
@@ -333,12 +338,13 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.104.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.104.0\build\net46\System.Data.SQLite.Core.targets')" />
   <PropertyGroup>
     <PostBuildEvent>$(ProjectDir)PostBuild.bat $(SolutionDir) $(TargetDir) de</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\System.Data.SQLite.Core.1.0.104.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.104.0\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
@@ -348,7 +354,7 @@
   <PropertyGroup>
     <PreBuildEvent>$(ProjectDir)PreBuild.bat $(SolutionDir) Resources.de-CH.resx</PreBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
