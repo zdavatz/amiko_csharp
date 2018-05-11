@@ -17,7 +17,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{170A60E6-3152-4E72-97B6-E7378E22CD3F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>properties</AppDesignerFolder>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AmiKoWindows</RootNamespace>
     <AssemblyName>CoMed Desitin</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -100,7 +100,7 @@
   <PropertyGroup />
   <PropertyGroup />
   <PropertyGroup>
-    <ApplicationManifest>properties\app.manifest</ApplicationManifest>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -237,18 +237,18 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="properties\AssemblyInfo.cs" />
-    <Compile Include="properties\Resources.fr-CH.Designer.cs">
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.fr-CH.Designer.cs">
       <DependentUpon>Resources.fr-CH.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="properties\Resources.Designer.cs">
+    <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="properties\Settings.Designer.cs">
+    <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -265,22 +265,22 @@
     <None Include="dbs\fr\amiko_frequency_fr.db" />
     <None Include="dbs\fr\drug_interactions_csv_fr.csv" />
 
-    <EmbeddedResource Include="properties\Resources.fr-CH.resx">
+    <EmbeddedResource Include="Properties\Resources.fr-CH.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.fr-CH.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="properties\Resources.resx">
+    <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="properties\app.manifest" />
-    <None Include="properties\Settings.settings">
+    <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <AppDesigner Include="properties\" />
+    <AppDesigner Include="Properties\" />
     <None Include="README.md" />
     <None Include="App.config" />
     <None Include="packages.config" />
