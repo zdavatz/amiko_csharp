@@ -108,21 +108,21 @@
                     <ToolBar ToolBarTray.IsLocked="True">
                         <ToggleButton Name="Compendium" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="6,6,0,6">
                             <StackPanel Orientation="Horizontal">
-                                <Image Width="16" Source="../Resources/img/aips32x32_dark.png" />
+                                <Image Width="16" Source="/Resources/img/aips32x32_dark.png" />
                                 <Label VerticalAlignment="Center" Content="{x:Static p:Resources.compendium}" />
                             </StackPanel>
                         </ToggleButton>
                         <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                         <ToggleButton Name="Favorites" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
                             <StackPanel Orientation="Horizontal">
-                                <Image Width="16" Source="../Resources/img/favorites32x32_dark.png" />
+                                <Image Width="16" Source="/Resources/img/favorites32x32_dark.png" />
                                 <Label VerticalAlignment="Center" Content="{x:Static p:Resources.favorites}" />
                             </StackPanel>
                         </ToggleButton>
                         <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                         <ToggleButton Name="Interactions" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
                             <StackPanel Orientation="Horizontal">
-                                <Image Width="16" Source="../Resources/img/interactions32x32_dark.png" />
+                                <Image Width="16" Source="/Resources/img/interactions32x32_dark.png" />
                                 <Label VerticalAlignment="Center" Content="{x:Static p:Resources.interactions}" />
                             </StackPanel>
                         </ToggleButton>

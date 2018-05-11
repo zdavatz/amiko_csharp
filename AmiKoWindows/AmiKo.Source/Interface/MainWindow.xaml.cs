@@ -235,12 +235,7 @@ namespace AmiKoWindows
 
         private async void MainWindowLoaded(object sender, RoutedEventArgs e)
         {
-            /*
-            Uri iconUri = new Uri("../Resources/img/desitin_icon.ico", UriKind.RelativeOrAbsolute); //make sure your path is correct, and the icon set as Resource
-            this.Icon = BitmapFrame.Create(iconUri, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            */
             _statusBarHelper.IsConnectedToInternet();
-            //
             await _sqlDb?.Search(_uiState, "");
         }
 

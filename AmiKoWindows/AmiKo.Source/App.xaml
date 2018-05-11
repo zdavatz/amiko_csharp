@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:AmiKoWindows">
-    
+
     <Application.Resources>
         <ResourceDictionary>
             <system:Double x:Key="WindowTitleFontSize">14</system:Double>
@@ -18,5 +18,5 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
-    
+
 </Application>

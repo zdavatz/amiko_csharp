@@ -17,7 +17,7 @@
         Height="410" Width="256">
     <Grid>
         <DockPanel LastChildFill="True">
-            <Image Width="64" DockPanel.Dock="Top" Margin="16" Source="../Resources/img/desitin_icon.png" />
+            <Image Width="64" DockPanel.Dock="Top" Margin="16" Source="/Resources/img/desitin_icon.png" />
             <RichTextBox x:Name="MyAboutDialog" BorderThickness="0 1 0 0"
                          DockPanel.Dock="Top" Height="220" HorizontalAlignment="Center" AcceptsReturn="True">
                 <RichTextBox.Resources>
