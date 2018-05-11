@@ -133,13 +133,12 @@ C:\Users\<USER>> cd AmiKo
 C:\Users\<USER>\AmiKo>
 ```
 
-And then, you can download packages.  
+And then, you can download packages (into `Packages`).  
 on PowerShell:
 
 ```powershell
-# Downloads nuget.exe (windows x86 Commandline) here
-C:\Users\<USER>\AmiKo> .\nuget.exe install "AmiKoWindows/packages.config" \
-  -o packages/
+# Downloads NuGet.exe (windows x86 Commandline) here
+C:\Users\<USER>\AmiKo> .\NuGet.exe install "AmiKoWindows/Packages.config"
 ```
 
 On Linux on Windows, it's not affected to long path name problem.  
@@ -147,8 +146,7 @@ on Bash (Linux on Windows with Mono):
 
 ```bash
 # You can just do it (e.g. `/usr/local/bin/nuget.exe`)
-user@host:/path/to/project $ nuget install AmiKoWindows/packages.config \
-  -o packages
+user@host:/path/to/project $ nuget install AmiKoWindows/Packages.config
 ```
 
 ### Make
