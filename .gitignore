@@ -7,11 +7,11 @@ packages/
 *.exe
 *.pfx
 
-AmiKoWindows/dbs/**/*.zip
-AmiKoWindows/dbs/**/*.db
-AmiKoWindows/dbs/**/*.html
-AmiKoWindows/dbs/**/*.csv
-AmiKoWindows/properties/Resources.resx
+AmiKoWindows/Data/**/*.zip
+AmiKoWindows/Data/**/*.db
+AmiKoWindows/Data/**/*.html
+AmiKoWindows/Data/**/*.csv
+AmiKoWindows/Properties/Resources.resx
 
 AmiKoWindows/obj/
 AmiKoWindows/bin/
