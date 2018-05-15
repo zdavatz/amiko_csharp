@@ -65,7 +65,7 @@ https://blogs.msdn.microsoft.com/commandline/2016/11/17/do-not-change-linux-file
 
 #### Prepare Initial Database Files
 
-At first, you need to put database and csv files into `Datta` directory.  
+At first, you need to put database and csv files into `Data` directory.  
 Once you have built the app with these files, you can update it via the feature
 of the app.
 
