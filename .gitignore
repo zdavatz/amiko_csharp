@@ -1,6 +1,7 @@
 .vs/
 .suo
 *.csproj.user
+*.startup.json
 
 *.exe
 *.pfx
