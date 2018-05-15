@@ -16,3 +16,7 @@ AmiKoWindows/bin/
 AmiKoWindows/publish/
 
 Packages/
+
+AmiKoWindows/dbs/
+AppX_Gen/
+AppX_Gen_CoMed/
