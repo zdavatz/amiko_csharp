@@ -46,6 +46,7 @@ namespace AmiKoWindows
         FachInfo _fachInfo;
         FullTextSearch _fullTextSearch;
         InteractionsCart _interactions;
+        Prescriptions _prescriptions;
         StatusBarHelper _statusBarHelper;
         string _selectedFullTextSearchKey;
 
@@ -78,6 +79,10 @@ namespace AmiKoWindows
             _interactions = new InteractionsCart();
             _interactions.LoadFiles();
 
+            // Initialize prescriptions list
+            _prescriptions = new Prescriptions();
+            _prescriptions.Load();
+
             _statusBarHelper = new StatusBarHelper();
 
             this.Spinner.Spin = false;
@@ -102,6 +107,7 @@ namespace AmiKoWindows
                 {
                     this.Compendium.IsChecked = true;
                     this.Favorites.IsChecked = false;
+                    this.Prescriptions.IsChecked = false;
                     SetState(UIState.State.FullTextSearch);
                 }
             }
@@ -112,6 +118,7 @@ namespace AmiKoWindows
                 else
                 {
                     this.Compendium.IsChecked = false;
+                    this.Prescriptions.IsChecked = false;
                     this.Favorites.IsChecked = true;
                     SetState(UIState.State.FullTextSearch);
                     await _fullTextDb.RetrieveFavorites();
@@ -127,6 +134,18 @@ namespace AmiKoWindows
             {
                 SetState(UIState.State.FullTextSearch);
             }
+            else if (state.Equals("Prescriptions"))
+            {
+                if (!_uiState.FullTextQueryEnabled())
+                    SetState(UIState.State.Prescriptions);
+                else
+                {
+                    this.Compendium.IsChecked = false;
+                    this.Favorites.IsChecked = false;
+                    this.Prescriptions.IsChecked = true;
+                    _fullTextDb.UpdateSearchResults(_uiState);
+                }
+            }
         }
 
         public void SetState(UIState.State state)
@@ -137,16 +156,18 @@ namespace AmiKoWindows
             if (state == UIState.State.Compendium)
             {
                 _sqlDb.UpdateSearchResults(_uiState);
-                this.Compendium.IsChecked = true;
                 this.Favorites.IsChecked = false;
                 this.Interactions.IsChecked = false;
+                this.Prescriptions.IsChecked = false;
+                this.Compendium.IsChecked = true;
             }
             else if (state == UIState.State.Favorites)
             {
                 _sqlDb.UpdateSearchResults(_uiState);
                 this.Compendium.IsChecked = false;
-                this.Favorites.IsChecked = true;
                 this.Interactions.IsChecked = false;
+                this.Prescriptions.IsChecked = false;
+                this.Favorites.IsChecked = true;
             }
             else if (state == UIState.State.Interactions)
             {
@@ -155,6 +176,7 @@ namespace AmiKoWindows
                 _sqlDb.UpdateSearchResults(_uiState);
                 this.Compendium.IsChecked = false;
                 this.Favorites.IsChecked = false;
+                this.Prescriptions.IsChecked = false;
                 this.Interactions.IsChecked = true;
                 _interactions.ShowBasket();
             }
@@ -162,7 +184,18 @@ namespace AmiKoWindows
             {
                 // If this.Favorites.IsChecked == true -> stay in favorites mode
                 this.Interactions.IsChecked = false;
+                this.Prescriptions.IsChecked = false;
                 _uiState.SetQuery(UIState.Query.Fulltext);
+            }
+            else if (state == UIState.State.Prescriptions)
+            {
+                _sqlDb.UpdateSearchResults(_uiState);
+                this.Compendium.IsChecked = false;
+                this.Favorites.IsChecked = false;
+                this.Interactions.IsChecked = false;
+                this.Prescriptions.IsChecked = true;
+                // TODO
+                _prescriptions.ShowDetail();
             }
         }
 
@@ -171,30 +204,37 @@ namespace AmiKoWindows
             if (state == UIState.State.Compendium)
             {
                 this.SearchResult.DataContext = _sqlDb;
-                this.Browser.DataContext = _fachInfo;
                 this.SectionTitles.DataContext = _fachInfo;
+                this.Browser.DataContext = _fachInfo;
                 this.Browser.ObjectForScripting = _fachInfo;
             }
             else if (state == UIState.State.Favorites)
             {
                 this.SearchResult.DataContext = _sqlDb;
-                this.Browser.DataContext = _fachInfo;
                 this.SectionTitles.DataContext = _fachInfo;
+                this.Browser.DataContext = _fachInfo;
                 this.Browser.ObjectForScripting = _fachInfo;
             }
             else if (state == UIState.State.Interactions)
             {
                 this.SearchResult.DataContext = _sqlDb;
-                this.Browser.DataContext = _interactions;
                 this.SectionTitles.DataContext = _interactions;
+                this.Browser.DataContext = _interactions;
                 this.Browser.ObjectForScripting = _interactions;
             }
             else if (state == UIState.State.FullTextSearch)
             {
                 this.SearchResult.DataContext = _fullTextDb;
-                this.Browser.DataContext = _fullTextSearch;
                 this.SectionTitles.DataContext = _fullTextSearch;
+                this.Browser.DataContext = _fullTextSearch;
                 this.Browser.ObjectForScripting = _fachInfo;
+            }
+            else if (state == UIState.State.Prescriptions)
+            {
+                this.SearchResult.DataContext = _sqlDb;
+                this.SectionTitles.DataContext = _prescriptions;
+                // TODO
+                this.Browser.DataContext = _prescriptions;
             }
             this.StatusBar.DataContext = _statusBarHelper;
         }
@@ -446,7 +486,7 @@ namespace AmiKoWindows
             ListBox searchTitlesList = sender as ListBox;
             if (searchTitlesList?.Items.Count > 0)
             {
-                TitleItem sectionTitle = searchTitlesList.SelectedItem as TitleItem;               
+                TitleItem sectionTitle = searchTitlesList.SelectedItem as TitleItem;
                 if (sectionTitle!=null && sectionTitle.Id != null)
                 {
                     if (!_uiState.IsFullTextSearch())
@@ -605,9 +645,19 @@ namespace AmiKoWindows
         static void HtmlPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
             var browser = dependencyObject as WebBrowser;
-            if (browser != null && e.NewValue != null)
+            if (browser != null)
             {
-                browser.NavigateToString((string)e.NewValue);
+                var text = (string)e.NewValue;
+                Console.WriteLine("text: {0}", text);
+                if (text != null && text != String.Empty)
+                {
+                    browser.NavigateToString(text);
+                }
+                else
+                {
+                    // empty document
+                    browser.NavigateToString(" ");
+                }
             }
         }
     }

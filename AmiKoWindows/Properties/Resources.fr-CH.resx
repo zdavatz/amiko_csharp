@@ -207,6 +207,9 @@
   <data name="position" xml:space="preserve">
     <value>pos</value>
   </data>
+  <data name="prescriptions" xml:space="preserve">
+    <value>prescriptions</value>
+  </data>
   <data name="price" xml:space="preserve">
     <value>prix</value>
   </data>

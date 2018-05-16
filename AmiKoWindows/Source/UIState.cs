@@ -27,7 +27,11 @@ namespace AmiKoWindows
     {
         public enum State
         {
-            Compendium=0x01, Favorites=0x02, Interactions=0x04, FullTextSearch=0x08
+            Compendium=0x01,
+            Favorites=0x02,
+            Interactions=0x04,
+            FullTextSearch=0x08,
+            Prescriptions=0x03,
         };
 
         public enum Query
@@ -106,6 +110,11 @@ namespace AmiKoWindows
         public bool IsFullTextSearch()
         {
             return _uiState == State.FullTextSearch;
+        }
+
+        public bool IsPrescriptions()
+        {
+            return _uiState == State.Prescriptions;
         }
 
         public void SetQuery(Query query)

@@ -329,6 +329,15 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("position", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Rezepte.
+        /// </summary>
+        public static string prescriptions {
+            get {
+                return ResourceManager.GetString("prescriptions", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Preis.

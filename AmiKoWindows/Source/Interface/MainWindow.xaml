@@ -126,6 +126,13 @@
                                 <Label VerticalAlignment="Center" Content="{x:Static p:Resources.interactions}" />
                             </StackPanel>
                         </ToggleButton>
+                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                        <ToggleButton Name="Prescriptions" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Width="16" Source="/Resources/img/prescriptions64x64.png" />
+                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.prescriptions}" />
+                            </StackPanel>
+                        </ToggleButton>
                     </ToolBar>
                 </Border>
                 <Grid>
