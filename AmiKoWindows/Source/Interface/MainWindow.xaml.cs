@@ -648,7 +648,7 @@ namespace AmiKoWindows
             if (browser != null)
             {
                 var text = (string)e.NewValue;
-                Console.WriteLine("text: {0}", text);
+                // Console.WriteLine("text: {0}", text);
                 if (text != null && text != String.Empty)
                 {
                     browser.NavigateToString(text);
