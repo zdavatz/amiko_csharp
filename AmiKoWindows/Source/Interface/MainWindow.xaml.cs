@@ -60,9 +60,7 @@ namespace AmiKoWindows
             void NotifyChanged(string property)
             {
                 if (PropertyChanged != null)
-                {
                     PropertyChanged(this, new PropertyChangedEventArgs(property));
-                }
             }
         }
 
@@ -130,7 +128,8 @@ namespace AmiKoWindows
         {
             FrameworkElement element = null;
             int n = VisualTreeHelper.GetChildrenCount(this.MainArea);
-            if (n == 1) {
+            if (n == 1)
+            {
                 ContentPresenter presenter = VisualTreeHelper.GetChild(this.MainArea, 0) as ContentPresenter;
                 // Presenter's template is not applied yet, whyyyy :'(
                 // https://stackoverflow.com/a/15467687
@@ -144,24 +143,23 @@ namespace AmiKoWindows
         public void SwitchViewContext()
         {
             var viewType = DataContext as ViewType;
-            if (viewType.Mode == "Form") {
-                if (_browser != null) {
+            if (viewType.Mode == "Form")
+            {
+                if (_browser != null)
+                {
                     _browser.RaiseEvent(new RoutedEventArgs(FrameworkElement.UnloadedEvent));
                     _browser = null;
                 }
                 if (_manager == null)
-                {
                     _manager = GetElementInMainArea("Manager");
-                }
             } else { // Html
-                if (_manager != null) {
+                if (_manager != null)
+                {
                     _manager.RaiseEvent(new RoutedEventArgs(FrameworkElement.UnloadedEvent));
                     _manager = null;
                 }
                 if (_browser == null)
-                {
                     _browser = GetElementInMainArea("Browser");
-                }
             }
         }
 
@@ -170,7 +168,8 @@ namespace AmiKoWindows
             FrameworkElement element = null;
 
             var viewType = DataContext as ViewType;
-            if (viewType.Mode == "Form") {
+            if (viewType.Mode == "Form")
+            {
                 element = _manager;
                 //Trace.WriteLine(String.Format("[GetView] manager: {0}", element));
             } else {
@@ -297,7 +296,8 @@ namespace AmiKoWindows
                 this.SectionTitles.DataContext = _fachInfo;
 
                 var browser = GetView() as WebBrowser;
-                if (browser != null) {
+                if (browser != null)
+                {
                     browser.DataContext = _fachInfo;
                     browser.ObjectForScripting = _fachInfo;
                 }
@@ -311,7 +311,8 @@ namespace AmiKoWindows
                 this.SectionTitles.DataContext = _fachInfo;
 
                 var browser = GetView() as WebBrowser;
-                if (browser != null) {
+                if (browser != null)
+                {
                     browser.DataContext = _fachInfo;
                     browser.ObjectForScripting = _fachInfo;
                 }
@@ -325,7 +326,8 @@ namespace AmiKoWindows
                 this.SectionTitles.DataContext = _interactions;
 
                 var browser = GetView() as WebBrowser;
-                if (browser != null) {
+                if (browser != null)
+                {
                     browser.DataContext = _interactions;
                     browser.ObjectForScripting = _interactions;
                 }
@@ -339,7 +341,8 @@ namespace AmiKoWindows
                 this.SectionTitles.DataContext = _fullTextSearch;
 
                 var browser = GetView() as WebBrowser;
-                if (browser != null) {
+                if (browser != null)
+                {
                     browser.DataContext = _fullTextSearch;
                     browser.ObjectForScripting = _fachInfo;
                 }
@@ -353,7 +356,8 @@ namespace AmiKoWindows
                 this.SectionTitles.DataContext = _prescriptions;
 
                 var block = GetView() as TextBlock;
-                if (block != null) {
+                if (block != null)
+                {
                     block.DataContext = _prescriptions;
                 }
             }
@@ -432,13 +436,9 @@ namespace AmiKoWindows
             Stopwatch sw = new Stopwatch();
             long numResults = 0;
             if (_uiState.IsFullTextSearch() || _uiState.FullTextQueryEnabled())
-            {
                 SetState(UIState.State.FullTextSearch);
-            }
             else
-            {
                 numResults = await _sqlDb?.Search(_uiState, "");
-            }
             sw.Stop();
             double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
             _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numResults, elapsedTime));
@@ -453,9 +453,7 @@ namespace AmiKoWindows
         {
             var item = ItemsControl.ContainerFromElement(sender as ListBox, e.OriginalSource as DependencyObject) as ListBoxItem;
             if (item != null)
-            {
                 item.IsSelected = false;
-            }
         }
 
         /**
@@ -637,7 +635,8 @@ namespace AmiKoWindows
             else if (name.Equals("Report"))
             {
                 var browser = GetView() as WebBrowser;
-                if (browser != null) {
+                if (browser != null)
+                {
                     browser.DataContext = _fachInfo;
                     await _fachInfo.ShowReport();
                 }
@@ -721,7 +720,8 @@ namespace AmiKoWindows
         {
             //Trace.WriteLine("InjectJS");
             var browser = GetView() as WebBrowser;
-            if (browser != null) {
+            if (browser != null)
+            {
                 browser.DataContext = _fullTextSearch;
                 browser.InvokeScript("execScript", new Object[] { jsCode, "JavaScript" });
             }
