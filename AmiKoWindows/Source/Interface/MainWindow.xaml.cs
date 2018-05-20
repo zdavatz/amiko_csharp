@@ -18,8 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Controls;
 using MahApps.Metro.Controls;
 using System.Windows.Navigation;
@@ -40,6 +43,31 @@ namespace AmiKoWindows
             public MainSqlDb MainSqlDb { get; set; }
         }
 
+        // for main view area triggers
+        public class ViewType : INotifyPropertyChanged
+        {
+            private string _mode;
+
+            public string Mode
+            {
+                get { return this._mode; }
+                set { this._mode = value; NotifyChanged("Mode"); }
+            }
+
+            public ViewType(string modeName) { this.Mode = modeName; }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+            void NotifyChanged(string property)
+            {
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs(property));
+                }
+            }
+        }
+
+        static bool _willNavigate = false;
+
         UIState _uiState;
         MainSqlDb _sqlDb;
         FullTextDb _fullTextDb;
@@ -50,7 +78,8 @@ namespace AmiKoWindows
         StatusBarHelper _statusBarHelper;
         string _selectedFullTextSearchKey;
 
-        static bool _willNavigate = false;
+        FrameworkElement _browser;
+        FrameworkElement _manager;
 
         public MainWindow()
         {
@@ -90,11 +119,65 @@ namespace AmiKoWindows
             // Set initial state
             SetState(UIState.State.Compendium);
 
-            // Set data context
-            SetDataContext(UIState.State.Compendium);
-
             // Set browser emulation mode. Thx Microsoft for these stupid hacks!!
             SetBrowserEmulationMode();
+        }
+
+        /**
+         * Returns a root element in main area after datatemplate is switched by trigger
+         */
+        private FrameworkElement GetElementInMainArea(string elementName)
+        {
+            FrameworkElement element = null;
+            int n = VisualTreeHelper.GetChildrenCount(this.MainArea);
+            if (n == 1) {
+                ContentPresenter presenter = VisualTreeHelper.GetChild(this.MainArea, 0) as ContentPresenter;
+                // Presenter's template is not applied yet, whyyyy :'(
+                // https://stackoverflow.com/a/15467687
+                presenter.ApplyTemplate();
+                element = presenter.ContentTemplate.FindName(elementName, presenter) as FrameworkElement;
+            }
+            //Trace.WriteLine(String.Format("[GetElemenInMainArea] element: {0}", element));
+            return element;
+        }
+
+        public void SwitchViewContext()
+        {
+            var viewType = DataContext as ViewType;
+            if (viewType.Mode == "Form") {
+                if (_browser != null) {
+                    _browser.RaiseEvent(new RoutedEventArgs(FrameworkElement.UnloadedEvent));
+                    _browser = null;
+                }
+                if (_manager == null)
+                {
+                    _manager = GetElementInMainArea("Manager");
+                }
+            } else { // Html
+                if (_manager != null) {
+                    _manager.RaiseEvent(new RoutedEventArgs(FrameworkElement.UnloadedEvent));
+                    _manager = null;
+                }
+                if (_browser == null)
+                {
+                    _browser = GetElementInMainArea("Browser");
+                }
+            }
+        }
+
+        public FrameworkElement GetView()
+        {
+            FrameworkElement element = null;
+
+            var viewType = DataContext as ViewType;
+            if (viewType.Mode == "Form") {
+                element = _manager;
+                //Trace.WriteLine(String.Format("[GetView] manager: {0}", element));
+            } else {
+                element = _browser;
+                //Trace.WriteLine(String.Format("[GetView] browser: {0}", element));
+            }
+            return element;
         }
 
         public async void SetState(string state)
@@ -151,10 +234,10 @@ namespace AmiKoWindows
         public void SetState(UIState.State state)
         {
             _uiState.SetState(state);
-            SetDataContext(state);
 
             if (state == UIState.State.Compendium)
             {
+                SetDataContext(state);
                 _sqlDb.UpdateSearchResults(_uiState);
                 this.Favorites.IsChecked = false;
                 this.Interactions.IsChecked = false;
@@ -163,6 +246,7 @@ namespace AmiKoWindows
             }
             else if (state == UIState.State.Favorites)
             {
+                SetDataContext(state);
                 _sqlDb.UpdateSearchResults(_uiState);
                 this.Compendium.IsChecked = false;
                 this.Interactions.IsChecked = false;
@@ -171,6 +255,7 @@ namespace AmiKoWindows
             }
             else if (state == UIState.State.Interactions)
             {
+                SetDataContext(state);
                 if (_uiState.GetQuery() == UIState.Query.Fulltext)
                     _uiState.SetQuery(UIState.Query.Title);
                 _sqlDb.UpdateSearchResults(_uiState);
@@ -182,6 +267,7 @@ namespace AmiKoWindows
             }
             else if (state == UIState.State.FullTextSearch)
             {
+                SetDataContext(state);
                 // If this.Favorites.IsChecked == true -> stay in favorites mode
                 this.Interactions.IsChecked = false;
                 this.Prescriptions.IsChecked = false;
@@ -189,6 +275,7 @@ namespace AmiKoWindows
             }
             else if (state == UIState.State.Prescriptions)
             {
+                SetDataContext(state);
                 _sqlDb.UpdateSearchResults(_uiState);
                 this.Compendium.IsChecked = false;
                 this.Favorites.IsChecked = false;
@@ -203,48 +290,74 @@ namespace AmiKoWindows
         {
             if (state == UIState.State.Compendium)
             {
+                DataContext = new ViewType("Html");
+                SwitchViewContext();
+
                 this.SearchResult.DataContext = _sqlDb;
                 this.SectionTitles.DataContext = _fachInfo;
-                this.Browser.DataContext = _fachInfo;
-                this.Browser.ObjectForScripting = _fachInfo;
+
+                var browser = GetView() as WebBrowser;
+                if (browser != null) {
+                    browser.DataContext = _fachInfo;
+                    browser.ObjectForScripting = _fachInfo;
+                }
             }
             else if (state == UIState.State.Favorites)
             {
+                DataContext = new ViewType("Html");
+                SwitchViewContext();
+
                 this.SearchResult.DataContext = _sqlDb;
                 this.SectionTitles.DataContext = _fachInfo;
-                this.Browser.DataContext = _fachInfo;
-                this.Browser.ObjectForScripting = _fachInfo;
+
+                var browser = GetView() as WebBrowser;
+                if (browser != null) {
+                    browser.DataContext = _fachInfo;
+                    browser.ObjectForScripting = _fachInfo;
+                }
             }
             else if (state == UIState.State.Interactions)
             {
+                DataContext = new ViewType("Html");
+                SwitchViewContext();
+
                 this.SearchResult.DataContext = _sqlDb;
                 this.SectionTitles.DataContext = _interactions;
-                this.Browser.DataContext = _interactions;
-                this.Browser.ObjectForScripting = _interactions;
+
+                var browser = GetView() as WebBrowser;
+                if (browser != null) {
+                    browser.DataContext = _interactions;
+                    browser.ObjectForScripting = _interactions;
+                }
             }
             else if (state == UIState.State.FullTextSearch)
             {
+                DataContext = new ViewType("Html");
+                SwitchViewContext();
+
                 this.SearchResult.DataContext = _fullTextDb;
                 this.SectionTitles.DataContext = _fullTextSearch;
-                this.Browser.DataContext = _fullTextSearch;
-                this.Browser.ObjectForScripting = _fachInfo;
+
+                var browser = GetView() as WebBrowser;
+                if (browser != null) {
+                    browser.DataContext = _fullTextSearch;
+                    browser.ObjectForScripting = _fachInfo;
+                }
             }
             else if (state == UIState.State.Prescriptions)
             {
+                DataContext = new ViewType("Form");
+                SwitchViewContext();
+
                 this.SearchResult.DataContext = _sqlDb;
                 this.SectionTitles.DataContext = _prescriptions;
-                // TODO
-                this.Browser.DataContext = _prescriptions;
+
+                var block = GetView() as TextBlock;
+                if (block != null) {
+                    block.DataContext = _prescriptions;
+                }
             }
             this.StatusBar.DataContext = _statusBarHelper;
-        }
-
-        /**
-         * Injects javascript into the current browser
-         */
-        public void InjectJS(string jsCode)
-        {
-            this.Browser.InvokeScript("execScript", new Object[] { jsCode, "JavaScript" });
         }
 
         public string SearchFieldText()
@@ -277,38 +390,14 @@ namespace AmiKoWindows
         {
             _statusBarHelper.IsConnectedToInternet();
             await _sqlDb?.Search(_uiState, "");
-        }
 
-        private void WebBrowser_LoadCompleted(object sender, NavigationEventArgs e)
-        {
-            /*
-            string script = "document.body.style.overflow ='hidden'";
-            WebBrowser wb = (WebBrowser)sender;
-            wb.InvokeScript("execScript", new Object[] { script, "JavaScript" });
-            */
-        }
+            // TODO
+            // Fix default MainArea's `ContentTemplate` (via style with triggers) loading issue
+            this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            this.Compendium.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
-        private async void WebBrowser_Navigating(object sender, NavigatingCancelEventArgs e)
-        {
-            // First page needs to be loaded in webBrowser control
-            if (!_willNavigate)
-            {
-                _willNavigate = true;
-                return;
-            }
-
-            await Task.Run(() =>
-            {
-                // Cancel navigation to the clicked link in the webBrowser control
-                e.Cancel = true;
-                // Open new window
-                if (e.Uri != null)
-                {
-                    var startInfo = new ProcessStartInfo { FileName = e.Uri?.ToString() };
-                    Process.Start(startInfo);
-                }
-                e.Cancel = false;
-            });
+            DataContext = new ViewType("Html");
+            SwitchViewContext();
         }
 
         private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -434,7 +523,7 @@ namespace AmiKoWindows
                     double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
                     if (numResults > 0)
                         _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numResults, elapsedTime));
-                    // Console.WriteLine("Item " + _searchSelectionItemId + " -> " + sw.ElapsedMilliseconds + "ms");
+                    //Console.WriteLine("Item " + _searchSelectionItemId + " -> " + sw.ElapsedMilliseconds + "ms");
                 }
             }
         }
@@ -473,7 +562,7 @@ namespace AmiKoWindows
                     SetSpinnerEnabled(false);
 
                     sw.Stop();
-                    // Console.WriteLine("ChildItem " + _searchSelectionChildItemId + "/" + selection.Id + " -> " + sw.ElapsedMilliseconds + "ms");
+                    //Console.WriteLine("ChildItem " + _searchSelectionChildItemId + "/" + selection.Id + " -> " + sw.ElapsedMilliseconds + "ms");
                 }
             }
         }
@@ -547,8 +636,11 @@ namespace AmiKoWindows
             }
             else if (name.Equals("Report"))
             {
-                this.Browser.DataContext = _fachInfo;
-                await _fachInfo.ShowReport();
+                var browser = GetView() as WebBrowser;
+                if (browser != null) {
+                    browser.DataContext = _fachInfo;
+                    await _fachInfo.ShowReport();
+                }
             }
             else if (name.Equals("Settings"))
             {
@@ -621,6 +713,56 @@ namespace AmiKoWindows
                 key.SetValue(appName, (UInt32)value, RegistryValueKind.DWord);
             }
         }
+
+        /**
+         * Injects javascript into the current browser
+         */
+        public void InjectJS(string jsCode)
+        {
+            //Trace.WriteLine("InjectJS");
+            var browser = GetView() as WebBrowser;
+            if (browser != null) {
+                browser.DataContext = _fullTextSearch;
+                browser.InvokeScript("execScript", new Object[] { jsCode, "JavaScript" });
+            }
+        }
+
+        private void WebBrowser_Loaded(object sender, EventArgs e)
+        {
+            //Trace.WriteLine("[WebBrowser_Loaded]");
+            // Pass
+        }
+
+        private void WebBrowser_LoadCompleted(object sender, NavigationEventArgs e)
+        {
+            //Trace.WriteLine("[WebBrowser_LoadCompleted]");
+            // Pass, See InjectJS
+        }
+
+        private async void WebBrowser_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
+            //Trace.WriteLine("[WebBrowser_Navigating]");
+            // First page needs to be loaded in webBrowser control
+            if (!_willNavigate)
+            {
+                _willNavigate = true;
+                return;
+            }
+
+            await Task.Run(() =>
+            {
+                // Cancel navigation to the clicked link in the webBrowser control
+                e.Cancel = true;
+                // Open new window
+                if (e.Uri != null)
+                {
+                    var startInfo = new ProcessStartInfo { FileName = e.Uri?.ToString() };
+                    Process.Start(startInfo);
+                }
+                e.Cancel = false;
+            });
+        }
+
     }
 
     /// <summary>
@@ -648,15 +790,15 @@ namespace AmiKoWindows
             if (browser != null)
             {
                 var text = (string)e.NewValue;
-                // Console.WriteLine("text: {0}", text);
-                if (text != null && text != String.Empty)
+                if (text != null && text != string.Empty)
                 {
+                    //Trace.WriteLine(String.Format("[BrowserBehavior] text (len): {0}", text.Length));
                     browser.NavigateToString(text);
                 }
                 else
                 {
-                    // empty document
-                    browser.NavigateToString(" ");
+                    //Trace.WriteLine("empty");
+                    browser.NavigateToString(" "); // empty document
                 }
             }
         }
