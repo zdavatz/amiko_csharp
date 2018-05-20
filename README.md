@@ -191,15 +191,18 @@ PS C:\Users\... > MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Build /p:Con
 And then, you can run `{AmiKo|CoMed}Desitin.exe` in `app.publish` directory.
 
 ```powershell
+# AmiKoDesitin
 PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
+# check outputs using dbgview etc.
+
 PS C:\Users\... > taskkill /im 'AmiKo Desitin.exe' /f
 
+# CoMedDesitin
 PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\CoMed Desitin.exe'
+# check outputs using dbgview etc.
+
 PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
 ```
-
-Then, check DebugView (`Dbgview`).
-
 
 ##### Reference
 
