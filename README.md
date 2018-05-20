@@ -192,13 +192,20 @@ And then, you can run `{AmiKo|CoMed}Desitin.exe` in `app.publish` directory.
 
 ```powershell
 PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
+PS C:\Users\... > taskkill /im 'AmiKo Desitin.exe' /f
+
 PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\CoMed Desitin.exe'
+PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
 ```
+
+Then, check DebugView (`Dbgview`).
+
 
 ##### Reference
 
 * [MSBuild](https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild)
 * [MSBuild Command Line Reference](https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference)
+* [DebugView](https://docs.microsoft.com/en-us/sysinternals/downloads/debugview)
 
 
 #### Using Visual Studio
