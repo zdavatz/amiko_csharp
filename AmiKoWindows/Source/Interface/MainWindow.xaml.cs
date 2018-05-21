@@ -722,7 +722,6 @@ namespace AmiKoWindows
             var browser = GetView() as WebBrowser;
             if (browser != null)
             {
-                browser.DataContext = _fullTextSearch;
                 browser.InvokeScript("execScript", new Object[] { jsCode, "JavaScript" });
             }
         }
