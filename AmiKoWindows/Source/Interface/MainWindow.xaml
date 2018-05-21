@@ -46,7 +46,98 @@
 
                   <!-- Prescriptions -->
                   <DataTemplate x:Key="FormTemplate" DataType="Form">
-                    <TextBlock x:Name="Manager">PRESCRIPTION FORM</TextBlock>
+                    <Grid x:Name="Manager">
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
+
+                      <Grid Margin="6" Grid.Row="0" Name="Meta">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" MinWidth="250" MaxWidth="500" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="2*" MinWidth="250" MaxWidth="500" />
+                        </Grid.ColumnDefinitions>
+                        <!-- Meta:Patient -->
+                        <Grid Grid.Column="0">
+                          <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                          </Grid.RowDefinitions>
+                          <Grid Grid.Row="0">
+                            <Button
+                              Name="PrescriptionSearchButton"
+                              Style="{StaticResource NoHighlightedButton}"
+                              Margin="0 3 0 9"
+                              HorizontalAlignment="Left"
+                              Click="PrescriptionSearchButton_Click">
+                              Patient Suchen
+                            </Button>
+                          </Grid>
+                          <Grid Grid.Row="1">
+                            <StackPanel Name="PatientInfo">
+                              <TextBlock Name="PatientName">Name</TextBlock>
+                              <TextBlock Name="PatientAddress">Address</TextBlock>
+                              <TextBlock Name="PatientCity">City</TextBlock>
+                              <TextBlock Name="PatientPhone">Phone</TextBlock>
+                              <TextBlock Name="PatientEmail">E-mail</TextBlock>
+                            </StackPanel>
+                          </Grid>
+                        </Grid>
+                        <!-- Meta:Operator -->
+                        <Grid Grid.Column="1">
+                          <StackPanel Name="OperatorInfo" Margin="126 3 0 9" HorizontalAlignment="Right">
+                            <TextBlock Name="OperatorName">Name</TextBlock>
+                            <TextBlock Name="OperatorAddress">Address</TextBlock>
+                            <TextBlock Name="OperatorCity">City</TextBlock>
+                            <TextBlock Name="OperatorPhone">Phone</TextBlock>
+                            <TextBlock Name="OperatorEmail">E-mail</TextBlock>
+                            <TextBlock Name="OperatorSignature">Signature</TextBlock>
+                          </StackPanel>
+                        </Grid>
+                      </Grid>
+
+                      <ScrollViewer Margin="6" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                        <Border Margin="0,0,0,3" Padding="0" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1 1 1 1">
+                          <StackPanel>
+                          </StackPanel>
+                        </Border>
+                      </ScrollViewer>
+
+                      <Grid Margin="6" Grid.Row="2">
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="1*" MinWidth="100" />
+                              <ColumnDefinition Width="Auto" />
+                              <ColumnDefinition Width="3*" MinWidth="300" />
+                          </Grid.ColumnDefinitions>
+                          <Button
+                            Name="PrescriptionNewButton" Style="{StaticResource NoHighlightedButton}"
+                            Grid.Column="0" Margin="0 3 5 3" HorizontalAlignment="Left" Click="PrescriptionNewButton_Click">
+                            Neues Rezept
+                          </Button>
+                          <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" />
+                          <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button
+                              Name="PrescriptionInteractionCheckButton" Style="{StaticResource NoHighlightedButton}"
+                              Margin="0 3 6 3" HorizontalAlignment="Right" Click="PrescriptionNewButton_Click">
+                              Interaktionen überprüfen
+                            </Button>
+                            <Button
+                              Name="PrescriptionSaveButton" Style="{StaticResource NoHighlightedButton}"
+                              Margin="6 3 3 3" HorizontalAlignment="Right" Click="PrescriptionNewButton_Click">
+                              Speichern
+                            </Button>
+                            <Button
+                              Name="PrescriptionSendButton" Style="{StaticResource NoHighlightedButton}"
+                              Margin="6 3 0 3" HorizontalAlignment="Right" Click="PrescriptionNewButton_Click">
+                              Senden
+                            </Button>
+                          </StackPanel>
+                        </Grid>
+                      </Grid>
+                    </Grid>
                   </DataTemplate>
               </ResourceDictionary>
         </ResourceDictionary.MergedDictionaries>
