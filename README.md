@@ -1,4 +1,4 @@
-# AmiKo Windows (aka. AmiKo C#)
+# AmiKo Windows (a.k.a. AmiKo C#)
 
 AmiKo for Windows, written in C#.
 Applications are available in the Microsoft store now!
@@ -10,6 +10,8 @@ Applications are available in the Microsoft store now!
 
 [AmiKo Desitin]: https://www.microsoft.com/de-de/store/p/amiko-desitin/9wzdncrdffxc
 [CoMed Desitin]: https://www.microsoft.com/de-de/store/p/comed-desitin/9nlldb9vxmgx
+
+Another version for the macOS is also available. See [AmiKo-OSX](https://github.com/zdavatz/amiko-osx).
 
 
 ## Features
@@ -158,7 +160,7 @@ From this step, you may need to use PowerShell on Windows.
 You would need to install *Microsoft Build Tools 2015* from [here](
 https://www.microsoft.com/en-us/download/details.aspx?id=48159).
 
-Use `>= 14.0` (installed one *Microsoft Build Tools 2015*). Or, you may want
+Use `>= 14.0` (installed one by *Microsoft Build Tools 2015*). Or, you may want
 to use special command prompt like `Developer Command Prompt for VS 2017`
 bundled in Visual Studio.
 
@@ -188,27 +190,26 @@ PS C:\Users\... > MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Clean
 PS C:\Users\... > MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Build /p:Configuration=Debug
 ```
 
-And then, you can run `{AmiKo|CoMed}Desitin.exe` in `app.publish` directory.
+And then, you can start or kill `{AmiKo|CoMed}Desitin.exe` in `bin` directory like this:
 
 ```powershell
 # AmiKoDesitin
 PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
-# check outputs using dbgview etc.
-
 PS C:\Users\... > taskkill /im 'AmiKo Desitin.exe' /f
 
 # CoMedDesitin
 PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\CoMed Desitin.exe'
-# check outputs using dbgview etc.
-
 PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
 ```
+
+You need to debug the app with `DebugView` or `WinDbg` etc.
 
 ##### Reference
 
 * [MSBuild](https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild)
 * [MSBuild Command Line Reference](https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference)
 * [DebugView](https://docs.microsoft.com/en-us/sysinternals/downloads/debugview)
+* [WinDbg](https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/debugger-download-tools)
 
 
 #### Using Visual Studio
@@ -222,7 +223,7 @@ PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
 4. Set target project using `Set as StartUp Project` (Right Click on the Solution Name)
 5. Clean Solution (both projects)
 5. Rebuild target project (AmiKoDesitin or CoMedDesitin)
-6. Publish
+6. (Publish)
 ```
 
 ##### Reference
