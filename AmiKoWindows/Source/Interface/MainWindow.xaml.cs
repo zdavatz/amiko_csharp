@@ -24,11 +24,12 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Controls;
-using MahApps.Metro.Controls;
 using System.Windows.Navigation;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Win32;
+
+using MahApps.Metro.Controls;
 
 namespace AmiKoWindows
 {
@@ -355,10 +356,10 @@ namespace AmiKoWindows
                 this.SearchResult.DataContext = _sqlDb;
                 this.SectionTitles.DataContext = _prescriptions;
 
-                var block = GetView() as TextBlock;
-                if (block != null)
+                var grid = GetView() as Grid;
+                if (grid != null)
                 {
-                    block.DataContext = _prescriptions;
+                    grid.DataContext = _prescriptions;
                 }
             }
             this.StatusBar.DataContext = _statusBarHelper;
@@ -762,6 +763,30 @@ namespace AmiKoWindows
             });
         }
 
+        private void PrescriptionSearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            var source = e.OriginalSource as FrameworkElement;
+            if (source == null)
+                return;
+
+            PrescriptionWindow w = new PrescriptionWindow();
+            w.ShowInTaskbar = false;
+            w.Owner = this;
+            w.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            w.ShowDialog();
+
+            e.Handled = true;
+        }
+
+        private void PrescriptionNewButton_Click(object sender, RoutedEventArgs e)
+        {
+            var source = e.OriginalSource as FrameworkElement;
+            if (source == null)
+                return;
+
+            Trace.WriteLine(source.Name);
+            e.Handled = true;
+        }
     }
 
     /// <summary>
