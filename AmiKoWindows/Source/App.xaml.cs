@@ -22,7 +22,7 @@ namespace AmiKoWindows
         protected override void OnStartup(StartupEventArgs e)
         {
             SplashScreen splash = new SplashScreen();
-            splash.Show();
+            //splash.Show();
 
 #if AMIKO
             Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("de-CH");
@@ -32,7 +32,7 @@ namespace AmiKoWindows
 
             MainWindow main = new MainWindow();
             Thread.Sleep(1000);
-            splash.Close();
+            //splash.Close();
             /*
             AllocConsole();
             Console.WriteLine("And so it begins");

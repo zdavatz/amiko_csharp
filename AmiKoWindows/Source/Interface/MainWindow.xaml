@@ -18,6 +18,7 @@
     AllowsTransparency="False"
     SaveWindowPosition="True"
     WindowStartupLocation="CenterScreen"
+    WindowTransitionsEnabled="False"
     RenderOptions.ClearTypeHint="Enabled"
     TextOptions.TextFormattingMode="Display">
 
@@ -59,7 +60,7 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="2*" MinWidth="250" MaxWidth="500" />
                         </Grid.ColumnDefinitions>
-                        <!-- Meta:Patient -->
+                        <!-- Patient -->
                         <Grid Grid.Column="0">
                           <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -67,11 +68,8 @@
                           </Grid.RowDefinitions>
                           <Grid Grid.Row="0">
                             <Button
-                              Name="PrescriptionSearchButton"
-                              Style="{StaticResource NoHighlightedButton}"
-                              Margin="0 3 0 9"
-                              HorizontalAlignment="Left"
-                              Click="PrescriptionSearchButton_Click">
+                              Name="OpenAddressBookButton" Style="{StaticResource NoHighlightedButton}"
+                              Margin="0 3 0 9" HorizontalAlignment="Left" Click="OpenAddressBookButton_Click">
                               Patient Suchen
                             </Button>
                           </Grid>
@@ -85,7 +83,7 @@
                             </StackPanel>
                           </Grid>
                         </Grid>
-                        <!-- Meta:Operator -->
+                        <!-- Operator -->
                         <Grid Grid.Column="1">
                           <StackPanel Name="OperatorInfo" Margin="126 3 0 9" HorizontalAlignment="Right">
                             <TextBlock Name="OperatorName">Name</TextBlock>
@@ -113,25 +111,25 @@
                               <ColumnDefinition Width="3*" MinWidth="300" />
                           </Grid.ColumnDefinitions>
                           <Button
-                            Name="PrescriptionNewButton" Style="{StaticResource NoHighlightedButton}"
-                            Grid.Column="0" Margin="0 3 5 3" HorizontalAlignment="Left" Click="PrescriptionNewButton_Click">
+                            Name="NewPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
+                            Grid.Column="0" Margin="0 3 5 3" HorizontalAlignment="Left" Click="NewPrescriptionButton_Click">
                             Neues Rezept
                           </Button>
                           <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" />
                           <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
                             <Button
-                              Name="PrescriptionInteractionCheckButton" Style="{StaticResource NoHighlightedButton}"
-                              Margin="0 3 6 3" HorizontalAlignment="Right" Click="PrescriptionNewButton_Click">
+                              Name="CheckInteractionButton" Style="{StaticResource NoHighlightedButton}"
+                              Margin="0 3 6 3" HorizontalAlignment="Right" Click="CheckInteractionButton_Click">
                               Interaktionen überprüfen
                             </Button>
                             <Button
-                              Name="PrescriptionSaveButton" Style="{StaticResource NoHighlightedButton}"
-                              Margin="6 3 3 3" HorizontalAlignment="Right" Click="PrescriptionNewButton_Click">
+                              Name="SavePrescriptionButton" Style="{StaticResource NoHighlightedButton}"
+                              Margin="6 3 3 3" HorizontalAlignment="Right" Click="SavePrescriptionButton_Click">
                               Speichern
                             </Button>
                             <Button
-                              Name="PrescriptionSendButton" Style="{StaticResource NoHighlightedButton}"
-                              Margin="6 3 0 3" HorizontalAlignment="Right" Click="PrescriptionNewButton_Click">
+                              Name="SendPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
+                              Margin="6 3 0 3" HorizontalAlignment="Right" Click="SendPrescriptionButton_Click">
                               Senden
                             </Button>
                           </StackPanel>
@@ -146,7 +144,7 @@
     </Window.Resources>
 
     <Controls:MetroWindow.Flyouts>
-        <Controls:FlyoutsControl ItemsSource="{Binding Flyouts}">
+        <Controls:FlyoutsControl>
             <Controls:Flyout x:Name="FlyoutMenu" Header="Menu" Position="Left" Width="200" IsOpen="False"
                              IsAutoCloseEnabled="True">
                 <Border  BorderBrush="White" BorderThickness="0 1 0 0">
@@ -204,7 +202,21 @@
                     </StackPanel>
                 </Border>
             </Controls:Flyout>
-        </Controls:FlyoutsControl>
+
+            <Controls:Flyout
+              Position="Top" Width="680" Height="600" Theme="Adapt" IsOpen="{Binding Path=HasControl}"
+              IsModal="True"
+              AnimateOpacity="True"
+              TitleVisibility="Collapsed"
+              CloseButtonVisibility="Collapsed"
+              Margin="0 40 0 0"
+              RenderTransformOrigin="0 0"
+              AreAnimationsEnabled="True"
+              IsAutoCloseEnabled="False"
+              ClosingFinished="AddressBookControl_ClosingFinished">
+              <local:AddressBookControl />
+            </Controls:Flyout>
+      </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
 
     <Controls:MetroWindow.LeftWindowCommands>

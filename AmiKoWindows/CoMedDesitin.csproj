@@ -176,7 +176,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Source\Interface\PrescriptionWindow.xaml">
+    <Page Include="Source\Interface\AddressBookControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -233,8 +233,8 @@
     <Compile Include="Source\Interface\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Source\Interface\PrescriptionWindow.xaml.cs">
-      <DependentUpon>PrescriptionWindow.xaml</DependentUpon>
+    <Compile Include="Source\Interface\AddressBookControl.xaml.cs">
+      <DependentUpon>AddressBookControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Source\Interface\ProgressDialog.xaml.cs">
       <DependentUpon>ProgressDialog.xaml</DependentUpon>

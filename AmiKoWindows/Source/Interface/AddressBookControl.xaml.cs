@@ -17,17 +17,29 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Diagnostics;
 using MahApps.Metro.Controls;
 
 namespace AmiKoWindows
 {
     /// <summary>
+    /// NOTE:
+    ///   This control is shown currently as Flyout, but it may be good to change
+    ///   Modal Window or Dialog, if user is confused.
+    ///
+    ///   See: https://github.com/zdavatz/amiko_csharp/issues/30#issuecomment-391544843
     /// </summary>
-    public partial class PrescriptionWindow : MetroWindow, INotifyPropertyChanged
+    public partial class AddressBookControl : UserControl, INotifyPropertyChanged
     {
+        #region Private Fields
+        MainWindow _mainWindow;
+        MahApps.Metro.Controls.Flyout _parent;
+        #endregion
+
         #region Event Handlers
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -37,29 +49,40 @@ namespace AmiKoWindows
         }
         #endregion
 
-        public PrescriptionWindow()
+        public AddressBookControl()
         {
             InitializeComponent();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            Trace.WriteLine("[Window_Loaded]");
+            //Trace.WriteLine(String.Format("[Control_Loaded] sender: {0}", sender));
+        }
+
+        private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            _parent = this.Parent as MahApps.Metro.Controls.Flyout;
+            _parent.AreAnimationsEnabled = false;
+            _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
+            //Trace.WriteLine(String.Format("[Control_IsVisibleChanged] _mainWindow: {0}", _mainWindow));
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            //Trace.WriteLine("[CancelButton_Click]");
+            if (_parent != null) {
+                _parent.IsOpen = false;
+            }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            //Trace.WriteLine("[SaveButton_Click]");
         }
 
         private void OpenButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            //Trace.WriteLine("[OpenButton_Click]");
         }
     }
 }

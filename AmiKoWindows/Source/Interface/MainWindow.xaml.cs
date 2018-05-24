@@ -55,7 +55,24 @@ namespace AmiKoWindows
                 set { this._mode = value; NotifyChanged("Mode"); }
             }
 
-            public ViewType(string modeName) { this.Mode = modeName; }
+            private bool _hasControl;
+
+            public bool HasControl
+            {
+                get { return this._hasControl; }
+                set { this._hasControl = value; NotifyChanged("HasControl"); }
+            }
+
+            public ViewType(string modeName) {
+              this.Mode = modeName;
+              this.HasControl = false;
+            }
+
+            public ViewType(string mode, bool hasControl) {
+              this.Mode = mode;
+              this.HasControl = hasControl;
+            }
+
 
             public event PropertyChangedEventHandler PropertyChanged;
             void NotifyChanged(string property)
@@ -143,7 +160,7 @@ namespace AmiKoWindows
 
         public void SwitchViewContext()
         {
-            var viewType = DataContext as ViewType;
+            var viewType = this.DataContext as ViewType;
             if (viewType.Mode == "Form")
             {
                 if (_browser != null)
@@ -168,7 +185,7 @@ namespace AmiKoWindows
         {
             FrameworkElement element = null;
 
-            var viewType = DataContext as ViewType;
+            var viewType = this.DataContext as ViewType;
             if (viewType.Mode == "Form")
             {
                 element = _manager;
@@ -290,7 +307,7 @@ namespace AmiKoWindows
         {
             if (state == UIState.State.Compendium)
             {
-                DataContext = new ViewType("Html");
+                this.DataContext = new ViewType("Html");
                 SwitchViewContext();
 
                 this.SearchResult.DataContext = _sqlDb;
@@ -305,7 +322,7 @@ namespace AmiKoWindows
             }
             else if (state == UIState.State.Favorites)
             {
-                DataContext = new ViewType("Html");
+                this.DataContext = new ViewType("Html");
                 SwitchViewContext();
 
                 this.SearchResult.DataContext = _sqlDb;
@@ -320,7 +337,7 @@ namespace AmiKoWindows
             }
             else if (state == UIState.State.Interactions)
             {
-                DataContext = new ViewType("Html");
+                this.DataContext = new ViewType("Html");
                 SwitchViewContext();
 
                 this.SearchResult.DataContext = _sqlDb;
@@ -335,7 +352,7 @@ namespace AmiKoWindows
             }
             else if (state == UIState.State.FullTextSearch)
             {
-                DataContext = new ViewType("Html");
+                this.DataContext = new ViewType("Html");
                 SwitchViewContext();
 
                 this.SearchResult.DataContext = _fullTextDb;
@@ -350,7 +367,7 @@ namespace AmiKoWindows
             }
             else if (state == UIState.State.Prescriptions)
             {
-                DataContext = new ViewType("Form");
+                this.DataContext = new ViewType("Form", false);
                 SwitchViewContext();
 
                 this.SearchResult.DataContext = _sqlDb;
@@ -401,7 +418,7 @@ namespace AmiKoWindows
             this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             this.Compendium.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
-            DataContext = new ViewType("Html");
+            this.DataContext = new ViewType("Html");
             SwitchViewContext();
         }
 
@@ -763,28 +780,67 @@ namespace AmiKoWindows
             });
         }
 
-        private void PrescriptionSearchButton_Click(object sender, RoutedEventArgs e)
-        {
-            var source = e.OriginalSource as FrameworkElement;
-            if (source == null)
-                return;
-
-            PrescriptionWindow w = new PrescriptionWindow();
-            w.ShowInTaskbar = false;
-            w.Owner = this;
-            w.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            w.ShowDialog();
-
-            e.Handled = true;
-        }
-
-        private void PrescriptionNewButton_Click(object sender, RoutedEventArgs e)
+        private void OpenAddressBookButton_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
                 return;
 
             Trace.WriteLine(source.Name);
+            this.DataContext = new ViewType("Form", true);
+            e.Handled = true;
+        }
+
+        private void NewPrescriptionButton_Click(object sender, RoutedEventArgs e)
+        {
+            var source = e.OriginalSource as FrameworkElement;
+            if (source == null)
+                return;
+
+            //Trace.WriteLine(source.Name);
+            e.Handled = true;
+        }
+
+        private void CheckInteractionButton_Click(object sender, RoutedEventArgs e)
+        {
+            var source = e.OriginalSource as FrameworkElement;
+            if (source == null)
+                return;
+
+            //Trace.WriteLine(source.Name);
+            e.Handled = true;
+        }
+
+        private void SavePrescriptionButton_Click(object sender, RoutedEventArgs e)
+        {
+            var source = e.OriginalSource as FrameworkElement;
+            if (source == null)
+                return;
+
+            //Trace.WriteLine(source.Name);
+            e.Handled = true;
+        }
+
+        private void SendPrescriptionButton_Click(object sender, RoutedEventArgs e)
+        {
+            var source = e.OriginalSource as FrameworkElement;
+            if (source == null)
+                return;
+
+            Trace.WriteLine(source.Name);
+            e.Handled = true;
+        }
+
+        private void AddressBookControl_ClosingFinished(object sender, RoutedEventArgs e)
+        {
+            var source = e.OriginalSource as MahApps.Metro.Controls.Flyout;
+            if (source == null)
+                return;
+
+            Trace.WriteLine(source.Name);
+
+            // Re:enable animations for next time
+            source.AreAnimationsEnabled = true;
             e.Handled = true;
         }
     }
