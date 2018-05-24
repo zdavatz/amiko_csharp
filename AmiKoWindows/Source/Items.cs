@@ -317,7 +317,7 @@ namespace AmiKoWindows
             {
                 foreach (FullTextEntry entry in list)
                 {
-                    bool cond = uiState.IsFullTextSearch();
+                    bool cond = uiState.FullTextQueryEnabled();
                     if (cond)
                     {
                         Add(new Item()

@@ -111,6 +111,11 @@ namespace AmiKoWindows
             SearchResultItems.AddRange(state, _foundEntries);
         }
 
+        public void ClearFoundEntries()
+        {
+            _foundEntries.Clear();
+        }
+
         public async Task RetrieveFavorites()
         {
             List<string> hashes = _favorites.Ids();
