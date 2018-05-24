@@ -70,7 +70,7 @@
                             <Button
                               Name="OpenAddressBookButton" Style="{StaticResource NoHighlightedButton}"
                               Margin="0 3 0 9" HorizontalAlignment="Left" Click="OpenAddressBookButton_Click">
-                              Patient Suchen
+                              Patient suchen
                             </Button>
                           </Grid>
                           <Grid Grid.Row="1">
