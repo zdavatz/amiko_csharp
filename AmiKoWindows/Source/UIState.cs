@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
+using System.Diagnostics;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -33,7 +34,8 @@ namespace AmiKoWindows
 
         public enum Query
         {
-            Title, Author, AtcCode, Ingredient, Regnr, Application, EanCode, Fulltext
+            Title, Author, AtcCode, Ingredient, Regnr, Application, EanCode,
+            Fulltext
         }
 
         private State _uiState = State.Compendium;
@@ -74,6 +76,34 @@ namespace AmiKoWindows
         public UIState(Query query)
         {
             _query = query;
+        }
+
+        /**
+         * Static functions
+         */
+        // see GetQueryTypeAsName
+        public static Query QueryBySourceName(string sourceName)
+        {
+            string name = sourceName.Trim().ToLower();
+            //Trace.WriteLine(String.Format("[QueryBySourceName] name: {0}", name));
+
+            if (name.Equals("title"))
+                return Query.Title;
+            else if (name.Equals("author"))
+                return Query.Author;
+            else if (name.Equals("atccode"))
+                return Query.AtcCode;
+            else if (name.Equals("regnr"))
+                return Query.Regnr;
+            else if (name.Equals("ingredient"))
+                return Query.Ingredient;
+            else if (name.Equals("application"))
+                return Query.Regnr;
+            else if (name.Equals("eancode"))
+                return Query.Fulltext;
+            else if (name.Equals("fulltext"))
+                return Query.Fulltext;
+            return Query.Title;
         }
 
         /**
@@ -144,7 +174,7 @@ namespace AmiKoWindows
             return _query;
         }
 
-        public string SearchQueryType()
+        public string GetQueryTypeAsName()
         {
             if (_query == Query.Title)
                 return "title";
@@ -158,6 +188,8 @@ namespace AmiKoWindows
                 return "ingredient";
             else if (_query == Query.Application)
                 return "application";
+            else if (_query == Query.EanCode)
+                return "eancode";
             else if (_query == Query.Fulltext)
                 return "fulltext";
             return "title";
