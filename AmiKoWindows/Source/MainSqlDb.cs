@@ -168,7 +168,7 @@ namespace AmiKoWindows
         {
             _foundArticles.Clear();
 
-            string type = state.SearchQueryType();
+            string type = state.GetQueryTypeAsName();
             switch (type)
             {
                 case "title":
@@ -177,7 +177,7 @@ namespace AmiKoWindows
                 case "author":
                     _foundArticles = await SearchAuthor(query);
                     break;
-                case "atc":
+                case "atccode":
                     _foundArticles = await SearchATC(query);
                     break;
                 case "ingredient":
@@ -186,11 +186,11 @@ namespace AmiKoWindows
                 case "regnr":
                     _foundArticles = await SearchRegNr(query);
                     break;
-                case "eancode":
-                    _foundArticles = await SearchEanCode(query);
-                    break;
                 case "application":
                     _foundArticles = await SearchApplication(query);
+                    break;
+                case "eancode":
+                    _foundArticles = await SearchEanCode(query);
                     break;
                 default:
                     break;

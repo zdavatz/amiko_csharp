@@ -152,7 +152,7 @@ namespace AmiKoWindows
         {
             _foundEntries.Clear();
 
-            string type = state.SearchQueryType();
+            string type = state.GetQueryTypeAsName();
             if (type.Equals("fulltext"))
             {
                 _foundEntries = await SearchFullText(query);

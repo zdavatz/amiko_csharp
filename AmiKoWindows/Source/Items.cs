@@ -147,8 +147,7 @@ namespace AmiKoWindows
                 throw new ArgumentNullException("list");
 
             _suppressNotification = true;
-            string type = uiState.SearchQueryType();
-
+            string type = uiState.GetQueryTypeAsName();
             if (type.Equals("title"))
             {
                 foreach (Article article in list)
@@ -311,8 +310,7 @@ namespace AmiKoWindows
                 throw new ArgumentNullException("list");
 
             _suppressNotification = true;
-            string type = uiState.SearchQueryType();
-
+            string type = uiState.GetQueryTypeAsName();
             if (type.Equals("fulltext"))
             {
                 foreach (FullTextEntry entry in list)

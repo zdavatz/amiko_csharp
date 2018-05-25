@@ -57,15 +57,54 @@
     </Style.Triggers>
   </Style>
 
-  <Style x:Key="QuerySelectButton" TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButton}">
+  <Style x:Key="QuerySelectButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource MetroButton}">
     <Setter Property="FontSize" Value="12" />
     <Setter Property="FontWeight" Value="Regular" />
     <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter Property="Foreground" Value="Black" />
     <Setter Property="Background" Value="White" />
+    <Setter Property="Padding" Value="0" />
     <Setter Property="Margin" Value="4,4,4,0" />
     <Setter Property="HorizontalContentAlignment" Value="Left" />
     <Setter Property="Controls:ButtonHelper.PreserveTextCase" Value="True" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ToggleButton}">
+          <Border
+            CornerRadius="1"
+            Padding="2 0 3 0"
+            Background="{TemplateBinding Background}"
+            BorderBrush="{TemplateBinding BorderBrush}"
+            BorderThickness="{TemplateBinding BorderThickness}" >
+            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" />
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter Property="Background" Value="LightGray" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="IsChecked" Value="true">
+        <Setter Property="Background" Value="LightGray"/>
+        <Setter Property="BorderThickness" Value="1"/>
+      </Trigger>
+      <Trigger Property="IsFocused" Value="true">
+        <Setter Property="BorderThickness" Value="1"/>
+      </Trigger>
+      <Trigger Property="IsPressed" Value="true">
+        <Setter Property="Background" Value="Gray"/>
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="QuerySelectButtonText" TargetType="{x:Type TextBlock}">
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="Padding" Value="1,0,0,0" />
+    <Setter Property="Margin" Value="0" />
+    <Setter Property="FontWeight" Value="Regular" />
   </Style>
 
   <Style x:Key="NoHighlightedButton" TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButton}">

@@ -278,12 +278,37 @@
                                      Margin="4,0,4,0">
                             </TextBox>
                         </DockPanel>
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Title" Cursor="Hand" Click="QueryButton_Click" Content="{x:Static p:Resources.butTitle}" />
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Author" Cursor="Hand" Click="QueryButton_Click" Content="{x:Static p:Resources.butAuthor}" />
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="AtcCode" Cursor="Hand" Click="QueryButton_Click" Content="{x:Static p:Resources.butAtccode}" />
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="RegNr" Cursor="Hand" Click="QueryButton_Click" Content="{x:Static p:Resources.butRegnr}"/>
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Application" Cursor="Hand" Click="QueryButton_Click" Content="{x:Static p:Resources.butTherapy}"/>
-                        <Button DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="Fulltext" Cursor="Hand" Click="QueryButton_Click" Content="{x:Static p:Resources.butFulltext}"/>
+                        <ToggleButton DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="TitleQuerySelectButton" Cursor="Hand" Click="QuerySelectButton_Click">
+                            <TextBlock Style="{StaticResource QuerySelectButtonText}">
+                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.butTitle}" />
+                            </TextBlock>
+                        </ToggleButton>
+                        <ToggleButton DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="AuthorQuerySelectButton" Cursor="Hand" Click="QuerySelectButton_Click">
+                            <TextBlock Style="{StaticResource QuerySelectButtonText}">
+                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.butAuthor}" />
+                            </TextBlock>
+                        </ToggleButton>
+                        <ToggleButton DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="AtcCodeQuerySelectButton" Cursor="Hand" Click="QuerySelectButton_Click">
+                            <TextBlock Style="{StaticResource QuerySelectButtonText}">
+                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.butAtccode}" />
+                            </TextBlock>
+                        </ToggleButton>
+                        <ToggleButton DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="RegNrQuerySelectButton" Cursor="Hand" Click="QuerySelectButton_Click">
+                            <TextBlock Style="{StaticResource QuerySelectButtonText}">
+                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.butRegnr}"/>
+                            </TextBlock>
+                        </ToggleButton>
+                        <ToggleButton DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="ApplicationQuerySelectButton" Cursor="Hand" Click="QuerySelectButton_Click">
+                            <TextBlock Style="{StaticResource QuerySelectButtonText}">
+                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.butTherapy}"/>
+                            </TextBlock>
+                        </ToggleButton>
+                        <ToggleButton DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="FulltextQuerySelectButton" Cursor="Hand" Click="QuerySelectButton_Click">
+                            <TextBlock Style="{StaticResource QuerySelectButtonText}">
+                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.butFulltext}"/>
+                            </TextBlock>
+                        </ToggleButton>
+
                         <ListBox x:Name="SearchResult"
                                  Style="{StaticResource SearchListBox}" ItemContainerStyle="{StaticResource SearchListBoxItem}"
                                  ItemsSource="{Binding Path=SearchResultItems}" SelectionChanged="OnSearchItem_Selection"

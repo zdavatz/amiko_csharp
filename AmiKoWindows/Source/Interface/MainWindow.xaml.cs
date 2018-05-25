@@ -24,6 +24,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Navigation;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -672,42 +673,51 @@ namespace AmiKoWindows
             SetState(source.Name);
         }
 
-        private async void QueryButton_Click(object sender, RoutedEventArgs e)
+        private async void QuerySelectButton_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
                 return;
 
-            this.SearchTextBox.Text = "";
+            UIState.Query query = UIState.QueryBySourceName(source.Name.Replace("QuerySelectButton", ""));
 
-            //Trace.WriteLine(String.Format("[QueryButton_Click] source.Name: {0}", source.Name));
-            if (source.Name.Equals("Fulltext"))
+            if (query != _uiState.GetQuery()) { // current query
+                this.SearchTextBox.Text = "";
+            }
+            // uncheck other buttons
+            DependencyObject parent = (sender as ToggleButton).Parent;
+            int count = VisualTreeHelper.GetChildrenCount(parent);
+            ToggleButton button;
+            for (int i = 0; i < count; i++)
+            {
+                button = null;
+                button = VisualTreeHelper.GetChild(parent, i) as ToggleButton;
+                if (button != null)
+                    button.IsChecked = false;
+            }
+            (sender as ToggleButton).IsChecked = true;
+
+            this.SearchTextBox.Focus();
+            UIState.State state = _uiState.GetState();
+
+            //Trace.WriteLine(String.Format("[QuerySelectButton_Click] source.Name: {0}", source.Name));
+            if (query == UIState.Query.Fulltext)
             {
                 _uiState.SetQuery(UIState.Query.Fulltext);
 
                 // only change data context (keep state)
-                SetDataContext(_uiState.GetState());
+                SetDataContext(state);
 
-                //Trace.WriteLine(String.Format("[QueryButton_Click] state: {0}", _uiState.GetState()));
-                if (_uiState.GetState() == UIState.State.Favorites) {
+                //Trace.WriteLine(String.Format("[QuerySelectButton_Click] state: {0}", _uiState.GetState()));
+                if (state == UIState.State.Favorites) {
                     await _fullTextDb.RetrieveFavorites();
                 } else {
                     _fullTextDb.ClearFoundEntries();
                 }
                 _fullTextDb.UpdateSearchResults(_uiState);
             } else {
-                if (source.Name.Equals("Title"))
-                    _uiState.SetQuery(UIState.Query.Title);
-                else if (source.Name.Equals("Author"))
-                    _uiState.SetQuery(UIState.Query.Author);
-                else if (source.Name.Equals("AtcCode"))
-                    _uiState.SetQuery(UIState.Query.AtcCode);
-                else if (source.Name.Equals("RegNr"))
-                    _uiState.SetQuery(UIState.Query.Regnr);
-                else if (source.Name.Equals("Application"))
-                    _uiState.SetQuery(UIState.Query.Application);
-
-                SetState(_uiState.GetState());
+                _uiState.SetQuery(query);
+                SetState(state);
             }
         }
 
