@@ -28,8 +28,8 @@
                 <Setter Property="FontFamily" Value="pack://application:,,,/Resources/font/Roboto-Regular.ttf" />
             </Style>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/AmiKoStyle.xaml" />
-                <ResourceDictionary Source="/Resources/Icons.xaml" />
+                <ResourceDictionary Source="/Resources/Style.xaml" />
+                <ResourceDictionary Source="/Resources/Icon.xaml" />
 
                 <ResourceDictionary>
                     <!-- Compendium, Favorites and Interactions -->
