@@ -25,132 +25,129 @@
     <Window.Resources>
         <ResourceDictionary>
             <Style TargetType="{x:Type Window}">
-              <Setter Property="FontFamily" Value="pack://application:,,,/Resources/font/Roboto-Regular.ttf"/>
+                <Setter Property="FontFamily" Value="pack://application:,,,/Resources/font/Roboto-Regular.ttf" />
             </Style>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/AmiKoStyle.xaml" />
                 <ResourceDictionary Source="/Resources/Icons.xaml" />
 
                 <ResourceDictionary>
-                  <!-- Compendium, Favorites and Interactions -->
-                  <DataTemplate x:Key="HtmlTemplate" DataType="Html">
-                    <WebBrowser
-                      x:Name="Browser"
-                      local:BrowserBehavior.Html="{Binding Path=HtmlText}"
-                      HorizontalAlignment="Stretch"
-                      VerticalAlignment="Stretch"
-                      Navigating="WebBrowser_Navigating"
-                      Loaded="WebBrowser_Loaded"
-                      LoadCompleted="WebBrowser_LoadCompleted"
-                      Margin="0,0,8,0" />
-                  </DataTemplate>
+                    <!-- Compendium, Favorites and Interactions -->
+                    <DataTemplate x:Key="HtmlTemplate" DataType="Html">
+                        <WebBrowser
+                          x:Name="Browser"
+                          local:BrowserBehavior.Html="{Binding Path=HtmlText}"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          Navigating="WebBrowser_Navigating"
+                          Loaded="WebBrowser_Loaded"
+                          LoadCompleted="WebBrowser_LoadCompleted"
+                          Margin="0,0,8,0" />
+                    </DataTemplate>
 
-                  <!-- Prescriptions -->
-                  <DataTemplate x:Key="FormTemplate" DataType="Form">
-                    <Grid x:Name="Manager">
-                      <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition />
-                        <RowDefinition Height="Auto" />
-                      </Grid.RowDefinitions>
+                    <!-- Prescriptions -->
+                    <DataTemplate x:Key="FormTemplate" DataType="Form">
+                        <Grid x:Name="Manager">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
 
-                      <Grid Margin="6" Grid.Row="0" Name="Meta">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*" MinWidth="250" MaxWidth="500" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="2*" MinWidth="250" MaxWidth="500" />
-                        </Grid.ColumnDefinitions>
-                        <!-- Patient -->
-                        <Grid Grid.Column="0">
-                          <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                          </Grid.RowDefinitions>
-                          <Grid Grid.Row="0">
-                            <Button
-                              Name="OpenAddressBookButton" Style="{StaticResource NoHighlightedButton}"
-                              Margin="0 3 0 9" HorizontalAlignment="Left" Click="OpenAddressBookButton_Click">
-                              Patient suchen
-                            </Button>
+                          <Grid Margin="7,7,7,4" Grid.Row="0" Name="Meta">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" MinWidth="250" MaxWidth="500" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="2*" MinWidth="250" MaxWidth="500" />
+                            </Grid.ColumnDefinitions>
+                            <!-- Patient -->
+                            <Grid Grid.Column="0">
+                              <Grid.RowDefinitions>
+                                  <RowDefinition Height="Auto" />
+                                  <RowDefinition Height="Auto" />
+                              </Grid.RowDefinitions>
+                              <Grid Grid.Row="0">
+                                  <Button
+                                      Name="OpenAddressBookButton" Style="{StaticResource NoHighlightedButton}"
+                                      Margin="0,1,0,9" HorizontalAlignment="Left" Click="OpenAddressBookButton_Click">
+                                      Patient suchen
+                                  </Button>
+                              </Grid>
+                              <Grid Grid.Row="1">
+                                  <StackPanel Name="PatientInfo">
+                                      <TextBlock Name="PatientName">Name</TextBlock>
+                                      <TextBlock Name="PatientAddress">Address</TextBlock>
+                                      <TextBlock Name="PatientCity">City</TextBlock>
+                                      <TextBlock Name="PatientPhone">Phone</TextBlock>
+                                      <TextBlock Name="PatientEmail">E-mail</TextBlock>
+                                  </StackPanel>
+                              </Grid>
+                            </Grid>
+                            <!-- Operator -->
+                            <Grid Grid.Column="1">
+                                <StackPanel Name="OperatorInfo" Margin="126,3,0,9" HorizontalAlignment="Right">
+                                    <TextBlock Name="OperatorName">Name</TextBlock>
+                                    <TextBlock Name="OperatorAddress">Address</TextBlock>
+                                    <TextBlock Name="OperatorCity">City</TextBlock>
+                                    <TextBlock Name="OperatorPhone">Phone</TextBlock>
+                                    <TextBlock Name="OperatorEmail">E-mail</TextBlock>
+                                    <TextBlock Name="OperatorSignature">Signature</TextBlock>
+                                </StackPanel>
+                            </Grid>
                           </Grid>
-                          <Grid Grid.Row="1">
-                            <StackPanel Name="PatientInfo">
-                              <TextBlock Name="PatientName">Name</TextBlock>
-                              <TextBlock Name="PatientAddress">Address</TextBlock>
-                              <TextBlock Name="PatientCity">City</TextBlock>
-                              <TextBlock Name="PatientPhone">Phone</TextBlock>
-                              <TextBlock Name="PatientEmail">E-mail</TextBlock>
-                            </StackPanel>
-                          </Grid>
-                        </Grid>
-                        <!-- Operator -->
-                        <Grid Grid.Column="1">
-                          <StackPanel Name="OperatorInfo" Margin="126 3 0 9" HorizontalAlignment="Right">
-                            <TextBlock Name="OperatorName">Name</TextBlock>
-                            <TextBlock Name="OperatorAddress">Address</TextBlock>
-                            <TextBlock Name="OperatorCity">City</TextBlock>
-                            <TextBlock Name="OperatorPhone">Phone</TextBlock>
-                            <TextBlock Name="OperatorEmail">E-mail</TextBlock>
-                            <TextBlock Name="OperatorSignature">Signature</TextBlock>
-                          </StackPanel>
-                        </Grid>
-                      </Grid>
 
-                      <ScrollViewer Margin="6" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                        <Border Margin="0,0,0,3" Padding="0" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1 1 1 1">
-                          <StackPanel>
-                          </StackPanel>
-                        </Border>
-                      </ScrollViewer>
+                          <ScrollViewer Margin="7,5,7,2" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                              <Border Margin="0" Padding="1" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1">
+                                  <StackPanel>
+                                  </StackPanel>
+                              </Border>
+                          </ScrollViewer>
 
-                      <Grid Margin="6" Grid.Row="2">
-                        <Grid>
-                          <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="1*" MinWidth="100" />
-                              <ColumnDefinition Width="Auto" />
-                              <ColumnDefinition Width="3*" MinWidth="300" />
-                          </Grid.ColumnDefinitions>
-                          <Button
-                            Name="NewPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
-                            Grid.Column="0" Margin="0 3 5 3" HorizontalAlignment="Left" Click="NewPrescriptionButton_Click">
-                            Neues Rezept
-                          </Button>
-                          <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" />
-                          <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button
-                              Name="CheckInteractionButton" Style="{StaticResource NoHighlightedButton}"
-                              Margin="0 3 6 3" HorizontalAlignment="Right" Click="CheckInteractionButton_Click">
-                              Interaktionen überprüfen
-                            </Button>
-                            <Button
-                              Name="SavePrescriptionButton" Style="{StaticResource NoHighlightedButton}"
-                              Margin="6 3 3 3" HorizontalAlignment="Right" Click="SavePrescriptionButton_Click">
-                              Speichern
-                            </Button>
-                            <Button
-                              Name="SendPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
-                              Margin="6 3 0 3" HorizontalAlignment="Right" Click="SendPrescriptionButton_Click">
-                              Senden
-                            </Button>
-                          </StackPanel>
+                            <Grid Margin="7,2,7,7" Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*" MinWidth="100" />
+                                        <ColumnDefinition Width="3*" MinWidth="300" />
+                                    </Grid.ColumnDefinitions>
+                                    <Button
+                                        Name="NewPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
+                                        Grid.Column="0" Margin="0,3,5,1" HorizontalAlignment="Left" Click="NewPrescriptionButton_Click">
+                                        Neues Rezept
+                                    </Button>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button
+                                            Name="CheckInteractionButton" Style="{StaticResource NoHighlightedButton}"
+                                            Margin="0,3,6,1" HorizontalAlignment="Right" Click="CheckInteractionButton_Click">
+                                            Interaktionen überprüfen
+                                        </Button>
+                                        <Button
+                                            Name="SavePrescriptionButton" Style="{StaticResource NoHighlightedButton}"
+                                            Margin="6,3,3,1" HorizontalAlignment="Right" Click="SavePrescriptionButton_Click">
+                                            Speichern
+                                        </Button>
+                                        <Button
+                                            Name="SendPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
+                                            Margin="6,3,0,1" HorizontalAlignment="Right" Click="SendPrescriptionButton_Click">
+                                            Senden
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
                         </Grid>
-                      </Grid>
-                    </Grid>
-                  </DataTemplate>
-              </ResourceDictionary>
-        </ResourceDictionary.MergedDictionaries>
-      </ResourceDictionary>
-
+                    </DataTemplate>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
             <Controls:Flyout x:Name="FlyoutMenu" Header="Menu" Position="Left" Width="200" IsOpen="False"
                              IsAutoCloseEnabled="True">
-                <Border  BorderBrush="White" BorderThickness="0 1 0 0">
+                <Border BorderBrush="White" BorderThickness="0,1,0,0">
                     <StackPanel Orientation="Vertical">
                         <MenuItem Header="{x:Static p:Resources.update}" Name="Update" Click="MenuItem_Click"
-                                  Foreground="White" Height="28" Margin="10, 20, 10, 10" Cursor="Hand">
+                                  Foreground="White" Height="28" Margin="10,20,10,10" Cursor="Hand">
                             <MenuItem.Icon>
                                 <Rectangle Height="16" Width="16" Fill="White">
                                     <Rectangle.OpacityMask>
@@ -204,17 +201,17 @@
             </Controls:Flyout>
 
             <Controls:Flyout
-              Position="Top" Width="680" Height="600" Theme="Adapt" IsOpen="{Binding Path=HasControl}"
-              IsModal="True"
-              AnimateOpacity="True"
-              TitleVisibility="Collapsed"
-              CloseButtonVisibility="Collapsed"
-              Margin="0 40 0 0"
-              RenderTransformOrigin="0 0"
-              AreAnimationsEnabled="True"
-              IsAutoCloseEnabled="False"
-              ClosingFinished="AddressBookControl_ClosingFinished">
-              <local:AddressBookControl />
+                Position="Top" Width="680" Height="600" Theme="Adapt" IsOpen="{Binding Path=HasControl}"
+                IsModal="True"
+                AnimateOpacity="True"
+                TitleVisibility="Collapsed"
+                CloseButtonVisibility="Collapsed"
+                Margin="0,40,0,0"
+                RenderTransformOrigin="0,0"
+                AreAnimationsEnabled="True"
+                IsAutoCloseEnabled="False"
+                ClosingFinished="AddressBookControl_ClosingFinished">
+                <local:AddressBookControl />
             </Controls:Flyout>
       </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
@@ -229,7 +226,7 @@
     <Grid x:Name="MainGrid">
         <Border Margin="0,0,0,28" Padding="0" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch">
             <DockPanel LastChildFill="True">
-                <Border DockPanel.Dock="Top" Background="White" BorderBrush="LightGray" BorderThickness="1 1 1 1">
+                <Border DockPanel.Dock="Top" Background="White" BorderBrush="LightGray" BorderThickness="1,1,1,1">
                     <ToolBar ToolBarTray.IsLocked="True">
                         <ToggleButton Name="Compendium" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="6,6,0,6">
                             <StackPanel Orientation="Horizontal">
@@ -263,21 +260,22 @@
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" MinWidth="300"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="4*" MinWidth="450"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="1*" MinWidth="150"/>
+                        <ColumnDefinition Width="2*" MinWidth="200" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="4*" MinWidth="450" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="1*" MinWidth="150" />
                     </Grid.ColumnDefinitions>
 
                     <DockPanel Grid.Column="0" LastChildFill="True">
-                        <DockPanel DockPanel.Dock="Top" Height="52" Background="White">
+                        <DockPanel DockPanel.Dock="Top" Height="50" Background="White">
                             <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchTextBox}" Cursor="Hand"
                                      TextChanged="SearchBox_TextChanged" PreviewMouseDown="OnSearchTextBox_PreviewMouseDown"
                                      Controls:TextBoxHelper.Watermark="{Binding Path=SearchTextBoxWaterMark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     Margin="4,0,4,0">
+                                     Margin="6,3,6,0">
                             </TextBox>
                         </DockPanel>
+
                         <ToggleButton DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="TitleQuerySelectButton" Cursor="Hand" Click="QuerySelectButton_Click">
                             <TextBlock Style="{StaticResource QuerySelectButtonText}">
                                 <Label VerticalAlignment="Center" Content="{x:Static p:Resources.butTitle}" />
@@ -295,33 +293,33 @@
                         </ToggleButton>
                         <ToggleButton DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="RegNrQuerySelectButton" Cursor="Hand" Click="QuerySelectButton_Click">
                             <TextBlock Style="{StaticResource QuerySelectButtonText}">
-                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.butRegnr}"/>
+                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.butRegnr}" />
                             </TextBlock>
                         </ToggleButton>
                         <ToggleButton DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="ApplicationQuerySelectButton" Cursor="Hand" Click="QuerySelectButton_Click">
                             <TextBlock Style="{StaticResource QuerySelectButtonText}">
-                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.butTherapy}"/>
+                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.butTherapy}" />
                             </TextBlock>
                         </ToggleButton>
                         <ToggleButton DockPanel.Dock="Top" Style="{StaticResource QuerySelectButton}" Name="FulltextQuerySelectButton" Cursor="Hand" Click="QuerySelectButton_Click">
                             <TextBlock Style="{StaticResource QuerySelectButtonText}">
-                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.butFulltext}"/>
+                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.butFulltext}" />
                             </TextBlock>
                         </ToggleButton>
 
                         <ListBox x:Name="SearchResult"
                                  Style="{StaticResource SearchListBox}" ItemContainerStyle="{StaticResource SearchListBoxItem}"
                                  ItemsSource="{Binding Path=SearchResultItems}" SelectionChanged="OnSearchItem_Selection"
-                                 Margin="4,8,4,0" Padding="0,8,0,0">
+                                 Margin="6,6,6,0" Padding="0,7,0,0">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                         <CheckBox Style="{StaticResource ListCheckBox}"
                                                   IsChecked="{Binding Path=IsFavorite, Mode=TwoWay}"
                                                   Checked="FavoriteCheckBox_Checked" Unchecked="FavoriteCheckBox_Checked"
-                                                  Height="14" Margin="0,0,4,0"/>
+                                                  Height="14" Margin="0,0,4,0" />
                                         <StackPanel Orientation="Vertical">
-                                            <TextBlock Text="{Binding Path=Text}" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Path=Text}" VerticalAlignment="Center" />
                                             <ListBox Style="{StaticResource SearchListBoxChild}" ItemContainerStyle="{StaticResource SearchListBoxChildItem}"
                                                      ItemsSource="{Binding Path=ChildItems}"
                                                      SelectionChanged="OnSearchChildItem_Selection"
@@ -331,7 +329,7 @@
                                                     <DataTemplate>
                                                         <TextBlock Style="{StaticResource SearchListBoxChildItemText}"
                                                                    Text="{Binding Path=Text}"
-                                                                   Foreground="{Binding Path=Color}"/>
+                                                                   Foreground="{Binding Path=Color}" />
                                                     </DataTemplate>
                                                 </ListBox.ItemTemplate>
                                             </ListBox>
@@ -342,25 +340,25 @@
                         </ListBox>
                     </DockPanel>
 
-                    <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="1" Width="4"/>
+                    <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="1" Width="3" />
 
                     <ContentControl x:Name="MainArea" Grid.Column="2">
-                      <ContentControl.Style>
-                        <Style TargetType="{x:Type ContentControl}">
-                          <Setter Property="ContentTemplate" Value="{StaticResource HtmlTemplate}" />
-                          <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=Mode}" Value="Html">
-                              <Setter Property="ContentTemplate" Value="{StaticResource HtmlTemplate}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=Mode}" Value="Form">
-                              <Setter Property="ContentTemplate" Value="{StaticResource FormTemplate}" />
-                            </DataTrigger>
-                          </Style.Triggers>
-                        </Style>
-                      </ContentControl.Style>
+                        <ContentControl.Style>
+                            <Style TargetType="{x:Type ContentControl}">
+                                <Setter Property="ContentTemplate" Value="{StaticResource HtmlTemplate}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=Mode}" Value="Html">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource HtmlTemplate}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=Mode}" Value="Form">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource FormTemplate}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
                     </ContentControl>
 
-                    <GridSplitter HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="3" Width="4"/>
+                    <GridSplitter HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="3" Width="3" />
 
                     <ListBox x:Name="SectionTitles"
                             Style="{StaticResource SectionTitlesListBox}" ItemsSource="{Binding Path=SectionTitles}"
@@ -369,7 +367,7 @@
                             <DataTemplate>
                                 <StackPanel Height="20" Orientation="Vertical">
                                     <TextBlock Text="{Binding Path=Title}" Foreground="{Binding Path=Color}"
-                                               Height="18" VerticalAlignment="Center"/>
+                                               Height="18" VerticalAlignment="Center" />
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -387,7 +385,7 @@
                            HorizontalAlignment="Left"></TextBlock>
             </StatusBarItem>
             <fa:ImageAwesome DockPanel.Dock="Right" x:Name="Spinner" Icon="StarOutline" Foreground="Yellow" Visibility="Visible" Spin="False"
-                           VerticalAlignment="Center" Margin="8,0,0,0" Height="16" Width="16" SpinDuration="2"/>
+                VerticalAlignment="Center" Margin="8,0,0,0" Height="16" Width="16" SpinDuration="2" />
         </StatusBar>
     </Grid>
 </Controls:MetroWindow>

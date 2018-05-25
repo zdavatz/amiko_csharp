@@ -1,85 +1,87 @@
 <UserControl
-  x:Class="AmiKoWindows.AddressBookControl"
-  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-  xmlns:p="clr-namespace:AmiKoWindows.Properties"
-  xmlns:local="clr-namespace:AmiKoWindows"
-  mc:Ignorable="d"
-  Loaded="Control_Loaded"
-  IsVisibleChanged="Control_IsVisibleChanged">
+    x:Class="AmiKoWindows.AddressBookControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:p="clr-namespace:AmiKoWindows.Properties"
+    xmlns:local="clr-namespace:AmiKoWindows"
+    mc:Ignorable="d"
+    Loaded="Control_Loaded"
+    IsVisibleChanged="Control_IsVisibleChanged">
 
-  <UserControl.Resources>
-    <ResourceDictionary>
-      <Style TargetType="{x:Type UserControl}">
-        <Setter Property="FontFamily" Value="pack://application:,,,/Resources/font/Roboto-Regular.ttf"/>
-      </Style>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Resources/AmiKoStyle.xaml" />
-        <ResourceDictionary Source="/Resources/Icons.xaml" />
-      </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
-  </UserControl.Resources>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style TargetType="{x:Type UserControl}">
+                <Setter Property="FontFamily" Value="pack://application:,,,/Resources/font/Roboto-Regular.ttf"/>
+            </Style>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/AmiKoStyle.xaml" />
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
-  <Grid Margin="0 10 0 0">
-    <DockPanel LastChildFill="True">
-      <Grid>
-        <Grid.RowDefinitions>
-          <RowDefinition />
-          <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="6">
-          <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="3*" MinWidth="300" />
-              <ColumnDefinition Width="1*" MinWidth="100" />
-          </Grid.ColumnDefinitions>
-          <!-- Patient Info -->
-          <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-              <RowDefinition />
-              <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-              <Border Margin="6 6 3 6" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1 1 1 1">
-                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">TODO</TextBlock>
-              </Border>
+    <Grid Margin="7,5,5,7">
+        <DockPanel LastChildFill="True">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*" MinWidth="300" />
+                        <ColumnDefinition Width="1*" MinWidth="100" />
+                    </Grid.ColumnDefinitions>
+                    <!-- Patient Info -->
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" Margin="0,6,1,6">
+                            <Border Margin="6,6,3,6" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1,1,1,1">
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">TODO</TextBlock>
+                            </Border>
+                        </Grid>
+                        <Grid Grid.Row="1" Margin="0,1,0,6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" MinWidth="100" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="2*" MinWidth="100" />
+                            </Grid.ColumnDefinitions>
+                            <Button
+                                Name="CancelButton" Style="{StaticResource NoHighlightedButton}"
+                                Grid.Column="0" Margin="6,3,0,3" HorizontalAlignment="Left" Click="CancelButton_Click">
+                                Schliessen
+                            </Button>
+                            <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" />
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button
+                                    Name="SaveButton" Style="{StaticResource NoHighlightedButton}"
+                                    Margin="0,3,6,3" HorizontalAlignment="Right" Click="SaveButton_Click">
+                                    Speichern
+                                </Button>
+                                <Button
+                                    Name="OpenButton" Style="{StaticResource NoHighlightedButton}"
+                                    Margin="6,3,6,3" HorizontalAlignment="Right" Click="OpenButton_Click">
+                                    Öffnen
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                    <!-- Address Book -->
+                    <Grid Grid.Column="1">
+                        <Border Margin="3,12,6,9" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">TODO</TextBlock>
+                        </Border>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Row="1">
+                </Grid>
             </Grid>
-            <Grid Grid.Row="1" Margin="0 6 0 6">
-              <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="2*" MinWidth="100" />
-                  <ColumnDefinition Width="Auto" />
-                  <ColumnDefinition Width="2*" MinWidth="100" />
-              </Grid.ColumnDefinitions>
-              <Button
-                Name="CancelButton" Style="{StaticResource NoHighlightedButton}"
-                Grid.Column="0" Margin="0 3 5 3" HorizontalAlignment="Left" Click="CancelButton_Click">
-                Schliessen
-              </Button>
-              <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" />
-              <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button
-                  Name="SaveButton" Style="{StaticResource NoHighlightedButton}"
-                  Margin="0 3 6 3" HorizontalAlignment="Right" Click="SaveButton_Click">
-                  Speichern
-                </Button>
-                <Button
-                  Name="OpenButton" Style="{StaticResource NoHighlightedButton}"
-                  Margin="6 3 3 3" HorizontalAlignment="Right" Click="OpenButton_Click">
-                  Öffnen
-                </Button>
-              </StackPanel>
-            </Grid>
-          </Grid>
-          <!-- Address Book -->
-          <Grid Grid.Column="1">
-            <Border Margin="3 6 6 9" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1 1 1 1">
-              <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">TODO</TextBlock>
-            </Border>
-          </Grid>
-        </Grid>
-      </Grid>
-    </DockPanel>
-  </Grid>
+        </DockPanel>
+    </Grid>
 </UserControl>
