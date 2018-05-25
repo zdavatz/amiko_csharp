@@ -195,10 +195,12 @@ And then, you can start or kill `{AmiKo|CoMed}Desitin.exe` in `bin` directory li
 ```powershell
 # AmiKoDesitin
 PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
+PS C:\Users\... > Get-Process 'AmiKo Desitin' | Stop-Process
 PS C:\Users\... > taskkill /im 'AmiKo Desitin.exe' /f
 
 # CoMedDesitin
 PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\CoMed Desitin.exe'
+PS C:\Users\... > Get-Process 'CoMed Desitin' | Stop-Process
 PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
 ```
 
