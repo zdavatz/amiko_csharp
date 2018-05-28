@@ -21,11 +21,14 @@ namespace AmiKoWindows
 {
     public class Constants
     {
-        // Important folders and files
+        // Database (base) names
         public const string AIPS_DB_BASE = @"amiko_db_full_idx_";
         public const string FREQUENCY_DB_BASE = @"amiko_frequency_";
+        public const string PATIENT_DB_BASE = @"amiko_patient_";
+        // File directories
         public const string REPORT_FILE_BASE = @"amiko_report_";
         public const string INTERACTIONS_CSV_BASE = @"drug_interactions_csv_";
+        // Resource files
         public const string IMG_FOLDER = @"Resources/img";
 	    public const string JS_FOLDER = @"Resources/js";
         public const string CSS_SHEET = @"Resources/css/fachinfo_css.css";
