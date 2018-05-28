@@ -1,5 +1,6 @@
 ﻿using System.Resources;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 
@@ -65,4 +66,11 @@ using System.Windows;
 #elif COMED
 [assembly: Guid("3F71A827-F362-4FF2-A406-EA63C19EA85B")]
 [assembly: NeutralResourcesLanguage("fr-CH")]
+#endif
+
+#if (AMIKO && DEBUG)
+[assembly:InternalsVisibleTo("AmiKoDesitin.Test")]
+#endif
+#if (COMED && DEBUG)
+[assembly:InternalsVisibleTo("CoMedDesitin.Test")]
 #endif
