@@ -12,11 +12,13 @@ AmiKoWindows/Data/**/*.html
 AmiKoWindows/Data/**/*.csv
 AmiKoWindows/Properties/Resources.resx
 
-AmiKoWindows/obj/
-AmiKoWindows/bin/
-AmiKoWindows/publish/
+AmiKoWindows*/obj/
+AmiKoWindows*/bin/
+AmiKoWindows*/publish/
 
 Packages/
 
 AppX_Gen/
 AppX_Gen_CoMed/
+
+TestResult.xml
