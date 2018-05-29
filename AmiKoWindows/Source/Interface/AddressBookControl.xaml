@@ -5,6 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:fa="http://schemas.fontawesome.io/icons/"
     xmlns:p="clr-namespace:AmiKoWindows.Properties"
     xmlns:local="clr-namespace:AmiKoWindows"
     mc:Ignorable="d"
@@ -23,65 +24,137 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Margin="7,5,5,7">
-        <DockPanel LastChildFill="True">
-            <Grid>
+    <DockPanel Margin="0">
+        <Grid Width="420" Margin="9,12,6,12" DockPanel.Dock="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="18,10,24,0">
+                <TextBlock HorizontalAlignment="Left">Patient Management</TextBlock>
+                <TextBlock HorizontalAlignment="Right">* Required</TextBlock>
+            </Grid>
+            <!-- Patient Info -->
+            <Grid Grid.Row="1" Margin="10,24,19,12">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0" Margin="3">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*" MinWidth="300" />
-                        <ColumnDefinition Width="1*" MinWidth="100" />
-                    </Grid.ColumnDefinitions>
-                    <!-- Patient Info -->
-                    <Grid Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid Grid.Row="0" Margin="0,6,1,6">
-                            <Border Margin="6,6,3,6" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1,1,1,1">
-                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">TODO</TextBlock>
-                            </Border>
-                        </Grid>
-                        <Grid Grid.Row="1" Margin="0,1,0,6">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*" MinWidth="100" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="2*" MinWidth="100" />
-                            </Grid.ColumnDefinitions>
-                            <Button
-                                Name="CancelButton" Style="{StaticResource NoHighlightedButton}"
-                                Grid.Column="0" Margin="6,3,0,3" HorizontalAlignment="Left" Click="CancelButton_Click">
-                                Schliessen
-                            </Button>
-                            <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" />
-                            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button
-                                    Name="SaveButton" Style="{StaticResource NoHighlightedButton}"
-                                    Margin="0,3,6,3" HorizontalAlignment="Right" Click="SaveButton_Click">
-                                    Speichern
-                                </Button>
-                                <Button
-                                    Name="OpenButton" Style="{StaticResource NoHighlightedButton}"
-                                    Margin="6,3,6,3" HorizontalAlignment="Right" Click="OpenButton_Click">
-                                    Öffnen
-                                </Button>
+                <!-- Patient Info: Form -->
+                <Grid Grid.Row="0" Margin="0,0,0,32">
+                    <StackPanel>
+                        <DockPanel Margin="9,3,6,6">
+                            <TextBlock Width="90" Height="21" HorizontalAlignment="Left" VerticalAlignment="Center">Surname*</TextBlock>
+                            <TextBox Width="Auto" Height="21"></TextBox>
+                        </DockPanel>
+                        <DockPanel Margin="9,3,6,6">
+                            <TextBlock Width="90" Height="21" HorizontalAlignment="Left" VerticalAlignment="Center">Name*</TextBlock>
+                            <TextBox Width="Auto" Height="21"></TextBox>
+                        </DockPanel>
+                        <DockPanel Margin="9,3,6,6">
+                            <TextBlock Width="90" Height="21" HorizontalAlignment="Left" VerticalAlignment="Center">Street*</TextBlock>
+                            <TextBox Width="Auto" Height="21"></TextBox>
+                        </DockPanel>
+                        <DockPanel Margin="9,3,6,6">
+                            <TextBlock Width="90" Height="21" HorizontalAlignment="Left" VerticalAlignment="Center">City*</TextBlock>
+                            <TextBox Width="150" Height="21"></TextBox>
+                            <TextBlock Width="40" Height="21" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="25,0,0,0">ZIP*</TextBlock>
+                            <TextBox Width="70" Height="21"></TextBox>
+                        </DockPanel>
+                        <DockPanel Margin="9,3,3,6" HorizontalAlignment="Left">
+                            <TextBlock Width="90" Height="21" HorizontalAlignment="Left" VerticalAlignment="Center">Country</TextBlock>
+                            <TextBox Width="150" Height="21"></TextBox>
+                        </DockPanel>
+                        <DockPanel Margin="9,3,3,6" HorizontalAlignment="Left">
+                            <TextBlock Width="90" Height="21" HorizontalAlignment="Left" VerticalAlignment="Center">Birthday*</TextBlock>
+                            <TextBox Width="150" Height="21"></TextBox>
+                        </DockPanel>
+                        <DockPanel Margin="9,6,3,12" HorizontalAlignment="Left">
+                            <TextBlock Width="90" Height="21" HorizontalAlignment="Left" VerticalAlignment="Center">Sex*</TextBlock>
+                            <StackPanel Height="21" Margin="2,0,0,0" Orientation="Horizontal">
+                                <RadioButton GroupName="sex" Margin="0,0,19,0">femail</RadioButton>
+                                <RadioButton GroupName="sex">male</RadioButton>
                             </StackPanel>
-                        </Grid>
-                    </Grid>
-                    <!-- Address Book -->
-                    <Grid Grid.Column="1">
-                        <Border Margin="3,12,6,9" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1">
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">TODO</TextBlock>
-                        </Border>
-                    </Grid>
+                        </DockPanel>
+                        <DockPanel Margin="9,3,3,6" HorizontalAlignment="Left">
+                            <TextBlock Width="90" Height="21" HorizontalAlignment="Left" VerticalAlignment="Center">Weight (kg)</TextBlock>
+                            <TextBox Width="80" Height="21"></TextBox>
+                        </DockPanel>
+                        <DockPanel Margin="9,3,3,6" HorizontalAlignment="Left">
+                            <TextBlock Width="90" Height="21" HorizontalAlignment="Left" VerticalAlignment="Center">Height (cm)</TextBlock>
+                            <TextBox Width="80" Height="21"></TextBox>
+                        </DockPanel>
+                        <DockPanel Margin="9,3,3,6" HorizontalAlignment="Left">
+                            <TextBlock Width="90" Height="21" HorizontalAlignment="Left" VerticalAlignment="Center">Phone</TextBlock>
+                            <TextBox Width="150" Height="21"></TextBox>
+                        </DockPanel>
+                        <DockPanel Margin="9,3,3,6">
+                            <TextBlock Width="90" Height="21" HorizontalAlignment="Left" VerticalAlignment="Center">Email</TextBlock>
+                            <TextBox Width="Auto" Height="21"></TextBox>
+                        </DockPanel>
+                    </StackPanel>
                 </Grid>
-                <Grid Grid.Row="1">
+                <!-- Patient Info: Actions -->
+                <Grid Grid.Row="1" Margin="0" Height="Auto" VerticalAlignment="Bottom">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" MinWidth="100" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="2*" MinWidth="100" />
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        Name="CancelButton" Style="{StaticResource NoHighlightedButton}"
+                        Grid.Column="0" Margin="8,3,0,3" HorizontalAlignment="Left" Click="CancelButton_Click">
+                        Schliessen
+                    </Button>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button
+                            Name="SaveButton" Style="{StaticResource NoHighlightedButton}"
+                            Margin="0,3,6,3" HorizontalAlignment="Right" Click="SaveButton_Click">
+                            Speichern
+                        </Button>
+                        <Button
+                            Name="OpenButton" Style="{StaticResource NoHighlightedButton}"
+                            Margin="6,3,3,3" HorizontalAlignment="Right" Click="OpenButton_Click">
+                            Öffnen
+                        </Button>
+                    </StackPanel>
                 </Grid>
             </Grid>
-        </DockPanel>
-    </Grid>
+        </Grid>
+        <Border Margin="0" Width="245" Background="#f2f2f2" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1,0,0,0" DockPanel.Dock="Right">
+          <StackPanel Height="Auto" Margin="20,19,20,16">
+              <!-- Address Book: Search  TextBox -->
+              <TextBox Width="Auto" Height="21">Search Patient...</TextBox>
+              <!-- Address Book: ListBox -->
+              <Border Margin="0,18,0,12" Background="White" BorderBrush="#f2f2f2" VerticalAlignment="Stretch" BorderThickness="1">
+                  <TextBlock Width="Auto" Height="430" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+              </Border>
+              <!-- Address Book: Actions -->
+              <StackPanel Orientation="Horizontal">
+                  <StackPanel Orientation="Horizontal">
+                      <Button
+                          Name="AddButton" Style="{StaticResource NoBorderedButton}"
+                          Margin="3,1,5,3" HorizontalAlignment="Center" Click="SaveButton_Click">
+                          <fa:ImageAwesome x:Name="Plus" Icon="Plus" Visibility="Visible"
+                              VerticalAlignment="Center" Margin="0" Height="16" Width="16" />
+                      </Button>
+                      <Button
+                          Name="DelButton" Style="{StaticResource NoBorderedButton}"
+                          Margin="5,1,3,3" HorizontalAlignment="Center" Click="OpenButton_Click">
+                          <fa:ImageAwesome x:Name="Minus" Icon="Minus" Visibility="Visible"
+                              VerticalAlignment="Center" Margin="0" Height="16" Width="16" />
+                      </Button>
+                      <TextBlock Height="Auto" Width="105" FontSize="10" Margin="18,0,3,0" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap">Address Book</TextBlock>
+                      <Button
+                          Name="SwitchBookButton" Style="{StaticResource NoBorderedButton}"
+                          Width="Auto"
+                          Margin="9,1,5,3" Click="OpenButton_Click">
+                          <fa:ImageAwesome x:Name="AddressBook" Icon="AddressBook" Visibility="Visible"
+                              VerticalAlignment="Center" Margin="0" Height="16" Width="16" />
+                      </Button>
+                  </StackPanel>
+              </StackPanel>
+          </StackPanel>
+        </Border>
+    </DockPanel>
 </UserControl>

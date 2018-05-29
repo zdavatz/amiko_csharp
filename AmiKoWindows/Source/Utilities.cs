@@ -90,26 +90,17 @@ namespace AmiKoWindows
 
         public static string SQLiteDBPath()
         {
-            string dbName = Constants.AIPS_DB_BASE + "de.db";
-            if (AppLanguage().Equals("fr"))
-                dbName = Constants.AIPS_DB_BASE + "fr.db";
-
-            string dbPath = Path.Combine(AppRoamingDataFolder(), dbName);
-            if (!File.Exists(dbPath))
-                dbPath = Path.Combine(AppExecutingFolder(), "Data", dbName);
-            return dbPath;
+            return GetDbPath(Constants.AIPS_DB_BASE);
         }
 
         public static string FrequencyDBPath()
         {
-            string dbName = Constants.FREQUENCY_DB_BASE + "de.db";
-            if (AppLanguage().Equals("fr"))
-                dbName = Constants.FREQUENCY_DB_BASE + "fr.db";
+            return GetDbPath(Constants.FREQUENCY_DB_BASE);
+        }
 
-            string dbPath = Path.Combine(AppRoamingDataFolder(), dbName);
-            if (!File.Exists(dbPath))
-                dbPath = Path.Combine(AppExecutingFolder(), "Data", dbName);
-            return dbPath;
+        public static string PatientDBPath()
+        {
+            return GetDbPath(Constants.PATIENT_DB_BASE);
         }
 
         public static string InteractionsPath()
@@ -130,6 +121,15 @@ namespace AmiKoWindows
             if (AppLanguage().Equals("fr"))
                 reportPath = "http://pillbox.oddb.org/amiko_report_fr.html";
             return reportPath;
+        }
+
+        private static string GetDbPath(string baseName)
+        {
+            string dbName = baseName + AppLanguage() + ".db";
+            string dbPath = Path.Combine(AppRoamingDataFolder(), dbName);
+            if (!File.Exists(dbPath))
+                dbPath = Path.Combine(AppExecutingFolder(), "Data", dbName);
+            return dbPath;
         }
     }
 }

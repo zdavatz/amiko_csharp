@@ -49,6 +49,9 @@
     <Reference Include="NUnit3.TestAdapter, Version=3.10.0.21, Culture=neutral, PublicKeyToken=4cb40d35494691ac">
       <HintPath>..\Packages\NUnit3TestAdapter.3.10.0\build\net35\NUnit3.TestAdapter.dll</HintPath>
     </Reference>
+    <Reference Include="Moq, Version=4.8.2, Culture=neutral, PublicKeyToken=">
+      <HintPath>..\Packages\Moq.4.8.2\lib\net45\Moq.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\UtilityTest.cs" />
