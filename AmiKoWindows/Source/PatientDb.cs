@@ -30,9 +30,51 @@ namespace AmiKoWindows
     public class PatientDb : INotifyPropertyChanged
     {
         #region Constants
-        const string KEY_ROWID = "_id";
+        const string DATABASE_TABLE = "patients";
 
-        const string DATABASE_TABLE = "patientdb";
+        // NOTE:
+        // The schema should have consistency with macOS Version.
+        //
+        // See also below (v3.4.1),
+        // https://github.com/zdavatz/amiko-osx/blob/8910324a74970d4b7e2b170fb000dbdda934451c/MLPatientDBAdapter.m#L87
+        const string KEY_ID = "_id";
+        const string KEY_TIME_STAMP = "time_stamp";
+        const string KEY_UID = "uid";
+        const string KEY_FAMILY_NAME = "family_name";
+        const string KEY_GIVEN_NAME = "given_name";
+        const string KEY_BIRTHDATE = "birthdate";
+        const string KEY_GENDER = "gender";
+        const string KEY_WEIGHT_KG = "weight_kg";
+        const string KEY_HEIGHT_CM = "height_cm";
+        const string KEY_ZIP = "zip";
+        const string KEY_CITY = "city";
+        const string KEY_COUNTRY = "country";
+        const string KEY_ADDRESS = "address";
+        const string KEY_PHONE = "phone";
+        const string KEY_EMAIL = "email";
+
+        private static readonly string DATABASE_SCHEMA = String.Format(@"
+            CREATE TABLE {0} (
+                {1} INTEGER,
+                {2} TEXT,
+                {3} TEXT,
+                {4} TEXT,
+                {5} TEXT,
+                {6} TEXT,
+                {7} INTEGER,
+                {8} INTEGER,
+                {9} INTEGER,
+                {10} INTEGER,
+                {11} TEXT,
+                {12} TEXT,
+                {13} TEXT,
+                {14} TEXT,
+                {15} TEXT
+            );",
+            DATABASE_TABLE,
+            KEY_ID, KEY_TIME_STAMP, KEY_UID, KEY_FAMILY_NAME, KEY_GIVEN_NAME, KEY_BIRTHDATE, KEY_GENDER, KEY_WEIGHT_KG, KEY_HEIGHT_CM, KEY_ZIP,
+            KEY_CITY, KEY_COUNTRY, KEY_ADDRESS, KEY_PHONE, KEY_EMAIL
+        );
         #endregion
 
         #region Private Fields
@@ -75,19 +117,23 @@ namespace AmiKoWindows
         public async void Init()
         {
             string dbPath = Utilities.PatientDBPath();
-            if (File.Exists(dbPath))
-            {
-                _db = new DatabaseHelper();
+            _db = new DatabaseHelper();
+
+            if (!File.Exists(dbPath))
+                await _db.CreateDB(dbPath, DATABASE_SCHEMA);
                 await _db.OpenDB(dbPath);
-                long? numContacts = await _db.GetNumRecords(DATABASE_TABLE);
-                Console.Out.WriteLine(">> OK: Opened sqlite db with {0} items located in {1}", numContacts, dbPath);
-            }
-            else
-            {
-                // Cannot open patient sqlite database!
-                // Todo: generate friendly message (msgbox...)
-                Console.Out.WriteLine(">> ERR: Unable to open sqlite db located in {0}", dbPath);
-            }
+
+                if (_db.IsOpen())
+                {
+                    long? numContacts = await _db.GetNumRecords(DATABASE_TABLE);
+                    Console.Out.WriteLine(">> OK: Opened sqlite db with {0} items located in {1}", numContacts, dbPath);
+                }
+                else
+                {
+                    // Cannot open patient sqlite database!
+                    // Todo: generate friendly message (msgbox...)
+                    Console.Out.WriteLine(">> ERR: Unable to open sqlite db located in {0}", dbPath);
+                }
         }
 
         public void Close()
