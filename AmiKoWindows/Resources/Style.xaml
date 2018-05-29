@@ -55,6 +55,22 @@
         </Setter>
     </Style>
 
+    <Style x:Key="NoBorderedButton" TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButton}">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Regular" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Controls:ButtonHelper.PreserveTextCase" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="{x:Static ToolBar.SeparatorStyleKey}" TargetType="{x:Type Separator}">
         <Setter Property="Margin" Value="4,2,4,2" />
         <Setter Property="Focusable" Value="false" />
