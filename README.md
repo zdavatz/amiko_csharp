@@ -266,12 +266,12 @@ PS C:\Users\... > taskkill /im 'MSBuild.exe' /f
 # AmiKoDesitin
 PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\AmiKoDesitin.Test.csproj /t:Clean
 PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\AmiKoDesitin.Test.csproj /t:Build /p:Configuration=Debug /p:Platform=AnyCPU
-PS C:\Users\... > .\Package\NUnit.ConseleRunner.3.8.0\tools\nunit3-console.exe .\AmiKoWindows.Tests\bin\Debug\AmiKo\AmiKoDesitin.Test.dll
+PS C:\Users\... > .\Package\NUnit.ConseleRunner.3.8.0\tools\nunit3-console.exe .\AmiKoWindows.Tests\bin\Debug\AmiKo\AmiKoDesitin.Test.dll --output TestOutput.log
 
 # CoMedDesitin
 PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\CoMedDesitin.Test.csproj /t:Clean
 PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\CoMedDesitin.Test.csproj /t:Build /p:Configuration=Debug /p:Platform=AnyCPU
-PS C:\Users\... > .\Package\NUnit.ConsoleRunner.3.8.0\tools\nunit3-console.exe .\AmiKoWindows.Tests\bin\Debug\CoMed\CoMedDesitin.Test.dll
+PS C:\Users\... > .\Package\NUnit.ConsoleRunner.3.8.0\tools\nunit3-console.exe .\AmiKoWindows.Tests\bin\Debug\CoMed\CoMedDesitin.Test.dll --output TestOutput.log
 ```
 
 ##### Reference

@@ -6,6 +6,8 @@
 *.exe
 *.pfx
 
+*.log
+
 AmiKoWindows/Data/**/*.zip
 AmiKoWindows/Data/**/*.db
 AmiKoWindows/Data/**/*.html
