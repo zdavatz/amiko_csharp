@@ -155,7 +155,7 @@ namespace AmiKoWindows
                 presenter.ApplyTemplate();
                 element = presenter.ContentTemplate.FindName(elementName, presenter) as FrameworkElement;
             }
-            //Trace.WriteLine(String.Format("[GetElemenInMainArea] element: {0}", element));
+            //Log.WriteLine(String.Format("[GetElemenInMainArea] element: {0}", element));
             return element;
         }
 
@@ -190,10 +190,10 @@ namespace AmiKoWindows
             if (viewType.Mode == "Form")
             {
                 element = _manager;
-                //Trace.WriteLine(String.Format("[GetView] manager: {0}", element));
+                //Log.WriteLine(String.Format("[GetView] manager: {0}", element));
             } else {
                 element = _browser;
-                //Trace.WriteLine(String.Format("[GetView] browser: {0}", element));
+                //Log.WriteLine(String.Format("[GetView] browser: {0}", element));
             }
             return element;
         }
@@ -201,8 +201,8 @@ namespace AmiKoWindows
         public async void SetState(string state)
         {
             // TODO: Fix Search result items after state changed with query Volltext -> Volltext
-            //Trace.WriteLine(String.Format("[SetState] (old) state: {0}", _uiState.GetState()));
-            //Trace.WriteLine(String.Format("[SetState] string state: {0}", state));
+            //Log.WriteLine(String.Format("[SetState] (old) state: {0}", _uiState.GetState()));
+            //Log.WriteLine(String.Format("[SetState] string state: {0}", state));
 
             if (_uiState.GetState() == UIState.State.Favorites)
                 _fullTextDb.ClearFoundEntries();
@@ -216,8 +216,8 @@ namespace AmiKoWindows
             else if (state.Equals("Prescriptions"))
                 SetState(UIState.State.Prescriptions);
 
-            //Trace.WriteLine(String.Format("[SetState] (new) state: {0}", _uiState.GetState()));
-            //Trace.WriteLine(String.Format("[SetState] query: {0}", _uiState.GetQuery()));
+            //Log.WriteLine(String.Format("[SetState] (new) state: {0}", _uiState.GetState()));
+            //Log.WriteLine(String.Format("[SetState] query: {0}", _uiState.GetQuery()));
 
             if (_uiState.FullTextQueryEnabled())
                 if (state.Equals("Farovites"))
@@ -700,7 +700,7 @@ namespace AmiKoWindows
             this.SearchTextBox.Focus();
             UIState.State state = _uiState.GetState();
 
-            //Trace.WriteLine(String.Format("[QuerySelectButton_Click] source.Name: {0}", source.Name));
+            //Log.WriteLine(String.Format("[QuerySelectButton_Click] source.Name: {0}", source.Name));
             if (query == UIState.Query.Fulltext)
             {
                 _uiState.SetQuery(UIState.Query.Fulltext);
@@ -708,7 +708,7 @@ namespace AmiKoWindows
                 // only change data context (keep state)
                 SetDataContext(state);
 
-                //Trace.WriteLine(String.Format("[QuerySelectButton_Click] state: {0}", _uiState.GetState()));
+                //Log.WriteLine(String.Format("[QuerySelectButton_Click] state: {0}", _uiState.GetState()));
                 if (state == UIState.State.Favorites) {
                     await _fullTextDb.RetrieveFavorites();
                 } else {
@@ -746,7 +746,7 @@ namespace AmiKoWindows
          */
         public void InjectJS(string jsCode)
         {
-            //Trace.WriteLine("InjectJS");
+            //Log.WriteLine("InjectJS");
             var browser = GetView() as WebBrowser;
             if (browser != null)
             {
@@ -756,19 +756,19 @@ namespace AmiKoWindows
 
         private void WebBrowser_Loaded(object sender, EventArgs e)
         {
-            //Trace.WriteLine("[WebBrowser_Loaded]");
+            //Log.WriteLine("[WebBrowser_Loaded]");
             // Pass
         }
 
         private void WebBrowser_LoadCompleted(object sender, NavigationEventArgs e)
         {
-            //Trace.WriteLine("[WebBrowser_LoadCompleted]");
+            //Log.WriteLine("[WebBrowser_LoadCompleted]");
             // Pass, See InjectJS
         }
 
         private async void WebBrowser_Navigating(object sender, NavigatingCancelEventArgs e)
         {
-            //Trace.WriteLine("[WebBrowser_Navigating]");
+            //Log.WriteLine("[WebBrowser_Navigating]");
             // First page needs to be loaded in webBrowser control
             if (!_willNavigate)
             {
@@ -796,7 +796,7 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            //Trace.WriteLine(source.Name);
+            //Log.WriteLine(source.Name);
             this.DataContext = new ViewType("Form", true);
             e.Handled = true;
         }
@@ -807,7 +807,7 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            //Trace.WriteLine(source.Name);
+            //Log.WriteLine(source.Name);
             e.Handled = true;
         }
 
@@ -817,7 +817,7 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            //Trace.WriteLine(source.Name);
+            Log.WriteLine(source.Name);
             e.Handled = true;
         }
 
@@ -827,7 +827,7 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            Trace.WriteLine(source.Name);
+            Log.WriteLine(source.Name);
             e.Handled = true;
         }
 
@@ -837,7 +837,7 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            Trace.WriteLine(source.Name);
+            Log.WriteLine(source.Name);
             e.Handled = true;
         }
 
@@ -847,7 +847,7 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            Trace.WriteLine(source.Name);
+            Log.WriteLine(source.Name);
 
             // Re:enable animations for next time
             source.AreAnimationsEnabled = true;
@@ -882,12 +882,12 @@ namespace AmiKoWindows
                 var text = (string)e.NewValue;
                 if (text != null && text != string.Empty)
                 {
-                    //Trace.WriteLine(String.Format("[BrowserBehavior] text (len): {0}", text.Length));
+                    //Log.WriteLine(String.Format("[BrowserBehavior] text (len): {0}", text.Length));
                     browser.NavigateToString(text);
                 }
                 else
                 {
-                    //Trace.WriteLine("empty");
+                    //Log.WriteLine("empty");
                     browser.NavigateToString(" "); // empty document
                 }
             }

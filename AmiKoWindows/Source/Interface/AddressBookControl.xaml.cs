@@ -21,7 +21,6 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Diagnostics;
 using MahApps.Metro.Controls;
 
 namespace AmiKoWindows
@@ -72,7 +71,7 @@ namespace AmiKoWindows
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            //Trace.WriteLine("[CloseButton_Click]");
+            //Log.WriteLine("[CloseButton_Click]");
             if (_parent != null) {
                 _parent.IsOpen = false;
             }
@@ -80,29 +79,28 @@ namespace AmiKoWindows
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            //Trace.WriteLine("[SaveButton_Click]");
             int newId = _patientDb.getNewId();
             Log.WriteLine("[SaveButton_Click] newId: {0}", newId);
         }
 
         private void OpenButton_Click(object sender, RoutedEventArgs e)
         {
-            //Trace.WriteLine("[OpenButton_Click]");
+            //Log.WriteLine("[OpenButton_Click]");
         }
 
         private void PlusButton_Click(object sender, RoutedEventArgs e)
         {
-            //Trace.WriteLine("[PlusButton_Click]");
+            //Log.WriteLine("[PlusButton_Click]");
         }
 
         private void MinusButton_Click(object sender, RoutedEventArgs e)
         {
-            //Trace.WriteLine("[MinusButton_Click]");
+            //Log.WriteLine("[MinusButton_Click]");
         }
 
         private void SwitchBookButton_Click(object sender, RoutedEventArgs e)
         {
-            //Trace.WriteLine("[SwitchBookButton_Click]");
+            //Log.WriteLine("[SwitchBookButton_Click]");
         }
     }
 }
