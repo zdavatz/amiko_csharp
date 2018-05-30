@@ -71,14 +71,14 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Log)' == 'Trace' ">
-    <DefineConstants>TRACE</DefineConstants>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' And '$(Log)' == 'Trace' ">
+    <DefineConstants>DEBUG;TRACE;COMED</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>Resources\img\desitin_icon.ico</ApplicationIcon>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' And '$(Log)' == '' ">
+    <DefineConstants>DEBUG;COMED</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>AmiKoWindows.App</StartupObject>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>COMED</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <SignManifests>false</SignManifests>
@@ -89,6 +89,12 @@
     <SignManifests>true</SignManifests>
     <SignAssembly>true</SignAssembly>
     <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\img\desitin_icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>AmiKoWindows.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>9F3FA6F4C4CFFA827FFDEF3E654B9C825BB88103</ManifestCertificateThumbprint>
