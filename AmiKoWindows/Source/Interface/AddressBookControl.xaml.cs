@@ -81,6 +81,8 @@ namespace AmiKoWindows
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             //Trace.WriteLine("[SaveButton_Click]");
+            int newId = _patientDb.getNewId();
+            Log.WriteLine("[SaveButton_Click] newId: {0}", newId);
         }
 
         private void OpenButton_Click(object sender, RoutedEventArgs e)
