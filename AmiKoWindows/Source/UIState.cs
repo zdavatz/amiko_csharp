@@ -85,7 +85,7 @@ namespace AmiKoWindows
         public static Query QueryBySourceName(string sourceName)
         {
             string name = sourceName.Trim().ToLower();
-            //Trace.WriteLine(String.Format("[QueryBySourceName] name: {0}", name));
+            //Log.WriteLine("name: {0}", name);
 
             if (name.Equals("title"))
                 return Query.Title;

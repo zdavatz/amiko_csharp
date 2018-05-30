@@ -71,7 +71,7 @@ namespace AmiKoWindows
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            //Log.WriteLine("[CloseButton_Click]");
+            Log.WriteLine(sender.GetType().Name);
             if (_parent != null) {
                 _parent.IsOpen = false;
             }
@@ -80,27 +80,27 @@ namespace AmiKoWindows
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             int newId = _patientDb.getNewId();
-            Log.WriteLine("[SaveButton_Click] newId: {0}", newId);
+            Log.WriteLine("newId: {0}", newId);
         }
 
         private void OpenButton_Click(object sender, RoutedEventArgs e)
         {
-            //Log.WriteLine("[OpenButton_Click]");
+            Log.WriteLine(sender.GetType().Name);
         }
 
         private void PlusButton_Click(object sender, RoutedEventArgs e)
         {
-            //Log.WriteLine("[PlusButton_Click]");
+            Log.WriteLine(sender.GetType().Name);
         }
 
         private void MinusButton_Click(object sender, RoutedEventArgs e)
         {
-            //Log.WriteLine("[MinusButton_Click]");
+            Log.WriteLine(sender.GetType().Name);
         }
 
         private void SwitchBookButton_Click(object sender, RoutedEventArgs e)
         {
-            //Log.WriteLine("[SwitchBookButton_Click]");
+            Log.WriteLine(sender.GetType().Name);
         }
     }
 }
