@@ -30,7 +30,6 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\CoMed</OutputPath>
-    <DefineConstants>DEBUG;TRACE;COMED</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -38,9 +37,17 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\CoMed</OutputPath>
-    <DefineConstants>TRACE;COMED</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' And '$(Log)' == 'Trace' ">
+    <DefineConstants>DEBUG;TRACE;COMED</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' And '$(Log)' == '' ">
+    <DefineConstants>DEBUG;COMED</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>COMED</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NUnit.Framework, Version=3.10.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
