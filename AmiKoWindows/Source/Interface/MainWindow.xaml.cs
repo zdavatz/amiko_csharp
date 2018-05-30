@@ -88,7 +88,6 @@ namespace AmiKoWindows
         UIState _uiState;
         MainSqlDb _sqlDb;
         FullTextDb _fullTextDb;
-        PatientDb _patientDb;
         FachInfo _fachInfo;
         FullTextSearch _fullTextSearch;
         InteractionsCart _interactions;
@@ -118,10 +117,6 @@ namespace AmiKoWindows
             _fullTextDb = new FullTextDb();
             _fullTextDb.Init();
             _fullTextSearch = new FullTextSearch();
-
-            // Initialize Patient (In-App Address Book) DB
-            _patientDb = new PatientDb();
-            _patientDb.Init();
 
             // Initialize expert info browser frame
             _fachInfo = new FachInfo(this, _sqlDb);
