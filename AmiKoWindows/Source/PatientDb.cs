@@ -55,9 +55,9 @@ namespace AmiKoWindows
 
         private static readonly string DATABASE_SCHEMA = String.Format(@"
             CREATE TABLE {0} (
-                {1} INTEGER,
-                {2} TEXT,
-                {3} TEXT,
+                {1} INTEGER PRIMARY KEY AUTOINCREMENT,
+                {2} TEXT NOT NULL,
+                {3} TEXT NOT NULL,
                 {4} TEXT,
                 {5} TEXT,
                 {6} TEXT,
@@ -126,13 +126,13 @@ namespace AmiKoWindows
                 if (_db.IsOpen())
                 {
                     long? numContacts = await _db.GetNumRecords(DATABASE_TABLE);
-                    Console.Out.WriteLine(">> OK: Opened sqlite db with {0} items located in {1}", numContacts, dbPath);
+                    Log.WriteLine(">> OK: Opened sqlite db with {0} items located in {1}", numContacts, dbPath);
                 }
                 else
                 {
                     // Cannot open patient sqlite database!
                     // Todo: generate friendly message (msgbox...)
-                    Console.Out.WriteLine(">> ERR: Unable to open sqlite db located in {0}", dbPath);
+                    Log.WriteLine(">> ERR: Unable to open sqlite db located in {0}", dbPath);
                 }
         }
 
@@ -140,6 +140,18 @@ namespace AmiKoWindows
         {
             if (_db != null)
                 _db.CloseDB();
+        }
+
+        public int getNewId()
+        {
+            int newId = 0;
+            var cmd = _db.Command(
+                String.Format(@"SELECT seq FROM sqlite_sequence WHERE name = '{0}'", DATABASE_TABLE));
+            var nextId = cmd.ExecuteScalar() as int?;
+            if (nextId != null)
+                newId = nextId.Value;
+            newId += 1;
+            return newId;
         }
 
         public void UpdateSearchResults(UIState state)

@@ -21,7 +21,6 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Diagnostics;
 using MahApps.Metro.Controls;
 
 namespace AmiKoWindows
@@ -36,6 +35,8 @@ namespace AmiKoWindows
     public partial class AddressBookControl : UserControl, INotifyPropertyChanged
     {
         #region Private Fields
+        PatientDb _patientDb;
+
         MainWindow _mainWindow;
         MahApps.Metro.Controls.Flyout _parent;
         #endregion
@@ -56,7 +57,9 @@ namespace AmiKoWindows
 
         private void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            //Trace.WriteLine(String.Format("[Control_Loaded] sender: {0}", sender));
+            // Initialize Patient (In-App Address Book) DB
+            _patientDb = new PatientDb();
+            _patientDb.Init();
         }
 
         private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
@@ -64,12 +67,11 @@ namespace AmiKoWindows
             _parent = this.Parent as MahApps.Metro.Controls.Flyout;
             _parent.AreAnimationsEnabled = false;
             _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
-            //Trace.WriteLine(String.Format("[Control_IsVisibleChanged] _mainWindow: {0}", _mainWindow));
         }
 
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            //Trace.WriteLine("[CancelButton_Click]");
+            Log.WriteLine(sender.GetType().Name);
             if (_parent != null) {
                 _parent.IsOpen = false;
             }
@@ -77,12 +79,28 @@ namespace AmiKoWindows
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            //Trace.WriteLine("[SaveButton_Click]");
+            int newId = _patientDb.getNewId();
+            Log.WriteLine("newId: {0}", newId);
         }
 
         private void OpenButton_Click(object sender, RoutedEventArgs e)
         {
-            //Trace.WriteLine("[OpenButton_Click]");
+            Log.WriteLine(sender.GetType().Name);
+        }
+
+        private void PlusButton_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+        }
+
+        private void MinusButton_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+        }
+
+        private void SwitchBookButton_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
         }
     }
 }

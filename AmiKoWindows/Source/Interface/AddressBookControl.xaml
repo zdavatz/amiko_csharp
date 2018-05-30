@@ -72,7 +72,7 @@
                         <DockPanel Margin="9,6,3,12" HorizontalAlignment="Left">
                             <TextBlock Width="90" Height="21" HorizontalAlignment="Left" VerticalAlignment="Center">Sex*</TextBlock>
                             <StackPanel Height="21" Margin="2,0,0,0" Orientation="Horizontal">
-                                <RadioButton GroupName="sex" Margin="0,0,19,0">femail</RadioButton>
+                                <RadioButton GroupName="sex" Margin="0,0,19,0" IsChecked="True">femail</RadioButton>
                                 <RadioButton GroupName="sex">male</RadioButton>
                             </StackPanel>
                         </DockPanel>
@@ -102,8 +102,8 @@
                         <ColumnDefinition Width="2*" MinWidth="100" />
                     </Grid.ColumnDefinitions>
                     <Button
-                        Name="CancelButton" Style="{StaticResource NoHighlightedButton}"
-                        Grid.Column="0" Margin="8,3,0,3" HorizontalAlignment="Left" Click="CancelButton_Click">
+                        Name="CloseButton" Style="{StaticResource NoHighlightedButton}"
+                        Grid.Column="0" Margin="8,3,0,3" HorizontalAlignment="Left" Click="CloseButton_Click">
                         Schliessen
                     </Button>
                     <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
@@ -114,7 +114,7 @@
                         </Button>
                         <Button
                             Name="OpenButton" Style="{StaticResource NoHighlightedButton}"
-                            Margin="6,3,3,3" HorizontalAlignment="Right" Click="OpenButton_Click">
+                            Margin="6,3,3,3" HorizontalAlignment="Right" Click="OpenButton_Click" IsEnabled="False">
                             Öffnen
                         </Button>
                     </StackPanel>
@@ -133,23 +133,22 @@
               <StackPanel Orientation="Horizontal">
                   <StackPanel Orientation="Horizontal">
                       <Button
-                          Name="AddButton" Style="{StaticResource NoBorderedButton}"
-                          Margin="3,1,5,3" HorizontalAlignment="Center" Click="SaveButton_Click">
-                          <fa:ImageAwesome x:Name="Plus" Icon="Plus" Visibility="Visible"
+                          Name="PlusButton" Style="{StaticResource NoBorderedButton}"
+                          Margin="3,1,5,3" HorizontalAlignment="Center" Click="PlusButton_Click" IsEnabled="True">
+                          <fa:ImageAwesome x:Name="Plus" Icon="Plus" Visibility="Visible" Foreground="Black"
                               VerticalAlignment="Center" Margin="0" Height="16" Width="16" />
                       </Button>
                       <Button
-                          Name="DelButton" Style="{StaticResource NoBorderedButton}"
-                          Margin="5,1,3,3" HorizontalAlignment="Center" Click="OpenButton_Click">
-                          <fa:ImageAwesome x:Name="Minus" Icon="Minus" Visibility="Visible"
+                          Name="MinusButton" Style="{StaticResource NoBorderedButton}"
+                          Margin="5,1,3,3" HorizontalAlignment="Center" Click="MinusButton_Click" IsEnabled="False">
+                          <fa:ImageAwesome x:Name="Minus" Icon="Minus" Visibility="Visible" Foreground="LightGray"
                               VerticalAlignment="Center" Margin="0" Height="16" Width="16" />
                       </Button>
                       <TextBlock Height="Auto" Width="105" FontSize="10" Margin="18,0,3,0" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap">Address Book</TextBlock>
                       <Button
                           Name="SwitchBookButton" Style="{StaticResource NoBorderedButton}"
-                          Width="Auto"
-                          Margin="9,1,5,3" Click="OpenButton_Click">
-                          <fa:ImageAwesome x:Name="AddressBook" Icon="AddressBook" Visibility="Visible"
+                          Margin="9,1,5,3" Width="Auto" Click="SwitchBookButton_Click" IsEnabled="False">
+                          <fa:ImageAwesome x:Name="AddressBook" Icon="AddressBook" Visibility="Visible" Foreground="LightGray"
                               VerticalAlignment="Center" Margin="0" Height="16" Width="16" />
                       </Button>
                   </StackPanel>

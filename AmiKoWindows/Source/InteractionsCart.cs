@@ -59,7 +59,7 @@ namespace AmiKoWindows
         {
             _interactionsDict = ReadInteractions(Utilities.InteractionsPath());
 
-            Console.Out.WriteLine(">> OK: Opened interactions db located in {0}\n", Utilities.InteractionsPath());
+            Log.WriteLine(">> OK: Opened interactions db located in {0}\n", Utilities.InteractionsPath());
 
             string path = Path.Combine(Utilities.AppExecutingFolder(), Constants.JS_FOLDER, "interaction_callbacks.js");
             _jsStr = File.ReadAllText(path);

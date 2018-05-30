@@ -1,5 +1,7 @@
-﻿using System.Threading;
+﻿using System.Diagnostics;
+using System.Threading;
 using System.Windows;
+using System;
 
 namespace AmiKoWindows
 {
@@ -35,7 +37,7 @@ namespace AmiKoWindows
             //splash.Close();
             /*
             AllocConsole();
-            Console.WriteLine("And so it begins");
+            Log.WriteLine("And so it begins");
             */
 
             main.Show();
@@ -46,19 +48,42 @@ namespace AmiKoWindows
     {
         public static void WriteLine(string text)
         {
-            Log.WriteLine(text, new object[]{});
+#if DEBUG
+            StackTrace stackTrace = new StackTrace();
+            Print(FormatText(stackTrace, text, new object[]{}));
+#else
+            // do nothing for release build :)
+#endif
         }
 
         public static void WriteLine(string text, params object[] args)
         {
-#if (DEBUG && TRACE)
-            System.Diagnostics.Trace.WriteLine(
-                System.String.Format(text, args));
-#elif DEBUG
-            System.Console.WriteLine(text, args);
+#if DEBUG
+            StackTrace stackTrace = new StackTrace();
+            Print(FormatText(stackTrace, text, args));
 #else
             // do nothing for release build :)
 #endif
+        }
+
+        private static void Print(string text)
+        {
+#if (DEBUG && TRACE)
+            Trace.WriteLine(text);
+#elif DEBUG
+            Console.WriteLine(text);
+#else
+            // do nothing for release build :)
+#endif
+        }
+
+        private static string FormatText(StackTrace stackTrace, string text, params object[] args)
+        {
+            StackFrame frame = stackTrace.GetFrame(1);
+            string className = frame.GetMethod().ReflectedType.FullName;
+            string methodName = frame.GetMethod().Name;
+            string newText = String.Format("{0}/{1}: {2}", className, methodName, text);
+            return String.Format(newText, args);
         }
     }
 }

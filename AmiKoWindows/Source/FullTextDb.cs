@@ -89,13 +89,13 @@ namespace AmiKoWindows
                 _db = new DatabaseHelper();
                 await _db.OpenDB(dbPath);
                 long? numArticles = await _db.GetNumRecords("frequency");
-                Console.Out.WriteLine(">> OK: Opened frequency db with {0} items located in {1}", numArticles, dbPath);
+                Log.WriteLine(">> OK: Opened frequency db with {0} items located in {1}", numArticles, dbPath);
             }
             else
             {
                 // Cannot open amiko frequency database!
                 // Todo: generate friendly message (msgbox...)
-                Console.Out.WriteLine(">> ERR: Unable to open sqlite db located in {0}", dbPath);
+                Log.WriteLine(">> ERR: Unable to open sqlite db located in {0}", dbPath);
             }
         }
 

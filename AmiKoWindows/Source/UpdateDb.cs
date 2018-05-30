@@ -173,7 +173,7 @@ namespace AmiKoWindows
             }
             catch (Exception)
             {
-                Console.WriteLine("Failed to download file: {0}", filename);
+                Log.WriteLine("Failed to download file: {0}", filename);
             }
 
             if (DownloadingCompleted)
