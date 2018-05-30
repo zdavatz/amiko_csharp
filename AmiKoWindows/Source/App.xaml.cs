@@ -41,4 +41,19 @@ namespace AmiKoWindows
             main.Show();
         }
     }
+
+    public static class Log
+    {
+        public static void WriteLine(string text, params object[] args)
+        {
+#if (DEBUG && TRACE)
+            System.Diagnostics.Trace.WriteLine(
+                System.String.Format(text, args));
+#elif DEBUG
+            System.Console.WriteLine(text, args);
+#else
+            // do nothing for release build :)
+#endif
+        }
+    }
 }

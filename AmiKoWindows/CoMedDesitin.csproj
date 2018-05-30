@@ -57,7 +57,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\CoMed\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;COMED</DefineConstants>
+    <DefineConstants>DEBUG;COMED</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -66,10 +66,13 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\CoMed\</OutputPath>
-    <DefineConstants>TRACE;COMED</DefineConstants>
+    <DefineConstants>COMED</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Log)' == 'Trace' ">
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\img\desitin_icon.ico</ApplicationIcon>

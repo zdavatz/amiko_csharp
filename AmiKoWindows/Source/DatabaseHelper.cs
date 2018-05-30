@@ -83,6 +83,7 @@ namespace AmiKoWindows
         public void CloseDB()
         {
             _conn.Close();
+            _conn = null;
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }

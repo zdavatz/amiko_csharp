@@ -160,6 +160,10 @@ user@host:/path/to/project $ nuget install AmiKoWindows/Packages.config
 
 From this step, you may need to use PowerShell on Windows.
 
+* Configuration (`Debug` or `Release`)
+* Platform (`AnyCPU` etc.)
+* Log (`Trace` or None)
+
 #### Using MSBuild
 
 You would need to install *Microsoft Build Tools 2015* from [here](
@@ -209,7 +213,7 @@ PS C:\Users\... > Get-Process 'CoMed Desitin' | Stop-Process
 PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
 ```
 
-You need to debug the app with `DebugView` or `WinDbg` etc.
+You need to debug the app with `DebugView` or `WinDbg` etc. (Set `/p:Log=Trace` for Trace)
 
 ##### Reference
 
