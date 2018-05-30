@@ -44,6 +44,11 @@ namespace AmiKoWindows
 
     public static class Log
     {
+        public static void WriteLine(string text)
+        {
+            Log.WriteLine(text, new object[]{});
+        }
+
         public static void WriteLine(string text, params object[] args)
         {
 #if (DEBUG && TRACE)
