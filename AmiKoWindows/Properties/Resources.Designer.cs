@@ -10,8 +10,8 @@
 
 namespace AmiKoWindows.Properties {
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +23,13 @@ namespace AmiKoWindows.Properties {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
-        
         private static global::System.Resources.ResourceManager resourceMan;
-        
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +43,7 @@ namespace AmiKoWindows.Properties {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +57,7 @@ namespace AmiKoWindows.Properties {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to AmiKo Desitin.
         /// </summary>
@@ -68,7 +66,25 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("about", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Addresse.
+        /// </summary>
+        public static string address {
+            get {
+                return ResourceManager.GetString("address", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Addressbuch.
+        /// </summary>
+        public static string addressBook {
+            get {
+                return ResourceManager.GetString("addressBook", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to AmiKo Desitin.
         /// </summary>
@@ -77,7 +93,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("appTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Artikel.
         /// </summary>
@@ -86,7 +102,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("article", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Beenden.
         /// </summary>
@@ -95,7 +111,16 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("beenden", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Geburtstag.
+        /// </summary>
+        public static string birthdate {
+            get {
+                return ResourceManager.GetString("birthdate", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Wirkstoff / ATC Code.
         /// </summary>
@@ -104,7 +129,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("butAtccode", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Inhaberin.
         /// </summary>
@@ -113,7 +138,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("butAuthor", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Volltext.
         /// </summary>
@@ -122,7 +147,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("butFulltext", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Wirkstoff.
         /// </summary>
@@ -131,7 +156,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("butIngredient", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Zulassungsnummer.
         /// </summary>
@@ -140,7 +165,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("butRegnr", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Therapie.
         /// </summary>
@@ -149,7 +174,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("butTherapy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Präparat.
         /// </summary>
@@ -158,7 +183,16 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("butTitle", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Abbrechen.
+        /// </summary>
+        public static string cancel {
+            get {
+                return ResourceManager.GetString("cancel", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Kat.
         /// </summary>
@@ -167,7 +201,16 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("category", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Wohnort.
+        /// </summary>
+        public static string city {
+            get {
+                return ResourceManager.GetString("city", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Kompendium.
         /// </summary>
@@ -176,7 +219,16 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("compendium", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Land.
+        /// </summary>
+        public static string country {
+            get {
+                return ResourceManager.GetString("country", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Datei.
         /// </summary>
@@ -185,7 +237,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("datei", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to EAN.
         /// </summary>
@@ -194,7 +246,16 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("ean", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string email {
+            get {
+                return ResourceManager.GetString("email", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Fachinformation.
         /// </summary>
@@ -203,7 +264,16 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("fachinfo", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Vorname.
+        /// </summary>
+        public static string familyName {
+            get {
+                return ResourceManager.GetString("familyName", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Favoriten.
         /// </summary>
@@ -212,7 +282,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("favorites", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Feedback.
         /// </summary>
@@ -221,7 +291,43 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("feedback", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to weiblich.
+        /// </summary>
+        public static string female {
+            get {
+                return ResourceManager.GetString("female", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Geschlecht.
+        /// </summary>
+        public static string gender {
+            get {
+                return ResourceManager.GetString("gender", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string givenName {
+            get {
+                return ResourceManager.GetString("givenName", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Grösse in cm.
+        /// </summary>
+        public static string heightCm {
+            get {
+                return ResourceManager.GetString("heightCm", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Hilfe.
         /// </summary>
@@ -230,7 +336,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("help", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to SwissMed.
         /// </summary>
@@ -239,7 +345,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("info", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Interaktionen.
         /// </summary>
@@ -248,7 +354,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("interactions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to CSV erstellen.
         /// </summary>
@@ -257,7 +363,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("makeCsv", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to PDF erstellen.
         /// </summary>
@@ -266,7 +372,16 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("makePdf", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to männlich.
+        /// </summary>
+        public static string male {
+            get {
+                return ResourceManager.GetString("male", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Medikamentenkorb.
         /// </summary>
@@ -275,7 +390,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("medbasket", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Neue Datenbank verfügbar!.
         /// </summary>
@@ -284,7 +399,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("newDb", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bitte wählen Sie ein Produkt..
         /// </summary>
@@ -293,7 +408,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("noclick", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Keine Fachinformation in der Datenbank..
         /// </summary>
@@ -302,7 +417,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("nofachinfo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to keine Packungen.
         /// </summary>
@@ -311,7 +426,16 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("nopacks", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to keine Öffnen.
+        /// </summary>
+        public static string open {
+            get {
+                return ResourceManager.GetString("open", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Packungen.
         /// </summary>
@@ -320,7 +444,25 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("packs", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Patientenverwaltung.
+        /// </summary>
+        public static string patientManagement {
+            get {
+                return ResourceManager.GetString("patientManagement", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Telefonnr.
+        /// </summary>
+        public static string phone {
+            get {
+                return ResourceManager.GetString("phone", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Pos.
         /// </summary>
@@ -338,7 +480,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("prescriptions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Preis.
         /// </summary>
@@ -347,7 +489,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("price", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drucken.
         /// </summary>
@@ -356,7 +498,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("print", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Menge.
         /// </summary>
@@ -365,7 +507,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("quantity", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error Report.
         /// </summary>
@@ -374,7 +516,16 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("report", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Pflichtfelder.
+        /// </summary>
+        public static string required {
+            get {
+                return ResourceManager.GetString("required", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Suchresultat.
         /// </summary>
@@ -383,7 +534,16 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("result", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Speichern.
+        /// </summary>
+        public static string save {
+            get {
+                return ResourceManager.GetString("save", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Suche.
         /// </summary>
@@ -392,7 +552,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("search", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Einstellungen.
         /// </summary>
@@ -401,7 +561,7 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("settings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Abonnieren.
         /// </summary>
@@ -410,13 +570,31 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("subscribe", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Aktualisieren.
         /// </summary>
         public static string update {
             get {
                 return ResourceManager.GetString("update", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Gewicht in kg.
+        /// </summary>
+        public static string weightKg {
+            get {
+                return ResourceManager.GetString("weightKg", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to PLZ.
+        /// </summary>
+        public static string zip {
+            get {
+                return ResourceManager.GetString("zip", resourceCulture);
             }
         }
     }

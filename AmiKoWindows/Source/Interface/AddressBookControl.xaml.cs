@@ -69,7 +69,7 @@ namespace AmiKoWindows
             _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
         }
 
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
             if (_parent != null) {
