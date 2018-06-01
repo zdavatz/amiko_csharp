@@ -47,5 +47,8 @@ namespace AmiKoWindows
         public static readonly string[] SectionTitlesFR = { "Composition", "Forme galénique", "Contre-indications", "Indications",
 			"Posologie", "Précautions", "Interactions", "Grossesse/All.", "Conduite", "Effets indésir.", "Surdosage", "Propriétés/Effets",
 			"Cinétique", "Préclinique", "Remarques", "Numéro d'autorisation", "Présentation", "Titulaire", "Mise à jour" };
+
+        public static string ErrorFieldColor = "#fad3d3";
+        public static string ErrorBrushColor = "#df1e43";
     }
 }

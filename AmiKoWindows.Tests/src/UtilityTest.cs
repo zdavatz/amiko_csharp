@@ -34,5 +34,33 @@ namespace AmiKoWindows.Tests
             string dbPath = AmiKoWindows.Utilities.PatientDBPath();
             Assert.AreEqual("amiko_patient_fr.db", Path.GetFileName(dbPath));
         }
+
+        [Test]
+        public void Test_AppCultureInfoName_in_DE()
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("de-CH");
+            string cultureName = AmiKoWindows.Utilities.AppCultureInfoName();
+            Assert.AreEqual("de-CH", cultureName);
+        }
+
+        [Test]
+        public void Test_AppCultureInfoName_in_FR()
+        {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("fr-CH");
+            string cultureName = AmiKoWindows.Utilities.AppCultureInfoName();
+            Assert.AreEqual("fr-CH", cultureName);
+        }
+
+        [Test]
+        public void Test_ConvertToUnderScoreCase()
+        {
+            Assert.AreEqual(
+                "given_name", AmiKoWindows.Utilities.ConvertToUnderScoreCase("GivenName"));
+            Assert.AreEqual(
+                "given_name", AmiKoWindows.Utilities.ConvertToUnderScoreCase("givenName"));
+
+            Assert.AreEqual(
+                "phone", AmiKoWindows.Utilities.ConvertToUnderScoreCase("Phone"));
+        }
     }
 }

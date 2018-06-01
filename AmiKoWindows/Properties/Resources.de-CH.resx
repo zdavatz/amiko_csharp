@@ -228,6 +228,12 @@
   <data name="medbasket" xml:space="preserve">
     <value>Medikamentenkorb</value>
   </data>
+  <data name="msgContactSaveFailure" xml:space="preserve">
+    <value>Kontakt wurde nicht im Addressbuch gespeichert. Bitte korrigieren Sie die Fehler.</value>
+  </data>
+  <data name="msgContactSaveSuccess" xml:space="preserve">
+    <value>Kontakt wurde im AmiKo Desitin Addressbuch gespeichert.</value>
+  </data>
   <data name="newDb" xml:space="preserve">
     <value>Neue Datenbank verfügbar!</value>
   </data>

@@ -392,6 +392,24 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
+        public static string msgContactSaveFailure {
+            get {
+                return ResourceManager.GetString("msgContactSaveFailure", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
+        public static string msgContactSaveSuccess {
+            get {
+                return ResourceManager.GetString("msgContactSaveSuccess", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Neue Datenbank verfügbar!.
         /// </summary>
         public static string newDb {
