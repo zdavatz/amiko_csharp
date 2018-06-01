@@ -19,15 +19,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace AmiKoWindows
 {
     class Utilities
     {
+        public static string AppCultureInfoName()
+        {
+            return System.Globalization.CultureInfo.CurrentUICulture.ToString();
+        }
+
         public static string AppLanguage()
         {
-            var culture = System.Globalization.CultureInfo.CurrentUICulture.ToString();
+            var culture = AppCultureInfoName();
             if (culture.Equals("de-CH"))
                 return "de";
             else if (culture.Equals("fr-CH"))
@@ -131,5 +137,22 @@ namespace AmiKoWindows
                 dbPath = Path.Combine(AppExecutingFolder(), "Data", dbName);
             return dbPath;
         }
+
+        #region General Functions
+        public static string ConvertToUnderScoreCase(string text)
+        {
+            return string.Concat(text.Select(
+                (x, i) => {
+                    if (i == 0)
+                        return x.ToString().ToLower();
+                    else if (char.IsUpper(x))
+                        return "_" + x.ToString().ToLower();
+                    else
+                        return x.ToString();
+                }
+            ));
+        }
+        #endregion
     }
+
 }

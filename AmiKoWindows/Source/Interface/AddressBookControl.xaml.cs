@@ -19,8 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using MahApps.Metro.Controls;
 
 namespace AmiKoWindows
@@ -69,7 +72,150 @@ namespace AmiKoWindows
             _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
         }
 
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        private void GivenName_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            validateField(box);
+        }
+
+        private void FamilyName_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            validateField(box);
+        }
+
+        private void Address_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            validateField(box);
+        }
+
+        private void City_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            validateField(box);
+        }
+
+        private void Zip_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            validateField(box);
+        }
+
+        private void Country_LostFocus(object sender, RoutedEventArgs e)
+        {
+            // pass
+        }
+
+        private void Birthdate_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            validateField(box);
+        }
+
+        private void WeightKg_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            validateField(box);
+        }
+
+        private void HeightCm_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            validateField(box);
+        }
+
+        private void Phone_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            validateField(box);
+        }
+
+        private void Email_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            validateField(box);
+        }
+
+        private bool validateField(FrameworkElement element)
+        {
+            if (element == null)
+                return false;
+
+            if (element is TextBox)
+            {
+                var converter = new BrushConverter();
+                Brush errFieldColor = converter.ConvertFrom(Constants.ErrorFieldColor) as Brush;
+                Brush errBrushColor = converter.ConvertFrom(Constants.ErrorBrushColor) as Brush;
+
+                var box = element as TextBox;
+                string columnName = Utilities.ConvertToUnderScoreCase(box.Name);
+                if (!_patientDb.validateField(columnName, box.Text))
+                {
+                    box.Background = errFieldColor;
+                    box.BorderBrush = errBrushColor;
+                    return false;
+                }
+                else
+                {
+                    box.Background = Brushes.White;
+                    box.BorderBrush = Brushes.LightGray;
+                    return true;
+                }
+            }
+            else if (element is StackPanel) // Group for RadioButtons
+            {
+                var box = element as StackPanel;
+                List<RadioButton> buttons = box.Children.OfType<RadioButton>().ToList();
+                RadioButton btn = buttons.Where(
+                    r => r.GroupName != string.Empty && (bool)r.IsChecked).Single();
+                if (btn != null)
+                {
+                    string columnName = Utilities.ConvertToUnderScoreCase(btn.GroupName);
+                    Label lbl = btn.Content as Label;
+                    return _patientDb.validateField(columnName, lbl.Content.ToString());
+                }
+                return false;
+            }
+            return false;
+        }
+
+        private bool validateFields()
+        {
+            bool hasError = false;
+
+            string[] fields = {
+                "GivenName", "FamilyName", "Address", "City", "Zip", "Birthdate",
+                "Gender",
+                "Country", "WeightKg", "HeightCm", "Phone", "Email",
+            };
+            foreach (string name in fields)
+            {
+                var element = this.FindName(name) as FrameworkElement;
+                var result = validateField(element);
+                //Log.WriteLine("validateField: {0}", result);
+                if (!hasError)
+                    hasError = !result;
+            }
+
+            Log.WriteLine("hasError: {0}", hasError);
+            TextBlock errMsg, okMsg = null;
+            errMsg = this.FindName("SaveContactFailureMessage") as TextBlock;
+            okMsg = this.FindName("SaveContactSuccessMessage") as TextBlock;
+            if (hasError)
+            {
+                errMsg.Visibility = Visibility.Visible;
+                okMsg.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                errMsg.Visibility = Visibility.Hidden;
+                okMsg.Visibility = Visibility.Visible;
+            }
+            return !hasError;
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
             if (_parent != null) {
@@ -79,8 +225,10 @@ namespace AmiKoWindows
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            validateFields();
+
             int newId = _patientDb.getNewId();
-            Log.WriteLine("newId: {0}", newId);
+            //Log.WriteLine("newId: {0}", newId);
         }
 
         private void OpenButton_Click(object sender, RoutedEventArgs e)

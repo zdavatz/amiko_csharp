@@ -21,8 +21,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SQLite;
+using System.Globalization;
+using System.Linq;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AmiKoWindows
@@ -158,6 +161,54 @@ namespace AmiKoWindows
         {
             SearchResultItems.Clear();
             //SearchResultItems.AddRange(state, _foundContacts);
+        }
+
+        public bool validateField(string fieldName, string text)
+        {
+            //Log.WriteLine("fieldName: {0}", fieldName);
+            if (fieldName == null)
+                return false;
+
+            // TODO
+            // consider more appropriate limitations (length, formats etc.)
+            int maxLength = 255;
+
+            // required
+            if (fieldName.Equals(KEY_GIVEN_NAME))
+                return text != string.Empty && text.Length < maxLength;
+            else if (fieldName.Equals(KEY_FAMILY_NAME))
+                return text != string.Empty && text.Length < maxLength;
+            else if (fieldName.Equals(KEY_ADDRESS))
+                return text != string.Empty && text.Length < maxLength;
+            else if (fieldName.Equals(KEY_CITY))
+                return text != string.Empty && text.Length < maxLength;
+            else if (fieldName.Equals(KEY_ZIP))
+                return text != string.Empty && text.Length < maxLength;
+            else if (fieldName.Equals(KEY_BIRTHDATE))
+                return text != string.Empty && text.Length < maxLength;
+            else if (fieldName.Equals(KEY_GENDER))
+            {
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Utilities.AppCultureInfoName());
+                string[] values = {Properties.Resources.female, Properties.Resources.male,};
+                Log.WriteLine("values: {0}", String.Join(",", values));
+                Log.WriteLine("text: {0}", text);
+                Log.WriteLine("result: {0}", values.Contains(text));
+                return text != string.Empty && values.Contains(text);
+            }
+
+            // optional
+            if (fieldName.Equals(KEY_COUNTRY))
+                return text.Length < maxLength;
+            else if (fieldName.Equals(KEY_WEIGHT_KG))
+                return text.Length < maxLength;
+            else if (fieldName.Equals(KEY_HEIGHT_CM))
+                return text.Length < maxLength;
+            else if (fieldName.Equals(KEY_PHONE))
+                return text.Length < maxLength;
+            else if (fieldName.Equals(KEY_EMAIL))
+                return text.Length < maxLength;
+
+            return false;
         }
         #endregion
     }
