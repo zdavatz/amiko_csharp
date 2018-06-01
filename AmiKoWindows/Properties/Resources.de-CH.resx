@@ -229,7 +229,7 @@
     <value>Medikamentenkorb</value>
   </data>
   <data name="msgContactSaveFailure" xml:space="preserve">
-    <value>Kontakt wurde nicht im Addressbuch gespeichert. Bitte korrigieren Sie roten Felder.</value>
+    <value>Kontakt wurde nicht im Addressbuch gespeichert. Bitte korrigieren Sie die roten Felder.</value>
   </data>
   <data name="msgContactSaveSuccess" xml:space="preserve">
     <value>Kontakt wurde im AmiKo Desitin Addressbuch gespeichert.</value>
