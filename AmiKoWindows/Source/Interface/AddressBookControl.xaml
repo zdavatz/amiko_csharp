@@ -39,14 +39,14 @@
                 </TextBlock>
             </Grid>
             <!-- Patient Info -->
-            <Grid Grid.Row="1" Margin="10,24,19,12">
+            <Grid Grid.Row="1" Margin="10,22,19,3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <!-- Patient Info: Form -->
-                <Grid Grid.Row="0" Margin="0,0,1,32">
+                <Grid Grid.Row="0" Margin="0,0,1,24">
                     <StackPanel>
                         <DockPanel Margin="7,3,6,6">
                             <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
@@ -128,12 +128,8 @@
                     </StackPanel>
                 </Grid>
                 <Grid Grid.Row="1" Margin="0">
-                    <TextBlock Name="SaveContactFailureMessage" FontSize="12" Width="Auto" Height="21" Margin="11,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Visibility="Hidden">
-                        <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="{x:Static p:Resources.msgContactSaveFailure}" />
-                    </TextBlock>
-                    <TextBlock Name="SaveContactSuccessMessage" FontSize="12" Width="Auto" Height="21" Margin="11,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Visibility="Hidden">
-                        <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Black" Content="{x:Static p:Resources.msgContactSaveSuccess}" />
-                    </TextBlock>
+                    <TextBlock Name="SaveContactFailureMessage" FontSize="12" Width="Auto" Height="42" Margin="11,3,0,0" Padding="0" Text="{x:Static p:Resources.msgContactSaveFailure}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="Red" Visibility="Hidden"></TextBlock>
+                    <TextBlock Name="SaveContactSuccessMessage" FontSize="12" Width="Auto" Height="42" Margin="11,3,0,0" Padding="0" Text="{x:Static p:Resources.msgContactSaveSuccess}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Visibility="Hidden"></TextBlock>
                 </Grid>
                 <!-- Patient Info: Actions -->
                 <Grid Grid.Row="2" Margin="0" Height="Auto" VerticalAlignment="Bottom">
