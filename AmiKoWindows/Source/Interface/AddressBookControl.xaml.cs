@@ -37,8 +37,14 @@ namespace AmiKoWindows
     /// </summary>
     public partial class AddressBookControl : UserControl, INotifyPropertyChanged
     {
+        static string[] contactFields = {
+            "GivenName", "FamilyName", "Address", "City", "Zip", "Birthdate",
+            "Gender",
+            "Country", "WeightKg", "HeightCm", "Phone", "Email",
+        };
+
         #region Private Fields
-        PatientDb _patientDb;
+        PatientDb _patientDb; // has contacts as patient
 
         MainWindow _mainWindow;
         MahApps.Metro.Controls.Flyout _parent;
@@ -56,13 +62,16 @@ namespace AmiKoWindows
         public AddressBookControl()
         {
             InitializeComponent();
+
+            // Initialize Patient (In-App Address Book) DB
+            _patientDb = new PatientDb();
+            _patientDb.Init();
         }
 
         private void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            // Initialize Patient (In-App Address Book) DB
-            _patientDb = new PatientDb();
-            _patientDb.Init();
+            this.SearchResult.DataContext = _patientDb;
+            _patientDb.UpdateSearchResults();
         }
 
         private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
@@ -137,6 +146,37 @@ namespace AmiKoWindows
             validateField(box);
         }
 
+        private Dictionary<string, string> getContactValues()
+        {
+            Dictionary<string, string> values = new Dictionary<string, string>();
+            foreach (string field in contactFields)
+            {
+                var element = this.FindName(field) as FrameworkElement;
+                if (element is TextBox)
+                {
+                    var box = element as TextBox;
+                    if (box != null)
+                    {
+                        string columnName = Utilities.ConvertTitleCaseToSnakeCase(box.Name);
+                        values.Add(columnName, box.Text);
+                    }
+                }
+                else if (element is StackPanel) // RadioButton
+                {
+                    var panel = element as StackPanel;
+                    List<RadioButton> buttons = panel.Children.OfType<RadioButton>().ToList();
+                    RadioButton btn = buttons.Where(
+                        r => r.GroupName != string.Empty && (bool)r.IsChecked).Single();
+                    if (btn != null)
+                    {
+                        string columnName = Utilities.ConvertTitleCaseToSnakeCase(btn.GroupName);
+                        values.Add(columnName, btn.Tag.ToString());
+                    }
+                }
+            }
+            return values;
+        }
+
         private bool validateField(FrameworkElement element)
         {
             if (element == null)
@@ -149,8 +189,8 @@ namespace AmiKoWindows
                 Brush errBrushColor = converter.ConvertFrom(Constants.ErrorBrushColor) as Brush;
 
                 var box = element as TextBox;
-                string columnName = Utilities.ConvertToUnderScoreCase(box.Name);
-                if (!_patientDb.validateField(columnName, box.Text))
+                string columnName = Utilities.ConvertTitleCaseToSnakeCase(box.Name);
+                if (!_patientDb.ValidateField(columnName, box.Text))
                 {
                     box.Background = errFieldColor;
                     box.BorderBrush = errBrushColor;
@@ -171,9 +211,9 @@ namespace AmiKoWindows
                     r => r.GroupName != string.Empty && (bool)r.IsChecked).Single();
                 if (btn != null)
                 {
-                    string columnName = Utilities.ConvertToUnderScoreCase(btn.GroupName);
+                    string columnName = Utilities.ConvertTitleCaseToSnakeCase(btn.GroupName);
                     Label lbl = btn.Content as Label;
-                    return _patientDb.validateField(columnName, lbl.Content.ToString());
+                    return _patientDb.ValidateField(columnName, lbl.Content.ToString());
                 }
                 return false;
             }
@@ -184,16 +224,11 @@ namespace AmiKoWindows
         {
             bool hasError = false;
 
-            string[] fields = {
-                "GivenName", "FamilyName", "Address", "City", "Zip", "Birthdate",
-                "Gender",
-                "Country", "WeightKg", "HeightCm", "Phone", "Email",
-            };
-            foreach (string name in fields)
+            foreach (string field in contactFields)
             {
-                var element = this.FindName(name) as FrameworkElement;
+                var element = this.FindName(field) as FrameworkElement;
                 var result = validateField(element);
-                //Log.WriteLine("validateField: {0}", result);
+                //Log.WriteLine("field: {0} validateField: {0}", field, result);
                 if (!hasError)
                     hasError = !result;
             }
@@ -218,17 +253,20 @@ namespace AmiKoWindows
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
-            if (_parent != null) {
+            if (_parent != null)
                 _parent.IsOpen = false;
-            }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            validateFields();
-
-            int newId = _patientDb.getNewId();
-            //Log.WriteLine("newId: {0}", newId);
+            bool result = validateFields();
+            if (result)
+            {
+                Dictionary<string, string> values = getContactValues();
+                Contact contact = _patientDb.InitContact(values);
+                _patientDb.SaveContact(contact);
+                _patientDb.UpdateSearchResults();
+            }
         }
 
         private void OpenButton_Click(object sender, RoutedEventArgs e)

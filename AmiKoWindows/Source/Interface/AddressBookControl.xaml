@@ -93,10 +93,10 @@
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.gender}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
                             <StackPanel Name="Gender" Height="21" Margin="2,0,0,0" Orientation="Horizontal">
-                                <RadioButton Name="Gender0" GroupName="Gender" Margin="0,2,0,0" IsChecked="True">
+                                <RadioButton Name="Gender0" GroupName="Gender" Tag="0" Margin="0,2,0,0" IsChecked="True">
                                     <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.female}" />
                                 </RadioButton>
-                                <RadioButton Name="Gender1" GroupName="Gender" Margin="19,2,0,0">
+                                <RadioButton Name="Gender1" GroupName="Gender" Tag="1" Margin="19,2,0,0">
                                     <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.male}" />
                                 </RadioButton>
                             </StackPanel>
@@ -168,7 +168,19 @@
               <TextBox Name="SearchPatientBox" Width="Auto" Height="21" Background="White" BorderBrush="DarkGray"></TextBox>
               <!-- Address Book: ListBox -->
               <Border Margin="0,18,0,12" Background="White" BorderBrush="#f2f2f2" VerticalAlignment="Stretch" BorderThickness="1">
-                  <TextBlock Width="Auto" Height="430" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                <ListBox
+                    Name="SearchResult" Style="{StaticResource SearchListBox}" ItemContainerStyle="{StaticResource SearchListBoxItem}"
+                    ItemsSource="{Binding Path=SearchResultItems}" Height="425" Margin="6,6,6,0" Padding="0,7,0,0">
+                      <ListBox.ItemTemplate>
+                          <DataTemplate>
+                              <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                  <StackPanel Orientation="Vertical">
+                                      <TextBlock Text="{Binding Path=Text}" FontWeight="Normal" VerticalAlignment="Center" />
+                                  </StackPanel>
+                              </StackPanel>
+                          </DataTemplate>
+                      </ListBox.ItemTemplate>
+                  </ListBox>
               </Border>
               <!-- Address Book: Actions -->
               <StackPanel Orientation="Horizontal">

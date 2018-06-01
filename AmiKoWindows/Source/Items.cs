@@ -347,6 +347,25 @@ namespace AmiKoWindows
             _suppressNotification = false;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
+
+        public void AddRange(IEnumerable<Contact> list)
+        {
+            if (list == null)
+                throw new ArgumentNullException("list");
+
+            _suppressNotification = true;
+            foreach (Contact contact in list)
+            {
+                Add(new Item()
+                {
+                    Id = contact.Id,
+                    Text = String.Format("{0} {1}", contact.GivenName, contact.FamilyName),
+                });
+            }
+
+            _suppressNotification = false;
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
     }
 
     public class TitlesObservableCollection : ObservableCollection<TitleItem>

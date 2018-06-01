@@ -21,6 +21,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace AmiKoWindows
 {
@@ -139,7 +141,8 @@ namespace AmiKoWindows
         }
 
         #region General Functions
-        public static string ConvertToUnderScoreCase(string text)
+        // TitleCase -> snake_case
+        public static string ConvertTitleCaseToSnakeCase(string text)
         {
             return string.Concat(text.Select(
                 (x, i) => {
@@ -152,7 +155,55 @@ namespace AmiKoWindows
                 }
             ));
         }
+
+        // snake_case -> TitleCase
+        public static string ConvertSnakeCaseToTitleCase(string text)
+        {
+            if (text == null || text.Equals(string.Empty))
+                return "";
+
+            string newText = "";
+            foreach (string word in text.Split('_'))
+            {
+                if (!word.Equals(string.Empty))
+                    newText += word[0].ToString().ToUpper() + word.Substring(1).ToLower();
+            }
+            if (newText.Length > 0)
+                return newText[0].ToString().ToUpper() + newText.Substring(1);
+            return newText;
+        }
+
+        public static string GenerateHash(string baseString)
+        {
+            HashAlgorithm algorithm = SHA256.Create();
+            byte[] hash = algorithm.ComputeHash(Encoding.UTF8.GetBytes(baseString));
+
+            StringBuilder builder = new StringBuilder();
+            foreach (byte b in hash)
+                builder.Append(b.ToString("X2"));
+            return builder.ToString();
+
+        }
+
+        public static string GetCurrentTimeInUTC()
+        {
+            DateTime datetime = DateTime.UtcNow;
+            return datetime.ToString("yyyy-MM-dd'T'HH:mm.ss");
+        }
+
+        public static string GetLocalTime()
+        {
+            DateTime datetime = DateTime.Now;
+            return datetime.ToString("dd.MM.yyyy (HH:mm:ss)");
+        }
+
+        public static DateTime ConvertUTCToLocalTime(string utcString)
+        {
+            DateTime utcTime = DateTime.Parse(utcString);
+            DateTime time = DateTime.SpecifyKind(
+                utcTime, DateTimeKind.Utc);
+            return time.ToLocalTime();
+        }
         #endregion
     }
-
 }
