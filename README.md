@@ -213,7 +213,17 @@ PS C:\Users\... > Get-Process 'CoMed Desitin' | Stop-Process
 PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
 ```
 
-You need to debug the app with `DebugView` or `WinDbg` etc. (Set `/p:Log=Trace` for Trace)
+There is also a script to build and invoke the application.
+
+```powershell
+# AmiKoDesitin
+PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "AmiKo"
+
+# CoMedDesitin
+PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "CoMed"
+```
+
+Finally, You need to debug the app with `DebugView` or `WinDbg` etc. (Set `/p:Log=Trace` for Trace)
 
 ##### Reference
 
@@ -276,6 +286,16 @@ PS C:\Users\... > .\Package\NUnit.ConseleRunner.3.8.0\tools\nunit3-console.exe .
 PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\CoMedDesitin.Test.csproj /t:Clean
 PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\CoMedDesitin.Test.csproj /t:Build /p:Configuration=Debug /p:Platform=AnyCPU
 PS C:\Users\... > .\Package\NUnit.ConsoleRunner.3.8.0\tools\nunit3-console.exe .\AmiKoWindows.Tests\bin\Debug\CoMed\CoMedDesitin.Test.dll --output TestOutput.log
+```
+
+Or you can just execute tests using `RunTest.ps1` like this.
+
+```powershell
+# AmiKoDesitin
+PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\RunTest.ps1 "AmiKo"
+
+# CoMedDesitin
+PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\RunTest.ps1 "CoMed"
 ```
 
 ##### Reference
