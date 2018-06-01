@@ -171,7 +171,7 @@
                           <DataTemplate>
                               <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                   <StackPanel Orientation="Vertical">
-                                      <TextBlock Text="{Binding Path=Text}" FontWeight="Normal" VerticalAlignment="Center" />
+                                      <TextBlock Text="{Binding Path=Text}" FontWeight="Normal" VerticalAlignment="Center" MouseLeftButtonDown="ContactItem_MouseLeftButtonDown" />
                                   </StackPanel>
                               </StackPanel>
                           </DataTemplate>
@@ -184,13 +184,13 @@
                       <Button
                           Name="PlusButton" Style="{StaticResource NoBorderedButton}"
                           Margin="3,1,6,3" HorizontalAlignment="Center" Click="PlusButton_Click" IsEnabled="True">
-                          <fa:ImageAwesome x:Name="Plus" Icon="Plus" Visibility="Visible" Foreground="Black"
+                          <fa:ImageAwesome Name="Plus" Icon="Plus" Visibility="Visible" Foreground="Black"
                               VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                       </Button>
                       <Button
                           Name="MinusButton" Style="{StaticResource NoBorderedButton}"
                           Margin="6,1,3,3" HorizontalAlignment="Center" Click="MinusButton_Click" IsEnabled="False">
-                          <fa:ImageAwesome x:Name="Minus" Icon="Minus" Visibility="Visible" Foreground="LightGray"
+                          <fa:ImageAwesome Name="Minus" Icon="Minus" Visibility="Visible" Foreground="LightGray"
                               VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                       </Button>
                       <TextBlock Height="Auto" Width="100" Margin="16,0,6,0" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -201,7 +201,7 @@
                       <Button
                           Name="SwitchBookButton" Style="{StaticResource NoBorderedButton}"
                           Margin="9,1,5,3" Width="Auto" Click="SwitchBookButton_Click" IsEnabled="False">
-                          <fa:ImageAwesome x:Name="AddressBook" Icon="AddressBook" Visibility="Visible" Foreground="LightGray"
+                          <fa:ImageAwesome Name="AddressBook" Icon="AddressBook" Visibility="Visible" Foreground="LightGray"
                               VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                       </Button>
                   </StackPanel>

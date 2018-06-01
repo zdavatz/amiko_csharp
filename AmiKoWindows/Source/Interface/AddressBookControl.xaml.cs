@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using MahApps.Metro.Controls;
 
@@ -269,6 +270,14 @@ namespace AmiKoWindows
             }
         }
 
+        private void ContactItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.MinusButton.IsEnabled = true;
+            var image = this.MinusButton.Content as FontAwesome.WPF.ImageAwesome;
+            if (image != null)
+                image.Foreground = Brushes.Black;
+        }
+
         private void OpenButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
@@ -281,7 +290,11 @@ namespace AmiKoWindows
 
         private void MinusButton_Click(object sender, RoutedEventArgs e)
         {
-            Log.WriteLine(sender.GetType().Name);
+            //Log.WriteLine(sender.GetType().Name);
+            var item = this.SearchResult.SelectedItem as Item;
+            if (item != null && item.Id != null)
+                _patientDb.DeleteContact(item.Id.Value);
+                _patientDb.UpdateSearchResults();
         }
 
         private void SwitchBookButton_Click(object sender, RoutedEventArgs e)

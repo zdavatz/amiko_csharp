@@ -198,6 +198,31 @@ namespace AmiKoWindows
             }
         }
 
+        public async Task<bool> DeleteContact(long id)
+        {
+            bool result = false;
+            await Task.Run(() =>
+            {
+                if (_db.IsOpen())
+                {
+                    using (SQLiteCommand cmd = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+                        cmd.CommandText = String.Format(
+                            @"DELETE FROM {0} WHERE {1} = '{2}';",
+                            DATABASE_TABLE,
+                            KEY_ID, id
+                        );
+                        // TODO
+                        // check result
+                        cmd.ExecuteNonQuery();
+                        result = true;
+                    }
+                }
+            });
+            return result;
+        }
+
         public async void UpdateSearchResults()
         {
             SearchResultItems.Clear();
