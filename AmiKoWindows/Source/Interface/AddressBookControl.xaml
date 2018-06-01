@@ -31,7 +31,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" Margin="18,10,24,0">
-                <TextBlock FontSize="12" FontWeight="Bold" HorizontalAlignment="Left">
+                <TextBlock FontSize="14" FontWeight="Bold" HorizontalAlignment="Left">
                     <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.patientManagement}" />
                 </TextBlock>
                 <TextBlock HorizontalAlignment="Right">
@@ -48,79 +48,79 @@
                 <!-- Patient Info: Form -->
                 <Grid Grid.Row="0" Margin="0,0,1,32">
                     <StackPanel>
-                        <DockPanel Margin="9,3,6,6">
-                            <TextBlock FontSize="11" Width="90" Height="21" Margin="0,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <DockPanel Margin="7,3,6,6">
+                            <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.givenName}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
                             <TextBox Name="GivenName" Width="Auto" Height="21" Background="White" BorderBrush="LightGray" LostFocus="GivenName_LostFocus"></TextBox>
                         </DockPanel>
-                        <DockPanel Margin="9,2,6,5">
-                            <TextBlock FontSize="11" Width="90" Height="21" Margin="0,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <DockPanel Margin="7,2,6,5">
+                            <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.familyName}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
                             <TextBox Name="FamilyName" Width="Auto" Height="21" Background="White" BorderBrush="LightGray" LostFocus="FamilyName_LostFocus"></TextBox>
                         </DockPanel>
-                        <DockPanel Margin="9,2,6,5">
-                            <TextBlock FontSize="11" Width="90" Height="21" Margin="0,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <DockPanel Margin="7,2,6,5">
+                            <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.address}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
                             <TextBox Name="Address" Width="Auto" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Address_LostFocus"></TextBox>
                         </DockPanel>
-                        <DockPanel Margin="9,2,6,5">
-                            <TextBlock FontSize="11" Width="90" Height="21" Margin="0,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <DockPanel Margin="7,2,6,5">
+                            <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.city}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
                             <TextBox Name="City" Width="150" Height="21" Background="White" BorderBrush="LightGray" LostFocus="City_LostFocus"></TextBox>
-                            <TextBlock FontSize="11" Width="40" Height="21" Margin="25,3,0,0" Padding="0" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <TextBlock FontSize="12" Width="40" Height="21" Margin="25,3,0,0" Padding="0" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.zip}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
                             <TextBox Name="Zip" Width="70" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Zip_LostFocus"></TextBox>
                         </DockPanel>
-                        <DockPanel Margin="9,2,3,5" HorizontalAlignment="Left">
-                            <TextBlock FontSize="11" Width="90" Height="21" Margin="0,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <DockPanel Margin="7,2,3,5" HorizontalAlignment="Left">
+                            <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.country}" />
                             </TextBlock>
                             <TextBox Name="Country" Width="150" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Country_LostFocus"></TextBox>
                         </DockPanel>
-                        <DockPanel Margin="9,2,3,5" HorizontalAlignment="Left">
-                            <TextBlock FontSize="11" Width="90" Height="21" Margin="0,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <DockPanel Margin="7,2,3,5" HorizontalAlignment="Left">
+                            <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.birthdate}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
                             <TextBox Name="Birthdate" Width="150" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Birthdate_LostFocus"></TextBox>
                         </DockPanel>
-                        <DockPanel Margin="9,5,3,11" HorizontalAlignment="Left">
-                            <TextBlock FontSize="11" Width="90" Height="21" Margin="0,5,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <DockPanel Margin="7,5,3,11" HorizontalAlignment="Left">
+                            <TextBlock FontSize="12" Width="90" Height="21" Margin="0,5,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.gender}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
                             <StackPanel Name="Gender" Height="21" Margin="2,0,0,0" Orientation="Horizontal">
                                 <RadioButton Name="Gender0" GroupName="Gender" Margin="0,2,0,0" IsChecked="True">
-                                    <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.female}" />
+                                    <Label Margin="0" Padding="0" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.female}" />
                                 </RadioButton>
                                 <RadioButton Name="Gender1" GroupName="Gender" Margin="19,2,0,0">
-                                    <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.male}" />
+                                    <Label Margin="0" Padding="0" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.male}" />
                                 </RadioButton>
                             </StackPanel>
                         </DockPanel>
-                        <DockPanel Margin="9,2,3,5" HorizontalAlignment="Left">
-                            <TextBlock FontSize="11" Width="90" Height="21" Margin="0,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <DockPanel Margin="7,2,3,5" HorizontalAlignment="Left">
+                            <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.weightKg}" />
                             </TextBlock>
                             <TextBox Name="WeightKg" Width="70" Height="21" Background="White" BorderBrush="LightGray" LostFocus="WeightKg_LostFocus"></TextBox>
                         </DockPanel>
-                        <DockPanel Margin="9,2,3,5" HorizontalAlignment="Left">
-                            <TextBlock FontSize="11" Width="90" Height="21" Margin="0,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <DockPanel Margin="7,2,3,5" HorizontalAlignment="Left">
+                            <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.heightCm}" />
                             </TextBlock>
                             <TextBox Name="HeightCm" Width="70" Height="21" Background="White" BorderBrush="LightGray" LostFocus="HeightCm_LostFocus"></TextBox>
                         </DockPanel>
-                        <DockPanel Margin="9,2,3,5" HorizontalAlignment="Left">
-                            <TextBlock FontSize="11" Width="90" Height="21" Margin="0,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <DockPanel Margin="7,2,3,5" HorizontalAlignment="Left">
+                            <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.phone}" />
                             </TextBlock>
                             <TextBox Name="Phone" Width="150" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Phone_LostFocus"></TextBox>
                         </DockPanel>
-                        <DockPanel Margin="9,2,3,5">
-                            <TextBlock FontSize="11" Width="90" Height="21" Margin="0,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <DockPanel Margin="7,2,3,5">
+                            <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.email}" />
                             </TextBlock>
                             <TextBox Name="Email" Width="Auto" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Email_LostFocus"></TextBox>
@@ -128,10 +128,10 @@
                     </StackPanel>
                 </Grid>
                 <Grid Grid.Row="1" Margin="0">
-                    <TextBlock Name="SaveContactFailureMessage" FontSize="10" Width="Auto" Height="21" Margin="11,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Visibility="Hidden">
+                    <TextBlock Name="SaveContactFailureMessage" FontSize="12" Width="Auto" Height="21" Margin="11,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Visibility="Hidden">
                         <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="{x:Static p:Resources.msgContactSaveFailure}" />
                     </TextBlock>
-                    <TextBlock Name="SaveContactSuccessMessage" FontSize="10" Width="Auto" Height="21" Margin="11,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Visibility="Hidden">
+                    <TextBlock Name="SaveContactSuccessMessage" FontSize="12" Width="Auto" Height="21" Margin="11,3,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Visibility="Hidden">
                         <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Black" Content="{x:Static p:Resources.msgContactSaveSuccess}" />
                     </TextBlock>
                 </Grid>
@@ -144,7 +144,7 @@
                     </Grid.ColumnDefinitions>
                     <Button
                         Name="CancelButton" Style="{StaticResource NoHighlightedButton}"
-                        Grid.Column="0" Margin="8,3,0,3" HorizontalAlignment="Left" Click="CancelButton_Click">
+                        Grid.Column="0" Margin="7,3,0,3" HorizontalAlignment="Left" Click="CancelButton_Click">
                         <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.cancel}" />
                     </Button>
                     <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
@@ -175,26 +175,26 @@
                   <StackPanel Orientation="Horizontal">
                       <Button
                           Name="PlusButton" Style="{StaticResource NoBorderedButton}"
-                          Margin="3,1,5,3" HorizontalAlignment="Center" Click="PlusButton_Click" IsEnabled="True">
+                          Margin="3,1,6,3" HorizontalAlignment="Center" Click="PlusButton_Click" IsEnabled="True">
                           <fa:ImageAwesome x:Name="Plus" Icon="Plus" Visibility="Visible" Foreground="Black"
-                              VerticalAlignment="Center" Margin="0" Height="16" Width="16" />
+                              VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                       </Button>
                       <Button
                           Name="MinusButton" Style="{StaticResource NoBorderedButton}"
-                          Margin="5,1,3,3" HorizontalAlignment="Center" Click="MinusButton_Click" IsEnabled="False">
+                          Margin="6,1,3,3" HorizontalAlignment="Center" Click="MinusButton_Click" IsEnabled="False">
                           <fa:ImageAwesome x:Name="Minus" Icon="Minus" Visibility="Visible" Foreground="LightGray"
-                              VerticalAlignment="Center" Margin="0" Height="16" Width="16" />
+                              VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                       </Button>
-                      <TextBlock Height="Auto" Width="100" Margin="18,0,6,0" HorizontalAlignment="Center" VerticalAlignment="Center">
-                          <Label FontSize="9" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.addressBook}" />
+                      <TextBlock Height="Auto" Width="100" Margin="16,0,6,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Label FontSize="12" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.addressBook}" />
                           <LineBreak />
-                          <Label FontSize="9" Name="AddressBookName" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="AmiKo Desitin (0)" />
+                          <Label FontSize="12" Name="AddressBookName" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="AmiKo Desitin (0)" />
                       </TextBlock>
                       <Button
                           Name="SwitchBookButton" Style="{StaticResource NoBorderedButton}"
                           Margin="9,1,5,3" Width="Auto" Click="SwitchBookButton_Click" IsEnabled="False">
                           <fa:ImageAwesome x:Name="AddressBook" Icon="AddressBook" Visibility="Visible" Foreground="LightGray"
-                              VerticalAlignment="Center" Margin="0" Height="16" Width="16" />
+                              VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                       </Button>
                   </StackPanel>
               </StackPanel>
