@@ -246,9 +246,6 @@
   <data name="nopacks" xml:space="preserve">
     <value>keine Packungen</value>
   </data>
-  <data name="open" xml:space="preserve">
-    <value>Öffnen</value>
-  </data>
   <data name="packs" xml:space="preserve">
     <value>Packungen</value>
   </data>

@@ -149,11 +149,6 @@
                             Margin="0,3,6,3" HorizontalAlignment="Right" Click="SaveButton_Click">
                             <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.save}" />
                         </Button>
-                        <Button
-                            Name="OpenButton" Style="{StaticResource NoHighlightedButton}"
-                            Margin="6,3,3,3" HorizontalAlignment="Right" Click="OpenButton_Click" IsEnabled="False">
-                            <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.open}" />
-                        </Button>
                     </StackPanel>
                 </Grid>
             </Grid>

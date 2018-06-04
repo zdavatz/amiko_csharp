@@ -226,11 +226,6 @@ namespace AmiKoWindows
             }
         }
 
-        private void OpenButton_Click(object sender, RoutedEventArgs e)
-        {
-            Log.WriteLine(sender.GetType().Name);
-        }
-
         private void PlusButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
