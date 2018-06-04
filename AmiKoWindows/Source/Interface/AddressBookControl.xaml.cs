@@ -38,6 +38,7 @@ namespace AmiKoWindows
     /// </summary>
     public partial class AddressBookControl : UserControl, INotifyPropertyChanged
     {
+        // visible fields
         static string[] contactFields = {
             "GivenName", "FamilyName", "Address", "City", "Zip", "Birthdate",
             "Gender",
@@ -108,31 +109,31 @@ namespace AmiKoWindows
         private void GivenName_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void FamilyName_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void Address_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void City_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void Zip_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void Country_LostFocus(object sender, RoutedEventArgs e)
@@ -143,31 +144,31 @@ namespace AmiKoWindows
         private void Birthdate_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void WeightKg_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void HeightCm_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void Phone_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void Email_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -179,11 +180,19 @@ namespace AmiKoWindows
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            bool result = validateFields();
+            bool result = ValidateFields();
             if (result)
             {
                 Dictionary<string, string> values = getContactValues();
-                Contact contact = _patientDb.InitContact(values);
+                Contact contact;
+                contact = this.CurrentEntry;
+                if (contact == null || contact.Uid == null || contact.Uid.Equals(string.Empty))
+                    contact = _patientDb.InitContact(values);
+
+                foreach (var v in values)
+                    contact[v.Key] = v.Value;
+
+                Log.WriteLine("Uid: {0}", contact.Uid);
                 _patientDb.SaveContact(contact);
                 _patientDb.UpdateSearchResults();
             }
@@ -211,6 +220,7 @@ namespace AmiKoWindows
                 Contact contact = await _patientDb.LoadContactById(item.Id.Value);
                 if (contact != null)
                     this.CurrentEntry = contact;
+                    Feedback(false, false);
             }
 
             this.MinusButton.IsEnabled = true;
@@ -246,6 +256,7 @@ namespace AmiKoWindows
         }
         #endregion
 
+        // returns dictionary contains key (propertyName) and value
         private Dictionary<string, string> getContactValues()
         {
             Dictionary<string, string> values = new Dictionary<string, string>();
@@ -256,10 +267,7 @@ namespace AmiKoWindows
                 {
                     var box = element as TextBox;
                     if (box != null)
-                    {
-                        string columnName = Utilities.ConvertTitleCaseToSnakeCase(box.Name);
-                        values.Add(columnName, box.Text);
-                    }
+                        values.Add(box.Name, box.Text);
                 }
                 else if (element is StackPanel) // RadioButton
                 {
@@ -268,16 +276,13 @@ namespace AmiKoWindows
                     RadioButton btn = buttons.Where(
                         r => r.GroupName != string.Empty && (bool)r.IsChecked).Single();
                     if (btn != null)
-                    {
-                        string columnName = Utilities.ConvertTitleCaseToSnakeCase(btn.GroupName);
-                        values.Add(columnName, btn.Tag.ToString());
-                    }
+                        values.Add(btn.GroupName, btn.Tag.ToString());
                 }
             }
             return values;
         }
 
-        private bool validateField(FrameworkElement element)
+        private bool ValidateField(FrameworkElement element)
         {
             if (element == null)
                 return false;
@@ -320,34 +325,44 @@ namespace AmiKoWindows
             return false;
         }
 
-        private bool validateFields()
+        private bool ValidateFields()
         {
             bool hasError = false;
 
             foreach (string field in contactFields)
             {
                 var element = this.FindName(field) as FrameworkElement;
-                var result = validateField(element);
+                var result = ValidateField(element);
                 //Log.WriteLine("field: {0} validateField: {0}", field, result);
                 if (!hasError)
                     hasError = !result;
             }
-
             Log.WriteLine("hasError: {0}", hasError);
+            Feedback(true, hasError);
+            return !hasError;
+        }
+
+        private void Feedback(bool display, bool hasError)
+        {
             TextBlock errMsg, okMsg = null;
             errMsg = this.FindName("SaveContactFailureMessage") as TextBlock;
             okMsg = this.FindName("SaveContactSuccessMessage") as TextBlock;
-            if (hasError)
+
+            if (!display)
+            {
+                errMsg.Visibility = Visibility.Hidden;
+                okMsg.Visibility = Visibility.Hidden;
+            }
+            else if (hasError)
             {
                 errMsg.Visibility = Visibility.Visible;
                 okMsg.Visibility = Visibility.Hidden;
             }
             else
-            {
+            { // display && !hasError
                 errMsg.Visibility = Visibility.Hidden;
                 okMsg.Visibility = Visibility.Visible;
             }
-            return !hasError;
         }
     }
 }

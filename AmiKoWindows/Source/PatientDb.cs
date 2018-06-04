@@ -173,31 +173,40 @@ namespace AmiKoWindows
 
         public bool SaveContact(Contact contact)
         {
-            var columns = DATABASE_COLUMNS.Where(k => k != KEY_ID).ToArray();
+            SQLiteCommand cmd;
+            string q;
+            var columnNames = DATABASE_COLUMNS.Where(k => k != KEY_ID).ToArray();
 
             if (contact.Uid != null && !contact.Uid.Equals(string.Empty))
             { // update
-                var cmd = _db.Command(
-                    String.Format(@"SELECT {0} FROM {1} WHERE uid = '{2}' LIMIT 1;",
-                        KEY_ID, DATABASE_TABLE, contact.Uid));
-                var existingId = cmd.ExecuteScalar() as int?;
+                q = String.Format(@"SELECT {0} FROM {1} WHERE {2} = '{3}' LIMIT 1;",
+                    KEY_ID, DATABASE_TABLE, KEY_UID, contact.Uid);
+                //Log.WriteLine("Query: {0}", q);
+                cmd = _db.Command(q);
+                var existingId = cmd.ExecuteScalar() as long?;
+                //Log.WriteLine("existingId: {0}", existingId);
                 if (existingId == null)
                     return false;
 
-                // TODO
+                q = String.Format(@"UPDATE {0} SET {1} WHERE {2} = '{3}';",
+                    DATABASE_TABLE,
+                    String.Join(",", contact.FlattenColumnPairs(columnNames)),
+                    KEY_ID, existingId.Value);
+                //Log.WriteLine("Query: {0}", q);
+                cmd = _db.Command(q);
+                cmd.ExecuteNonQuery();
                 return true;
             }
             else
             { // insert
-                var propertyNames = columns.Select(c =>
+                var propertyNames = columnNames.Select(c =>
                     Utilities.ConvertSnakeCaseToTitleCase(c)).ToArray();
-
                 contact.Uid = contact.GenerateUid();
-                var q = String.Format(@"INSERT INTO {0} ({1}) VALUES ({2});",
+                q = String.Format(@"INSERT INTO {0} ({1}) VALUES ({2});",
                     DATABASE_TABLE,
-                    String.Join(",", columns), contact.Flatten(",", propertyNames));
+                    String.Join(",", columnNames), contact.Flatten(",", propertyNames));
                 //Log.WriteLine("Query: {0}", q);
-                var cmd = _db.Command(q);
+                cmd = _db.Command(q);
                 cmd.ExecuteNonQuery();
                 return true;
             }

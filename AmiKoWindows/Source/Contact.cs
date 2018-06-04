@@ -224,29 +224,54 @@ namespace AmiKoWindows
                 if (propertyName == null || propertyName.Equals(string.Empty) ||
                     propertyName.Equals("Item") || propertyName.Equals("Id"))
                     continue;
-
-                string text = delimiter;
-                switch (propertyName)
-                {
-                    case "Gender":
-                        text += ((int)this[String.Format("Raw{0}", propertyName)]).ToString();
-                        break;
-                    case "WeightKg":
-                    case "HeightCm":
-                        // NOTE: value will be rounded
-                        text += ((float)this[String.Format("Raw{0}", propertyName)]).ToString(
-                            "F2", CultureInfo.InvariantCulture);
-                        break;
-                    default:
-                        text += String.Format("\"{0}\"", (string)this[propertyName]);
-                        break;
-                }
-                result += text;
+                result += String.Format("{0}{1}", delimiter, GetStringValue(propertyName));
             }
             //Log.WriteLine("result: {0}", result);
             if (result.Length > 0)
                 return result.Substring(1);
             return result;
         }
-    }
+
+        // Returns an array contains a string like 'key = "value"'.
+        public string[] FlattenColumnPairs(string[] columnNames)
+        {
+            int length = columnNames.Length;
+            string[] result = new string[length];
+
+            for (int i = 0; i < length; i++)
+            {
+                var columnName = columnNames[i];
+                if (columnName == null || columnName.Equals(string.Empty) ||
+                    columnName.Equals("item") || columnName.Equals("_id"))
+                    continue;
+
+                var propertyName = Utilities.ConvertSnakeCaseToTitleCase(columnName);
+                result[i] = String.Format("{0} = {1}", columnName, GetStringValue(propertyName));
+            }
+            //Log.WriteLine("result: {0}", result);
+            return result;
+        }
+
+        // returns raw value as string (for database value)
+        private string GetStringValue(string propertyName)
+        {
+            string text;
+            switch (propertyName)
+            {
+                case "Gender":
+                    text = ((int)this[String.Format("Raw{0}", propertyName)]).ToString();
+                    break;
+                case "WeightKg":
+                case "HeightCm":
+                    // NOTE: value will be rounded
+                    text = ((float)this[String.Format("Raw{0}", propertyName)]).ToString(
+                        "F2", CultureInfo.InvariantCulture);
+                    break;
+                default:
+                    text = String.Format("\"{0}\"", (string)this[propertyName]);
+                    break;
+            }
+            return text;
+        }
+   }
 }
