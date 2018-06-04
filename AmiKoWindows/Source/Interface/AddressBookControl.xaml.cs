@@ -51,6 +51,17 @@ namespace AmiKoWindows
         MahApps.Metro.Controls.Flyout _parent;
         #endregion
 
+        #region Other Fields
+        private Contact _CurrentEntry;
+        public Contact CurrentEntry {
+            get { return _CurrentEntry; }
+            set {
+                _CurrentEntry = value;
+                OnPropertyChanged("CurrentEntry");
+            }
+        }
+        #endregion
+
         #region Event Handlers
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -67,11 +78,22 @@ namespace AmiKoWindows
             // Initialize Patient (In-App Address Book) DB
             _patientDb = new PatientDb();
             _patientDb.Init();
+
+            this.DataContext = this;
+            this.SearchResult.DataContext = _patientDb;
+
+            this.CurrentEntry = new Contact();
+
+            // TODO
+            // this does not clear focus :'(
+            Keyboard.ClearFocus();
+            // Workaround
+            this.SearchPatientBox.Focus();
+            Keyboard.Focus(this.SearchPatientBox);
         }
 
         private void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            this.SearchResult.DataContext = _patientDb;
             _patientDb.UpdateSearchResults();
         }
 
@@ -82,6 +104,7 @@ namespace AmiKoWindows
             _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
         }
 
+        #region Actions on Left Pane
         private void GivenName_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
@@ -146,6 +169,82 @@ namespace AmiKoWindows
             var box = sender as TextBox;
             validateField(box);
         }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+            if (_parent != null)
+                _parent.IsOpen = false;
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            bool result = validateFields();
+            if (result)
+            {
+                Dictionary<string, string> values = getContactValues();
+                Contact contact = _patientDb.InitContact(values);
+                _patientDb.SaveContact(contact);
+                _patientDb.UpdateSearchResults();
+            }
+        }
+        #endregion
+
+        #region Actions on Right Pane
+        private void ContactItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // preview action
+            //Log.WriteLine(sender.GetType().Name);
+            this.MinusButton.IsEnabled = true;
+            var image = this.MinusButton.Content as FontAwesome.WPF.ImageAwesome;
+            if (image != null)
+                image.Foreground = Brushes.Black;
+        }
+
+        private async void ContactItem_SelectionChanged(object sender, EventArgs e)
+        {
+            //Log.WriteLine(sender.GetType().Name);
+            var item = this.SearchResult.SelectedItem as Item;
+            if (item != null && item.Id != null)
+            {
+                Log.WriteLine("Item.Id {0}", item.Id.Value);
+                Contact contact = await _patientDb.LoadContactById(item.Id.Value);
+                if (contact != null)
+                    this.CurrentEntry = contact;
+            }
+
+            this.MinusButton.IsEnabled = true;
+            var image = this.MinusButton.Content as FontAwesome.WPF.ImageAwesome;
+            if (image != null)
+                image.Foreground = Brushes.Black;
+        }
+
+        private void OpenButton_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+        }
+
+        private void PlusButton_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+        }
+
+        private async void MinusButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Log.WriteLine(sender.GetType().Name);
+            var item = this.SearchResult.SelectedItem as Item;
+            if (item != null && item.Id != null)
+            {
+                await _patientDb.DeleteContact(item.Id.Value);
+                _patientDb.UpdateSearchResults();
+            }
+        }
+
+        private void SwitchBookButton_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+        }
+        #endregion
 
         private Dictionary<string, string> getContactValues()
         {
@@ -249,57 +348,6 @@ namespace AmiKoWindows
                 okMsg.Visibility = Visibility.Visible;
             }
             return !hasError;
-        }
-
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            Log.WriteLine(sender.GetType().Name);
-            if (_parent != null)
-                _parent.IsOpen = false;
-        }
-
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
-            bool result = validateFields();
-            if (result)
-            {
-                Dictionary<string, string> values = getContactValues();
-                Contact contact = _patientDb.InitContact(values);
-                _patientDb.SaveContact(contact);
-                _patientDb.UpdateSearchResults();
-            }
-        }
-
-        private void ContactItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            this.MinusButton.IsEnabled = true;
-            var image = this.MinusButton.Content as FontAwesome.WPF.ImageAwesome;
-            if (image != null)
-                image.Foreground = Brushes.Black;
-        }
-
-        private void OpenButton_Click(object sender, RoutedEventArgs e)
-        {
-            Log.WriteLine(sender.GetType().Name);
-        }
-
-        private void PlusButton_Click(object sender, RoutedEventArgs e)
-        {
-            Log.WriteLine(sender.GetType().Name);
-        }
-
-        private void MinusButton_Click(object sender, RoutedEventArgs e)
-        {
-            //Log.WriteLine(sender.GetType().Name);
-            var item = this.SearchResult.SelectedItem as Item;
-            if (item != null && item.Id != null)
-                _patientDb.DeleteContact(item.Id.Value);
-                _patientDb.UpdateSearchResults();
-        }
-
-        private void SwitchBookButton_Click(object sender, RoutedEventArgs e)
-        {
-            Log.WriteLine(sender.GetType().Name);
         }
     }
 }

@@ -36,13 +36,15 @@ namespace AmiKoWindows
         const string DATABASE_TABLE = "patients";
 
         // NOTE:
-        // The schema should have consistency with macOS Version.
+        // The field names in schema should have consistency with macOS/iOS Version.
         //
-        // See also below (v3.4.1),
-        // https://github.com/zdavatz/amiko-osx/blob/8910324a74970d4b7e2b170fb000dbdda934451c/MLPatientDBAdapter.m#L87
+        // See also links below:
+        // * https://github.com/zdavatz/amiko-osx/blob/8910324a74970d4b7e2b170fb000dbdda934451c/MLPatientDBAdapter.m#L87
+        // * https://github.com/zdavatz/AmiKo-iOS/blob/49470597fb11a020206aa2051e7c629ac118be0b/AmiKoDesitin/MLPatientDBAdapter.m#L54
         const string KEY_ID = "_id";
         const string KEY_TIME_STAMP = "time_stamp";
         const string KEY_UID = "uid";
+
         const string KEY_GIVEN_NAME = "given_name";
         const string KEY_FAMILY_NAME = "family_name";
         const string KEY_ADDRESS = "address";
@@ -72,13 +74,13 @@ namespace AmiKoWindows
                 {4} TEXT,
                 {5} TEXT,
                 {6} TEXT,
-                {7} INTEGER,
-                {8} INTEGER,
-                {9} INTEGER,
+                {7} TEXT,
+                {8} TEXT,
+                {9} TEXT,
                 {10} TEXT,
-                {11} TEXT,
-                {12} TEXT,
-                {13} TEXT,
+                {11} INTEGER,
+                {12} REAL,
+                {13} REAL,
                 {14} TEXT,
                 {15} TEXT
             );",
@@ -160,8 +162,8 @@ namespace AmiKoWindows
                 string text = "";
                 if (values.TryGetValue(name, out text))
                 {
-                    string propName = Utilities.ConvertSnakeCaseToTitleCase(name);
-                    contact[propName] = text;
+                    string propertyName = Utilities.ConvertSnakeCaseToTitleCase(name);
+                    contact[propertyName] = text;
                 }
             }
             // TODO
@@ -171,6 +173,8 @@ namespace AmiKoWindows
 
         public bool SaveContact(Contact contact)
         {
+            var columns = DATABASE_COLUMNS.Where(k => k != KEY_ID).ToArray();
+
             if (contact.Uid != null && !contact.Uid.Equals(string.Empty))
             { // update
                 var cmd = _db.Command(
@@ -185,14 +189,15 @@ namespace AmiKoWindows
             }
             else
             { // insert
+                var propertyNames = columns.Select(c =>
+                    Utilities.ConvertSnakeCaseToTitleCase(c)).ToArray();
+
                 contact.Uid = contact.GenerateUid();
-                var columns = DATABASE_COLUMNS.Where(k => k != KEY_ID).ToArray();
-                var cmd = _db.Command(
-                    String.Format(@"INSERT INTO {0} ({1}) VALUES ({2});",
-                        DATABASE_TABLE,
-                        String.Join(",", columns),
-                        contact.Flatten(columns)
-                    ));
+                var q = String.Format(@"INSERT INTO {0} ({1}) VALUES ({2});",
+                    DATABASE_TABLE,
+                    String.Join(",", columns), contact.Flatten(",", propertyNames));
+                //Log.WriteLine("Query: {0}", q);
+                var cmd = _db.Command(q);
                 cmd.ExecuteNonQuery();
                 return true;
             }
@@ -208,11 +213,13 @@ namespace AmiKoWindows
                     using (SQLiteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
-                        cmd.CommandText = String.Format(
+                        var q = String.Format(
                             @"DELETE FROM {0} WHERE {1} = '{2}';",
                             DATABASE_TABLE,
                             KEY_ID, id
                         );
+                        //Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
                         // TODO
                         // check result
                         cmd.ExecuteNonQuery();
@@ -231,6 +238,32 @@ namespace AmiKoWindows
             SearchResultItems.AddRange(_foundContacts);
         }
 
+        public async Task<Contact> LoadContactById(long id)
+        {
+            Contact contact = null;
+            await Task.Run(() =>
+            {
+                if (_db.IsOpen())
+                {
+                    using (SQLiteCommand cmd = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+
+                        var q = String.Format(
+                            @"SELECT {0} FROM {1} WHERE {2} = '{3}' LIMIT 1;",
+                            "*", DATABASE_TABLE, KEY_ID, id);
+                        //Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                                contact = CursorToContact(reader);
+                        }
+                    }
+                }
+            });
+            return contact;
+        }
 
         public async Task<List<Contact>> LoadAllContacts()
         {
@@ -243,8 +276,10 @@ namespace AmiKoWindows
                     {
                         _db.ReOpenIfNecessary();
 
-                        cmd.CommandText = String.Format(
+                        var q = String.Format(
                             @"SELECT {0} FROM {1};", "*", DATABASE_TABLE);
+                        Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
@@ -253,7 +288,7 @@ namespace AmiKoWindows
                     }
                 }
             });
-            Log.WriteLine("contacs.Count: {0}", contacts.Count);
+            // Log.WriteLine("contacts.Count: {0}", contacts.Count);
             return contacts;
         }
 
@@ -309,24 +344,26 @@ namespace AmiKoWindows
             contact.Id = reader[KEY_ID] as long?;
             contact.TimeStamp = reader[KEY_TIME_STAMP] as string;
             contact.Uid = reader[KEY_UID] as string;
+
             contact.GivenName = reader[KEY_GIVEN_NAME] as string;
             contact.FamilyName = reader[KEY_FAMILY_NAME] as string;
             contact.Address = reader[KEY_ADDRESS] as string;
+            contact.City = reader[KEY_CITY] as string;
             contact.Zip = reader[KEY_ZIP] as string;
             contact.Country = reader[KEY_COUNTRY] as string;
             contact.Birthdate = reader[KEY_BIRTHDATE] as string;
 
             var gender = reader[KEY_GENDER] as int?;
             if (gender != null)
-                contact._Gender = gender.Value;
+                contact.RawGender = gender.Value;
 
-            var weightKg = reader[KEY_WEIGHT_KG] as int?;
+            // It seems that REAL values should be casted to double once :'(
+            var weightKg = reader[KEY_WEIGHT_KG] as double?;
             if (weightKg != null)
-                contact._WeightKg = weightKg.Value;
-
-            var heightCm = reader[KEY_HEIGHT_CM] as int?;
+                contact.RawWeightKg = (float)weightKg.Value;
+            var heightCm = reader[KEY_HEIGHT_CM] as double?;
             if (heightCm != null)
-                contact._HeightCm = heightCm.Value;
+                contact.RawHeightCm = (float)heightCm.Value;
 
             contact.Phone = reader[KEY_PHONE] as string;
             contact.Email = reader[KEY_EMAIL] as string;

@@ -32,7 +32,7 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" Margin="18,10,24,0">
                 <TextBlock FontSize="14" FontWeight="Bold" HorizontalAlignment="Left">
-                    <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.patientManagement}" />
+                    <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.patientManagement}" Focusable="True" />
                 </TextBlock>
                 <TextBlock HorizontalAlignment="Right">
                   <Label Margin="0,0,1,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" /><Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.required}" />
@@ -46,47 +46,47 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <!-- Patient Info: Form -->
-                <Grid Grid.Row="0" Margin="0,0,1,24">
+                <Grid Grid.Row="0" Margin="0,0,1,24" DataContext="{Binding Path=CurrentEntry, UpdateSourceTrigger=PropertyChanged}">
                     <StackPanel>
                         <DockPanel Margin="7,3,6,6">
                             <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.givenName}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
-                            <TextBox Name="GivenName" Width="Auto" Height="21" Background="White" BorderBrush="LightGray" LostFocus="GivenName_LostFocus"></TextBox>
+                            <TextBox Name="GivenName" Width="Auto" Height="21" Background="White" BorderBrush="LightGray" LostFocus="GivenName_LostFocus" Text="{Binding Path=GivenName}"></TextBox>
                         </DockPanel>
                         <DockPanel Margin="7,2,6,5">
                             <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.familyName}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
-                            <TextBox Name="FamilyName" Width="Auto" Height="21" Background="White" BorderBrush="LightGray" LostFocus="FamilyName_LostFocus"></TextBox>
+                            <TextBox Name="FamilyName" Width="Auto" Height="21" Background="White" BorderBrush="LightGray" LostFocus="FamilyName_LostFocus" Text="{Binding Path=FamilyName}"></TextBox>
                         </DockPanel>
                         <DockPanel Margin="7,2,6,5">
                             <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.address}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
-                            <TextBox Name="Address" Width="Auto" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Address_LostFocus"></TextBox>
+                            <TextBox Name="Address" Width="Auto" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Address_LostFocus" Text="{Binding Path=Address}"></TextBox>
                         </DockPanel>
                         <DockPanel Margin="7,2,6,5">
                             <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.city}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
-                            <TextBox Name="City" Width="150" Height="21" Background="White" BorderBrush="LightGray" LostFocus="City_LostFocus"></TextBox>
+                            <TextBox Name="City" Width="150" Height="21" Background="White" BorderBrush="LightGray" LostFocus="City_LostFocus" Text="{Binding Path=City}"></TextBox>
                             <TextBlock FontSize="12" Width="40" Height="21" Margin="25,3,0,0" Padding="0" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.zip}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
-                            <TextBox Name="Zip" Width="70" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Zip_LostFocus"></TextBox>
+                            <TextBox Name="Zip" Width="70" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Zip_LostFocus" Text="{Binding Path=Zip}"></TextBox>
                         </DockPanel>
                         <DockPanel Margin="7,2,3,5" HorizontalAlignment="Left">
                             <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.country}" />
                             </TextBlock>
-                            <TextBox Name="Country" Width="150" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Country_LostFocus"></TextBox>
+                            <TextBox Name="Country" Width="150" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Country_LostFocus" Text="{Binding Path=Country}"></TextBox>
                         </DockPanel>
                         <DockPanel Margin="7,2,3,5" HorizontalAlignment="Left">
                             <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.birthdate}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
-                            <TextBox Name="Birthdate" Width="150" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Birthdate_LostFocus"></TextBox>
+                            <TextBox Name="Birthdate" Width="150" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Birthdate_LostFocus" Text="{Binding Path=Birthdate}"></TextBox>
                         </DockPanel>
                         <DockPanel Margin="7,5,3,11" HorizontalAlignment="Left">
                             <TextBlock FontSize="12" Width="90" Height="21" Margin="0,5,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
@@ -105,25 +105,25 @@
                             <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.weightKg}" />
                             </TextBlock>
-                            <TextBox Name="WeightKg" Width="70" Height="21" Background="White" BorderBrush="LightGray" LostFocus="WeightKg_LostFocus"></TextBox>
+                            <TextBox Name="WeightKg" Width="70" Height="21" Background="White" BorderBrush="LightGray" LostFocus="WeightKg_LostFocus" Text="{Binding Path=WeightKg}"></TextBox>
                         </DockPanel>
                         <DockPanel Margin="7,2,3,5" HorizontalAlignment="Left">
                             <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.heightCm}" />
                             </TextBlock>
-                            <TextBox Name="HeightCm" Width="70" Height="21" Background="White" BorderBrush="LightGray" LostFocus="HeightCm_LostFocus"></TextBox>
+                            <TextBox Name="HeightCm" Width="70" Height="21" Background="White" BorderBrush="LightGray" LostFocus="HeightCm_LostFocus" Text="{Binding Path=HeightCm}"></TextBox>
                         </DockPanel>
                         <DockPanel Margin="7,2,3,5" HorizontalAlignment="Left">
                             <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.phone}" />
                             </TextBlock>
-                            <TextBox Name="Phone" Width="150" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Phone_LostFocus"></TextBox>
+                            <TextBox Name="Phone" Width="150" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Phone_LostFocus" Text="{Binding Path=Phone}"></TextBox>
                         </DockPanel>
                         <DockPanel Margin="7,2,3,5">
                             <TextBlock FontSize="12" Width="90" Height="21" Margin="0,2,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.email}" />
                             </TextBlock>
-                            <TextBox Name="Email" Width="Auto" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Email_LostFocus"></TextBox>
+                            <TextBox Name="Email" Width="Auto" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Email_LostFocus" Text="{Binding Path=Email}"></TextBox>
                         </DockPanel>
                     </StackPanel>
                 </Grid>
@@ -166,6 +166,7 @@
               <Border Margin="0,18,0,12" Background="White" BorderBrush="#f2f2f2" VerticalAlignment="Stretch" BorderThickness="1">
                 <ListBox
                     Name="SearchResult" Style="{StaticResource SearchListBox}" ItemContainerStyle="{StaticResource SearchListBoxItem}"
+                    SelectionChanged="ContactItem_SelectionChanged"
                     ItemsSource="{Binding Path=SearchResultItems}" Height="425" Margin="6,6,6,0" Padding="0,7,0,0">
                       <ListBox.ItemTemplate>
                           <DataTemplate>
