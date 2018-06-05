@@ -82,6 +82,7 @@
     <SignManifests>false</SignManifests>
     <SignAssembly>false</SignAssembly>
     <GenerateManifests>false</GenerateManifests>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <SignManifests>true</SignManifests>
