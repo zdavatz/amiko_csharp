@@ -27,6 +27,9 @@ namespace AmiKoWindows
 {
     public class Contact : INotifyPropertyChanged
     {
+        private const int GENDER_FEMALE = 0;
+        private const int GENDER_MALE = 1;
+
         public Contact()
         {
             OnPropertyChanged(string.Empty);
@@ -88,8 +91,9 @@ namespace AmiKoWindows
             get { return _Gender.ToString(); }
             set
             {
-                int val = 0; Int32.TryParse(value.ToString(), out val);
-                SetField(ref _Gender, val, "Gender");
+                int val = GENDER_FEMALE;
+                Int32.TryParse(value.ToString(), out val);
+                SetField(ref _Gender, val == GENDER_MALE ? GENDER_MALE : GENDER_FEMALE, "Gender");
             }
         }
 
@@ -165,6 +169,17 @@ namespace AmiKoWindows
         {
             get { return _Email; }
             set { SetField(ref _Email, value, "Email"); }
+        }
+
+        // Additional virtual properties for `Gender` (OneWay)
+        public bool IsFemale
+        {
+            get { return _Gender == GENDER_FEMALE; }
+        }
+
+        public bool IsMale
+        {
+            get { return _Gender == GENDER_MALE; }
         }
 
         #region Setter/Getter Utilities
@@ -248,7 +263,7 @@ namespace AmiKoWindows
                 var propertyName = Utilities.ConvertSnakeCaseToTitleCase(columnName);
                 result[i] = String.Format("{0} = {1}", columnName, GetStringValue(propertyName));
             }
-            //Log.WriteLine("result: {0}", result);
+            //Log.WriteLine("result: {0}", String.Join(",", result));
             return result;
         }
 
