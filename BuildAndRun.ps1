@@ -1,4 +1,5 @@
 #!/usr/bin/env powershell -File
+
 # AmiKo|CoMed
 param([string]$application)
 Write-Host $application
@@ -15,6 +16,16 @@ if ($application -ne "AmiKo" -and $application -ne "CoMed") {
 
 taskkill /im 'MSBuild.exe' /f
 taskkill /im "$application Desitin.exe" /f
+
+# Linux
+wsl rm -f "AmiKoWindows/bin/Debug/$application/$application Desitin.exe"
+wsl rm -f "AmiKoWindows/obj/Debug/$application Desitin.exe"
+
+## Clean All (resources, db and cache etc.)
+#wsl rm -fr "AmiKoWindows/bin/Debug/$application/*"
+#wsl rm -fr "AmiKoWindows/obj/Debug/*"
+
+#MSBuild.exe .\AmiKoWindows\"$application"Desitin.csproj /t:Clean
 
 # Build
 MSBuild.exe .\AmiKoWindows\"$application"Desitin.csproj /t:Build `
