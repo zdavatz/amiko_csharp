@@ -36,25 +36,35 @@ namespace AmiKoWindows
         const string DATABASE_TABLE = "patients";
 
         // NOTE:
-        // The schema should have consistency with macOS Version.
+        // The field names in schema should have consistency with macOS/iOS Version.
         //
-        // See also below (v3.4.1),
-        // https://github.com/zdavatz/amiko-osx/blob/8910324a74970d4b7e2b170fb000dbdda934451c/MLPatientDBAdapter.m#L87
+        // See also links below:
+        // * https://github.com/zdavatz/amiko-osx/blob/8910324a74970d4b7e2b170fb000dbdda934451c/MLPatientDBAdapter.m#L87
+        // * https://github.com/zdavatz/AmiKo-iOS/blob/49470597fb11a020206aa2051e7c629ac118be0b/AmiKoDesitin/MLPatientDBAdapter.m#L54
         const string KEY_ID = "_id";
         const string KEY_TIME_STAMP = "time_stamp";
         const string KEY_UID = "uid";
-        const string KEY_FAMILY_NAME = "family_name";
+
         const string KEY_GIVEN_NAME = "given_name";
+        const string KEY_FAMILY_NAME = "family_name";
+        const string KEY_ADDRESS = "address";
+        const string KEY_CITY = "city";
+        const string KEY_ZIP = "zip";
+        const string KEY_COUNTRY = "country";
         const string KEY_BIRTHDATE = "birthdate";
         const string KEY_GENDER = "gender";
         const string KEY_WEIGHT_KG = "weight_kg";
         const string KEY_HEIGHT_CM = "height_cm";
-        const string KEY_ZIP = "zip";
-        const string KEY_CITY = "city";
-        const string KEY_COUNTRY = "country";
-        const string KEY_ADDRESS = "address";
         const string KEY_PHONE = "phone";
         const string KEY_EMAIL = "email";
+
+        private static readonly string[] DATABASE_COLUMNS = {
+            KEY_ID,
+            KEY_TIME_STAMP, KEY_UID,
+            KEY_GIVEN_NAME, KEY_FAMILY_NAME, KEY_ADDRESS, KEY_CITY, KEY_ZIP, KEY_COUNTRY,
+            KEY_BIRTHDATE, KEY_GENDER, KEY_WEIGHT_KG, KEY_HEIGHT_CM,
+            KEY_PHONE, KEY_EMAIL
+        };
 
         private static readonly string DATABASE_SCHEMA = String.Format(@"
             CREATE TABLE {0} (
@@ -64,19 +74,17 @@ namespace AmiKoWindows
                 {4} TEXT,
                 {5} TEXT,
                 {6} TEXT,
-                {7} INTEGER,
-                {8} INTEGER,
-                {9} INTEGER,
-                {10} INTEGER,
-                {11} TEXT,
-                {12} TEXT,
-                {13} TEXT,
+                {7} TEXT,
+                {8} TEXT,
+                {9} TEXT,
+                {10} TEXT,
+                {11} INTEGER,
+                {12} REAL,
+                {13} REAL,
                 {14} TEXT,
                 {15} TEXT
             );",
-            DATABASE_TABLE,
-            KEY_ID, KEY_TIME_STAMP, KEY_UID, KEY_FAMILY_NAME, KEY_GIVEN_NAME, KEY_BIRTHDATE, KEY_GENDER, KEY_WEIGHT_KG, KEY_HEIGHT_CM, KEY_ZIP,
-            KEY_CITY, KEY_COUNTRY, KEY_ADDRESS, KEY_PHONE, KEY_EMAIL
+            new string[] {DATABASE_TABLE}.Concat(DATABASE_COLUMNS).ToArray()
         );
         #endregion
 
@@ -124,19 +132,19 @@ namespace AmiKoWindows
 
             if (!File.Exists(dbPath))
                 await _db.CreateDB(dbPath, DATABASE_SCHEMA);
-                await _db.OpenDB(dbPath);
 
-                if (_db.IsOpen())
-                {
-                    long? numContacts = await _db.GetNumRecords(DATABASE_TABLE);
-                    Log.WriteLine(">> OK: Opened sqlite db with {0} items located in {1}", numContacts, dbPath);
-                }
-                else
-                {
-                    // Cannot open patient sqlite database!
-                    // Todo: generate friendly message (msgbox...)
-                    Log.WriteLine(">> ERR: Unable to open sqlite db located in {0}", dbPath);
-                }
+            await _db.OpenDB(dbPath);
+            if (_db.IsOpen())
+            {
+                long? numContacts = await _db.GetNumRecords(DATABASE_TABLE);
+                Log.WriteLine(">> OK: Opened patient db with {0} items located in {1}", numContacts, dbPath);
+            }
+            else
+            {
+                // Cannot open patient sqlite database!
+                // Todo: generate friendly message (msgbox...)
+                Log.WriteLine(">> ERR: Unable to open patient db located in {0}", dbPath);
+            }
         }
 
         public void Close()
@@ -145,27 +153,156 @@ namespace AmiKoWindows
                 _db.CloseDB();
         }
 
-        public int getNewId()
-        {
-            int newId = 0;
-            var cmd = _db.Command(
-                String.Format(@"SELECT seq FROM sqlite_sequence WHERE name = '{0}'", DATABASE_TABLE));
-            var nextId = cmd.ExecuteScalar() as int?;
-            if (nextId != null)
-                newId = nextId.Value;
-            newId += 1;
-            return newId;
+        public Contact InitContact(Dictionary<string, string> values) {
+            var contact = new Contact();
+            var columns = DATABASE_COLUMNS.Where(k => k != KEY_ID && k != KEY_TIME_STAMP).ToArray();
+
+            foreach (string name in columns)
+            {
+                string text = "";
+                if (values.TryGetValue(name, out text))
+                {
+                    string propertyName = Utilities.ConvertSnakeCaseToTitleCase(name);
+                    contact[propertyName] = text;
+                }
+            }
+            // TODO
+            contact["TimeStamp"] = "";
+            return contact;
         }
 
-        public void UpdateSearchResults(UIState state)
+        public bool SaveContact(Contact contact)
+        {
+            SQLiteCommand cmd;
+            string q;
+            var columnNames = DATABASE_COLUMNS.Where(k => k != KEY_ID).ToArray();
+
+            if (contact.Uid != null && !contact.Uid.Equals(string.Empty))
+            { // update
+                q = String.Format(@"SELECT {0} FROM {1} WHERE {2} = '{3}' LIMIT 1;",
+                    KEY_ID, DATABASE_TABLE, KEY_UID, contact.Uid);
+                //Log.WriteLine("Query: {0}", q);
+                cmd = _db.Command(q);
+                var existingId = cmd.ExecuteScalar() as long?;
+                //Log.WriteLine("existingId: {0}", existingId);
+                if (existingId == null)
+                    return false;
+
+                q = String.Format(@"UPDATE {0} SET {1} WHERE {2} = '{3}';",
+                    DATABASE_TABLE,
+                    String.Join(",", contact.FlattenColumnPairs(columnNames)),
+                    KEY_ID, existingId.Value);
+                //Log.WriteLine("Query: {0}", q);
+                cmd = _db.Command(q);
+                cmd.ExecuteNonQuery();
+                return true;
+            }
+            else
+            { // insert
+                var propertyNames = columnNames.Select(c =>
+                    Utilities.ConvertSnakeCaseToTitleCase(c)).ToArray();
+                contact.Uid = contact.GenerateUid();
+                q = String.Format(@"INSERT INTO {0} ({1}) VALUES ({2});",
+                    DATABASE_TABLE,
+                    String.Join(",", columnNames), contact.Flatten(",", propertyNames));
+                //Log.WriteLine("Query: {0}", q);
+                cmd = _db.Command(q);
+                cmd.ExecuteNonQuery();
+                return true;
+            }
+        }
+
+        public async Task<bool> DeleteContact(long id)
+        {
+            bool result = false;
+            await Task.Run(() =>
+            {
+                if (_db.IsOpen())
+                {
+                    using (SQLiteCommand cmd = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+                        var q = String.Format(
+                            @"DELETE FROM {0} WHERE {1} = '{2}';",
+                            DATABASE_TABLE,
+                            KEY_ID, id
+                        );
+                        //Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
+                        // TODO
+                        // check result
+                        cmd.ExecuteNonQuery();
+                        result = true;
+                    }
+                }
+            });
+            return result;
+        }
+
+        public async void UpdateSearchResults()
         {
             SearchResultItems.Clear();
-            //SearchResultItems.AddRange(state, _foundContacts);
+
+            _foundContacts = await LoadAllContacts();
+            SearchResultItems.AddRange(_foundContacts);
         }
 
-        public bool validateField(string fieldName, string text)
+        public async Task<Contact> LoadContactById(long id)
         {
-            //Log.WriteLine("fieldName: {0}", fieldName);
+            Contact contact = null;
+            await Task.Run(() =>
+            {
+                if (_db.IsOpen())
+                {
+                    using (SQLiteCommand cmd = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+
+                        var q = String.Format(
+                            @"SELECT {0} FROM {1} WHERE {2} = '{3}' LIMIT 1;",
+                            "*", DATABASE_TABLE, KEY_ID, id);
+                        //Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                                contact = CursorToContact(reader);
+                        }
+                    }
+                }
+            });
+            return contact;
+        }
+
+        public async Task<List<Contact>> LoadAllContacts()
+        {
+            List<Contact> contacts = new List<Contact>();
+            await Task.Run(() =>
+            {
+                if (_db.IsOpen())
+                {
+                    using (SQLiteCommand cmd = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+
+                        var q = String.Format(
+                            @"SELECT {0} FROM {1};", "*", DATABASE_TABLE);
+                        Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                                contacts.Add(CursorToContact(reader));
+                        }
+                    }
+                }
+            });
+            // Log.WriteLine("contacts.Count: {0}", contacts.Count);
+            return contacts;
+        }
+
+        public bool ValidateField(string fieldName, string text)
+        {
             if (fieldName == null)
                 return false;
 
@@ -190,9 +327,6 @@ namespace AmiKoWindows
             {
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Utilities.AppCultureInfoName());
                 string[] values = {Properties.Resources.female, Properties.Resources.male,};
-                Log.WriteLine("values: {0}", String.Join(",", values));
-                Log.WriteLine("text: {0}", text);
-                Log.WriteLine("result: {0}", values.Contains(text));
                 return text != string.Empty && values.Contains(text);
             }
 
@@ -211,5 +345,38 @@ namespace AmiKoWindows
             return false;
         }
         #endregion
+
+        private Contact CursorToContact(SQLiteDataReader reader)
+        {
+            Contact contact = new Contact();
+
+            contact.Id = reader[KEY_ID] as long?;
+            contact.TimeStamp = reader[KEY_TIME_STAMP] as string;
+            contact.Uid = reader[KEY_UID] as string;
+
+            contact.GivenName = reader[KEY_GIVEN_NAME] as string;
+            contact.FamilyName = reader[KEY_FAMILY_NAME] as string;
+            contact.Address = reader[KEY_ADDRESS] as string;
+            contact.City = reader[KEY_CITY] as string;
+            contact.Zip = reader[KEY_ZIP] as string;
+            contact.Country = reader[KEY_COUNTRY] as string;
+            contact.Birthdate = reader[KEY_BIRTHDATE] as string;
+
+            var gender = reader[KEY_GENDER] as int?;
+            if (gender != null)
+                contact.RawGender = gender.Value;
+
+            // It seems that REAL values should be casted to double once :'(
+            var weightKg = reader[KEY_WEIGHT_KG] as double?;
+            if (weightKg != null)
+                contact.RawWeightKg = (float)weightKg.Value;
+            var heightCm = reader[KEY_HEIGHT_CM] as double?;
+            if (heightCm != null)
+                contact.RawHeightCm = (float)heightCm.Value;
+
+            contact.Phone = reader[KEY_PHONE] as string;
+            contact.Email = reader[KEY_EMAIL] as string;
+            return contact;
+        }
     }
 }

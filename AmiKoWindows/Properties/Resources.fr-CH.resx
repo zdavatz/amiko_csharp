@@ -246,9 +246,6 @@
   <data name="nopacks" xml:space="preserve">
     <value>aucune présentation</value>
   </data>
-  <data name="open" xml:space="preserve">
-    <value></value>
-  </data>
   <data name="packs" xml:space="preserve">
     <value>présentation</value>
   </data>

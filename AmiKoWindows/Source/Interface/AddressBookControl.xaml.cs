@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using MahApps.Metro.Controls;
 
@@ -37,11 +38,29 @@ namespace AmiKoWindows
     /// </summary>
     public partial class AddressBookControl : UserControl, INotifyPropertyChanged
     {
+        // visible fields
+        static string[] contactFields = {
+            "GivenName", "FamilyName", "Address", "City", "Zip", "Birthdate",
+            "Gender",
+            "Country", "WeightKg", "HeightCm", "Phone", "Email",
+        };
+
         #region Private Fields
-        PatientDb _patientDb;
+        PatientDb _patientDb; // has contacts as patient
 
         MainWindow _mainWindow;
         MahApps.Metro.Controls.Flyout _parent;
+        #endregion
+
+        #region Other Fields
+        private Contact _CurrentEntry;
+        public Contact CurrentEntry {
+            get { return _CurrentEntry; }
+            set {
+                _CurrentEntry = value;
+                OnPropertyChanged("CurrentEntry");
+            }
+        }
         #endregion
 
         #region Event Handlers
@@ -55,51 +74,79 @@ namespace AmiKoWindows
 
         public AddressBookControl()
         {
+            this.Initialized += delegate
+            {
+                // This block is called after InitializeComponent
+                this.DataContext = this;
+                this.SearchResult.DataContext = _patientDb;
+            };
+
+            // Initialize Patient (In-App Address Book) DB
+            _patientDb = new PatientDb();
+            _patientDb.Init();
+
             InitializeComponent();
+
+            // TODO
+            // This method does not clear focus :'(
+            Keyboard.ClearFocus();
+            // Workaround
+            this.SearchPatientBox.Focus();
+            Keyboard.Focus(this.SearchPatientBox);
         }
 
         private void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            // Initialize Patient (In-App Address Book) DB
-            _patientDb = new PatientDb();
-            _patientDb.Init();
+            Log.WriteLine(e.ToString());
+            this.CurrentEntry = new Contact();
         }
 
         private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
         {
             _parent = this.Parent as MahApps.Metro.Controls.Flyout;
             _parent.AreAnimationsEnabled = false;
-            _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
+
+            var isVisible = e.NewValue as bool?;
+            if (isVisible != null && isVisible.Value)
+            {
+                _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
+                // TODO
+                // Consider, Is this good place to do so?
+                _patientDb.UpdateSearchResults();
+            }
+            else
+                _mainWindow = null;
         }
 
+        #region Actions on Left Pane
         private void GivenName_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void FamilyName_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void Address_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void City_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void Zip_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void Country_LostFocus(object sender, RoutedEventArgs e)
@@ -110,145 +157,293 @@ namespace AmiKoWindows
         private void Birthdate_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void WeightKg_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void HeightCm_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void Phone_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
+            ValidateField(box);
         }
 
         private void Email_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
-            validateField(box);
-        }
-
-        private bool validateField(FrameworkElement element)
-        {
-            if (element == null)
-                return false;
-
-            if (element is TextBox)
-            {
-                var converter = new BrushConverter();
-                Brush errFieldColor = converter.ConvertFrom(Constants.ErrorFieldColor) as Brush;
-                Brush errBrushColor = converter.ConvertFrom(Constants.ErrorBrushColor) as Brush;
-
-                var box = element as TextBox;
-                string columnName = Utilities.ConvertToUnderScoreCase(box.Name);
-                if (!_patientDb.validateField(columnName, box.Text))
-                {
-                    box.Background = errFieldColor;
-                    box.BorderBrush = errBrushColor;
-                    return false;
-                }
-                else
-                {
-                    box.Background = Brushes.White;
-                    box.BorderBrush = Brushes.LightGray;
-                    return true;
-                }
-            }
-            else if (element is StackPanel) // Group for RadioButtons
-            {
-                var box = element as StackPanel;
-                List<RadioButton> buttons = box.Children.OfType<RadioButton>().ToList();
-                RadioButton btn = buttons.Where(
-                    r => r.GroupName != string.Empty && (bool)r.IsChecked).Single();
-                if (btn != null)
-                {
-                    string columnName = Utilities.ConvertToUnderScoreCase(btn.GroupName);
-                    Label lbl = btn.Content as Label;
-                    return _patientDb.validateField(columnName, lbl.Content.ToString());
-                }
-                return false;
-            }
-            return false;
-        }
-
-        private bool validateFields()
-        {
-            bool hasError = false;
-
-            string[] fields = {
-                "GivenName", "FamilyName", "Address", "City", "Zip", "Birthdate",
-                "Gender",
-                "Country", "WeightKg", "HeightCm", "Phone", "Email",
-            };
-            foreach (string name in fields)
-            {
-                var element = this.FindName(name) as FrameworkElement;
-                var result = validateField(element);
-                //Log.WriteLine("validateField: {0}", result);
-                if (!hasError)
-                    hasError = !result;
-            }
-
-            Log.WriteLine("hasError: {0}", hasError);
-            TextBlock errMsg, okMsg = null;
-            errMsg = this.FindName("SaveContactFailureMessage") as TextBlock;
-            okMsg = this.FindName("SaveContactSuccessMessage") as TextBlock;
-            if (hasError)
-            {
-                errMsg.Visibility = Visibility.Visible;
-                okMsg.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                errMsg.Visibility = Visibility.Hidden;
-                okMsg.Visibility = Visibility.Visible;
-            }
-            return !hasError;
+            ValidateField(box);
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
-            if (_parent != null) {
+            if (_parent != null)
                 _parent.IsOpen = false;
-            }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            validateFields();
+            bool result = ValidateFields();
+            if (result)
+            {
+                Dictionary<string, string> values = GetContactValues();
+                Contact contact;
+                contact = this.CurrentEntry;
+                if (contact == null || contact.Uid == null || contact.Uid.Equals(string.Empty))
+                    contact = _patientDb.InitContact(values);
 
-            int newId = _patientDb.getNewId();
-            //Log.WriteLine("newId: {0}", newId);
+                foreach (var v in values)
+                    contact[v.Key] = v.Value;
+
+                Log.WriteLine("Uid: {0}", contact.Uid);
+                _patientDb.SaveContact(contact);
+                _patientDb.UpdateSearchResults();
+            }
+        }
+        #endregion
+
+        #region Actions on Right Pane
+        private void ContactItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // preview action
+            //Log.WriteLine(sender.GetType().Name);
+            EnableMinusButton(true);
         }
 
-        private void OpenButton_Click(object sender, RoutedEventArgs e)
+        private async void ContactItem_SelectionChanged(object sender, EventArgs e)
         {
-            Log.WriteLine(sender.GetType().Name);
+            //Log.WriteLine(sender.GetType().Name);
+            var item = this.SearchResult.SelectedItem as Item;
+            if (item != null && item.Id != null)
+            {
+                ResetMessage();
+
+                // clear only error styles on field
+                foreach (string field in contactFields)
+                    FeedbackField(this.FindName(field) as TextBox, false);
+
+                Log.WriteLine("Item.Id {0}", item.Id.Value);
+                Contact contact = await _patientDb.LoadContactById(item.Id.Value);
+                if (contact != null)
+                    this.CurrentEntry = contact;
+            }
         }
 
         private void PlusButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
+
+            this.SearchResult.UnselectAll();
+            this.CurrentEntry = new Contact();
+
+            ResetFields();
+            ResetMessage();
+
+            EnableMinusButton(false);
         }
 
-        private void MinusButton_Click(object sender, RoutedEventArgs e)
+        private async void MinusButton_Click(object sender, RoutedEventArgs e)
         {
-            Log.WriteLine(sender.GetType().Name);
+            //Log.WriteLine(sender.GetType().Name);
+            var item = this.SearchResult.SelectedItem as Item;
+            if (item != null && item.Id != null)
+            {
+                ResetFields();
+                this.CurrentEntry = new Contact();
+
+                await _patientDb.DeleteContact(item.Id.Value);
+                _patientDb.UpdateSearchResults();
+            }
+
+            EnableMinusButton(false);
         }
 
         private void SwitchBookButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
+        }
+        #endregion
+
+        // returns dictionary contains key (propertyName) and value
+        private Dictionary<string, string> GetContactValues()
+        {
+            Dictionary<string, string> values = new Dictionary<string, string>();
+            foreach (string field in contactFields)
+            {
+                var element = this.FindName(field) as FrameworkElement;
+                if (element is TextBox)
+                {
+                    var box = element as TextBox;
+                    if (box != null)
+                        values.Add(box.Name, box.Text);
+                }
+                else if (element is StackPanel) // RadioButton
+                {
+                    var panel = element as StackPanel;
+                    List<RadioButton> buttons = panel.Children.OfType<RadioButton>().ToList();
+                    RadioButton btn = buttons.Where(
+                        r => r.GroupName != string.Empty && (bool)r.IsChecked).Single();
+                    if (btn != null)
+                        values.Add(btn.GroupName, btn.Tag.ToString());
+                }
+            }
+            return values;
+        }
+
+        private void ResetMessage()
+        {
+            FeedbackMessage(false, false);
+        }
+
+        private void ResetFields()
+        {
+            foreach (string field in contactFields)
+            {
+                var element = this.FindName(field) as FrameworkElement;
+                if (element is TextBox)
+                {
+                    var box = element as TextBox;
+                    if (box != null)
+                        box.Text = "";
+
+                    FeedbackField(box, false);
+                }
+                else if (element is StackPanel) // RadioButton
+                {
+                    var panel = element as StackPanel;
+                    if (panel != null)
+                    {
+                        var buttons = panel.Children.OfType<RadioButton>();
+                        if (buttons != null)
+                        {
+                            // back to default selection
+                            RadioButton btn = buttons.ToList().Where(
+                                r => r.GroupName != string.Empty && r.Tag.ToString().Equals("0")).Single();
+                            if (btn != null)
+                                btn.IsChecked = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool ValidateField(FrameworkElement element)
+        {
+            bool hasError = false;
+
+            if (element == null)
+                return hasError;
+
+            if (element is TextBox)
+            {
+                var box = element as TextBox;
+                string columnName = Utilities.ConvertTitleCaseToSnakeCase(box.Name);
+                hasError = !_patientDb.ValidateField(columnName, box.Text);
+                FeedbackField(box, hasError);
+            }
+            else if (element is StackPanel) // Group for RadioButtons
+            {
+                var box = element as StackPanel;
+                if (box == null)
+                    return false; // skip
+
+                List<RadioButton> buttons = box.Children.OfType<RadioButton>().ToList();
+                if (buttons != null)
+                {
+                    RadioButton btn = buttons.Where(
+                        r => r.GroupName != string.Empty && (bool)r.IsChecked).Single();
+                    if (btn != null)
+                    {
+                        string columnName = Utilities.ConvertTitleCaseToSnakeCase(btn.GroupName);
+                        Label lbl = btn.Content as Label;
+                        if (lbl != null)
+                            hasError = !_patientDb.ValidateField(columnName, lbl.Content.ToString());
+                    }
+                }
+            }
+            return !hasError;
+        }
+
+        private bool ValidateFields()
+        {
+            bool hasError = false;
+
+            foreach (string field in contactFields)
+            {
+                var element = this.FindName(field) as FrameworkElement;
+                var result = ValidateField(element);
+                //Log.WriteLine("field: {0} validateField: {0}", field, result);
+                if (!hasError)
+                    hasError = !result;
+            }
+            Log.WriteLine("hasError: {0}", hasError);
+            FeedbackMessage(true, hasError);
+            return !hasError;
+        }
+
+        private void FeedbackField(TextBox box, bool hasError)
+        {
+            if (box == null)
+                return;
+
+            if (hasError)
+            {
+                var converter = new BrushConverter();
+                Brush errFieldColor = converter.ConvertFrom(Constants.ErrorFieldColor) as Brush;
+                Brush errBrushColor = converter.ConvertFrom(Constants.ErrorBrushColor) as Brush;
+
+                box.Background = errFieldColor;
+                box.BorderBrush = errBrushColor;
+            }
+            else
+            {
+                box.Background = Brushes.White;
+                box.BorderBrush = Brushes.LightGray;
+            }
+        }
+
+        private void FeedbackMessage(bool display, bool hasError)
+        {
+            TextBlock errMsg, okMsg = null;
+            errMsg = this.FindName("SaveContactFailureMessage") as TextBlock;
+            okMsg = this.FindName("SaveContactSuccessMessage") as TextBlock;
+
+            if (!display)
+            {
+                errMsg.Visibility = Visibility.Hidden;
+                okMsg.Visibility = Visibility.Hidden;
+            }
+            else if (hasError)
+            {
+                errMsg.Visibility = Visibility.Visible;
+                okMsg.Visibility = Visibility.Hidden;
+            }
+            else
+            { // display && !hasError
+                errMsg.Visibility = Visibility.Hidden;
+                okMsg.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void EnableMinusButton(bool isEnabled)
+        {
+            this.MinusButton.IsEnabled = isEnabled;
+            var image = this.MinusButton.Content as FontAwesome.WPF.ImageAwesome;
+            if (image != null)
+                if (isEnabled)
+                    image.Foreground = Brushes.Black;
+                else
+                    image.Foreground = Brushes.LightGray;
         }
     }
 }
