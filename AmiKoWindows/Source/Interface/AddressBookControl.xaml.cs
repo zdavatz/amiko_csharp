@@ -191,7 +191,7 @@ namespace AmiKoWindows
                 _parent.IsOpen = false;
         }
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             bool result = ValidateFields();
             if (result)
@@ -208,6 +208,7 @@ namespace AmiKoWindows
                 _patientDb.SaveContact(contact);
                 this.CurrentEntry = contact;
 
+                await _patientDb.LoadAllContacts();
                 _patientDb.UpdateSearchResults();
             }
 
@@ -289,6 +290,7 @@ namespace AmiKoWindows
                 this.CurrentEntry = new Contact();
 
                 await _patientDb.DeleteContact(item.Id.Value);
+                await _patientDb.LoadAllContacts();
                 _patientDb.UpdateSearchResults();
             }
 
