@@ -132,19 +132,19 @@ namespace AmiKoWindows
 
             if (!File.Exists(dbPath))
                 await _db.CreateDB(dbPath, DATABASE_SCHEMA);
-                await _db.OpenDB(dbPath);
 
-                if (_db.IsOpen())
-                {
-                    long? numContacts = await _db.GetNumRecords(DATABASE_TABLE);
-                    Log.WriteLine(">> OK: Opened sqlite db with {0} items located in {1}", numContacts, dbPath);
-                }
-                else
-                {
-                    // Cannot open patient sqlite database!
-                    // Todo: generate friendly message (msgbox...)
-                    Log.WriteLine(">> ERR: Unable to open sqlite db located in {0}", dbPath);
-                }
+            await _db.OpenDB(dbPath);
+            if (_db.IsOpen())
+            {
+                long? numContacts = await _db.GetNumRecords(DATABASE_TABLE);
+                Log.WriteLine(">> OK: Opened patient db with {0} items located in {1}", numContacts, dbPath);
+            }
+            else
+            {
+                // Cannot open patient sqlite database!
+                // Todo: generate friendly message (msgbox...)
+                Log.WriteLine(">> ERR: Unable to open patient db located in {0}", dbPath);
+            }
         }
 
         public void Close()

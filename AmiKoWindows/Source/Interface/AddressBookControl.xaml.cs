@@ -74,19 +74,21 @@ namespace AmiKoWindows
 
         public AddressBookControl()
         {
-            InitializeComponent();
+            this.Initialized += delegate
+            {
+                // This block is called after InitializeComponent
+                this.DataContext = this;
+                this.SearchResult.DataContext = _patientDb;
+            };
 
             // Initialize Patient (In-App Address Book) DB
             _patientDb = new PatientDb();
             _patientDb.Init();
 
-            this.DataContext = this;
-            this.SearchResult.DataContext = _patientDb;
-
-            this.CurrentEntry = new Contact();
+            InitializeComponent();
 
             // TODO
-            // this does not clear focus :'(
+            // This method does not clear focus :'(
             Keyboard.ClearFocus();
             // Workaround
             this.SearchPatientBox.Focus();
@@ -95,14 +97,25 @@ namespace AmiKoWindows
 
         private void Control_Loaded(object sender, RoutedEventArgs e)
         {
-            _patientDb.UpdateSearchResults();
+            Log.WriteLine(e.ToString());
+            this.CurrentEntry = new Contact();
         }
 
         private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
         {
             _parent = this.Parent as MahApps.Metro.Controls.Flyout;
             _parent.AreAnimationsEnabled = false;
-            _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
+
+            var isVisible = e.NewValue as bool?;
+            if (isVisible != null && isVisible.Value)
+            {
+                _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
+                // TODO
+                // Consider, Is this good place to do so?
+                _patientDb.UpdateSearchResults();
+            }
+            else
+                _mainWindow = null;
         }
 
         #region Actions on Left Pane
