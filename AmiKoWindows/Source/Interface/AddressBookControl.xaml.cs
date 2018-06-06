@@ -50,6 +50,8 @@ namespace AmiKoWindows
 
         MainWindow _mainWindow;
         MahApps.Metro.Controls.Flyout _parent;
+
+        bool _isItemClick = false;
         #endregion
 
         #region Other Fields
@@ -110,8 +112,6 @@ namespace AmiKoWindows
             if (isVisible != null && isVisible.Value)
             {
                 _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
-                // TODO
-                // Consider, Is this good place to do so?
                 _patientDb.UpdateSearchResults();
             }
             else
@@ -205,24 +205,52 @@ namespace AmiKoWindows
                 foreach (var v in values)
                     contact[v.Key] = v.Value;
 
-                Log.WriteLine("Uid: {0}", contact.Uid);
                 _patientDb.SaveContact(contact);
+                this.CurrentEntry = contact;
+
                 _patientDb.UpdateSearchResults();
+            }
+
+            if (this.CurrentEntry.Uid == null && !result)
+                return;
+
+            // Re:set selected list item, `UpdateLayout` is needed.
+            ListBoxItem li = null;
+            this.SearchResult.UpdateLayout();
+            foreach (Item item in this.SearchResult.Items)
+            {
+                if (item != null && item.Id == this.CurrentEntry.Id)
+                {
+                    li = (ListBoxItem)this.SearchResult.ItemContainerGenerator.ContainerFromItem(item);
+                    if (li != null)
+                    {
+                        li.IsSelected = true;
+                        break;
+                    }
+                }
             }
         }
         #endregion
 
         #region Actions on Right Pane
+        // Preview action
         private void ContactItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            // preview action
             //Log.WriteLine(sender.GetType().Name);
+            _isItemClick = true;
             EnableMinusButton(true);
         }
 
         private async void ContactItem_SelectionChanged(object sender, EventArgs e)
         {
             //Log.WriteLine(sender.GetType().Name);
+            // NOTE:
+            // This private variable prevents event triggered by the manual assignment
+            // to `IsSelected` in `SaveButton_Click`
+            if (!_isItemClick)
+                return;
+            _isItemClick = false;
+
             var item = this.SearchResult.SelectedItem as Item;
             if (item != null && item.Id != null)
             {
@@ -232,8 +260,7 @@ namespace AmiKoWindows
                 foreach (string field in contactFields)
                     FeedbackField(this.FindName(field) as TextBox, false);
 
-                Log.WriteLine("Item.Id {0}", item.Id.Value);
-                Contact contact = await _patientDb.LoadContactById(item.Id.Value);
+                Contact contact = await _patientDb.GetContactById(item.Id.Value);
                 if (contact != null)
                     this.CurrentEntry = contact;
             }
@@ -323,12 +350,12 @@ namespace AmiKoWindows
                     var panel = element as StackPanel;
                     if (panel != null)
                     {
-                        var buttons = panel.Children.OfType<RadioButton>();
+                        var buttons = panel.Children.OfType<RadioButton>().ToList().Where(
+                            r => r.GroupName != string.Empty && r.Tag.ToString().Equals("0"));
                         if (buttons != null)
                         {
                             // back to default selection
-                            RadioButton btn = buttons.ToList().Where(
-                                r => r.GroupName != string.Empty && r.Tag.ToString().Equals("0")).Single();
+                            RadioButton btn = buttons.Single();
                             if (btn != null)
                                 btn.IsChecked = true;
                         }
@@ -357,11 +384,11 @@ namespace AmiKoWindows
                 if (box == null)
                     return false; // skip
 
-                List<RadioButton> buttons = box.Children.OfType<RadioButton>().ToList();
+                var buttons = box.Children.OfType<RadioButton>().ToList().Where(
+                    r => r.GroupName != string.Empty && (bool)r.IsChecked);
                 if (buttons != null)
                 {
-                    RadioButton btn = buttons.Where(
-                        r => r.GroupName != string.Empty && (bool)r.IsChecked).Single();
+                    RadioButton btn = buttons.Single();
                     if (btn != null)
                     {
                         string columnName = Utilities.ConvertTitleCaseToSnakeCase(btn.GroupName);
@@ -412,13 +439,13 @@ namespace AmiKoWindows
             }
         }
 
-        private void FeedbackMessage(bool display, bool hasError)
+        private void FeedbackMessage(bool needsDisplay, bool hasError)
         {
             TextBlock errMsg, okMsg = null;
             errMsg = this.FindName("SaveContactFailureMessage") as TextBlock;
             okMsg = this.FindName("SaveContactSuccessMessage") as TextBlock;
 
-            if (!display)
+            if (!needsDisplay)
             {
                 errMsg.Visibility = Visibility.Hidden;
                 okMsg.Visibility = Visibility.Hidden;
@@ -429,7 +456,7 @@ namespace AmiKoWindows
                 okMsg.Visibility = Visibility.Hidden;
             }
             else
-            { // display && !hasError
+            { // needsDisplay && !hasError
                 errMsg.Visibility = Visibility.Hidden;
                 okMsg.Visibility = Visibility.Visible;
             }

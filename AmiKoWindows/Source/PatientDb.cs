@@ -116,10 +116,7 @@ namespace AmiKoWindows
             private set
             {
                 if (value != _searchResultItems)
-                {
                     _searchResultItems = value;
-                    // OnPropertyChanged is not necessary here...
-                }
             }
         }
         #endregion
@@ -136,8 +133,8 @@ namespace AmiKoWindows
             await _db.OpenDB(dbPath);
             if (_db.IsOpen())
             {
-                long? numContacts = await _db.GetNumRecords(DATABASE_TABLE);
-                Log.WriteLine(">> OK: Opened patient db with {0} items located in {1}", numContacts, dbPath);
+                await this.LoadAllContacts();
+                Log.WriteLine(">> OK: Opened patient db with {0} items located in {1}", _foundContacts.Count, dbPath);
             }
             else
             {
@@ -239,15 +236,21 @@ namespace AmiKoWindows
             return result;
         }
 
-        public async void UpdateSearchResults()
+        public void UpdateSearchResults()
         {
             SearchResultItems.Clear();
-
-            _foundContacts = await LoadAllContacts();
             SearchResultItems.AddRange(_foundContacts);
         }
 
-        public async Task<Contact> LoadContactById(long id)
+        public async Task<long> LoadAllContacts()
+        {
+            _foundContacts.Clear();
+            _foundContacts = await GetAllContacts();
+
+            return _foundContacts.Count;
+        }
+
+        public async Task<Contact> GetContactById(long id)
         {
             Contact contact = null;
             await Task.Run(() =>
@@ -274,7 +277,7 @@ namespace AmiKoWindows
             return contact;
         }
 
-        public async Task<List<Contact>> LoadAllContacts()
+        public async Task<List<Contact>> GetAllContacts()
         {
             List<Contact> contacts = new List<Contact>();
             await Task.Run(() =>
@@ -287,7 +290,7 @@ namespace AmiKoWindows
 
                         var q = String.Format(
                             @"SELECT {0} FROM {1};", "*", DATABASE_TABLE);
-                        Log.WriteLine("Query: {0}", q);
+                        //Log.WriteLine("Query: {0}", q);
                         cmd.CommandText = q;
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
@@ -297,7 +300,6 @@ namespace AmiKoWindows
                     }
                 }
             });
-            // Log.WriteLine("contacts.Count: {0}", contacts.Count);
             return contacts;
         }
 
