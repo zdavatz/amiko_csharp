@@ -362,9 +362,9 @@ namespace AmiKoWindows
             contact.Country = reader[KEY_COUNTRY] as string;
             contact.Birthdate = reader[KEY_BIRTHDATE] as string;
 
-            var gender = reader[KEY_GENDER] as int?;
+            var gender = reader[KEY_GENDER] as long?;
             if (gender != null)
-                contact.RawGender = gender.Value;
+                contact.RawGender = Convert.ToInt32(gender.Value);
 
             // It seems that REAL values should be casted to double once :'(
             var weightKg = reader[KEY_WEIGHT_KG] as double?;
