@@ -286,6 +286,8 @@ namespace AmiKoWindows
             ResetFields();
             ResetMessage();
 
+            this.GivenName.Focus();
+
             EnableMinusButton(false);
         }
 
