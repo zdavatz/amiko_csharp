@@ -209,7 +209,11 @@ namespace AmiKoWindows
                 if (contact.Uid != null && !contact.Uid.Equals(string.Empty))
                     await _patientDb.UpdateContact(contact);
                 else
-                    await _patientDb.InsertContact(contact);
+                {
+                    long? id = await _patientDb.InsertContact(contact);
+                    if (id != null && id.Value > 0)
+                        contact.Id = id.Value;
+                }
 
                 this.CurrentEntry = contact;
 

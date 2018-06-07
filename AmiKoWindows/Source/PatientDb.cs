@@ -169,6 +169,7 @@ namespace AmiKoWindows
             return contact;
         }
 
+        // Returns operations succeed or not
         public async Task<bool> UpdateContact(Contact contact)
         {
             bool result = false;
@@ -206,17 +207,19 @@ namespace AmiKoWindows
                             cmd.Parameters.AddWithValue(item.Key, item.Value);
 
                         cmd.Parameters.AddWithValue("@id", existingId.Value);
-                        cmd.ExecuteNonQuery();
-                        result = true;
+                        int rows = cmd.ExecuteNonQuery();
+                        if (rows == 1)
+                            result = true;
                     }
                 }
             });
             return result;
         }
 
-        public async Task<bool> InsertContact(Contact contact)
+        // Returns inserted new id, if insert succeeds
+        public async Task<long?> InsertContact(Contact contact)
         {
-            bool result = false;
+            long? id = null;
             await Task.Run(() =>
             {
                 if (_db.IsOpen())
@@ -239,12 +242,17 @@ namespace AmiKoWindows
                         foreach (var item in contact.ToParameters(columnNames))
                             cmd.Parameters.AddWithValue(item.Key, item.Value);
 
-                        cmd.ExecuteNonQuery();
-                        result = true;
+                        int rows = cmd.ExecuteNonQuery();
+                        if (rows == 1)
+                        {
+                            long insertedId = GetLastInsertId();
+                            if (insertedId > 0)
+                                id = insertedId;
+                        }
                     }
                 }
             });
-            return result;
+            return id;
         }
 
         public async Task<bool> DeleteContact(long id)
@@ -264,8 +272,9 @@ namespace AmiKoWindows
                         //Log.WriteLine("Query: {0}", q);
                         cmd.CommandText = q;
                         cmd.Parameters.AddWithValue("@id", id);
-                        cmd.ExecuteNonQuery();
-                        result = true;
+                        int rows = cmd.ExecuteNonQuery();
+                        if (rows == 1)
+                            result = true;
                     }
                 }
             });
@@ -402,6 +411,30 @@ namespace AmiKoWindows
             return false;
         }
         #endregion
+
+        private long GetLastInsertId()
+        {
+            long result = -1;
+
+            if (_db.IsOpen())
+            {
+                using (SQLiteCommand cmd = _db.Command())
+                {
+                    _db.ReOpenIfNecessary();
+                    var q = String.Format(
+                        @"SELECT last_insert_rowid() FROM {0};",
+                        DATABASE_TABLE);
+                    //Log.WriteLine("Query: {0}", q);
+                    cmd.CommandText = q;
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                            result = (long)reader.GetInt64(0);
+                    }
+                }
+            }
+            return result;
+        }
 
         private Contact CursorToContact(SQLiteDataReader reader)
         {
