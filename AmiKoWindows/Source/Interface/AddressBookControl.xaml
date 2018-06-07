@@ -35,7 +35,7 @@
                     <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.patientManagement}" Focusable="True" />
                 </TextBlock>
                 <TextBlock HorizontalAlignment="Right">
-                  <Label Margin="0,0,1,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" /><Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.required}" />
+                    <Label Margin="0,0,1,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" /><Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.required}" />
                 </TextBlock>
             </Grid>
             <!-- Patient Info -->
@@ -154,55 +154,51 @@
             </Grid>
         </Grid>
         <Border Margin="0" Width="245" Background="#f2f2f2" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1,0,0,0" DockPanel.Dock="Right">
-          <StackPanel Height="Auto" Margin="20,19,20,16">
-              <!-- Address Book: Search TextBox -->
-              <TextBox Name="SearchPatientBox" Width="Auto" Height="21" Background="White" BorderBrush="DarkGray"></TextBox>
-              <!-- Address Book: ListBox -->
-              <Border Margin="0,18,0,12" Background="White" BorderBrush="#f2f2f2" VerticalAlignment="Stretch" BorderThickness="1">
-                <ListBox
-                    Name="SearchResult" Style="{StaticResource SearchListBox}" ItemContainerStyle="{StaticResource SearchListBoxItem}"
-                    SelectionChanged="ContactItem_SelectionChanged"
-                    ItemsSource="{Binding Path=SearchResultItems}" Height="425" Margin="6,6,6,0" Padding="0,7,0,0">
-                      <ListBox.ItemTemplate>
-                          <DataTemplate>
-                              <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                  <StackPanel Orientation="Vertical">
-                                      <TextBlock Text="{Binding Path=Text}" FontWeight="Normal" VerticalAlignment="Center" MouseLeftButtonDown="ContactItem_MouseLeftButtonDown" />
-                                  </StackPanel>
-                              </StackPanel>
-                          </DataTemplate>
-                      </ListBox.ItemTemplate>
-                  </ListBox>
-              </Border>
-              <!-- Address Book: Actions -->
-              <StackPanel Orientation="Horizontal">
-                  <StackPanel Orientation="Horizontal">
-                      <Button
-                          Name="PlusButton" Style="{StaticResource NoBorderedButton}"
-                          Margin="3,1,6,3" HorizontalAlignment="Center" Click="PlusButton_Click" IsEnabled="True">
-                          <fa:ImageAwesome Name="Plus" Icon="Plus" Visibility="Visible" Foreground="Black"
-                              VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
-                      </Button>
-                      <Button
-                          Name="MinusButton" Style="{StaticResource NoBorderedButton}"
-                          Margin="6,1,3,3" HorizontalAlignment="Center" Click="MinusButton_Click" IsEnabled="False">
-                          <fa:ImageAwesome Name="Minus" Icon="Minus" Visibility="Visible" Foreground="LightGray"
-                              VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
-                      </Button>
-                      <TextBlock Height="Auto" Width="100" Margin="16,0,6,0" HorizontalAlignment="Center" VerticalAlignment="Center">
-                          <Label FontSize="12" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.addressBook}" />
-                          <LineBreak />
-                          <Label FontSize="12" Name="AddressBookName" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="AmiKo Desitin (0)" />
-                      </TextBlock>
-                      <Button
-                          Name="SwitchBookButton" Style="{StaticResource NoBorderedButton}"
-                          Margin="9,1,5,3" Width="Auto" Click="SwitchBookButton_Click" IsEnabled="False">
-                          <fa:ImageAwesome Name="AddressBook" Icon="AddressBook" Visibility="Visible" Foreground="LightGray"
-                              VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
-                      </Button>
-                  </StackPanel>
-              </StackPanel>
-          </StackPanel>
+            <StackPanel Height="Auto" Margin="20,19,20,16">
+                <!-- Address Book: Search TextBox -->
+                <TextBox Name="SearchPatientBox" Width="Auto" Height="21" Background="White" BorderBrush="DarkGray"></TextBox>
+                <!-- Address Book: ListBox -->
+                <Border Margin="0,21,0,12" Background="White" Padding="0" VerticalAlignment="Stretch" BorderThickness="0">
+                    <ListBox
+                        Name="SearchResult" Style="{StaticResource ContactListBox}" ItemContainerStyle="{StaticResource ContactListBoxItem}"
+                        SelectionChanged="ContactItem_SelectionChanged"
+                        ItemsSource="{Binding Path=SearchResultItems}" Height="425">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Text}" Margin="0" Padding="8,5,6,5" FontWeight="Normal" TextWrapping="Wrap" VerticalAlignment="Center" MouseLeftButtonDown="ContactItem_MouseLeftButtonDown" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+                <!-- Address Book: Actions -->
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal">
+                        <Button
+                            Name="PlusButton" Style="{StaticResource NoBorderedButton}"
+                            Margin="3,1,6,3" HorizontalAlignment="Center" Click="PlusButton_Click" IsEnabled="True">
+                            <fa:ImageAwesome Name="Plus" Icon="Plus" Visibility="Visible" Foreground="Black"
+                                VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
+                        </Button>
+                        <Button
+                            Name="MinusButton" Style="{StaticResource NoBorderedButton}"
+                            Margin="6,1,3,3" HorizontalAlignment="Center" Click="MinusButton_Click" IsEnabled="False">
+                            <fa:ImageAwesome Name="Minus" Icon="Minus" Visibility="Visible" Foreground="LightGray"
+                                VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
+                        </Button>
+                        <TextBlock Height="Auto" Width="100" Margin="16,0,6,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Label FontSize="12" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.addressBook}" />
+                            <LineBreak />
+                            <Label FontSize="12" Name="AddressBookName" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="AmiKo Desitin (0)" />
+                        </TextBlock>
+                        <Button
+                            Name="SwitchBookButton" Style="{StaticResource NoBorderedButton}"
+                            Margin="9,1,5,3" Width="Auto" Click="SwitchBookButton_Click" IsEnabled="False">
+                            <fa:ImageAwesome Name="AddressBook" Icon="AddressBook" Visibility="Visible" Foreground="LightGray"
+                                VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
         </Border>
     </DockPanel>
 </UserControl>
