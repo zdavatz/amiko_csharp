@@ -205,7 +205,12 @@ namespace AmiKoWindows
                 foreach (var v in values)
                     contact[v.Key] = v.Value;
 
-                _patientDb.SaveContact(contact);
+                //await _patientDb.SaveContact(contact);
+                if (contact.Uid != null && !contact.Uid.Equals(string.Empty))
+                    await _patientDb.UpdateContact(contact);
+                else
+                    await _patientDb.InsertContact(contact);
+
                 this.CurrentEntry = contact;
 
                 await _patientDb.LoadAllContacts();
