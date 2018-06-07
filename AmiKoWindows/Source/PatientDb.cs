@@ -306,8 +306,8 @@ namespace AmiKoWindows
                     {
                         _db.ReOpenIfNecessary();
                         var q = String.Format(
-                            @"SELECT {0} FROM {1} WHERE {2} = @id LIMIT 1;",
-                            "*", DATABASE_TABLE, KEY_ID);
+                            @"SELECT * FROM {0} WHERE {1} = @id LIMIT 1;",
+                            DATABASE_TABLE, KEY_ID);
                         //Log.WriteLine("Query: {0}", q);
                         cmd.CommandText = q;
                         cmd.Parameters.AddWithValue("@id", id);
