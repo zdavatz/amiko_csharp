@@ -290,7 +290,8 @@ namespace AmiKoWindows
                         _db.ReOpenIfNecessary();
 
                         var q = String.Format(
-                            @"SELECT {0} FROM {1};", "*", DATABASE_TABLE);
+                            @"SELECT {0} FROM {1} ORDER BY {2};", "*",
+                            DATABASE_TABLE, String.Format("{0},{1},{2}", KEY_GIVEN_NAME, KEY_FAMILY_NAME, KEY_ID));
                         //Log.WriteLine("Query: {0}", q);
                         cmd.CommandText = q;
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
