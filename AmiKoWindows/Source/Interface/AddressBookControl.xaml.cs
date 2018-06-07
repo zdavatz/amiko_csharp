@@ -151,13 +151,26 @@ namespace AmiKoWindows
 
         private void Country_LostFocus(object sender, RoutedEventArgs e)
         {
-            // pass
+            var box = sender as TextBox;
+            ValidateField(box);
         }
 
         private void Birthdate_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
             ValidateField(box);
+        }
+
+        private void FemaleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            //Log.WriteLine("Source: {0}", e.Source);
+            this.CurrentEntry.IsFemale = true;
+        }
+
+        private void MaleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            //Log.WriteLine("Source: {0}", e.Source);
+            this.CurrentEntry.IsMale = true;
         }
 
         private void WeightKg_LostFocus(object sender, RoutedEventArgs e)
@@ -205,7 +218,16 @@ namespace AmiKoWindows
                 foreach (var v in values)
                     contact[v.Key] = v.Value;
 
-                _patientDb.SaveContact(contact);
+                //await _patientDb.SaveContact(contact);
+                if (contact.Uid != null && !contact.Uid.Equals(string.Empty))
+                    await _patientDb.UpdateContact(contact);
+                else
+                {
+                    long? id = await _patientDb.InsertContact(contact);
+                    if (id != null && id.Value > 0)
+                        contact.Id = id.Value;
+                }
+
                 this.CurrentEntry = contact;
 
                 await _patientDb.LoadAllContacts();
@@ -276,6 +298,8 @@ namespace AmiKoWindows
 
             ResetFields();
             ResetMessage();
+
+            this.GivenName.Focus();
 
             EnableMinusButton(false);
         }

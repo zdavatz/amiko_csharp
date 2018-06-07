@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -168,45 +169,90 @@ namespace AmiKoWindows
             return contact;
         }
 
-        public bool SaveContact(Contact contact)
+        // Returns operations succeed or not
+        public async Task<bool> UpdateContact(Contact contact)
         {
-            SQLiteCommand cmd;
-            string q;
-            var columnNames = DATABASE_COLUMNS.Where(k => k != KEY_ID).ToArray();
+            bool result = false;
+            await Task.Run(() =>
+            {
+                if (_db.IsOpen())
+                {
+                    using (SQLiteCommand cmd = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+                        string q;
 
-            if (contact.Uid != null && !contact.Uid.Equals(string.Empty))
-            { // update
-                q = String.Format(@"SELECT {0} FROM {1} WHERE {2} = '{3}' LIMIT 1;",
-                    KEY_ID, DATABASE_TABLE, KEY_UID, contact.Uid);
-                //Log.WriteLine("Query: {0}", q);
-                cmd = _db.Command(q);
-                var existingId = cmd.ExecuteScalar() as long?;
-                //Log.WriteLine("existingId: {0}", existingId);
-                if (existingId == null)
-                    return false;
+                        q = String.Format(@"SELECT {0} FROM {1} WHERE {2} = @uid LIMIT 1;",
+                            KEY_ID, DATABASE_TABLE, KEY_UID);
+                        //Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
+                        cmd.Parameters.AddWithValue("@uid", contact.Uid);
+                        var existingId = cmd.ExecuteScalar() as long?;
+                        if (existingId == null)
+                        {
+                            result = false;
+                            return;
+                        }
 
-                q = String.Format(@"UPDATE {0} SET {1} WHERE {2} = '{3}';",
-                    DATABASE_TABLE,
-                    String.Join(",", contact.FlattenColumnPairs(columnNames)),
-                    KEY_ID, existingId.Value);
-                //Log.WriteLine("Query: {0}", q);
-                cmd = _db.Command(q);
-                cmd.ExecuteNonQuery();
-                return true;
-            }
-            else
-            { // insert
-                var propertyNames = columnNames.Select(c =>
-                    Utilities.ConvertSnakeCaseToTitleCase(c)).ToArray();
-                contact.Uid = contact.GenerateUid();
-                q = String.Format(@"INSERT INTO {0} ({1}) VALUES ({2});",
-                    DATABASE_TABLE,
-                    String.Join(",", columnNames), contact.Flatten(",", propertyNames));
-                //Log.WriteLine("Query: {0}", q);
-                cmd = _db.Command(q);
-                cmd.ExecuteNonQuery();
-                return true;
-            }
+                        string[] columnNames = DATABASE_COLUMNS.Where(
+                            k => k != KEY_ID && k != KEY_UID).ToArray();
+
+                        var parameterPairs = columnNames.Select(c =>
+                            String.Format("{0} = @{1}", c, c)).ToArray();
+                        q = String.Format(@"UPDATE {0} SET {1} WHERE {2} = @id;",
+                            DATABASE_TABLE, String.Join(",", parameterPairs), KEY_ID);
+                        //Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
+                        foreach (var item in contact.ToParameters(columnNames))
+                            cmd.Parameters.AddWithValue(item.Key, item.Value);
+
+                        cmd.Parameters.AddWithValue("@id", existingId.Value);
+                        int rows = cmd.ExecuteNonQuery();
+                        if (rows == 1)
+                            result = true;
+                    }
+                }
+            });
+            return result;
+        }
+
+        // Returns inserted new id, if insert succeeds
+        public async Task<long?> InsertContact(Contact contact)
+        {
+            long? id = null;
+            await Task.Run(() =>
+            {
+                if (_db.IsOpen())
+                {
+                    using (SQLiteCommand cmd = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+                        string q;
+
+                        contact.Uid = contact.GenerateUid();
+
+                        string[] columnNames = DATABASE_COLUMNS.Where(
+                            k => k != KEY_ID).ToArray();
+                        var parameters = columnNames.Select(c =>
+                            String.Format("@{0}", c)).ToArray();
+                        q = String.Format(@"INSERT INTO {0} ({1}) VALUES ({2});",
+                            DATABASE_TABLE, String.Join(",", columnNames), String.Join(",", parameters));
+                        //Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
+                        foreach (var item in contact.ToParameters(columnNames))
+                            cmd.Parameters.AddWithValue(item.Key, item.Value);
+
+                        int rows = cmd.ExecuteNonQuery();
+                        if (rows == 1)
+                        {
+                            long insertedId = GetLastInsertId();
+                            if (insertedId > 0)
+                                id = insertedId;
+                        }
+                    }
+                }
+            });
+            return id;
         }
 
         public async Task<bool> DeleteContact(long id)
@@ -220,16 +266,15 @@ namespace AmiKoWindows
                     {
                         _db.ReOpenIfNecessary();
                         var q = String.Format(
-                            @"DELETE FROM {0} WHERE {1} = '{2}';",
-                            DATABASE_TABLE,
-                            KEY_ID, id
+                            @"DELETE FROM {0} WHERE {1} = @id;",
+                            DATABASE_TABLE, KEY_ID
                         );
                         //Log.WriteLine("Query: {0}", q);
                         cmd.CommandText = q;
-                        // TODO
-                        // check result
-                        cmd.ExecuteNonQuery();
-                        result = true;
+                        cmd.Parameters.AddWithValue("@id", id);
+                        int rows = cmd.ExecuteNonQuery();
+                        if (rows == 1)
+                            result = true;
                     }
                 }
             });
@@ -260,12 +305,12 @@ namespace AmiKoWindows
                     using (SQLiteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
-
                         var q = String.Format(
-                            @"SELECT {0} FROM {1} WHERE {2} = '{3}' LIMIT 1;",
-                            "*", DATABASE_TABLE, KEY_ID, id);
+                            @"SELECT * FROM {0} WHERE {1} = @id LIMIT 1;",
+                            DATABASE_TABLE, KEY_ID);
                         //Log.WriteLine("Query: {0}", q);
                         cmd.CommandText = q;
+                        cmd.Parameters.AddWithValue("@id", id);
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
@@ -287,9 +332,9 @@ namespace AmiKoWindows
                     using (SQLiteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
-
                         var q = String.Format(
-                            @"SELECT {0} FROM {1};", "*", DATABASE_TABLE);
+                            @"SELECT * FROM {0} ORDER BY {1};",
+                            DATABASE_TABLE, String.Format("{0},{1},{2}", KEY_GIVEN_NAME, KEY_FAMILY_NAME, KEY_ID));
                         //Log.WriteLine("Query: {0}", q);
                         cmd.CommandText = q;
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
@@ -303,9 +348,9 @@ namespace AmiKoWindows
             return contacts;
         }
 
-        public bool ValidateField(string fieldName, string text)
+        public bool ValidateField(string columnName, string text)
         {
-            if (fieldName == null)
+            if (columnName == null)
                 return false;
 
             // TODO
@@ -313,19 +358,38 @@ namespace AmiKoWindows
             int maxLength = 255;
 
             // required
-            if (fieldName.Equals(KEY_GIVEN_NAME))
+            if (columnName.Equals(KEY_GIVEN_NAME))
                 return text != string.Empty && text.Length < maxLength;
-            else if (fieldName.Equals(KEY_FAMILY_NAME))
+            else if (columnName.Equals(KEY_FAMILY_NAME))
                 return text != string.Empty && text.Length < maxLength;
-            else if (fieldName.Equals(KEY_ADDRESS))
+            else if (columnName.Equals(KEY_ADDRESS))
                 return text != string.Empty && text.Length < maxLength;
-            else if (fieldName.Equals(KEY_CITY))
+            else if (columnName.Equals(KEY_CITY))
                 return text != string.Empty && text.Length < maxLength;
-            else if (fieldName.Equals(KEY_ZIP))
+            else if (columnName.Equals(KEY_ZIP))
                 return text != string.Empty && text.Length < maxLength;
-            else if (fieldName.Equals(KEY_BIRTHDATE))
-                return text != string.Empty && text.Length < maxLength;
-            else if (fieldName.Equals(KEY_GENDER))
+            else if (columnName.Equals(KEY_BIRTHDATE))
+            {
+                bool valid = false;
+                valid = text != string.Empty && text.Length < maxLength;
+                if (valid)
+                {
+                    // datetime format validation
+                    var pattern = @"\d{2}\.\d{2}\.\d{4}";
+                    Regex rgx = new Regex(pattern, RegexOptions.IgnoreCase);
+                    MatchCollection matches = rgx.Matches(text);
+                    if (matches.Count > 0)
+                    {
+                        DateTime dt;
+                        valid = DateTime.TryParseExact(text, "dd.MM.yyyy",
+                            CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
+                    }
+                    else
+                        valid = false;
+                }
+                return valid;
+            }
+            else if (columnName.Equals(KEY_GENDER))
             {
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Utilities.AppCultureInfoName());
                 string[] values = {Properties.Resources.female, Properties.Resources.male,};
@@ -333,20 +397,44 @@ namespace AmiKoWindows
             }
 
             // optional
-            if (fieldName.Equals(KEY_COUNTRY))
+            if (columnName.Equals(KEY_COUNTRY))
                 return text.Length < maxLength;
-            else if (fieldName.Equals(KEY_WEIGHT_KG))
+            else if (columnName.Equals(KEY_WEIGHT_KG))
                 return text.Length < maxLength;
-            else if (fieldName.Equals(KEY_HEIGHT_CM))
+            else if (columnName.Equals(KEY_HEIGHT_CM))
                 return text.Length < maxLength;
-            else if (fieldName.Equals(KEY_PHONE))
+            else if (columnName.Equals(KEY_PHONE))
                 return text.Length < maxLength;
-            else if (fieldName.Equals(KEY_EMAIL))
+            else if (columnName.Equals(KEY_EMAIL))
                 return text.Length < maxLength;
 
             return false;
         }
         #endregion
+
+        private long GetLastInsertId()
+        {
+            long result = -1;
+
+            if (_db.IsOpen())
+            {
+                using (SQLiteCommand cmd = _db.Command())
+                {
+                    _db.ReOpenIfNecessary();
+                    var q = String.Format(
+                        @"SELECT last_insert_rowid() FROM {0};",
+                        DATABASE_TABLE);
+                    //Log.WriteLine("Query: {0}", q);
+                    cmd.CommandText = q;
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                            result = (long)reader.GetInt64(0);
+                    }
+                }
+            }
+            return result;
+        }
 
         private Contact CursorToContact(SQLiteDataReader reader)
         {

@@ -171,15 +171,17 @@ namespace AmiKoWindows
             set { SetField(ref _Email, value, "Email"); }
         }
 
-        // Additional virtual properties for `Gender` (OneWay)
+        // Additional virtual properties for `Gender` (TwoWay for RadioButton in Xaml)
         public bool IsFemale
         {
             get { return _Gender == GENDER_FEMALE; }
+            set { SetField(ref _Gender, value ? GENDER_FEMALE : GENDER_MALE, "Gender"); }
         }
 
         public bool IsMale
         {
             get { return _Gender == GENDER_MALE; }
+            set { SetField(ref _Gender, value ? GENDER_MALE : GENDER_FEMALE, "Gender"); }
         }
 
         #region Setter/Getter Utilities
@@ -229,29 +231,11 @@ namespace AmiKoWindows
             return Utilities.GenerateHash(baseString);
         }
 
-        // Returns flatten property values for specified names, using delimiter and enclosure (as needed)
-        public string Flatten(string delimiter, string[] propertyNames)
-        {
-            string result = "";
-            foreach (var propertyName in propertyNames)
-            {
-                // It seems that `Item` is reserved property in C#
-                if (propertyName == null || propertyName.Equals(string.Empty) ||
-                    propertyName.Equals("Item") || propertyName.Equals("Id"))
-                    continue;
-                result += String.Format("{0}{1}", delimiter, GetStringValue(propertyName));
-            }
-            //Log.WriteLine("result: {0}", result);
-            if (result.Length > 0)
-                return result.Substring(1);
-            return result;
-        }
-
-        // Returns an array contains a string like 'key = "value"'.
-        public string[] FlattenColumnPairs(string[] columnNames)
+        // Returns a dictionary contains db parameters to SQLiteCommand. e.g. @id => "1"
+        public Dictionary<string, string> ToParameters(string[] columnNames)
         {
             int length = columnNames.Length;
-            string[] result = new string[length];
+            var result = new Dictionary<string, string>();
 
             for (int i = 0; i < length; i++)
             {
@@ -261,13 +245,13 @@ namespace AmiKoWindows
                     continue;
 
                 var propertyName = Utilities.ConvertSnakeCaseToTitleCase(columnName);
-                result[i] = String.Format("{0} = {1}", columnName, GetStringValue(propertyName));
+                var key = String.Format("@{0}", columnName);
+                result.Add(key, GetStringValue(propertyName));
             }
-            //Log.WriteLine("result: {0}", String.Join(",", result));
             return result;
         }
 
-        // returns raw value as string (for database value)
+        // returns raw property value as string (for database value)
         private string GetStringValue(string propertyName)
         {
             string text;
@@ -283,7 +267,7 @@ namespace AmiKoWindows
                         "F2", CultureInfo.InvariantCulture);
                     break;
                 default:
-                    text = String.Format("\"{0}\"", (string)this[propertyName]);
+                    text = this[propertyName] as string;
                     break;
             }
             return text;
