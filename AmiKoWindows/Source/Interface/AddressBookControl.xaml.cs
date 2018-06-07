@@ -160,6 +160,18 @@ namespace AmiKoWindows
             ValidateField(box);
         }
 
+        private void FemaleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            //Log.WriteLine("Source: {0}", e.Source);
+            this.CurrentEntry.IsFemale = true;
+        }
+
+        private void MaleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            //Log.WriteLine("Source: {0}", e.Source);
+            this.CurrentEntry.IsMale = true;
+        }
+
         private void WeightKg_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;

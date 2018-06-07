@@ -107,10 +107,12 @@
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.gender}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
                             <StackPanel Name="Gender" Height="21" Margin="2,0,0,0" Orientation="Horizontal">
-                              <RadioButton Name="Gender0" GroupName="Gender" Tag="0" Margin="0,2,0,0" IsChecked="{Binding Path=IsFemale, Mode=OneWay}" Cursor="Hand">
+                                <RadioButton
+                                    Name="Female" GroupName="Gender" Tag="0" Margin="0,2,0,0" IsChecked="{Binding Path=IsFemale, Mode=TwoWay}" Cursor="Hand" Checked="FemaleButton_Checked">
                                     <Label Margin="0" Padding="0" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.female}" />
                                 </RadioButton>
-                                <RadioButton Name="Gender1" GroupName="Gender" Tag="1" Margin="19,2,0,0" IsChecked="{Binding Path=IsMale, Mode=OneWay}" Cursor="Hand">
+                                <RadioButton
+                                    Name="Male" GroupName="Gender" Tag="1" Margin="19,2,0,0" IsChecked="{Binding Path=IsMale, Mode=TwoWay}" Cursor="Hand" Checked="MaleButton_Checked">
                                     <Label Margin="0" Padding="0" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.male}" />
                                 </RadioButton>
                             </StackPanel>

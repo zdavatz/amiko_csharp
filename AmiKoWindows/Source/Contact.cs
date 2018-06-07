@@ -171,15 +171,17 @@ namespace AmiKoWindows
             set { SetField(ref _Email, value, "Email"); }
         }
 
-        // Additional virtual properties for `Gender` (OneWay)
+        // Additional virtual properties for `Gender` (TwoWay for RadioButton in Xaml)
         public bool IsFemale
         {
             get { return _Gender == GENDER_FEMALE; }
+            set { SetField(ref _Gender, value ? GENDER_FEMALE : GENDER_MALE, "Gender"); }
         }
 
         public bool IsMale
         {
             get { return _Gender == GENDER_MALE; }
+            set { SetField(ref _Gender, value ? GENDER_MALE : GENDER_FEMALE, "Gender"); }
         }
 
         #region Setter/Getter Utilities
