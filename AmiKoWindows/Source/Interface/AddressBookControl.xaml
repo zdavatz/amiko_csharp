@@ -87,6 +87,20 @@
                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.birthdate}" /><Label Margin="1,0,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" />
                             </TextBlock>
                             <TextBox Name="Birthdate" Width="150" Height="21" Background="White" BorderBrush="LightGray" LostFocus="Birthdate_LostFocus" Text="{Binding Path=Birthdate}"></TextBox>
+                            <TextBlock
+                                Name="Placeholder"
+                                IsHitTestVisible="False" Focusable="False" TextWrapping="Wrap" Text="{x:Static p:Resources.birthdatePlaceholder}" VerticalAlignment="Top" Margin="-144,5,0,1" Foreground="DarkGray" HorizontalAlignment="Left">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=Birthdate}" Value="">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </DockPanel>
                         <DockPanel Margin="7,5,3,11" HorizontalAlignment="Left">
                             <TextBlock FontSize="12" Width="90" Height="21" Margin="0,5,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center">

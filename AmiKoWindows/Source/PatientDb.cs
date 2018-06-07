@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -303,9 +304,9 @@ namespace AmiKoWindows
             return contacts;
         }
 
-        public bool ValidateField(string fieldName, string text)
+        public bool ValidateField(string columnName, string text)
         {
-            if (fieldName == null)
+            if (columnName == null)
                 return false;
 
             // TODO
@@ -313,19 +314,38 @@ namespace AmiKoWindows
             int maxLength = 255;
 
             // required
-            if (fieldName.Equals(KEY_GIVEN_NAME))
+            if (columnName.Equals(KEY_GIVEN_NAME))
                 return text != string.Empty && text.Length < maxLength;
-            else if (fieldName.Equals(KEY_FAMILY_NAME))
+            else if (columnName.Equals(KEY_FAMILY_NAME))
                 return text != string.Empty && text.Length < maxLength;
-            else if (fieldName.Equals(KEY_ADDRESS))
+            else if (columnName.Equals(KEY_ADDRESS))
                 return text != string.Empty && text.Length < maxLength;
-            else if (fieldName.Equals(KEY_CITY))
+            else if (columnName.Equals(KEY_CITY))
                 return text != string.Empty && text.Length < maxLength;
-            else if (fieldName.Equals(KEY_ZIP))
+            else if (columnName.Equals(KEY_ZIP))
                 return text != string.Empty && text.Length < maxLength;
-            else if (fieldName.Equals(KEY_BIRTHDATE))
-                return text != string.Empty && text.Length < maxLength;
-            else if (fieldName.Equals(KEY_GENDER))
+            else if (columnName.Equals(KEY_BIRTHDATE))
+            {
+                bool valid = false;
+                valid = text != string.Empty && text.Length < maxLength;
+                if (valid)
+                {
+                    // datetime format validation
+                    var pattern = @"\d{2}\.\d{2}\.\d{4}";
+                    Regex rgx = new Regex(pattern, RegexOptions.IgnoreCase);
+                    MatchCollection matches = rgx.Matches(text);
+                    if (matches.Count > 0)
+                    {
+                        DateTime dt;
+                        valid = DateTime.TryParseExact(text, "dd.MM.yyyy",
+                            CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
+                    }
+                    else
+                        valid = false;
+                }
+                return valid;
+            }
+            else if (columnName.Equals(KEY_GENDER))
             {
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Utilities.AppCultureInfoName());
                 string[] values = {Properties.Resources.female, Properties.Resources.male,};
@@ -333,15 +353,15 @@ namespace AmiKoWindows
             }
 
             // optional
-            if (fieldName.Equals(KEY_COUNTRY))
+            if (columnName.Equals(KEY_COUNTRY))
                 return text.Length < maxLength;
-            else if (fieldName.Equals(KEY_WEIGHT_KG))
+            else if (columnName.Equals(KEY_WEIGHT_KG))
                 return text.Length < maxLength;
-            else if (fieldName.Equals(KEY_HEIGHT_CM))
+            else if (columnName.Equals(KEY_HEIGHT_CM))
                 return text.Length < maxLength;
-            else if (fieldName.Equals(KEY_PHONE))
+            else if (columnName.Equals(KEY_PHONE))
                 return text.Length < maxLength;
-            else if (fieldName.Equals(KEY_EMAIL))
+            else if (columnName.Equals(KEY_EMAIL))
                 return text.Length < maxLength;
 
             return false;
