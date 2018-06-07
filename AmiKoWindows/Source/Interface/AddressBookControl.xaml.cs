@@ -151,7 +151,8 @@ namespace AmiKoWindows
 
         private void Country_LostFocus(object sender, RoutedEventArgs e)
         {
-            // pass
+            var box = sender as TextBox;
+            ValidateField(box);
         }
 
         private void Birthdate_LostFocus(object sender, RoutedEventArgs e)
