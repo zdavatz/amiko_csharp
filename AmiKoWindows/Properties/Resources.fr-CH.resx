@@ -231,6 +231,9 @@
   <data name="medbasket" xml:space="preserve">
     <value>Panier de médicaments</value>
   </data>
+  <data name="msgContactDeleteConfirmation" xml:space="preserve">
+    <value>Supprimer le patient y compris les ordonnances resp.</value>
+  </data>
   <data name="msgContactSaveFailure" xml:space="preserve">
     <value></value>
   </data>

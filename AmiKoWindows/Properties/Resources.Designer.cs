@@ -403,6 +403,15 @@ namespace AmiKoWindows.Properties {
         /// <summary>
         ///   Looks up a localized string similar to ...
         /// </summary>
+        public static string msgContactDeleteConfirmation {
+            get {
+                return ResourceManager.GetString("msgContactDeleteConfirmation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
         public static string msgContactSaveFailure {
             get {
                 return ResourceManager.GetString("msgContactSaveFailure", resourceCulture);

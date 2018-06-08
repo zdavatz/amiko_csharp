@@ -231,6 +231,9 @@
   <data name="medbasket" xml:space="preserve">
     <value>Medikamentenkorb</value>
   </data>
+  <data name="msgContactDeleteConfirmation" xml:space="preserve">
+    <value>Alle Rezepte von/und PatientIn löschen?</value>
+  </data>
   <data name="msgContactSaveFailure" xml:space="preserve">
     <value>Kontakt wurde nicht im Addressbuch gespeichert. Bitte korrigieren Sie die roten Felder.</value>
   </data>

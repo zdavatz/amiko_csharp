@@ -307,18 +307,23 @@ namespace AmiKoWindows
         private async void MinusButton_Click(object sender, RoutedEventArgs e)
         {
             //Log.WriteLine(sender.GetType().Name);
-            var item = this.SearchResult.SelectedItem as Item;
-            if (item != null && item.Id != null)
+            MessageBoxResult result = MessageBox.Show(
+                Properties.Resources.msgContactDeleteConfirmation, "", MessageBoxButton.OKCancel,
+                MessageBoxImage.Warning);
+            if (result == MessageBoxResult.OK)
             {
-                ResetFields();
-                this.CurrentEntry = new Contact();
+                var item = this.SearchResult.SelectedItem as Item;
+                if (item != null && item.Id != null)
+                {
+                    ResetFields();
+                    this.CurrentEntry = new Contact();
 
-                await _patientDb.DeleteContact(item.Id.Value);
-                await _patientDb.LoadAllContacts();
-                _patientDb.UpdateSearchResults();
+                    await _patientDb.DeleteContact(item.Id.Value);
+                    await _patientDb.LoadAllContacts();
+                    _patientDb.UpdateSearchResults();
+                }
+                EnableMinusButton(false);
             }
-
-            EnableMinusButton(false);
         }
 
         private void SwitchBookButton_Click(object sender, RoutedEventArgs e)
