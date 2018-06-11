@@ -121,10 +121,10 @@
     <value>CoMed Desitin</value>
   </data>
   <data name="address" xml:space="preserve">
-    <value></value>
+    <value>Adresse</value>
   </data>
   <data name="addressBook" xml:space="preserve">
-    <value></value>
+    <value>Carnet d'adresses</value>
   </data>
   <data name="appTitle" xml:space="preserve">
     <value>CoMed Desitin</value>
@@ -136,7 +136,7 @@
     <value>Terminer</value>
   </data>
   <data name="birthdate" xml:space="preserve">
-    <value></value>
+    <value>Anniversaire</value>
   </data>
   <data name="birthdatePlaceholder" xml:space="preserve">
     <value>DD.MM.AAAA</value>
@@ -163,19 +163,19 @@
     <value>Spécialité</value>
   </data>
   <data name="cancel" xml:space="preserve">
-    <value></value>
+    <value>Annuler</value>
   </data>
   <data name="category" xml:space="preserve">
     <value>Cat</value>
   </data>
   <data name="city" xml:space="preserve">
-    <value></value>
+    <value>Résidence</value>
   </data>
   <data name="compendium" xml:space="preserve">
     <value>Compendium</value>
   </data>
   <data name="country" xml:space="preserve">
-    <value></value>
+    <value>Pays</value>
   </data>
   <data name="datei" xml:space="preserve">
     <value>Fichier</value>
@@ -184,13 +184,13 @@
     <value>EAN</value>
   </data>
   <data name="email" xml:space="preserve">
-    <value></value>
+    <value>Email</value>
   </data>
   <data name="fachinfo" xml:space="preserve">
     <value>Notice Infopro</value>
   </data>
   <data name="familyName" xml:space="preserve">
-    <value></value>
+    <value>Nom</value>
   </data>
   <data name="favorites" xml:space="preserve">
     <value>Favorites</value>
@@ -199,16 +199,16 @@
     <value>Feedback</value>
   </data>
   <data name="female" xml:space="preserve">
-    <value></value>
+    <value>féminin</value>
   </data>
   <data name="gender" xml:space="preserve">
-    <value></value>
+    <value>Gendre</value>
   </data>
   <data name="givenName" xml:space="preserve">
-    <value></value>
+    <value>Prénom</value>
   </data>
   <data name="heightCm" xml:space="preserve">
-    <value></value>
+    <value>Taille en cm</value>
   </data>
   <data name="help" xml:space="preserve">
     <value>Aide</value>
@@ -226,19 +226,19 @@
     <value>créer PDF</value>
   </data>
   <data name="male" xml:space="preserve">
-    <value></value>
+    <value>masculin</value>
   </data>
   <data name="medbasket" xml:space="preserve">
     <value>Panier de médicaments</value>
   </data>
   <data name="msgContactDeleteConfirmation" xml:space="preserve">
-    <value>Supprimer le patient y compris les ordonnances resp.</value>
+    <value>Supprimer le patient y compris les ordonnances resp?</value>
   </data>
   <data name="msgContactSaveFailure" xml:space="preserve">
-    <value></value>
+    <value>Contact n'a pas été enregistré dans le carnet d'adresses. S'il vous plaît corriger les champs rouges.</value>
   </data>
   <data name="msgContactSaveSuccess" xml:space="preserve">
-    <value></value>
+    <value>Contact enregistré dans le carnet d'adresses.</value>
   </data>
   <data name="newDb" xml:space="preserve">
     <value>Nouvelle banque de données disponible!</value>
@@ -256,13 +256,13 @@
     <value>présentation</value>
   </data>
   <data name="patientManagement" xml:space="preserve">
-    <value></value>
+    <value>Gestion des patients</value>
   </data>
   <data name="phone" xml:space="preserve">
-    <value></value>
+    <value>No. téléphone</value>
   </data>
   <data name="position" xml:space="preserve">
-    <value>pos</value>
+    <value>Pos</value>
   </data>
   <data name="prescriptions" xml:space="preserve">
     <value>Prescriptions</value>
@@ -280,13 +280,13 @@
     <value>Error Report</value>
   </data>
   <data name="required" xml:space="preserve">
-    <value></value>
+    <value>Obligatoire</value>
   </data>
   <data name="result" xml:space="preserve">
     <value>Résultat de la recherche</value>
   </data>
   <data name="save" xml:space="preserve">
-    <value></value>
+    <value>Sauver</value>
   </data>
   <data name="search" xml:space="preserve">
     <value>Recherche</value>
@@ -301,9 +301,9 @@
     <value>Misa à jour</value>
   </data>
   <data name="weightKg" xml:space="preserve">
-    <value></value>
+    <value>Poids en kg</value>
   </data>
   <data name="zip" xml:space="preserve">
-    <value></value>
+    <value>NP</value>
   </data>
 </root>
