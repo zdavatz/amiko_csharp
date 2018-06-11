@@ -115,14 +115,14 @@ namespace AmiKoWindows
         #endregion
 
         #region Dependency Properties
-        private ItemsObservableCollection _searchResultItems = new ItemsObservableCollection();
-        public ItemsObservableCollection SearchResultItems
+        private ItemsObservableCollection _contactListItems = new ItemsObservableCollection();
+        public ItemsObservableCollection ContactListItems
         {
-            get { return _searchResultItems; }
+            get { return _contactListItems; }
             private set
             {
-                if (value != _searchResultItems)
-                    _searchResultItems = value;
+                if (value != _contactListItems)
+                    _contactListItems = value;
             }
         }
         #endregion
@@ -299,10 +299,10 @@ namespace AmiKoWindows
             return result;
         }
 
-        public void UpdateSearchResults()
+        public void UpdateContactList()
         {
-            SearchResultItems.Clear();
-            SearchResultItems.AddRange(_foundContacts);
+            ContactListItems.Clear();
+            ContactListItems.AddRange(_foundContacts);
         }
 
         public async Task<long> LoadAllContacts()

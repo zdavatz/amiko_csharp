@@ -80,7 +80,7 @@ namespace AmiKoWindows
             {
                 // This block is called after InitializeComponent
                 this.DataContext = this;
-                this.SearchResult.DataContext = _patientDb;
+                this.ContactList.DataContext = _patientDb;
             };
 
             // Initialize Patient (In-App Address Book) DB
@@ -112,7 +112,7 @@ namespace AmiKoWindows
             if (isVisible != null && isVisible.Value)
             {
                 _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
-                _patientDb.UpdateSearchResults();
+                _patientDb.UpdateContactList();
             }
             else
                 _mainWindow = null;
@@ -256,7 +256,7 @@ namespace AmiKoWindows
                 this.CurrentEntry = contact;
 
                 await _patientDb.LoadAllContacts();
-                _patientDb.UpdateSearchResults();
+                _patientDb.UpdateContactList();
             }
 
             if (this.CurrentEntry.Uid == null && !result)
@@ -264,12 +264,12 @@ namespace AmiKoWindows
 
             // Re:set selected list item, `UpdateLayout` is needed.
             ListBoxItem li = null;
-            this.SearchResult.UpdateLayout();
-            foreach (Item item in this.SearchResult.Items)
+            this.ContactList.UpdateLayout();
+            foreach (Item item in this.ContactList.Items)
             {
                 if (item != null && item.Id == this.CurrentEntry.Id)
                 {
-                    li = (ListBoxItem)this.SearchResult.ItemContainerGenerator.ContainerFromItem(item);
+                    li = (ListBoxItem)this.ContactList.ItemContainerGenerator.ContainerFromItem(item);
                     if (li != null)
                     {
                         li.IsSelected = true;
@@ -281,6 +281,23 @@ namespace AmiKoWindows
         #endregion
 
         #region Actions on Right Pane
+        private void ContactList_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Enable item selection using arrow keys + `Return`
+            if (object.ReferenceEquals(sender, this.ContactList))
+            {
+                if (!e.IsDown || e.Key != Key.Return)
+                    return;
+
+                e.Handled = true;
+                ListBoxItem li = (ListBoxItem)this.ContactList.ItemContainerGenerator.ContainerFromItem(
+                    this.ContactList.SelectedItem);
+
+                this.ContactItem_MouseLeftButtonDown(li, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left));
+                this.ContactItem_SelectionChanged(li, new RoutedEventArgs());
+            }
+        }
+
         // Preview action
         private void ContactItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -299,7 +316,7 @@ namespace AmiKoWindows
                 return;
             _isItemClick = false;
 
-            var item = this.SearchResult.SelectedItem as Item;
+            var item = this.ContactList.SelectedItem as Item;
             if (item != null && item.Id != null)
             {
                 ResetMessage();
@@ -318,7 +335,7 @@ namespace AmiKoWindows
         {
             Log.WriteLine(sender.GetType().Name);
 
-            this.SearchResult.UnselectAll();
+            this.ContactList.UnselectAll();
             this.CurrentEntry = new Contact();
 
             ResetFields();
@@ -337,7 +354,7 @@ namespace AmiKoWindows
                 MessageBoxImage.Warning);
             if (result == MessageBoxResult.OK)
             {
-                var item = this.SearchResult.SelectedItem as Item;
+                var item = this.ContactList.SelectedItem as Item;
                 if (item != null && item.Id != null)
                 {
                     ResetFields();
@@ -345,7 +362,7 @@ namespace AmiKoWindows
 
                     await _patientDb.DeleteContact(item.Id.Value);
                     await _patientDb.LoadAllContacts();
-                    _patientDb.UpdateSearchResults();
+                    _patientDb.UpdateContactList();
                 }
                 EnableMinusButton(false);
             }

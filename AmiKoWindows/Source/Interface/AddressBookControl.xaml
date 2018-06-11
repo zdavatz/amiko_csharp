@@ -186,9 +186,11 @@
                 <!-- Address Book: ListBox -->
                 <Border Margin="0,21,0,16" Background="White" Padding="0" VerticalAlignment="Stretch" BorderThickness="0">
                     <ListBox
-                        Name="SearchResult" Style="{StaticResource ContactListBox}" ItemContainerStyle="{StaticResource ContactListBoxItem}"
+                        Name="ContactList" Style="{StaticResource ContactListBox}" ItemContainerStyle="{StaticResource ContactListBoxItem}"
                         SelectionChanged="ContactItem_SelectionChanged"
-                        ItemsSource="{Binding Path=SearchResultItems}" Height="430">
+                        KeyboardNavigation.DirectionalNavigation="Cycle"
+                        KeyDown="ContactList_KeyDown"
+                        ItemsSource="{Binding Path=ContactListItems}" Height="430">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Text}" Margin="0,0,11,0" Padding="8,5,6,5" FontWeight="Normal" VerticalAlignment="Center" MouseLeftButtonDown="ContactItem_MouseLeftButtonDown" />
