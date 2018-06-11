@@ -236,14 +236,21 @@ namespace AmiKoWindows
                     contact[v.Key] = val;
                 }
 
-                //await _patientDb.SaveContact(contact);
-                if (contact.Uid != null && !contact.Uid.Equals(string.Empty))
+                if (contact.Uid != null && !contact.Uid.Equals(string.Empty) &&
+                    contact.Uid.Equals(contact.GenerateUid()))
                     await _patientDb.UpdateContact(contact);
                 else
                 {
+                    // NEW Entry or `Contact.Uid` has been changed
                     long? id = await _patientDb.InsertContact(contact);
                     if (id != null && id.Value > 0)
+                    {
                         contact.Id = id.Value;
+                        // TODO
+                        // copied/update issued prescriptions if uid has been changed
+                    }
+                    else
+                        FeedbackMessage(true, true);
                 }
 
                 this.CurrentEntry = contact;

@@ -236,6 +236,19 @@ namespace AmiKoWindows
 
                         contact.Uid = contact.GenerateUid();
 
+                        q = String.Format(@"SELECT {0} FROM {1} WHERE {2} = @uid LIMIT 1;",
+                            KEY_ID, DATABASE_TABLE, KEY_UID);
+                        //Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
+                        cmd.Parameters.AddWithValue("@uid", contact.Uid);
+                        var existingId = cmd.ExecuteScalar() as long?;
+                        if (existingId != null)
+                        {
+                            // already exists
+                            id = null;
+                            return;
+                        }
+
                         string[] columnNames = DATABASE_COLUMNS.Where(
                             k => k != KEY_ID).ToArray();
                         var parameters = columnNames.Select(c =>

@@ -77,5 +77,18 @@ namespace AmiKoWindows.Tests
             Assert.AreEqual(
                 "Email", AmiKoWindows.Utilities.ConvertSnakeCaseToTitleCase("email"));
         }
+
+        [Test]
+        public void Test_GenerateHash_Equality()
+        {
+            string hashA, hashB;
+            hashA = Utilities.GenerateHash("test");
+            hashB = Utilities.GenerateHash("test");
+            Assert.AreEqual(hashA, hashB);
+
+            hashA = Utilities.GenerateHash("Test");
+            hashB = Utilities.GenerateHash("test");
+            Assert.AreNotEqual(hashA, hashB);
+        }
     }
 }
