@@ -158,6 +158,9 @@ namespace AmiKoWindows
         private void Birthdate_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
+            if (box != null && !box.Text.Equals(string.Empty))
+                box.Text = FormatBirthDate(box.Text);
+
             ValidateField(box);
         }
 
@@ -197,6 +200,15 @@ namespace AmiKoWindows
             ValidateField(box);
         }
 
+        private string FormatBirthDate(string text)
+        {
+            // Input Support e.g. 08.06.2018 -> 8.6.2018
+            string result = text;
+            result = PatientDb.BIRTHDATE_NONDEVIDER_RGX.Replace(result, ".");
+            result = PatientDb.BIRTHDATE_ZEROPADDED_RGX.Replace(result, "$1");
+            return result;
+        }
+
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
@@ -216,7 +228,13 @@ namespace AmiKoWindows
                     contact = _patientDb.InitContact(values);
 
                 foreach (var v in values)
-                    contact[v.Key] = v.Value;
+                {
+                    string val = v.Value;
+                    if (v.Key.Equals("Birthdate"))
+                        val = FormatBirthDate(val);
+
+                    contact[v.Key] = val;
+                }
 
                 //await _patientDb.SaveContact(contact);
                 if (contact.Uid != null && !contact.Uid.Equals(string.Empty))
@@ -307,18 +325,23 @@ namespace AmiKoWindows
         private async void MinusButton_Click(object sender, RoutedEventArgs e)
         {
             //Log.WriteLine(sender.GetType().Name);
-            var item = this.SearchResult.SelectedItem as Item;
-            if (item != null && item.Id != null)
+            MessageBoxResult result = MessageBox.Show(
+                Properties.Resources.msgContactDeleteConfirmation, "", MessageBoxButton.OKCancel,
+                MessageBoxImage.Warning);
+            if (result == MessageBoxResult.OK)
             {
-                ResetFields();
-                this.CurrentEntry = new Contact();
+                var item = this.SearchResult.SelectedItem as Item;
+                if (item != null && item.Id != null)
+                {
+                    ResetFields();
+                    this.CurrentEntry = new Contact();
 
-                await _patientDb.DeleteContact(item.Id.Value);
-                await _patientDb.LoadAllContacts();
-                _patientDb.UpdateSearchResults();
+                    await _patientDb.DeleteContact(item.Id.Value);
+                    await _patientDb.LoadAllContacts();
+                    _patientDb.UpdateSearchResults();
+                }
+                EnableMinusButton(false);
             }
-
-            EnableMinusButton(false);
         }
 
         private void SwitchBookButton_Click(object sender, RoutedEventArgs e)

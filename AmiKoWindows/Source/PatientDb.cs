@@ -59,6 +59,11 @@ namespace AmiKoWindows
         const string KEY_PHONE = "phone";
         const string KEY_EMAIL = "email";
 
+        public static readonly Regex BIRTHDATE_NONDEVIDER_RGX = new Regex(@"[\-\/]", RegexOptions.Compiled);
+        public static readonly Regex BIRTHDATE_ZEROPADDED_RGX = new Regex(@"(\A|\.)0*", RegexOptions.Compiled);
+        public static readonly Regex BIRTHDATE_DATEFORMAT_RGX = new Regex(@"\d{2}\.\d{2}\.\d{4}", RegexOptions.Compiled);
+        public static readonly Regex BIRTHDATE_NONZEROPAD_RGX = new Regex(@"(\A|\.)([1-9]{1})(?=\.)", RegexOptions.Compiled);
+
         private static readonly string[] DATABASE_COLUMNS = {
             KEY_ID,
             KEY_TIME_STAMP, KEY_UID,
@@ -374,18 +379,24 @@ namespace AmiKoWindows
                 valid = text != string.Empty && text.Length < maxLength;
                 if (valid)
                 {
-                    // datetime format validation
-                    var pattern = @"\d{2}\.\d{2}\.\d{4}";
-                    Regex rgx = new Regex(pattern, RegexOptions.IgnoreCase);
-                    MatchCollection matches = rgx.Matches(text);
+                    MatchCollection matches;
+                    matches = BIRTHDATE_NONDEVIDER_RGX.Matches(text);
                     if (matches.Count > 0)
-                    {
-                        DateTime dt;
-                        valid = DateTime.TryParseExact(text, "dd.MM.yyyy",
-                            CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
-                    }
-                    else
                         valid = false;
+                    else
+                    {
+                        // Rads zero as needed
+                        text = BIRTHDATE_NONZEROPAD_RGX.Replace(text, "${1}0${2}");
+                        matches = BIRTHDATE_DATEFORMAT_RGX.Matches(text);
+                        if (matches.Count < 1)
+                            valid = false;
+                        else
+                        {
+                            DateTime _;
+                            valid = DateTime.TryParseExact(text, "dd.MM.yyyy",
+                                CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
+                        }
+                    }
                 }
                 return valid;
             }
