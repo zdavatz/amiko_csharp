@@ -55,5 +55,36 @@ namespace AmiKoWindows.Tests
             Assert.AreEqual(expected, contact.ToParameters(
                 new string[]{"given_name", "family_name", "birthdate"}));
         }
+
+        [Test]
+        public void Test_GenerateUid_Equality()
+        {
+            var contactA = new Contact();
+            contactA.GivenName = "John";
+            contactA.FamilyName = "Smith";
+            contactA.Birthdate = "31.5.2018";
+
+            var expected = contactA.GenerateUid();
+
+            var contactB = new Contact();
+            contactB.GivenName = "JOHN";
+            contactB.FamilyName = "SMITH";
+            contactB.Birthdate = "31.5.2018";
+
+            var contactC = new Contact();
+            contactC.GivenName = "John";
+            contactC.FamilyName = "Smith";
+            contactC.Birthdate = "31.5.2018";
+
+            Assert.AreEqual(expected, contactB.GenerateUid());
+            Assert.AreEqual(expected, contactC.GenerateUid());
+
+            var contactD = new Contact();
+            contactD.GivenName = "John";
+            contactD.FamilyName = "Smith";
+            contactD.Birthdate = "9.11.1972";
+
+            Assert.AreNotEqual(expected, contactD.GenerateUid());
+        }
     }
 }

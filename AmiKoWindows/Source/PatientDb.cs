@@ -92,6 +92,9 @@ namespace AmiKoWindows
             );",
             new string[] {DATABASE_TABLE}.Concat(DATABASE_COLUMNS).ToArray()
         );
+
+        private static readonly string SORT_KEYS = String.Format(
+                @"{0}, {1}, {2}", KEY_GIVEN_NAME, KEY_FAMILY_NAME, KEY_ID);
         #endregion
 
         #region Private Fields
@@ -115,14 +118,14 @@ namespace AmiKoWindows
         #endregion
 
         #region Dependency Properties
-        private ItemsObservableCollection _searchResultItems = new ItemsObservableCollection();
-        public ItemsObservableCollection SearchResultItems
+        private ItemsObservableCollection _contactListItems = new ItemsObservableCollection();
+        public ItemsObservableCollection ContactListItems
         {
-            get { return _searchResultItems; }
+            get { return _contactListItems; }
             private set
             {
-                if (value != _searchResultItems)
-                    _searchResultItems = value;
+                if (value != _contactListItems)
+                    _contactListItems = value;
             }
         }
         #endregion
@@ -154,6 +157,18 @@ namespace AmiKoWindows
         {
             if (_db != null)
                 _db.CloseDB();
+        }
+
+        public async Task<long> Search(string text)
+        {
+            _foundContacts.Clear();
+
+            if (text == null || text.Equals(string.Empty))
+                _foundContacts = await GetAllContacts();
+            else
+                _foundContacts = await FindContactsByText(text);
+
+            return _foundContacts.Count;
         }
 
         public Contact InitContact(Dictionary<string, string> values) {
@@ -236,6 +251,19 @@ namespace AmiKoWindows
 
                         contact.Uid = contact.GenerateUid();
 
+                        q = String.Format(@"SELECT {0} FROM {1} WHERE {2} = @uid LIMIT 1;",
+                            KEY_ID, DATABASE_TABLE, KEY_UID);
+                        //Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
+                        cmd.Parameters.AddWithValue("@uid", contact.Uid);
+                        var existingId = cmd.ExecuteScalar() as long?;
+                        if (existingId != null)
+                        {
+                            // already exists
+                            id = null;
+                            return;
+                        }
+
                         string[] columnNames = DATABASE_COLUMNS.Where(
                             k => k != KEY_ID).ToArray();
                         var parameters = columnNames.Select(c =>
@@ -286,10 +314,10 @@ namespace AmiKoWindows
             return result;
         }
 
-        public void UpdateSearchResults()
+        public void UpdateContactList()
         {
-            SearchResultItems.Clear();
-            SearchResultItems.AddRange(_foundContacts);
+            ContactListItems.Clear();
+            ContactListItems.AddRange(_foundContacts);
         }
 
         public async Task<long> LoadAllContacts()
@@ -338,8 +366,7 @@ namespace AmiKoWindows
                     {
                         _db.ReOpenIfNecessary();
                         var q = String.Format(
-                            @"SELECT * FROM {0} ORDER BY {1};",
-                            DATABASE_TABLE, String.Format("{0},{1},{2}", KEY_GIVEN_NAME, KEY_FAMILY_NAME, KEY_ID));
+                            @"SELECT * FROM {0} ORDER BY {1};", DATABASE_TABLE, SORT_KEYS);
                         //Log.WriteLine("Query: {0}", q);
                         cmd.CommandText = q;
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
@@ -350,6 +377,42 @@ namespace AmiKoWindows
                     }
                 }
             });
+            return contacts;
+        }
+
+        public async Task<List<Contact>> FindContactsByText(string text)
+        {
+            List<Contact> contacts = new List<Contact>();
+            await Task.Run(() =>
+            {
+                if (_db.IsOpen())
+                {
+                    using (SQLiteCommand cmd = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+
+                        string[] texts = text.Split(' ').Where(t => !t.Equals("")).Distinct().ToArray();
+                        var conditions = BuildSearchConditionsForTexts(texts);
+                        var q = String.Format(
+                            @"SELECT * FROM {0} WHERE {1} ORDER BY {2};", DATABASE_TABLE, conditions, SORT_KEYS);
+                        Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
+
+                        for (var i = 0; i < texts.Length; i++)
+                        {
+                            cmd.Parameters.AddWithValue(String.Format("@t{0}", i),
+                                String.Format("%{0}%", texts[i]));
+                        }
+
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                                contacts.Add(CursorToContact(reader));
+                        }
+                    }
+                }
+            });
+            Log.WriteLine("contacts.Length: {0}", contacts.Count);
             return contacts;
         }
 
@@ -443,6 +506,25 @@ namespace AmiKoWindows
                             result = (long)reader.GetInt64(0);
                     }
                 }
+            }
+            return result;
+        }
+
+        private string BuildSearchConditionsForTexts(string[] texts)
+        {
+            var result = "";
+            if (texts == null || texts.Length == 0)
+                result += "1 = 1";
+            else
+            {
+                string[] conditions = new string[texts.Length];
+                for (var i = 0; i < texts.Length; i++)
+                {
+                    conditions[i] = String.Format(
+                        @"({0} LIKE @t{4} OR {1} LIKE @t{4} OR {2} LIKE @t{4} OR {3} LIKE @t{4})",
+                            KEY_FAMILY_NAME, KEY_GIVEN_NAME, KEY_CITY, KEY_ZIP, i);
+                }
+                result += String.Join(" AND ", conditions);
             }
             return result;
         }
