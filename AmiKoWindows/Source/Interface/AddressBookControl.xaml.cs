@@ -63,6 +63,13 @@ namespace AmiKoWindows
                 OnPropertyChanged("CurrentEntry");
             }
         }
+
+        private long RawContactsCount {
+            set {
+                ContactsCount.Text = String.Format("({0})", value.ToString());
+                OnPropertyChanged("ContactsCount");
+            }
+        }
         #endregion
 
         #region Event Handlers
@@ -88,6 +95,8 @@ namespace AmiKoWindows
             _patientDb.Init();
 
             InitializeComponent();
+
+            this.RawContactsCount = 100;
 
             // TODO
             // This method does not clear focus :'(
@@ -219,10 +228,10 @@ namespace AmiKoWindows
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             bool result = ValidateFields();
+            Contact contact = null;
             if (result)
             {
                 Dictionary<string, string> values = GetContactValues();
-                Contact contact;
                 contact = this.CurrentEntry;
                 if (contact == null || contact.Uid == null || contact.Uid.Equals(string.Empty))
                     contact = _patientDb.InitContact(values);
@@ -236,8 +245,7 @@ namespace AmiKoWindows
                     contact[v.Key] = val;
                 }
 
-                if (contact.Uid != null && !contact.Uid.Equals(string.Empty) &&
-                    contact.Uid.Equals(contact.GenerateUid()))
+                if (contact.Uid != null && !contact.Uid.Equals(string.Empty) && contact.Uid.Equals(contact.GenerateUid()))
                     await _patientDb.UpdateContact(contact);
                 else
                 {
@@ -246,41 +254,49 @@ namespace AmiKoWindows
                     if (id != null && id.Value > 0)
                     {
                         contact.Id = id.Value;
+                        this.SearchPatientBox.Text = "";
                         // TODO
                         // copied/update issued prescriptions if uid has been changed
                     }
                     else
                         FeedbackMessage(true, true);
+
+                    long count = await _patientDb.LoadAllContacts();
+                    this.RawContactsCount = count;
                 }
-
-                this.CurrentEntry = contact;
-
-                await _patientDb.LoadAllContacts();
-                _patientDb.UpdateContactList();
             }
 
-            if (this.CurrentEntry.Uid == null && !result)
+            if (contact == null || contact.Uid == null || !result)
                 return;
-
-            // Re:set selected list item, `UpdateLayout` is needed.
-            ListBoxItem li = null;
-            this.ContactList.UpdateLayout();
-            foreach (Item item in this.ContactList.Items)
+            else
             {
-                if (item != null && item.Id == this.CurrentEntry.Id)
-                {
-                    li = (ListBoxItem)this.ContactList.ItemContainerGenerator.ContainerFromItem(item);
-                    if (li != null)
-                    {
-                        li.IsSelected = true;
-                        break;
-                    }
-                }
+                // See ContactList_ItemStatusChanged
+                this.ContactList.ItemContainerGenerator.StatusChanged += ContactList_ItemStatusChanged;
+
+                this.CurrentEntry = contact;
+                this.ContactList.UpdateLayout();
+                _patientDb.UpdateContactList();
             }
         }
         #endregion
 
         #region Actions on Right Pane
+        private async void SearchPatientBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var box = sender as TextBox;
+            string text = box.Text;
+
+            long count = await _patientDb.Search(text);
+
+            this.RawContactsCount = count;
+            _patientDb.UpdateContactList();
+        }
+
+        private void SearchPatientBox_PreviewMouseDown(object sender, RoutedEventArgs e)
+        {
+            this.SearchPatientBox.Text = "";
+        }
+
         private void ContactList_KeyDown(object sender, KeyEventArgs e)
         {
             // Enable item selection using arrow keys + `Return`
@@ -295,6 +311,37 @@ namespace AmiKoWindows
 
                 this.ContactItem_MouseLeftButtonDown(li, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left));
                 this.ContactItem_SelectionChanged(li, new RoutedEventArgs());
+            }
+        }
+
+        // ItemContainerGenerator
+        private void ContactList_ItemStatusChanged(object sender, EventArgs e)
+        {
+            Log.WriteLine("");
+
+            // Re:set selected list item, `UpdateLayout` is needed.
+            if (this.ContactList.ItemContainerGenerator.Status == System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
+            {
+                this.ContactList.ItemContainerGenerator.StatusChanged -= ContactList_ItemStatusChanged;
+
+                //foreach (Item item in this.ContactList.Items)
+                for (var i = 0; i < this.ContactList.Items.Count; i++)
+                {
+                    var item = this.ContactList.Items[i] as Item;
+                    if (item != null && item.Id == this.CurrentEntry.Id)
+                    {
+                        var li = (ListBoxItem)this.ContactList.ItemContainerGenerator.ContainerFromIndex(i);
+                        if (li != null)
+                        {
+                            li.IsSelected = true;
+                            li.Focus();
+                            this.ContactList.SelectedIndex = i;
+                            this.ContactList.SelectedItem = li;
+                            this.ContactList.ScrollIntoView(item);
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -361,7 +408,8 @@ namespace AmiKoWindows
                     this.CurrentEntry = new Contact();
 
                     await _patientDb.DeleteContact(item.Id.Value);
-                    await _patientDb.LoadAllContacts();
+                    long count = await _patientDb.LoadAllContacts();
+                    this.RawContactsCount = count;
                     _patientDb.UpdateContactList();
                 }
                 EnableMinusButton(false);

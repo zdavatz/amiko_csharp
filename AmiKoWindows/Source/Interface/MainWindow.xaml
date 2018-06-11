@@ -201,7 +201,7 @@
             </Controls:Flyout>
 
             <Controls:Flyout
-                Position="Top" Width="680" Height="600" Theme="Adapt" IsOpen="{Binding Path=HasControl}"
+                Position="Top" Width="700" Height="600" Theme="Adapt" IsOpen="{Binding Path=HasControl}"
                 IsModal="True"
                 AnimateOpacity="True"
                 TitleVisibility="Collapsed"

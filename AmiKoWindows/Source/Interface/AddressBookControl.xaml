@@ -179,10 +179,12 @@
                 </Grid>
             </Grid>
         </Grid>
-        <Border Margin="0" Width="245" Background="{StaticResource PaleGray}" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1,0,0,0" DockPanel.Dock="Right">
-            <StackPanel Height="Auto" Margin="20,19,20,16">
+        <Border Margin="0" Width="265" Background="{StaticResource PaleGray}" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1,0,0,0" DockPanel.Dock="Right">
+            <StackPanel Height="Auto" Margin="16,19,16,16">
                 <!-- Address Book: Search TextBox -->
-                <TextBox Name="SearchPatientBox" Width="Auto" Height="21" Background="White" BorderBrush="DarkGray"></TextBox>
+                <TextBox Name="SearchPatientBox" Width="Auto" Height="21" Background="White" BorderBrush="DarkGray"
+                   TextChanged="SearchPatientBox_TextChanged" PreviewMouseDown="SearchPatientBox_PreviewMouseDown"
+                   Controls:TextBoxHelper.Watermark="{Binding Path=SearchTextBoxWaterMark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 <!-- Address Book: ListBox -->
                 <Border Margin="0,21,0,16" Background="White" Padding="0" VerticalAlignment="Stretch" BorderThickness="0">
                     <ListBox
@@ -215,10 +217,11 @@
                             <fa:ImageAwesome Name="Minus" Icon="Minus" Visibility="Visible" Foreground="LightGray"
                                 VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                         </Button>
-                        <TextBlock Height="Auto" Width="100" Margin="12,0,6,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Height="Auto" Width="120" Margin="12,-3,6,0" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Label FontSize="12" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.addressBook}" />
                             <LineBreak />
-                            <Label FontSize="12" Name="AddressBookName" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="AmiKo Desitin (0)" />
+                            <Label FontSize="12" Name="AddressBookName" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.appTitle}" />
+                            <TextBlock FontSize="12" Name="ContactsCount" Margin="0,-3,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=ContactsCount}" />
                         </TextBlock>
                         <Button
                             Name="SwitchBookButton" Style="{StaticResource NoBorderedButton}"
