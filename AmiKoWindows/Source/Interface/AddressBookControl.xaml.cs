@@ -18,8 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
-using System.ComponentModel;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -96,8 +96,6 @@ namespace AmiKoWindows
 
             InitializeComponent();
 
-            this.RawContactsCount = 100;
-
             // TODO
             // This method does not clear focus :'(
             Keyboard.ClearFocus();
@@ -122,6 +120,7 @@ namespace AmiKoWindows
             {
                 _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
                 _patientDb.UpdateContactList();
+                this.RawContactsCount = _patientDb.Count;
             }
             else
                 _mainWindow = null;
@@ -261,8 +260,8 @@ namespace AmiKoWindows
                     else
                         FeedbackMessage(true, true);
 
-                    long count = await _patientDb.LoadAllContacts();
-                    this.RawContactsCount = count;
+                    await _patientDb.LoadAllContacts();
+                    this.RawContactsCount = _patientDb.Count;
                 }
             }
 
@@ -286,9 +285,8 @@ namespace AmiKoWindows
             var box = sender as TextBox;
             string text = box.Text;
 
-            long count = await _patientDb.Search(text);
-
-            this.RawContactsCount = count;
+            await _patientDb.Search(text);
+            this.RawContactsCount = _patientDb.Count;
             _patientDb.UpdateContactList();
         }
 
@@ -408,8 +406,8 @@ namespace AmiKoWindows
                     this.CurrentEntry = new Contact();
 
                     await _patientDb.DeleteContact(item.Id.Value);
-                    long count = await _patientDb.LoadAllContacts();
-                    this.RawContactsCount = count;
+                    await _patientDb.LoadAllContacts();
+                    this.RawContactsCount = _patientDb.Count;
                     _patientDb.UpdateContactList();
                 }
                 EnableMinusButton(false);

@@ -102,6 +102,14 @@ namespace AmiKoWindows
         private List<Contact> _foundContacts = new List<Contact>();
         #endregion
 
+        public long Count {
+            get {
+                if (_foundContacts != null)
+                    return _foundContacts.Count;
+                return 0;
+            }
+        }
+
         #region Event Handlers
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -143,7 +151,7 @@ namespace AmiKoWindows
             if (_db.IsOpen())
             {
                 await this.LoadAllContacts();
-                Log.WriteLine(">> OK: Opened patient db with {0} items located in {1}", _foundContacts.Count, dbPath);
+                Log.WriteLine(">> OK: Opened patient db with {0} items located in {1}", this.Count, dbPath);
             }
             else
             {
@@ -168,7 +176,7 @@ namespace AmiKoWindows
             else
                 _foundContacts = await FindContactsByText(text);
 
-            return _foundContacts.Count;
+            return this.Count;
         }
 
         public Contact InitContact(Dictionary<string, string> values) {
@@ -325,7 +333,7 @@ namespace AmiKoWindows
             _foundContacts.Clear();
             _foundContacts = await GetAllContacts();
 
-            return _foundContacts.Count;
+            return this.Count;
         }
 
         public async Task<Contact> GetContactById(long id)
