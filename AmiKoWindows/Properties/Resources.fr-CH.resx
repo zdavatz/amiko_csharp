@@ -252,6 +252,9 @@
   <data name="nopacks" xml:space="preserve">
     <value>aucune présentation</value>
   </data>
+  <data name="operatorManagement" xml:space="preserve">
+    <value>Adresse médecin</value>
+  </data>
   <data name="packs" xml:space="preserve">
     <value>présentation</value>
   </data>

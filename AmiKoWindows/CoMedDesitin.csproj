@@ -190,6 +190,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Source\Interface\ProfileCardControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Source\Interface\ProgressDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -233,6 +237,7 @@
     <Compile Include="Source\UIState.cs" />
     <Compile Include="Source\UpdateDb.cs" />
     <Compile Include="Source\Utilities.cs" />
+    <Compile Include="Source\ViewType.cs" />
     <!-- Interface -->
     <Compile Include="Source\Interface\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -243,6 +248,9 @@
     </Compile>
     <Compile Include="Source\Interface\AddressBookControl.xaml.cs">
       <DependentUpon>AddressBookControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Source\Interface\ProfileCardControl.xaml.cs">
+      <DependentUpon>ProfileCardControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Source\Interface\ProgressDialog.xaml.cs">
       <DependentUpon>ProgressDialog.xaml</DependentUpon>

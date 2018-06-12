@@ -464,11 +464,11 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to keine Öffnen.
+        ///   Looks up a localized string similar to keine Arztadresse.
         /// </summary>
-        public static string open {
+        public static string operatorManagement {
             get {
-                return ResourceManager.GetString("open", resourceCulture);
+                return ResourceManager.GetString("operatorManagement", resourceCulture);
             }
         }
 

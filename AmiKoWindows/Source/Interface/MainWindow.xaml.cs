@@ -45,44 +45,6 @@ namespace AmiKoWindows
             public MainSqlDb MainSqlDb { get; set; }
         }
 
-        // for main view area triggers
-        public class ViewType : INotifyPropertyChanged
-        {
-            private string _mode;
-
-            public string Mode
-            {
-                get { return this._mode; }
-                set { this._mode = value; NotifyChanged("Mode"); }
-            }
-
-            private bool _hasControl;
-
-            public bool HasControl
-            {
-                get { return this._hasControl; }
-                set { this._hasControl = value; NotifyChanged("HasControl"); }
-            }
-
-            public ViewType(string modeName) {
-              this.Mode = modeName;
-              this.HasControl = false;
-            }
-
-            public ViewType(string mode, bool hasControl) {
-              this.Mode = mode;
-              this.HasControl = hasControl;
-            }
-
-
-            public event PropertyChangedEventHandler PropertyChanged;
-            void NotifyChanged(string property)
-            {
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
         static bool _willNavigate = false;
 
         UIState _uiState;
@@ -162,7 +124,7 @@ namespace AmiKoWindows
         public void SwitchViewContext()
         {
             var viewType = this.DataContext as ViewType;
-            if (viewType.Mode == "Form")
+            if (viewType.Mode.Equals("Form"))
             {
                 if (_browser != null)
                 {
@@ -187,14 +149,12 @@ namespace AmiKoWindows
             FrameworkElement element = null;
 
             var viewType = this.DataContext as ViewType;
-            if (viewType.Mode == "Form")
-            {
+            if (viewType.Mode.Equals("Form"))
                 element = _manager;
-                //Log.WriteLine("manager: {0}", element);
-            } else {
+            else
                 element = _browser;
-                //Log.WriteLine("browser: {0}", element);
-            }
+
+            //Log.WriteLine("element: {0}", element);
             return element;
         }
 
@@ -646,9 +606,31 @@ namespace AmiKoWindows
                     await _fachInfo.ShowReport();
                 }
             }
-            else if (name.Equals("Settings"))
+            else if (name.Equals("OperatorAddress"))
             {
-                // TODO
+                ViewType viewType;
+                viewType = this.DataContext as ViewType;
+                if (viewType == null)
+                    return;
+
+                if (viewType.Mode.Equals("Html"))
+                {
+                    // NOTE
+                    // WebBrowser does not allow to put controls over on it :'(
+                    // Thus, flyouts does not work on HTML Context.
+                    //
+                    // https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/wpf-and-win32-interoperation
+                    SetState(UIState.State.Prescriptions);
+                    viewType = this.DataContext as ViewType;
+                    this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                }
+                else
+                {
+                    // close addressbook if it's visible.
+                    viewType.HasBook = false;
+                }
+                viewType.HasCard = true;
+                this.DataContext = viewType;
             }
             else if (name.Equals("Feedback"))
             {
@@ -841,6 +823,19 @@ namespace AmiKoWindows
         }
 
         private void AddressBookControl_ClosingFinished(object sender, RoutedEventArgs e)
+        {
+            var source = e.OriginalSource as MahApps.Metro.Controls.Flyout;
+            if (source == null)
+                return;
+
+            Log.WriteLine(source.Name);
+
+            // Re:enable animations for next time
+            source.AreAnimationsEnabled = true;
+            e.Handled = true;
+        }
+
+        private void ProfileCardControl_ClosingFinished(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as MahApps.Metro.Controls.Flyout;
             if (source == null)
