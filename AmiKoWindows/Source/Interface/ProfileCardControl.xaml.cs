@@ -20,14 +20,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using MahApps.Metro.Controls;
 
+
 namespace AmiKoWindows
 {
+    using ControlExtensions;
+
     /// <summary>
     /// View controls for doctor's (operator) profile and signature.
     /// </summary>
@@ -35,12 +39,24 @@ namespace AmiKoWindows
     {
         // visible fields
         static string[] profileFields = {
+            "Title", "GivenName", "FamilyName", "Address", "City", "Zip", "Phone", "Email",
+            "Picture",
         };
 
         #region Private Fields
         MainWindow _mainWindow;
         MahApps.Metro.Controls.Flyout _parent;
+        #endregion
 
+        #region Public Fields
+        private Operator _CurrentEntry;
+        public Operator CurrentEntry {
+            get { return _CurrentEntry; }
+            set {
+                _CurrentEntry = value;
+                OnPropertyChanged("CurrentEntry");
+            }
+        }
         #endregion
 
         #region Event Handlers
@@ -60,12 +76,19 @@ namespace AmiKoWindows
                 this.DataContext = this;
             };
 
+            if (Properties.Settings.Default.Operator == null)
+                Properties.Settings.Default.Operator = new Operator();
+            else
+                Properties.Settings.Default.Operator.Reload();
+
             InitializeComponent();
         }
 
         private void Control_Loaded(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(e.ToString());
+
+            this.CurrentEntry = Properties.Settings.Default.Operator;
         }
 
         private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
@@ -84,18 +107,70 @@ namespace AmiKoWindows
         private void Title_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
+            ValidateField(box);
+        }
+
+        private void GivenName_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            ValidateField(box);
+        }
+
+        private void FamilyName_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            ValidateField(box);
+        }
+
+        private void Address_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            ValidateField(box);
+        }
+
+        private void City_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            ValidateField(box);
+        }
+
+        private void Zip_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            ValidateField(box);
+        }
+
+        private void Phone_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            ValidateField(box);
         }
 
         private void Email_LostFocus(object sender, RoutedEventArgs e)
         {
             var box = sender as TextBox;
+            ValidateField(box);
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
+            var valid = ValidateFields();
+
+            if (valid)
+            {
+                Properties.Settings.Default.Operator = this.CurrentEntry;
+                Properties.Settings.Default.Operator.Save();
+                Properties.Settings.Default.Save();
+            }
+
             if (_parent != null)
-                _parent.IsOpen = false;
+                _parent.IsOpen = !valid;
+        }
+
+        private void SelectImageButton_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
         }
 
         private void DeleteImageButton_Click(object sender, RoutedEventArgs e)
@@ -104,7 +179,7 @@ namespace AmiKoWindows
         }
         #endregion
 
-        // returns dictionary contains key (propertyName) and value
+        // Returns dictionary contains key (propertyName) and value
         private Dictionary<string, string> GetProfileValues()
         {
             Dictionary<string, string> values = new Dictionary<string, string>();
@@ -121,26 +196,49 @@ namespace AmiKoWindows
             return values;
         }
 
+        // Returns the input is valid or not
         private bool ValidateField(FrameworkElement element)
         {
             bool hasError = false;
+
+            if (element == null)
+                return hasError;
+
+            if (element is TextBox)
+            {
+                var box = element as TextBox;
+                // Check text using Operator's validation method
+                hasError = !Operator.ValidateProperty(box.Name, box.Text);
+                this.FeedbackField(box, hasError);
+            }
+            else
+            {
+                // TODO image
+                hasError = false;
+            }
             return !hasError;
         }
 
         private bool ValidateFields()
         {
             bool hasError = false;
+            foreach (string field in profileFields)
+            {
+                var element = this.FindName(field) as FrameworkElement;
+                var result = ValidateField(element);
+                //Log.WriteLine("field: {0} validateField: {0}", field, result);
+                if (!hasError)
+                    hasError = !result;
+            }
+            Log.WriteLine("hasError: {0}", hasError);
+
+            ShowMessage(hasError);
             return !hasError;
         }
 
-        private void FeedbackField(TextBox box, bool hasError)
+        private void ShowMessage(bool hasError)
         {
-            if (box == null)
-                return;
-        }
-
-        private void FeedbackMessage(bool needsDisplay, bool hasError)
-        {
+            this.FeedbackMessage(this.SaveProfileFailureMessage, hasError);
         }
     }
 }

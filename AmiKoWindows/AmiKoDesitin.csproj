@@ -225,10 +225,12 @@
     <Compile Include="Source\Colors.cs" />
     <Compile Include="Source\Constants.cs" />
     <Compile Include="Source\Contact.cs" />
+    <Compile Include="Source\ControlExtensions.cs" />
     <Compile Include="Source\FachInfo.cs" />
     <Compile Include="Source\Favorites.cs" />
     <Compile Include="Source\MainSqlDb.cs" />
     <Compile Include="Source\Network.cs" />
+    <Compile Include="Source\Operator.cs" />
     <Compile Include="Source\PatientDb.cs" />
     <Compile Include="Source\Prescriptions.cs" />
     <Compile Include="Source\StatusBarHelper.cs" />

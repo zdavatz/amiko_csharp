@@ -631,6 +631,8 @@ namespace AmiKoWindows
                 }
                 viewType.HasCard = true;
                 this.DataContext = viewType;
+
+                this.FlyoutMenu.IsOpen = false;
             }
             else if (name.Equals("Feedback"))
             {

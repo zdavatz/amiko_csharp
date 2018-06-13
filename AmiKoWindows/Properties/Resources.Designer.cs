@@ -428,6 +428,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
+        public static string msgProfileSaveFailure {
+            get {
+                return ResourceManager.GetString("msgProfileSaveFailure", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Neue Datenbank verfügbar!.
         /// </summary>
         public static string newDb {
@@ -604,6 +613,15 @@ namespace AmiKoWindows.Properties {
         public static string subscribe {
             get {
                 return ResourceManager.GetString("subscribe", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Titel.
+        /// </summary>
+        public static string title {
+            get {
+                return ResourceManager.GetString("title", resourceCulture);
             }
         }
 

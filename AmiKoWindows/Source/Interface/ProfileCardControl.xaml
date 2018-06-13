@@ -40,16 +40,93 @@
                     <Label Margin="0,3,1,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" /><Label Margin="0,3,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.required}" />
                 </TextBlock>
             </Grid>
-            <Grid Grid.Row="1" Margin="0,0,1,24">
-                <StackPanel></StackPanel>
+            <!-- Doctor Contact Info (Profile) -->
+            <Grid Grid.Row="1" Margin="9,29,9,24" DataContext="{Binding Path=CurrentEntry, UpdateSourceTrigger=PropertyChanged}">
+                <StackPanel>
+                    <DockPanel Margin="7,3,15,6" HorizontalAlignment="Left">
+                        <TextBlock Style="{StaticResource ContactTextBlock}">
+                            <Label Style="{StaticResource ContactLabel}" Content="{x:Static p:Resources.title}" />
+                        </TextBlock>
+                        <!--
+                        <TextBox Name="Title" Style="{StaticResource ContactTextBox}" Width="70"
+                            LostFocus="Title_LostFocus" Text="{Binding Source={StaticResource Settings}, Path=Default.Operator.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                        -->
+                        <TextBox Name="Title" Style="{StaticResource ContactTextBox}" Width="70"
+                            LostFocus="Title_LostFocus" Text="{Binding Path=Title}"></TextBox>
+                    </DockPanel>
+                    <DockPanel Margin="7,3,15,6">
+                        <TextBlock Style="{StaticResource ContactTextBlock}">
+                            <Label Style="{StaticResource ContactLabel}" Content="{x:Static p:Resources.givenName}" /><Label Style="{StaticResource RequiredMark}" Content="*" />
+                        </TextBlock>
+                        <!--
+                        <TextBox Name="GivenName" Style="{StaticResource ContactTextBox}"
+                            LostFocus="GivenName_LostFocus" Text="{Binding Source={StaticResource Settings}, Path=Default.Operator.GivenName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                        -->
+                        <TextBox Name="GivenName" Style="{StaticResource ContactTextBox}"
+                            LostFocus="GivenName_LostFocus" Text="{Binding Path=GivenName}"></TextBox>
+                    </DockPanel>
+                    <DockPanel Margin="7,2,15,5">
+                        <TextBlock Style="{StaticResource ContactTextBlock}">
+                            <Label Style="{StaticResource ContactLabel}" Content="{x:Static p:Resources.familyName}" /><Label Style="{StaticResource RequiredMark}" Content="*" />
+                        </TextBlock>
+                        <TextBox Name="FamilyName" Style="{StaticResource ContactTextBox}"
+                            LostFocus="FamilyName_LostFocus" Text="{Binding Path=FamilyName}"></TextBox>
+                    </DockPanel>
+                    <DockPanel Margin="7,2,15,5">
+                        <TextBlock Style="{StaticResource ContactTextBlock}">
+                            <Label Style="{StaticResource ContactLabel}" Content="{x:Static p:Resources.address}" /><Label Style="{StaticResource RequiredMark}" Content="*" />
+                        </TextBlock>
+                        <TextBox Name="Address" Style="{StaticResource ContactTextBox}"
+                            LostFocus="Address_LostFocus" Text="{Binding Path=Address}"></TextBox>
+                    </DockPanel>
+                    <DockPanel Margin="7,2,10,5">
+                        <TextBlock Style="{StaticResource ContactTextBlock}">
+                            <Label Style="{StaticResource ContactLabel}" Content="{x:Static p:Resources.city}" /><Label Style="{StaticResource RequiredMark}" Content="*" />
+                        </TextBlock>
+                        <TextBox Name="City" Style="{StaticResource ContactTextBox}" Width="150"
+                            LostFocus="City_LostFocus" Text="{Binding Path=City}"></TextBox>
+                        <TextBlock Style="{StaticResource ContactTextBlock}" Width="40" Margin="25,3,0,0" HorizontalAlignment="Right">
+                            <Label Style="{StaticResource ContactLabel}" Content="{x:Static p:Resources.zip}" /><Label Style="{StaticResource RequiredMark}" Content="*" />
+                        </TextBlock>
+                        <TextBox Name="Zip" Style="{StaticResource ContactTextBox}" Width="70"
+                            LostFocus="Zip_LostFocus" Text="{Binding Path=Zip}"></TextBox>
+                    </DockPanel>
+                    <DockPanel Margin="7,2,15,5">
+                        <TextBlock Style="{StaticResource ContactTextBlock}">
+                            <Label Style="{StaticResource ContactLabel}" Content="{x:Static p:Resources.phone}" />
+                        </TextBlock>
+                        <TextBox Name="Phone" Style="{StaticResource ContactTextBox}"
+                            LostFocus="Phone_LostFocus" Text="{Binding Path=Phone}"></TextBox>
+                    </DockPanel>
+                    <DockPanel Margin="7,2,15,5">
+                        <TextBlock Style="{StaticResource ContactTextBlock}">
+                            <Label Style="{StaticResource ContactLabel}" Content="{x:Static p:Resources.email}" /><Label Style="{StaticResource RequiredMark}" Content="*" />
+                        </TextBlock>
+                        <TextBox Name="Email" Style="{StaticResource ContactTextBox}"
+                            LostFocus="Email_LostFocus" Text="{Binding Path=Email}"></TextBox>
+                    </DockPanel>
+
+                </StackPanel>
             </Grid>
-            <Grid Grid.Row="2" Margin="0"></Grid>
+            <Grid Grid.Row="2" Margin="0">
+                <StackPanel Name="Picture" Margin="7,2,15,5">
+                </StackPanel>
+            </Grid>
             <Grid Grid.Row="3" Margin="0" Height="Auto" VerticalAlignment="Bottom">
-              <Button
-                  Name="SaveButton" Style="{StaticResource NoHighlightedButton}"
-                  Grid.Column="2" Margin="0,3,6,3" HorizontalAlignment="Right" Cursor="Hand" Click="SaveButton_Click">
-                  <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.save}" />
-              </Button>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="0">
+                    <TextBlock Name="SaveProfileFailureMessage" FontSize="12" Width="Auto" Height="42" Margin="11,3,0,0" Padding="0" Text="{x:Static p:Resources.msgProfileSaveFailure}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="Red" Visibility="Hidden"></TextBlock>
+                </Grid>
+                <Grid Grid.Row="1" Margin="0">
+                    <Button
+                        Name="SaveButton" Style="{StaticResource NoHighlightedButton}"
+                        Grid.Column="2" Margin="0,3,6,3" HorizontalAlignment="Right" Cursor="Hand" Click="SaveButton_Click">
+                        <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.save}" />
+                    </Button>
+                </Grid>
             </Grid>
         </Grid>
     </DockPanel>
