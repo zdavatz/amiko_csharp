@@ -18,122 +18,262 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 
 namespace AmiKoWindows
 {
-    public class Contact
+    public class Contact : INotifyPropertyChanged
     {
-        public long? Id { get; set; }
+        private const int GENDER_FEMALE = 0;
+        private const int GENDER_MALE = 1;
 
-        public string TimeStamp { get; set; }
-        public string Uid { get; set; }
-        public string FamilyName { get; set; }
-        public string GivenName { get; set; }
-        public string Birthdate { get; set; }
-
-        public int _Gender { get; set; }
-        public string Gender {
-            get { return _Gender.ToString(); }
-            set
-            {
-                int val = 0; Int32.TryParse(value.ToString(), out val);
-                _Gender = val;
-            }
-        }
-
-        public int _WeightKg { get; set; }
-        public string WeightKg {
-            get { return _WeightKg.ToString(); }
-            set
-            {
-                int val = 0; Int32.TryParse(value.ToString(), out val);
-                _WeightKg = val;
-            }
-        }
-
-        public int _HeightCm { get; set; }
-        public string HeightCm {
-            get { return _HeightCm.ToString(); }
-            set
-            {
-                int val = 0; Int32.TryParse(value.ToString(), out val);
-                _HeightCm = val;
-            }
-        }
-
-        public string Zip { get; set; }
-        public string City { get; set; }
-        public string Country { get; set; }
-        public string Address { get; set; }
-        public string Phone { get; set; }
-        public string Email { get; set; }
-
-        public object this[string propName]
+        public Contact()
         {
-            get { return this.GetType().GetProperty(propName).GetValue(this, null); }
-            set { this.GetType().GetProperty(propName).SetValue(this, value, null); }
+            OnPropertyChanged(string.Empty);
+        }
+
+        private long? _Id;
+        public long? Id
+        {
+            get { return _Id; }
+            set { SetField(ref _Id, value, "Id"); }
+        }
+
+        private string _TimeStamp;
+        public string TimeStamp
+        {
+            get { return _TimeStamp; }
+            set { SetField(ref _TimeStamp, value, "TimeStamp"); }
+        }
+
+        private string _Uid;
+        public string Uid
+        {
+            get { return _Uid; }
+            set { SetField(ref _Uid, value, "Uid"); }
+        }
+
+        private string _FamilyName;
+        public string FamilyName
+        {
+            get { return _FamilyName; }
+            set { SetField(ref _FamilyName, value, "FamilyName"); }
+        }
+
+        private string _GivenName;
+        public string GivenName
+        {
+            get { return _GivenName; }
+            set { SetField(ref _GivenName, value, "GivenName"); }
+        }
+
+        private string _Birthdate;
+        public string Birthdate
+        {
+            get { return _Birthdate; }
+            set { SetField(ref _Birthdate, value, "Birthdate"); }
         }
 
         // NOTE:
+        // The Following 3 fields (Gender/WeightKg/HeightCm) have 2 setters
+        // for raw value.
+        private int _Gender;
+        public int RawGender
+        {
+            get { return _Gender; }
+            set { SetField(ref _Gender, value, "Gender"); }
+        }
+        public string Gender
+        {
+            get { return _Gender.ToString(); }
+            set
+            {
+                int val = GENDER_FEMALE;
+                Int32.TryParse(value.ToString(), out val);
+                SetField(ref _Gender, val == GENDER_MALE ? GENDER_MALE : GENDER_FEMALE, "Gender");
+            }
+        }
+
+        private float _WeightKg;
+        public float RawWeightKg
+        {
+            get { return _WeightKg; }
+            set { SetField(ref _WeightKg, value, "WeightKg"); }
+        }
+        public string WeightKg
+        {
+            get { return _WeightKg == 0f ? "" : _WeightKg.ToString(); }
+            set
+            {
+                float val = 0f; float.TryParse(value.ToString(), out val);
+                SetField(ref _WeightKg, val, "WeightKg");
+            }
+        }
+
+        private float _HeightCm;
+        public float RawHeightCm
+        {
+            get { return _HeightCm; }
+            set { SetField(ref _HeightCm, value, "HeightCm"); }
+        }
+        public string HeightCm
+        {
+            get { return _HeightCm == 0f ? "" : _HeightCm.ToString(); }
+            set
+            {
+                float val = 0f; float.TryParse(value.ToString(), out val);
+                SetField(ref _HeightCm, val, "HeightCm");
+            }
+        }
+
+        private string _Zip;
+        public string Zip
+        {
+            get { return _Zip; }
+            set { SetField(ref _Zip, value, "Zip"); }
+        }
+
+        private string _City;
+        public string City
+        {
+            get { return _City; }
+            set { SetField(ref _City, value, "City"); }
+        }
+
+        private string _Country;
+        public string Country
+        {
+            get { return _Country; }
+            set { SetField(ref _Country, value, "Country"); }
+        }
+
+        private string _Address;
+        public string Address
+        {
+            get { return _Address; }
+            set { SetField(ref _Address, value, "Address"); }
+        }
+
+        private string _Phone;
+        public string Phone
+        {
+            get { return _Phone; }
+            set { SetField(ref _Phone, value, "Phone"); }
+        }
+
+        private string _Email;
+        public string Email
+        {
+            get { return _Email; }
+            set { SetField(ref _Email, value, "Email"); }
+        }
+
+        // Additional virtual properties for `Gender` (TwoWay for RadioButton in Xaml)
+        public bool IsFemale
+        {
+            get { return _Gender == GENDER_FEMALE; }
+            set { SetField(ref _Gender, value ? GENDER_FEMALE : GENDER_MALE, "Gender"); }
+        }
+
+        public bool IsMale
+        {
+            get { return _Gender == GENDER_MALE; }
+            set { SetField(ref _Gender, value ? GENDER_MALE : GENDER_FEMALE, "Gender"); }
+        }
+
+        #region Setter/Getter Utilities
+        public object this[string propertyName]
+        {
+            get { return this.GetType().GetProperty(propertyName).GetValue(this, null); }
+            set {
+                this.GetType().GetProperty(propertyName).SetValue(this, value, null);
+                OnPropertyChanged(propertyName);
+            }
+        }
+
+        protected bool SetField<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+        #endregion
+
+        #region Event Handlers
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
+
+        // NOTE:
         //
-        // See also the implementation on macOS Version (v3.4.4):
-        // https://github.com/zdavatz/amiko-osx/blob/a4892277bde48e358c9e3042b14bf8b6cddd22c4/MLPatient.m#L70
+        // See also the early implementation on macOS/iOS Version (til, AmiKo macOS v3.4.4, AmiKo iOS v2.8.143):
+		// Its rely on the value of NSString's `hash` (It might need migration or something).
+        // The requirement has been changed (https://github.com/zdavatz/amiko_csharp/issues/81).
+		//
+        // * https://github.com/zdavatz/amiko-osx/blob/a4892277bde48e358c9e3042b14bf8b6cddd22c4/MLPatient.m#L70
+        // * https://github.com/zdavatz/AmiKo-iOS/blob/d1ad38727931bb3b079bfff85d1d93dbcc8de567/AmiKoDesitin/MLPatient.m#L50
         //
-        // * https://developer.apple.com/documentation/foundation/nsstring/1417245-hash
-        // * https://msdn.microsoft.com/en-us/library/system.string.gethashcode%28v=vs.110%29.aspx?f=255&MSPPError=-2147217396
+		// ## Reference
+		//
+        // * https://developer.apple.com/documentation/foundation/nsstring/1417245-hash?language=objc
+        // * https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418859-hash?language=objc
         public string GenerateUid()
         {
-            DateTimeOffset offset = DateTimeOffset.UtcNow;
-            string timestamp = offset.ToUnixTimeMilliseconds().ToString();
-
+            // e.g. davatz.zeno.2.6.1942
             string baseString = String.Format(
-                "{0}.{1}.{2}.{3}", this.FamilyName, this.GivenName, this.Birthdate, timestamp);
-
-            Log.WriteLine("baseString: {0}", baseString);
+                "{0}.{1}.{2}", this.FamilyName, this.GivenName, this.Birthdate).ToLower();
+            //Log.WriteLine("baseString: {0}", baseString);
             return Utilities.GenerateHash(baseString);
         }
 
-        // Generates new Dictionary with Properties, besides (`Item` and `Id`)
-        public Dictionary<string, string> ToDictionary()
+        // Returns a dictionary contains db parameters to SQLiteCommand. e.g. @id => "1"
+        public Dictionary<string, string> ToParameters(string[] columnNames)
         {
-            Dictionary<string, string> values = new Dictionary<string, string>();
-            foreach (var p in this.GetType().GetProperties(BindingFlags.Public|BindingFlags.Instance))
+            int length = columnNames.Length;
+            var result = new Dictionary<string, string>();
+
+            for (int i = 0; i < length; i++)
             {
-                string propName = p.Name;
-                // It seems that `Item` is reserved property in C#
-                if (p == null || propName.Equals("Item") || propName.Equals("Id"))
+                var columnName = columnNames[i];
+                if (columnName == null || columnName.Equals(string.Empty) ||
+                    columnName.Equals("item") || columnName.Equals("_id"))
                     continue;
 
-                string v = p.GetValue(this, null) as string;
-                values.Add(propName, v == null ? "" : v.ToString());
+                var propertyName = Utilities.ConvertSnakeCaseToTitleCase(columnName);
+                var key = String.Format("@{0}", columnName);
+                result.Add(key, GetStringValue(propertyName));
             }
-            return values;
-        }
-
-        // Returns flattern property values for column name, using delimiter and enclosure
-        public string Flatten(string[] names)
-        {
-            string delimiter = ",";
-            string result = "";
-
-            Dictionary<string, string> values = this.ToDictionary();
-            foreach (var name in names)
-            {
-                if (name.Equals(string.Empty) || name.Equals("_id"))
-                    continue;
-                string text = "";
-                string propName = Utilities.ConvertSnakeCaseToTitleCase(name);
-                if (values.TryGetValue(propName, out text))
-                    result += String.Format("{0}\"{1}\"", delimiter, text);
-                else
-                    result += delimiter;
-
-            }
-            if (result.Length > 0)
-                return result.Substring(1);
             return result;
         }
-    }
+
+        // returns raw property value as string (for database value)
+        private string GetStringValue(string propertyName)
+        {
+            string text;
+            switch (propertyName)
+            {
+                case "Gender":
+                    text = ((int)this[String.Format("Raw{0}", propertyName)]).ToString();
+                    break;
+                case "WeightKg":
+                case "HeightCm":
+                    // NOTE: value will be rounded
+                    text = ((float)this[String.Format("Raw{0}", propertyName)]).ToString(
+                        "F2", CultureInfo.InvariantCulture);
+                    break;
+                default:
+                    text = this[propertyName] as string;
+                    break;
+            }
+            return text;
+        }
+   }
 }

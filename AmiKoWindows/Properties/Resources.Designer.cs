@@ -122,6 +122,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to DD.MM.JJJJ.
+        /// </summary>
+        public static string birthdatePlaceholder {
+            get {
+                return ResourceManager.GetString("birthdatePlaceholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Wirkstoff / ATC Code.
         /// </summary>
         public static string butAtccode {
@@ -388,6 +397,15 @@ namespace AmiKoWindows.Properties {
         public static string medbasket {
             get {
                 return ResourceManager.GetString("medbasket", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
+        public static string msgContactDeleteConfirmation {
+            get {
+                return ResourceManager.GetString("msgContactDeleteConfirmation", resourceCulture);
             }
         }
 

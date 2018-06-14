@@ -138,6 +138,9 @@
   <data name="birthdate" xml:space="preserve">
     <value>Geburtstag</value>
   </data>
+  <data name="birthdatePlaceholder" xml:space="preserve">
+    <value>DD.MM.JJJJ</value>
+  </data>
   <data name="butAtccode" xml:space="preserve">
     <value>Wirkstoff / ATC Code</value>
   </data>
@@ -228,6 +231,9 @@
   <data name="medbasket" xml:space="preserve">
     <value>Medikamentenkorb</value>
   </data>
+  <data name="msgContactDeleteConfirmation" xml:space="preserve">
+    <value>Alle Rezepte von/und PatientIn löschen?</value>
+  </data>
   <data name="msgContactSaveFailure" xml:space="preserve">
     <value>Kontakt wurde nicht im Addressbuch gespeichert. Bitte korrigieren Sie die roten Felder.</value>
   </data>
@@ -245,9 +251,6 @@
   </data>
   <data name="nopacks" xml:space="preserve">
     <value>keine Packungen</value>
-  </data>
-  <data name="open" xml:space="preserve">
-    <value>Öffnen</value>
   </data>
   <data name="packs" xml:space="preserve">
     <value>Packungen</value>
