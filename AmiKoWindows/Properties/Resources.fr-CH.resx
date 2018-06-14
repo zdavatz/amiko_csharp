@@ -241,7 +241,7 @@
     <value>Contact enregistré dans le carnet d'adresses.</value>
   </data>
   <data name="msgProfileSaveFailure" xml:space="preserve">
-    <value>Adresse médecin n'a pas été enregistré. S'il vous plaît corriger les champs rouges.</value>
+    <value>L'adresse du médecin n'est pas enregistrée. Examinez vos données dans les cadres rouges.</value>
   </data>
   <data name="newDb" xml:space="preserve">
     <value>Nouvelle banque de données disponible!</value>
