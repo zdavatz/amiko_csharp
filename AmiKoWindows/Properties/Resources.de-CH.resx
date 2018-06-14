@@ -297,6 +297,9 @@
   <data name="search" xml:space="preserve">
     <value>Suche</value>
   </data>
+  <data name="selectPicture" xml:space="preserve">
+    <value>Unterschrift aus Datei</value>
+  </data>
   <data name="settings" xml:space="preserve">
     <value>Einstellungen</value>
   </data>

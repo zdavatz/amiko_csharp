@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace AmiKoWindows
 {
+    // See also Style.xaml
     class Colors
     {
         public const string SearchBoxItems = "DarkSlateGray"; // #FF2F4F4F
@@ -26,5 +27,12 @@ namespace AmiKoWindows
         public const string SectionTitles = "DarkSlateGray"; // #FF2F4F4F
         public const string Originals = "Red"; // #FFFF0000
         public const string Generics = "Green"; // #FF008000
+
+        // Fields
+        public static string ErrorFieldColor = "#fad3d3";
+        public static string ErrorBrushColor = "#df1e43";
+
+        // General names
+        public const string PaleGray = "#f2f2f2";
     }
 }

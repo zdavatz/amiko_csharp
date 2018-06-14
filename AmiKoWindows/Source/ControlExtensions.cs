@@ -32,24 +32,47 @@ namespace AmiKoWindows
         /// </summary>
         public static class FeedbackExtension
         {
-            public static void FeedbackField(this UserControl _control, TextBox box, bool hasError)
+            public static void FeedbackField<T>(this UserControl _control, T element, bool hasError)
             {
-                if (box == null)
+                // TODO:
+                // Refactor
+                // TexBox and Border are FrameworkElement, but TextBox is Control, Border is not Control...
+                if (element == null || !(element is T))
                     return;
 
-                if (hasError)
+                var converter = new BrushConverter();
+                if (element is TextBox)
                 {
-                    var converter = new BrushConverter();
-                    Brush errFieldColor = converter.ConvertFrom(Constants.ErrorFieldColor) as Brush;
-                    Brush errBrushColor = converter.ConvertFrom(Constants.ErrorBrushColor) as Brush;
-
-                    box.Background = errFieldColor;
-                    box.BorderBrush = errBrushColor;
+                    var box = element as TextBox;
+                    if (hasError)
+                    {
+                        box.BorderBrush = converter.ConvertFrom(Colors.ErrorBrushColor) as Brush;
+                        box.Background = converter.ConvertFrom(Colors.ErrorFieldColor) as Brush;
+                    }
+                    else
+                    {
+                        box.BorderBrush = Brushes.DarkGray;
+                        box.Background = Brushes.White;
+                    }
                 }
-                else
+                else if (element is Image)
                 {
-                    box.Background = Brushes.White;
-                    box.BorderBrush = Brushes.DarkGray;
+                    // NOTE: Assumes Image's parent element is Border
+                    var img = element as Image;
+                    var border = img.Parent as Border;
+                    if (border == null)
+                        return;
+
+                    if (hasError)
+                    {
+                        border.BorderBrush = converter.ConvertFrom(Colors.ErrorBrushColor) as Brush;
+                        border.Background = converter.ConvertFrom(Colors.ErrorFieldColor) as Brush;
+                    }
+                    else
+                    {
+                        border.BorderBrush = Brushes.LightGray;
+                        border.Background = converter.ConvertFrom(Colors.PaleGray) as Brush;
+                    }
                 }
             }
 

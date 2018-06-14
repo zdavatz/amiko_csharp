@@ -24,8 +24,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <DockPanel Margin="0" Panel.ZIndex="1000">
-        <Grid Width="420" Margin="9,12,6,12" DockPanel.Dock="Left">
+    <DockPanel Margin="0">
+        <Grid Width="420" Margin="12,12,6,12" DockPanel.Dock="Left">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -41,7 +41,7 @@
                 </TextBlock>
             </Grid>
             <!-- Doctor Contact Info (Profile) -->
-            <Grid Grid.Row="1" Margin="9,29,9,24" DataContext="{Binding Path=CurrentEntry, UpdateSourceTrigger=PropertyChanged}">
+            <Grid Grid.Row="1" Margin="9,21,9,9" DataContext="{Binding Path=CurrentEntry, UpdateSourceTrigger=PropertyChanged}">
                 <StackPanel>
                     <DockPanel Margin="7,3,15,6" HorizontalAlignment="Left">
                         <TextBlock Style="{StaticResource ContactTextBlock}">
@@ -108,8 +108,16 @@
 
                 </StackPanel>
             </Grid>
-            <Grid Grid.Row="2" Margin="0">
-                <StackPanel Name="Picture" Margin="7,2,15,5">
+            <Grid Grid.Row="2" Margin="9,3,8,3" DataContext="{Binding RelativeSource={RelativeSource Self}, UpdateSourceTrigger=PropertyChanged}">
+                <StackPanel Margin="0,0,0,0">
+                    <Button Name="DeletePictureButton" Style="{StaticResource IconButton}"
+                        Margin="8,0,17,0" HorizontalAlignment="Right" Cursor="Hand" Click="DeletePictureButton_Click">
+                        <fa:ImageAwesome Name="Times" Icon="Times" Visibility="Visible" Foreground="Black"
+                            VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
+                    </Button>
+                    <Border BorderThickness="1" BorderBrush="LightGray" Background="{StaticResource PaleGray}" Width="Auto" Height="80" CornerRadius="1" Margin="7,3,16,6" Padding="0,6,0,6">
+                        <Image Name="Picture" Width="100" Height="70" />
+                    </Border>
                 </StackPanel>
             </Grid>
             <Grid Grid.Row="3" Margin="0" Height="Auto" VerticalAlignment="Bottom">
@@ -118,12 +126,18 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" Margin="0">
-                    <TextBlock Name="SaveProfileFailureMessage" FontSize="12" Width="Auto" Height="42" Margin="11,3,0,0" Padding="0" Text="{x:Static p:Resources.msgProfileSaveFailure}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="Red" Visibility="Hidden"></TextBlock>
+                    <StackPanel Margin="13,0,21,0">
+                        <TextBlock Name="SaveProfileFailureMessage" FontSize="12" Width="Auto" Height="42" Margin="0" Padding="0" Text="{x:Static p:Resources.msgProfileSaveFailure}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="Red" Visibility="Hidden"></TextBlock>
+                    </StackPanel>
                 </Grid>
                 <Grid Grid.Row="1" Margin="0">
+                    <Button Name="SelectPictureButton" Style="{StaticResource NoHighlightedButton}"
+                        Margin="15,0,0,9" HorizontalAlignment="Left" Cursor="Hand" Click="SelectPictureButton_Click">
+                        <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.selectPicture}" />
+                    </Button>
                     <Button
                         Name="SaveButton" Style="{StaticResource NoHighlightedButton}"
-                        Grid.Column="2" Margin="0,3,6,3" HorizontalAlignment="Right" Cursor="Hand" Click="SaveButton_Click">
+                        Grid.Column="2" Margin="0,3,24,9" HorizontalAlignment="Right" Cursor="Hand" Click="SaveButton_Click">
                         <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.save}" />
                     </Button>
                 </Grid>

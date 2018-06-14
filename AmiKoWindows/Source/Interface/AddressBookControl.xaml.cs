@@ -371,7 +371,7 @@ namespace AmiKoWindows
 
                 // clear only error styles on field
                 foreach (string field in contactFields)
-                    this.FeedbackField(this.FindName(field) as TextBox, false);
+                    this.FeedbackField<TextBox>(this.FindName(field) as TextBox, false);
 
                 Contact contact = await _patientDb.GetContactById(item.Id.Value);
                 if (contact != null)
@@ -460,7 +460,7 @@ namespace AmiKoWindows
                     if (box != null)
                         box.Text = "";
 
-                    this.FeedbackField(box, false);
+                    this.FeedbackField<TextBox>(box, false);
                 }
                 else if (element is StackPanel) // RadioButton
                 {
@@ -493,7 +493,7 @@ namespace AmiKoWindows
                 var box = element as TextBox;
                 string columnName = Utilities.ConvertTitleCaseToSnakeCase(box.Name);
                 hasError = !_patientDb.ValidateField(columnName, box.Text);
-                this.FeedbackField(box, hasError);
+                this.FeedbackField<TextBox>(box, hasError);
             }
             else if (element is StackPanel) // Group for RadioButtons
             {

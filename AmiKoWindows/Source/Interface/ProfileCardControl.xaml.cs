@@ -20,11 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using MahApps.Metro.Controls;
 
 
@@ -55,6 +57,15 @@ namespace AmiKoWindows
             set {
                 _CurrentEntry = value;
                 OnPropertyChanged("CurrentEntry");
+            }
+        }
+
+        private string _PictureFile;
+        public string PictureFile {
+            get { return _PictureFile; }
+            set {
+                _PictureFile = value;
+                OnPropertyChanged("PictureFile");
             }
         }
         #endregion
@@ -89,6 +100,15 @@ namespace AmiKoWindows
             Log.WriteLine(e.ToString());
 
             this.CurrentEntry = Properties.Settings.Default.Operator;
+
+            var path = Utilities.OperatorPictureFilePath();
+            if (!File.Exists(path))
+                EnableDeletePictureButton(false);
+            else
+            {
+                this.PictureFile = path;
+                LoadPicture();
+            }
         }
 
         private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
@@ -168,14 +188,51 @@ namespace AmiKoWindows
                 _parent.IsOpen = !valid;
         }
 
-        private void SelectImageButton_Click(object sender, RoutedEventArgs e)
+        private void SelectPictureButton_Click(object sender, RoutedEventArgs e)
         {
-            Log.WriteLine(sender.GetType().Name);
+            var dialog = new System.Windows.Forms.OpenFileDialog();
+            dialog.Filter = String.Format(
+                "{0} | {1}", "Image Files (*.gif, *.jpg, *.jpeg, *.png)", "*.gif; *.jpg; *.jpeg; *.png");
+            dialog.DefaultExt = ".png";
+            var result = dialog.ShowDialog();
+            switch (result)
+            {
+                case System.Windows.Forms.DialogResult.OK:
+                    var filepath = Utilities.OperatorPictureFilePath();
+                    try
+                    {
+                        if (File.Exists(this.PictureFile))
+                            File.Delete(this.PictureFile);
+
+                        using (var input = File.OpenRead(dialog.FileName))
+                        using (var output = File.Create(filepath))
+                        {
+                            Utilities.ResizeImageFileAsPng(input, output, 200, 200);
+                            this.PictureFile = filepath;
+                        }
+                        LoadPicture();
+                    }
+                    catch (IOException ex)
+                    {
+                        Log.WriteLine(ex.Message);
+                    }
+                    ValidateField(this.Picture);
+                    break;
+                case System.Windows.Forms.DialogResult.Cancel:
+                default:
+                    break;
+            }
         }
 
-        private void DeleteImageButton_Click(object sender, RoutedEventArgs e)
+        private void DeletePictureButton_Click(object sender, RoutedEventArgs e)
         {
-            Log.WriteLine(sender.GetType().Name);
+            if (File.Exists(this.PictureFile))
+                File.Delete(this.PictureFile);
+
+            this.PictureFile = "";
+            ValidateField(this.Picture);
+
+            LoadPicture();
         }
         #endregion
 
@@ -191,6 +248,12 @@ namespace AmiKoWindows
                     var box = element as TextBox;
                     if (box != null)
                         values.Add(box.Name, box.Text);
+                }
+                else if (element is Image)
+                {
+                    var img = element as Image;
+                    if (img != null)
+                        values.Add(img.Name, img.Source.ToString());
                 }
             }
             return values;
@@ -209,12 +272,22 @@ namespace AmiKoWindows
                 var box = element as TextBox;
                 // Check text using Operator's validation method
                 hasError = !Operator.ValidateProperty(box.Name, box.Text);
-                this.FeedbackField(box, hasError);
+                this.FeedbackField<TextBox>(box, hasError);
+            }
+            else if (element is Image)
+            {
+                if (this.PictureFile == null || this.PictureFile.Equals(string.Empty))
+                    hasError = true;
+                var img = element as Image;
+                if (img == null || img.Source == null || !img.Source.ToString().Contains(Path.GetFileName(this.PictureFile)) ||
+                    !File.Exists(this.PictureFile))
+                    hasError = true;
+                this.FeedbackField<Image>(img, hasError);
             }
             else
             {
-                // TODO image
-                hasError = false;
+                // unknown
+                hasError = true;
             }
             return !hasError;
         }
@@ -226,7 +299,6 @@ namespace AmiKoWindows
             {
                 var element = this.FindName(field) as FrameworkElement;
                 var result = ValidateField(element);
-                //Log.WriteLine("field: {0} validateField: {0}", field, result);
                 if (!hasError)
                     hasError = !result;
             }
@@ -236,9 +308,48 @@ namespace AmiKoWindows
             return !hasError;
         }
 
+        private void LoadPicture()
+        {
+            try
+            {
+                Log.WriteLine("PictureFile: {0}", this.PictureFile);
+                if (this.PictureFile != null && !this.PictureFile.Equals(string.Empty) && File.Exists(this.PictureFile))
+                {
+                    var source = new BitmapImage();
+                    source.BeginInit();
+                    source.CacheOption = BitmapCacheOption.OnLoad;
+                    source.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                    source.UriSource = new Uri(this.PictureFile, UriKind.Absolute);
+                    source.EndInit();
+                    this.Picture.Source = source;
+
+                    EnableDeletePictureButton(true);
+                }
+                else
+                    throw new IOException(String.Format("{0} does not exist", this.PictureFile));
+            }
+            catch (IOException e)
+            {
+                Log.WriteLine(e.Message);
+                this.Picture.Source = DependencyProperty.UnsetValue as System.Windows.Media.ImageSource;
+                EnableDeletePictureButton(false);
+            }
+        }
+
         private void ShowMessage(bool hasError)
         {
             this.FeedbackMessage(this.SaveProfileFailureMessage, hasError);
+        }
+
+        private void EnableDeletePictureButton(bool isEnabled)
+        {
+            this.DeletePictureButton.IsEnabled = isEnabled;
+            var image = this.DeletePictureButton.Content as FontAwesome.WPF.ImageAwesome;
+            if (image != null)
+                if (isEnabled)
+                    image.Foreground = Brushes.Black;
+                else
+                    image.Foreground = Brushes.LightGray;
         }
     }
 }

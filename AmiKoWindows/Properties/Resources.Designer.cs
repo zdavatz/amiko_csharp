@@ -599,6 +599,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Unterschrift aus Datei.
+        /// </summary>
+        public static string selectPicture {
+            get {
+                return ResourceManager.GetString("selectPicture", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Einstellungen.
         /// </summary>
         public static string settings {

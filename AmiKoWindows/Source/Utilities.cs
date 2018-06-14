@@ -22,6 +22,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Text;
 
 namespace AmiKoWindows
@@ -123,6 +126,13 @@ namespace AmiKoWindows
             return path;
         }
 
+        public static string OperatorPictureFilePath()
+        {
+            string path = Path.Combine(
+                AppRoamingDataFolder(), Constants.OPERATOR_PICTURE_FILE);
+            return path;
+        }
+
         public static string ReportPath()
         {
             string reportPath = "http://pillbox.oddb.org/amiko_report_de.html";
@@ -203,6 +213,20 @@ namespace AmiKoWindows
             DateTime time = DateTime.SpecifyKind(
                 utcTime, DateTimeKind.Utc);
             return time.ToLocalTime();
+        }
+
+        public static void ResizeImageFileAsPng(Stream input, Stream output, int width, int height)
+        {
+            using (var image = Image.FromStream(input))
+            using (var bitmap = new Bitmap(width, height))
+            using (var graphics = Graphics.FromImage(bitmap))
+            {
+                graphics.CompositingQuality = CompositingQuality.HighSpeed;
+                graphics.SmoothingMode = SmoothingMode.HighSpeed;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.DrawImage(image, new Rectangle(0, 0, width, height));
+                bitmap.Save(output, ImageFormat.Png);
+            }
         }
         #endregion
     }
