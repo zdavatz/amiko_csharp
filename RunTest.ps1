@@ -30,7 +30,7 @@ MSBuild.exe .\AmiKoWindows.Tests\"$application"Desitin.Test.csproj /t:Clean
 # Build
 MSBuild.exe .\AmiKoWindows.Tests\"$application"Desitin.Test.csproj /t:Build `
   /p:Configuration=Debug `
-  /p:Platform=AnyCPU `
+  /p:Platform=x64 `
   /p:Log=Trace
 
 if ($lastexitcode -ne 0) {

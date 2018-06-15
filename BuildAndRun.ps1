@@ -30,7 +30,7 @@ wsl rm -f "AmiKoWindows/obj/Debug/$application Desitin.exe"
 # Build
 MSBuild.exe .\AmiKoWindows\"$application"Desitin.csproj /t:Build `
   /p:Configuration=Debug `
-  /p:Platform=AnyCPU `
+  /p:Platform=x64 `
   /p:Log=Trace
 
 if ($lastexitcode -ne 0) {

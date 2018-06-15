@@ -29,6 +29,8 @@ using MahApps.Metro.Controls;
 
 namespace AmiKoWindows
 {
+    using ControlExtensions;
+
     /// <summary>
     /// NOTE:
     ///   This control is shown currently as Flyout, but it may be good to change
@@ -52,22 +54,22 @@ namespace AmiKoWindows
         MahApps.Metro.Controls.Flyout _parent;
 
         bool _isItemClick = false;
+
+        private long RawContactsCount {
+            set {
+                ContactsCount.Text = String.Format("({0})", value.ToString());
+                OnPropertyChanged("ContactsCount");
+            }
+        }
         #endregion
 
-        #region Other Fields
+        #region Public Fields
         private Contact _CurrentEntry;
         public Contact CurrentEntry {
             get { return _CurrentEntry; }
             set {
                 _CurrentEntry = value;
                 OnPropertyChanged("CurrentEntry");
-            }
-        }
-
-        private long RawContactsCount {
-            set {
-                ContactsCount.Text = String.Format("({0})", value.ToString());
-                OnPropertyChanged("ContactsCount");
             }
         }
         #endregion
@@ -258,7 +260,8 @@ namespace AmiKoWindows
                         // copied/update issued prescriptions if uid has been changed
                     }
                     else
-                        FeedbackMessage(true, true);
+                        // TODO need another message?
+                        ShowMessage(true);
 
                     await _patientDb.LoadAllContacts();
                     this.RawContactsCount = _patientDb.Count;
@@ -368,7 +371,7 @@ namespace AmiKoWindows
 
                 // clear only error styles on field
                 foreach (string field in contactFields)
-                    FeedbackField(this.FindName(field) as TextBox, false);
+                    this.FeedbackField<TextBox>(this.FindName(field) as TextBox, false);
 
                 Contact contact = await _patientDb.GetContactById(item.Id.Value);
                 if (contact != null)
@@ -446,11 +449,6 @@ namespace AmiKoWindows
             return values;
         }
 
-        private void ResetMessage()
-        {
-            FeedbackMessage(false, false);
-        }
-
         private void ResetFields()
         {
             foreach (string field in contactFields)
@@ -462,7 +460,7 @@ namespace AmiKoWindows
                     if (box != null)
                         box.Text = "";
 
-                    FeedbackField(box, false);
+                    this.FeedbackField<TextBox>(box, false);
                 }
                 else if (element is StackPanel) // RadioButton
                 {
@@ -495,7 +493,7 @@ namespace AmiKoWindows
                 var box = element as TextBox;
                 string columnName = Utilities.ConvertTitleCaseToSnakeCase(box.Name);
                 hasError = !_patientDb.ValidateField(columnName, box.Text);
-                FeedbackField(box, hasError);
+                this.FeedbackField<TextBox>(box, hasError);
             }
             else if (element is StackPanel) // Group for RadioButtons
             {
@@ -533,52 +531,30 @@ namespace AmiKoWindows
                     hasError = !result;
             }
             Log.WriteLine("hasError: {0}", hasError);
-            FeedbackMessage(true, hasError);
+
+            ShowMessage(hasError);
             return !hasError;
         }
 
-        private void FeedbackField(TextBox box, bool hasError)
+        private void ShowMessage(bool hasError)
         {
-            if (box == null)
-                return;
-
             if (hasError)
             {
-                var converter = new BrushConverter();
-                Brush errFieldColor = converter.ConvertFrom(Constants.ErrorFieldColor) as Brush;
-                Brush errBrushColor = converter.ConvertFrom(Constants.ErrorBrushColor) as Brush;
-
-                box.Background = errFieldColor;
-                box.BorderBrush = errBrushColor;
+                this.FeedbackMessage(this.SaveContactFailureMessage, true);
+                this.FeedbackMessage(this.SaveContactSuccessMessage, false);
             }
             else
             {
-                box.Background = Brushes.White;
-                box.BorderBrush = Brushes.LightGray;
+                this.FeedbackMessage(this.SaveContactFailureMessage, false);
+                this.FeedbackMessage(this.SaveContactSuccessMessage, true);
             }
         }
 
-        private void FeedbackMessage(bool needsDisplay, bool hasError)
+        private void ResetMessage()
         {
-            TextBlock errMsg, okMsg = null;
-            errMsg = this.FindName("SaveContactFailureMessage") as TextBlock;
-            okMsg = this.FindName("SaveContactSuccessMessage") as TextBlock;
-
-            if (!needsDisplay)
-            {
-                errMsg.Visibility = Visibility.Hidden;
-                okMsg.Visibility = Visibility.Hidden;
-            }
-            else if (hasError)
-            {
-                errMsg.Visibility = Visibility.Visible;
-                okMsg.Visibility = Visibility.Hidden;
-            }
-            else
-            { // needsDisplay && !hasError
-                errMsg.Visibility = Visibility.Hidden;
-                okMsg.Visibility = Visibility.Visible;
-            }
+            var needsDisplay = false;
+            this.FeedbackMessage(this.SaveContactFailureMessage, needsDisplay);
+            this.FeedbackMessage(this.SaveContactSuccessMessage, needsDisplay);
         }
 
         private void EnableMinusButton(bool isEnabled)

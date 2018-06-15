@@ -488,6 +488,7 @@ namespace AmiKoWindows
             else if (columnName.Equals(KEY_PHONE))
                 return text.Length < maxLength;
             else if (columnName.Equals(KEY_EMAIL))
+                // TODO
                 return text.Length < maxLength;
 
             return false;

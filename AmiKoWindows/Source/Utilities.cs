@@ -18,9 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -123,6 +127,13 @@ namespace AmiKoWindows
             return path;
         }
 
+        public static string OperatorPictureFilePath()
+        {
+            string path = Path.Combine(
+                AppRoamingDataFolder(), Constants.OPERATOR_PICTURE_FILE);
+            return path;
+        }
+
         public static string ReportPath()
         {
             string reportPath = "http://pillbox.oddb.org/amiko_report_de.html";
@@ -203,6 +214,32 @@ namespace AmiKoWindows
             DateTime time = DateTime.SpecifyKind(
                 utcTime, DateTimeKind.Utc);
             return time.ToLocalTime();
+        }
+
+        public static void ResizeImageFileAsPng(Stream input, Stream output, int width, int height)
+        {
+            using (var image = Image.FromStream(input))
+            using (var bitmap = new Bitmap(width, height))
+            using (var graphics = Graphics.FromImage(bitmap))
+            {
+                graphics.CompositingQuality = CompositingQuality.HighSpeed;
+                graphics.SmoothingMode = SmoothingMode.HighSpeed;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.DrawImage(image, new Rectangle(0, 0, width, height));
+                bitmap.Save(output, ImageFormat.Png);
+            }
+        }
+        #endregion
+
+        #region Shell Functions
+        [DllImport("shell32.dll", EntryPoint="#261", CharSet=CharSet.Unicode, PreserveSig=false)]
+        public static extern void GetUserAvatarFilePath(string username, UInt32 whatever, StringBuilder picpath, int maxLength);
+
+        public static string GetUserAvatarFilePath(string username)
+        {
+            var builder = new StringBuilder(1000);
+            GetUserAvatarFilePath(username, 0x80000000, builder, builder.Capacity);
+            return builder.ToString();
         }
         #endregion
     }
