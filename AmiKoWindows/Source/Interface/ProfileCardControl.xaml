@@ -47,10 +47,6 @@
                         <TextBlock Style="{StaticResource ContactTextBlock}">
                             <Label Style="{StaticResource ContactLabel}" Content="{x:Static p:Resources.title}" />
                         </TextBlock>
-                        <!--
-                        <TextBox Name="Title" Style="{StaticResource ContactTextBox}" Width="70"
-                            LostFocus="Title_LostFocus" Text="{Binding Source={StaticResource Settings}, Path=Default.Operator.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                        -->
                         <TextBox Name="Title" Style="{StaticResource ContactTextBox}" Width="70"
                             LostFocus="Title_LostFocus" Text="{Binding Path=Title}"></TextBox>
                     </DockPanel>
@@ -58,10 +54,6 @@
                         <TextBlock Style="{StaticResource ContactTextBlock}">
                             <Label Style="{StaticResource ContactLabel}" Content="{x:Static p:Resources.givenName}" /><Label Style="{StaticResource RequiredMark}" Content="*" />
                         </TextBlock>
-                        <!--
-                        <TextBox Name="GivenName" Style="{StaticResource ContactTextBox}"
-                            LostFocus="GivenName_LostFocus" Text="{Binding Source={StaticResource Settings}, Path=Default.Operator.GivenName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                        -->
                         <TextBox Name="GivenName" Style="{StaticResource ContactTextBox}"
                             LostFocus="GivenName_LostFocus" Text="{Binding Path=GivenName}"></TextBox>
                     </DockPanel>
@@ -110,11 +102,19 @@
             </Grid>
             <Grid Grid.Row="2" Margin="9,3,8,3" DataContext="{Binding RelativeSource={RelativeSource Self}, UpdateSourceTrigger=PropertyChanged}">
                 <StackPanel Margin="0,0,0,0">
-                    <Button Name="DeletePictureButton" Style="{StaticResource IconButton}"
-                        Margin="8,0,17,0" HorizontalAlignment="Right" Cursor="Hand" Click="DeletePictureButton_Click">
-                        <fa:ImageAwesome Name="Times" Icon="Times" Visibility="Visible" Foreground="Black"
-                            VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
-                    </Button>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Name="CountDown" FontSize="17" Margin="0,2,9,0" Text="0" Visibility="Hidden" />
+                        <Button Name="TakePictureButton" Style="{StaticResource WhiteIconButton}"
+                            Margin="0,0,9,0" HorizontalAlignment="Right" Cursor="Hand" Click="TakePictureButton_Click">
+                            <fa:ImageAwesome Name="Camera" Icon="Camera" Visibility="Visible" Foreground="Black"
+                                VerticalAlignment="Center" Margin="0" Height="19" Width="19" />
+                        </Button>
+                        <Button Name="DeletePictureButton" Style="{StaticResource WhiteIconButton}"
+                            Margin="0,0,17,0" HorizontalAlignment="Right" Cursor="Hand" Click="DeletePictureButton_Click">
+                            <fa:ImageAwesome Name="Times" Icon="Times" Visibility="Visible" Foreground="Black"
+                                VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
+                        </Button>
+                    </StackPanel>
                     <Border BorderThickness="1" BorderBrush="LightGray" Background="{StaticResource PaleGray}" Width="Auto" Height="80" CornerRadius="1" Margin="7,3,16,6" Padding="0,6,0,6">
                         <Image Name="Picture" Width="100" Height="70" />
                     </Border>
@@ -126,7 +126,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" Margin="0">
-                    <StackPanel Margin="13,0,21,0">
+                    <StackPanel Margin="16,0,21,0">
                         <TextBlock Name="SaveProfileFailureMessage" FontSize="12" Width="Auto" Height="42" Margin="0" Padding="0" Text="{x:Static p:Resources.msgProfileSaveFailure}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="Red" Visibility="Hidden"></TextBlock>
                     </StackPanel>
                 </Grid>

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -27,7 +28,14 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Threading;
+using System.Threading.Tasks;
 using MahApps.Metro.Controls;
+using Windows.Foundation;
+using Windows.Media;
+using Windows.Media.Capture;
+using Windows.Media.MediaProperties;
+using Windows.Storage;
 
 
 namespace AmiKoWindows
@@ -211,6 +219,20 @@ namespace AmiKoWindows
             }
         }
 
+        private async void TakePictureButton_Click(object sender, RoutedEventArgs e)
+        {
+            var capture = new MediaCapture();
+            await capture.InitializeAsync();
+
+            var preview = new PreviewImage(capture);
+            this.Picture.Source = preview;
+            await preview.StartAsync();
+
+            var outputFile = Utilities.OperatorPictureFilePath();
+
+            TakePicture(capture, preview, outputFile, 3);
+        }
+
         private void DeletePictureButton_Click(object sender, RoutedEventArgs e)
         {
             if (File.Exists(this.PictureFile))
@@ -316,17 +338,28 @@ namespace AmiKoWindows
                 else
                     throw new IOException(String.Format("{0} does not exist", this.PictureFile));
             }
-            catch (IOException e)
+            catch (Exception ex)
             {
-                Log.WriteLine(e.Message);
-                this.Picture.Source = DependencyProperty.UnsetValue as System.Windows.Media.ImageSource;
-                EnableDeletePictureButton(false);
+                if (ex is IOException || ex is NotSupportedException)
+                {
+                    Log.WriteLine(ex.Message);
+                    this.Picture.Source = DependencyProperty.UnsetValue as System.Windows.Media.ImageSource;
+                    EnableDeletePictureButton(false);
+                }
+                else
+                    throw;
             }
         }
 
         private void ShowMessage(bool hasError)
         {
             this.FeedbackMessage(this.SaveProfileFailureMessage, hasError);
+        }
+
+        private void ResetMessage()
+        {
+            var needsDisplay = false;
+            this.FeedbackMessage(this.SaveProfileFailureMessage, needsDisplay);
         }
 
         // Returns imported output file path
@@ -349,6 +382,63 @@ namespace AmiKoWindows
                 Log.WriteLine(ex.Message);
                 return null;
             }
+        }
+
+        private async void TakePicture(MediaCapture capture, PreviewImage preview, string outputFile, int delay)
+        {
+            if (!File.Exists(outputFile))
+                File.Create(outputFile).Close();
+
+            StorageFile file = await StorageFile.GetFileFromPathAsync(outputFile);
+            ImageEncodingProperties imgFormat = ImageEncodingProperties.CreatePng();
+
+            new Thread(delegate()
+            {
+                Thread.CurrentThread.IsBackground = true;
+                Stopwatch stopwatch = Stopwatch.StartNew();
+                long millisecondsToWait = delay * 1000;
+                int i = delay;
+                while (true)
+                {
+                    long now = stopwatch.ElapsedMilliseconds;
+                    if (now >= millisecondsToWait)
+                    {
+                        // take photo in async
+                        IAsyncAction action = capture.CapturePhotoToStorageFileAsync(imgFormat, file);
+                        while (true)
+                        {
+                            if (action.Status == AsyncStatus.Completed || action.Status == AsyncStatus.Error)
+                                break;
+
+                            Thread.Sleep(1);
+                        }
+                        Dispatcher.Invoke(new Action(() => {
+                            this.CountDown.Visibility = Visibility.Hidden;
+                            preview.StopAsync();
+                            capture.Dispose();
+                            if (action.Status == AsyncStatus.Completed)
+                                this.PictureFile = file.Path;
+                            else
+                            {
+                                File.Delete(this.PictureFile);
+                                this.PictureFile = null;
+                            }
+                            LoadPicture();
+                            ResetMessage();
+                            ValidateField(this.Picture);
+                        }));
+                        break;
+                    }
+
+                    Dispatcher.Invoke(new Action(() => {
+                        this.CountDown.Visibility = Visibility.Visible;
+                        this.CountDown.Text = i.ToString();
+                    }));
+
+                    i--;
+                    Thread.Sleep(1000);
+                }
+            }).Start();
         }
 
         // Copy/Set current system user's avatar as default picture
