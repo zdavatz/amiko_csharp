@@ -101,14 +101,17 @@ namespace AmiKoWindows
 
             this.CurrentEntry = Properties.Settings.Default.Operator;
 
+
             var path = Utilities.OperatorPictureFilePath();
             if (!File.Exists(path))
+                SetUserDefaultPicture(path);
+            else
+                this.PictureFile = path;
+
+            if (this.PictureFile == null || this.PictureFile.Equals(string.Empty) || !File.Exists(this.PictureFile))
                 EnableDeletePictureButton(false);
             else
-            {
-                this.PictureFile = path;
                 LoadPicture();
-            }
         }
 
         private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
@@ -198,24 +201,8 @@ namespace AmiKoWindows
             switch (result)
             {
                 case System.Windows.Forms.DialogResult.OK:
-                    var filepath = Utilities.OperatorPictureFilePath();
-                    try
-                    {
-                        if (File.Exists(this.PictureFile))
-                            File.Delete(this.PictureFile);
-
-                        using (var input = File.OpenRead(dialog.FileName))
-                        using (var output = File.Create(filepath))
-                        {
-                            Utilities.ResizeImageFileAsPng(input, output, 200, 200);
-                            this.PictureFile = filepath;
-                        }
-                        LoadPicture();
-                    }
-                    catch (IOException ex)
-                    {
-                        Log.WriteLine(ex.Message);
-                    }
+                    this.PictureFile = ImportPicture(dialog.FileName, Utilities.OperatorPictureFilePath());
+                    LoadPicture();
                     ValidateField(this.Picture);
                     break;
                 case System.Windows.Forms.DialogResult.Cancel:
@@ -229,7 +216,7 @@ namespace AmiKoWindows
             if (File.Exists(this.PictureFile))
                 File.Delete(this.PictureFile);
 
-            this.PictureFile = "";
+            this.PictureFile = null;
             ValidateField(this.Picture);
 
             LoadPicture();
@@ -276,19 +263,21 @@ namespace AmiKoWindows
             }
             else if (element is Image)
             {
-                if (this.PictureFile == null || this.PictureFile.Equals(string.Empty))
-                    hasError = true;
                 var img = element as Image;
-                if (img == null || img.Source == null || !img.Source.ToString().Contains(Path.GetFileName(this.PictureFile)) ||
-                    !File.Exists(this.PictureFile))
+                if (img == null)
                     hasError = true;
-                this.FeedbackField<Image>(img, hasError);
+                else
+                {
+                    if (img.Source == null || this.PictureFile == null || this.PictureFile.Equals(string.Empty) ||
+                        !img.Source.ToString().Contains(Path.GetFileName(this.PictureFile)) || !File.Exists(this.PictureFile))
+                        hasError = true;
+
+                    this.FeedbackField<Image>(img, hasError);
+                }
             }
             else
-            {
-                // unknown
-                hasError = true;
-            }
+                hasError = true; // unknown
+
             return !hasError;
         }
 
@@ -312,7 +301,6 @@ namespace AmiKoWindows
         {
             try
             {
-                Log.WriteLine("PictureFile: {0}", this.PictureFile);
                 if (this.PictureFile != null && !this.PictureFile.Equals(string.Empty) && File.Exists(this.PictureFile))
                 {
                     var source = new BitmapImage();
@@ -339,6 +327,37 @@ namespace AmiKoWindows
         private void ShowMessage(bool hasError)
         {
             this.FeedbackMessage(this.SaveProfileFailureMessage, hasError);
+        }
+
+        // Returns imported output file path
+        private string ImportPicture(string inputFile, string outputFile)
+        {
+            try
+            {
+                if (File.Exists(outputFile))
+                    File.Delete(outputFile);
+
+                using (var input = File.OpenRead(inputFile))
+                using (var output = File.Create(outputFile))
+                {
+                    Utilities.ResizeImageFileAsPng(input, output, 200, 200);
+                }
+                return outputFile;
+            }
+            catch (IOException ex)
+            {
+                Log.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        // Copy/Set current system user's avatar as default picture
+        private void SetUserDefaultPicture(string outputFile)
+        {
+            // `username = null` means current user
+            string avatarFile = Utilities.GetUserAvatarFilePath(null);
+            if (File.Exists(avatarFile))
+                this.PictureFile = ImportPicture(avatarFile, outputFile);
         }
 
         private void EnableDeletePictureButton(bool isEnabled)

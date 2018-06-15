@@ -18,13 +18,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace AmiKoWindows
@@ -227,6 +228,18 @@ namespace AmiKoWindows
                 graphics.DrawImage(image, new Rectangle(0, 0, width, height));
                 bitmap.Save(output, ImageFormat.Png);
             }
+        }
+        #endregion
+
+        #region Shell Functions
+        [DllImport("shell32.dll", EntryPoint="#261", CharSet=CharSet.Unicode, PreserveSig=false)]
+        public static extern void GetUserAvatarFilePath(string username, UInt32 whatever, StringBuilder picpath, int maxLength);
+
+        public static string GetUserAvatarFilePath(string username)
+        {
+            var builder = new StringBuilder(1000);
+            GetUserAvatarFilePath(username, 0x80000000, builder, builder.Capacity);
+            return builder.ToString();
         }
         #endregion
     }
