@@ -414,7 +414,7 @@ namespace AmiKoWindows
                         }
                         Dispatcher.Invoke(new Action(() => {
                             this.CountDown.Visibility = Visibility.Hidden;
-                            preview.StopAsync();
+                            Task _ = preview.StopAsync();
                             capture.Dispose();
                             if (action.Status == AsyncStatus.Completed)
                                 this.PictureFile = file.Path;
