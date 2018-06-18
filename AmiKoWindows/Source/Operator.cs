@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
+using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Windows;
@@ -26,14 +27,18 @@ namespace AmiKoWindows
 {
     /// https://msdn.microsoft.com/en-us/library/system.configuration.applicationsettingsbase%28v=vs.110%29.aspx?f=255&MSPPError=-2147217396
     [Serializable]
-    public class Operator : ApplicationSettingsBase
+    public class Operator : ApplicationSettingsBase, INotifyPropertyChanged
     {
         [UserScopedSetting()]
         [SettingsSerializeAs(System.Configuration.SettingsSerializeAs.Binary)]
         [DefaultSettingValue("")]
         public string Title {
             get { return (string)this[nameof(Title)]; }
-            set { this[nameof(Title)] = value; }
+            set {
+                this[nameof(Title)] = value;
+                OnPropertyChanged("Title");
+                OnPropertyChanged("Fullname");
+            }
         }
 
         [UserScopedSetting()]
@@ -41,7 +46,11 @@ namespace AmiKoWindows
         [DefaultSettingValue("")]
         public string GivenName {
             get { return (string)this[nameof(GivenName)]; }
-            set { this[nameof(GivenName)] = value; }
+            set {
+                this[nameof(GivenName)] = value;
+                OnPropertyChanged("GivenName");
+                OnPropertyChanged("Fullname");
+            }
         }
 
         [UserScopedSetting()]
@@ -49,7 +58,11 @@ namespace AmiKoWindows
         [DefaultSettingValue("")]
         public string FamilyName {
             get { return (string)this[nameof(FamilyName)]; }
-            set { this[nameof(FamilyName)] = value; }
+            set {
+                this[nameof(FamilyName)] = value;
+                OnPropertyChanged("FamilyName");
+                OnPropertyChanged("Fullname");
+            }
         }
 
         [UserScopedSetting()]
@@ -57,7 +70,10 @@ namespace AmiKoWindows
         [DefaultSettingValue("")]
         public string Address {
             get { return (string)this[nameof(Address)]; }
-            set { this[nameof(Address)] = value; }
+            set {
+                this[nameof(Address)] = value;
+                OnPropertyChanged("Address");
+            }
         }
 
         [UserScopedSetting()]
@@ -65,7 +81,11 @@ namespace AmiKoWindows
         [DefaultSettingValue("")]
         public string City {
             get { return (string)this[nameof(City)]; }
-            set { this[nameof(City)] = value; }
+            set {
+                this[nameof(City)] = value;
+                OnPropertyChanged("City");
+                OnPropertyChanged("Place");
+            }
         }
 
         [UserScopedSetting()]
@@ -73,7 +93,11 @@ namespace AmiKoWindows
         [DefaultSettingValue("")]
         public string Zip {
             get { return (string)this[nameof(Zip)]; }
-            set { this[nameof(Zip)] = value; }
+            set {
+                this[nameof(Zip)] = value;
+                OnPropertyChanged("Zip");
+                OnPropertyChanged("Place");
+            }
         }
 
         [UserScopedSetting()]
@@ -81,7 +105,10 @@ namespace AmiKoWindows
         [DefaultSettingValue("")]
         public string Phone {
             get { return (string)this[nameof(Phone)]; }
-            set { this[nameof(Phone)] = value; }
+            set {
+                this[nameof(Phone)] = value;
+                OnPropertyChanged("Phone");
+            }
         }
 
         [UserScopedSetting()]
@@ -89,8 +116,48 @@ namespace AmiKoWindows
         [DefaultSettingValue("")]
         public string Email {
             get { return (string)this[nameof(Email)]; }
-            set { this[nameof(Email)] = value; }
+            set {
+                this[nameof(Email)] = value;
+                OnPropertyChanged("Email");
+            }
         }
+
+        #region Event Handlers
+        // NOTE: The ApplicationSettingsBase has `PropertyChanged`
+        public new event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
+
+        #region Virtual Fields
+        public string Fullname
+        {
+            get {
+                if (this.GivenName == null || this.GivenName.Equals(""))
+                    return this.FamilyName;
+                return String.Format("{0} {1}", this.GivenName, this.FamilyName);
+            }
+        }
+
+        public string Place
+        {
+            get {
+                if (this.Zip == null || this.Zip.Equals(""))
+                    return this.City;
+                return String.Format("{0} {1}", this.Zip, this.City);
+            }
+        }
+
+        public string PictureFile
+        {
+            get {
+                return Utilities.OperatorPictureFilePath();
+            }
+        }
+        #endregion
 
         static readonly string[] requiredPlainTextFields = new string[] {
             "GivenName", "FamilyName", "Address", "City", "Zip",

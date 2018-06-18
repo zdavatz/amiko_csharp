@@ -27,7 +27,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Threading;
 using System.Threading.Tasks;
 using MahApps.Metro.Controls;
@@ -74,6 +73,8 @@ namespace AmiKoWindows
             set {
                 _PictureFile = value;
                 OnPropertyChanged("PictureFile");
+                if (this.CurrentEntry != null)
+                    this.CurrentEntry.OnPropertyChanged("PictureFile");
             }
         }
         #endregion
@@ -209,7 +210,7 @@ namespace AmiKoWindows
             switch (result)
             {
                 case System.Windows.Forms.DialogResult.OK:
-                    this.PictureFile = ImportPicture(dialog.FileName, Utilities.OperatorPictureFilePath());
+                    ImportPicture(dialog.FileName, Utilities.OperatorPictureFilePath());
                     LoadPicture();
                     ValidateField(this.Picture);
                     break;
@@ -229,16 +230,12 @@ namespace AmiKoWindows
             await preview.StartAsync();
 
             var outputFile = Utilities.OperatorPictureFilePath();
-
             TakePicture(capture, preview, outputFile, 3);
         }
 
         private void DeletePictureButton_Click(object sender, RoutedEventArgs e)
         {
-            if (File.Exists(this.PictureFile))
-                File.Delete(this.PictureFile);
-
-            this.PictureFile = null;
+            DeletePicture();
             ValidateField(this.Picture);
 
             LoadPicture();
@@ -323,18 +320,9 @@ namespace AmiKoWindows
         {
             try
             {
-                if (this.PictureFile != null && !this.PictureFile.Equals(string.Empty) && File.Exists(this.PictureFile))
-                {
-                    var source = new BitmapImage();
-                    source.BeginInit();
-                    source.CacheOption = BitmapCacheOption.OnLoad;
-                    source.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                    source.UriSource = new Uri(this.PictureFile, UriKind.Absolute);
-                    source.EndInit();
-                    this.Picture.Source = source;
-
+                var loaded = Utilities.LoadPictureInto(this.Picture, this.PictureFile);
+                if (loaded)
                     EnableDeletePictureButton(true);
-                }
                 else
                     throw new IOException(String.Format("{0} does not exist", this.PictureFile));
             }
@@ -363,24 +351,22 @@ namespace AmiKoWindows
         }
 
         // Returns imported output file path
-        private string ImportPicture(string inputFile, string outputFile)
+        private void ImportPicture(string inputFile, string outputFile)
         {
             try
             {
-                if (File.Exists(outputFile))
-                    File.Delete(outputFile);
+                DeletePicture();
 
                 using (var input = File.OpenRead(inputFile))
                 using (var output = File.Create(outputFile))
                 {
                     Utilities.ResizeImageFileAsPng(input, output, 200, 200);
                 }
-                return outputFile;
+                this.PictureFile = outputFile;
             }
             catch (IOException ex)
             {
                 Log.WriteLine(ex.Message);
-                return null;
             }
         }
 
@@ -419,10 +405,8 @@ namespace AmiKoWindows
                             if (action.Status == AsyncStatus.Completed)
                                 this.PictureFile = file.Path;
                             else
-                            {
-                                File.Delete(this.PictureFile);
-                                this.PictureFile = null;
-                            }
+                                DeletePicture();
+
                             LoadPicture();
                             ResetMessage();
                             ValidateField(this.Picture);
@@ -447,7 +431,20 @@ namespace AmiKoWindows
             // `username = null` means current user
             string avatarFile = Utilities.GetUserAvatarFilePath(null);
             if (File.Exists(avatarFile))
-                this.PictureFile = ImportPicture(avatarFile, outputFile);
+                ImportPicture(avatarFile, outputFile);
+        }
+
+        private void DeletePicture()
+        {
+            if (this.PictureFile != null && File.Exists(this.PictureFile))
+            {
+                string path = this.PictureFile;
+                this.Picture.Source = null;
+                this.PictureFile = null;
+                GC.Collect();
+                File.Delete(path);
+            }
+            this.PictureFile = null;
         }
 
         private void EnableDeletePictureButton(bool isEnabled)

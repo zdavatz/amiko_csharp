@@ -84,13 +84,21 @@
                               </Grid>
                             </Grid>
                             <!-- Operator -->
-                            <Grid Grid.Column="1">
-                                <StackPanel Name="OperatorInfo" Margin="0,2,0,0" HorizontalAlignment="Right">
+                            <Grid Name="OperatorInfo" Grid.Column="1" Margin="0" DataContext="{Binding Path=CurrentOperator, UpdateSourceTrigger=PropertyChanged}">
+                                <DockPanel Margin="0,1,4,3">
                                     <Button Name="OpenProfileCardButton" Style="{StaticResource NoHighlightedButton}"
-                                        Click="OpenProfileCardButton_Click" Cursor="Hand" Visibility="Hidden">
+                                        DockPanel.Dock="Top" Click="OpenProfileCardButton_Click" Cursor="Hand" Visibility="Collapsed">
                                         <Label VerticalAlignment="Center" Content="{x:Static p:Resources.msgProfileUnsetWarning}" />
                                     </Button>
-                                </StackPanel>
+                                    <StackPanel DockPanel.Dock="Top" Margin="0,2,0,0" HorizontalAlignment="Right">
+                                        <TextBlock Name="OperatorName" Text="{Binding Path=Fullname, Mode=OneWay}"></TextBlock>
+                                        <TextBlock Name="OperatorAddress" Text="{Binding Path=Address, Mode=OneWay}"></TextBlock>
+                                        <TextBlock Name="OperatorPlace" Text="{Binding Path=Place, Mode=OneWay}"></TextBlock>
+                                        <TextBlock Name="OperatorPhone" Text="{Binding Path=Phone, Mode=OneWay}"></TextBlock>
+                                        <TextBlock Name="OperatorEmail" Text="{Binding Path=Email, Mode=OneWay}"></TextBlock>
+                                        <Image Name="OperatorPicture" Height="64" Margin="0,6,0,0" HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                </DockPanel>
                             </Grid>
                           </Grid>
 

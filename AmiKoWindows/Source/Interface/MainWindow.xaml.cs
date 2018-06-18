@@ -20,9 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Navigation;
@@ -37,7 +39,7 @@ namespace AmiKoWindows
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     {
         class ExtendedDataContext
         {
@@ -59,6 +61,26 @@ namespace AmiKoWindows
 
         FrameworkElement _browser;
         FrameworkElement _manager;
+
+        #region Public Fields
+        private Operator _CurrentOperator;
+        public Operator CurrentOperator {
+            get { return _CurrentOperator; }
+            set {
+                _CurrentOperator = value;
+                OnPropertyChanged("CurrentOperator");
+            }
+        }
+        #endregion
+
+        #region Event Handlers
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
 
         public MainWindow()
         {
@@ -229,6 +251,7 @@ namespace AmiKoWindows
                 Button button = GetElementInMainArea("OpenProfileCardButton") as Button;
                 if (button != null && !Operator.IsSet())
                     button.Visibility = Visibility.Visible;
+
                 // TODO
                 _prescriptions.ShowDetail();
             }
@@ -306,6 +329,12 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Form", false);
                 SwitchViewContext();
 
+                var operatorInfo = GetElementInMainArea("OperatorInfo") as Grid;
+                if (operatorInfo != null)
+                    operatorInfo.DataContext = this.CurrentOperator;
+
+                LoadOperatorPicture();
+
                 if (_uiState.FullTextQueryEnabled())
                     SetFullTextSearchDataContext();
                 else
@@ -370,6 +399,9 @@ namespace AmiKoWindows
             // Fix default MainArea's `ContentTemplate` (via style with triggers) loading issue
             this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             this.Compendium.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+            if (Operator.IsSet())
+                this.CurrentOperator = Properties.Settings.Default.Operator;
 
             this.DataContext = new ViewType("Html");
             SwitchViewContext();
@@ -868,9 +900,32 @@ namespace AmiKoWindows
 
             Log.WriteLine(source.Name);
 
+            if (Operator.IsSet())
+            {
+                this.CurrentOperator = Properties.Settings.Default.Operator;
+                LoadOperatorPicture();
+            }
+
             // Re:enable animations for next time
             source.AreAnimationsEnabled = true;
             e.Handled = true;
+        }
+
+        private void LoadOperatorPicture()
+        {
+            try
+            {
+                Image image = GetElementInMainArea("OperatorPicture") as Image;
+                if (image != null && Operator.IsSet() && this.CurrentOperator != null)
+                    Utilities.LoadPictureInto(image, this.CurrentOperator.PictureFile);
+            }
+            catch (Exception ex)
+            {
+                if (ex is IOException || ex is NotSupportedException)
+                    Log.WriteLine(ex.Message);
+                else
+                    throw ex;
+            }
         }
     }
 

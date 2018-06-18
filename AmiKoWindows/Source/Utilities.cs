@@ -27,6 +27,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows.Media.Imaging;
 
 namespace AmiKoWindows
 {
@@ -218,7 +219,7 @@ namespace AmiKoWindows
 
         public static void ResizeImageFileAsPng(Stream input, Stream output, int width, int height)
         {
-            using (var image = Image.FromStream(input))
+            using (var image = System.Drawing.Image.FromStream(input))
             using (var bitmap = new Bitmap(width, height))
             using (var graphics = Graphics.FromImage(bitmap))
             {
@@ -229,6 +230,28 @@ namespace AmiKoWindows
                 bitmap.Save(output, ImageFormat.Png);
             }
         }
+        #endregion
+
+        #region UI Functions
+        // Loads image on memory (to make it deletable on another view)
+        public static bool LoadPictureInto(System.Windows.Controls.Image image, string path)
+        {
+            var loaded = false;
+            if ((image is System.Windows.Controls.Image) && path != null && !path.Equals(string.Empty) && File.Exists(path))
+            {
+                var source = new System.Windows.Media.Imaging.BitmapImage();
+                source.BeginInit();
+                source.CacheOption = BitmapCacheOption.OnLoad;
+                source.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                source.UriSource = new Uri(path, UriKind.Absolute);
+                source.EndInit();
+                image.Source = source;
+                source.Freeze();
+                loaded = true;
+            }
+            return loaded;
+        }
+
         #endregion
 
         #region Shell Functions
