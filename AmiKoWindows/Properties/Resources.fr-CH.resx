@@ -243,6 +243,9 @@
   <data name="msgProfileSaveFailure" xml:space="preserve">
     <value>L'adresse du médecin n'est pas enregistrée. Examinez vos données dans les cadres rouges.</value>
   </data>
+  <data name="msgProfileUnsetWarning" xml:space="preserve">
+    <value>Ajoutez l'addresse du Médecin s.v.p.</value>
+  </data>
   <data name="newDb" xml:space="preserve">
     <value>Nouvelle banque de données disponible!</value>
   </data>

@@ -243,6 +243,9 @@
   <data name="msgProfileSaveFailure" xml:space="preserve">
     <value>Die Arztadresse wurde nicht gespeichert. Bitte korrigieren Sie die roten Felder.</value>
   </data>
+  <data name="msgProfileUnsetWarning" xml:space="preserve">
+    <value>Bitte Arztadresse hinzufügen</value>
+  </data>
   <data name="newDb" xml:space="preserve">
     <value>Neue Datenbank verfügbar!</value>
   </data>

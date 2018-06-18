@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Configuration;
 using System.Linq;
+using System.Windows;
 
 namespace AmiKoWindows
 {
@@ -91,6 +92,27 @@ namespace AmiKoWindows
             set { this[nameof(Email)] = value; }
         }
 
+        static readonly string[] requiredPlainTextFields = new string[] {
+            "GivenName", "FamilyName", "Address", "City", "Zip",
+        };
+
+        // Returns operator's profile (required text fields) is saved in user.config
+        static public bool IsSet()
+        {
+            // NOTE: Namespace `AmiKoWindows` is required in static context
+            if (AmiKoWindows.Properties.Settings.Default == null)
+                return false;
+
+            Operator op = AmiKoWindows.Properties.Settings.Default.Operator as Operator;
+            if (op == null)
+                return false;
+
+            return 0 == requiredPlainTextFields.Where(f => {
+                string v = (string)op[f];
+                return (v == null || v.Equals(string.Empty));
+            }).Count();
+        }
+
         static public bool ValidateProperty(string propertyName, string text)
         {
             if (propertyName == null || propertyName.Equals(string.Empty))
@@ -101,9 +123,6 @@ namespace AmiKoWindows
             int maxLength = 255;
 
             // required
-            var requiredPlainTextFields = new string[] {
-                "GivenName", "FamilyName", "Address", "City", "Zip",
-            };
             if (requiredPlainTextFields.Contains(propertyName))
                 return text != string.Empty && text.Length < maxLength;
             else if (propertyName.Equals("Email"))

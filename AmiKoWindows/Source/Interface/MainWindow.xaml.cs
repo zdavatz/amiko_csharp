@@ -225,6 +225,10 @@ namespace AmiKoWindows
                 this.Favorites.IsChecked = false;
                 this.Interactions.IsChecked = false;
                 this.Prescriptions.IsChecked = true;
+
+                Button button = GetElementInMainArea("OpenProfileCardButton") as Button;
+                if (button != null && !Operator.IsSet())
+                    button.Visibility = Visibility.Visible;
                 // TODO
                 _prescriptions.ShowDetail();
             }
@@ -632,6 +636,7 @@ namespace AmiKoWindows
                 viewType.HasCard = true;
                 this.DataContext = viewType;
 
+                // ProfileCard
                 this.FlyoutMenu.IsOpen = false;
             }
             else if (name.Equals("Feedback"))
@@ -781,6 +786,24 @@ namespace AmiKoWindows
 
             //Log.WriteLine(source.Name);
             this.DataContext = new ViewType("Form", true);
+            e.Handled = true;
+        }
+
+        private void OpenProfileCardButton_Click(object sender, RoutedEventArgs e)
+        {
+            var source = e.OriginalSource as FrameworkElement;
+            if (source == null)
+                return;
+
+            ViewType viewType;
+            viewType = this.DataContext as ViewType;
+            if (viewType == null)
+                return;
+
+            viewType.HasCard = true;
+            this.DataContext = viewType;
+
+            this.FlyoutMenu.IsOpen = false;
             e.Handled = true;
         }
 

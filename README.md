@@ -270,6 +270,38 @@ TODO
 * [Package a UWP app with Visual Studio](https://docs.microsoft.com/en-us/windows/uwp/packaging/packaging-uwp-apps)
 
 
+### Clean up
+
+```powershell
+PS C:\Users\... > taskkill /im 'AmiKo Desitin.exe' /f
+PS C:\Users\... > MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Clean
+
+PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
+PS C:\Users\... > MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Clean
+```
+
+#### User Settings
+
+```bash
+# Just delete these directories (or delete `user.config` in there)
+$ rm -fr /mnt/c/Users/<USER>/AppData/Local/ywesee/AmiKo_Desitin.exe*
+$ rm -fr /mnt/c/Users/<USER>/AppData/Local/ywesee/CoMed_Desitin.exe*
+```
+
+#### Application Resources
+
+* Fachinfo Text DB
+* Favorites
+* Interaction Basket
+* Doctor(Operator) Profile Photo
+
+```bash
+# e.g. Profile Photo
+$ rm /mnt/c/Users/<USER>/AppData/Roaming/ywesee/AmiKo\ Desitin/*.png
+$ rm /mnt/c/Users/<USER>/AppData/Roaming/ywesee/CoMed\ Desitin/*.png
+```
+
+
 ## Test
 
 See projects in `AmiKoWindows.Tests`. Tests are written in NUnit.

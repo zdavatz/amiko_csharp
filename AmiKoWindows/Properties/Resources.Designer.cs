@@ -437,6 +437,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
+        public static string msgProfileUnsetWarning {
+            get {
+                return ResourceManager.GetString("msgProfileUnsetWarning", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Neue Datenbank verfügbar!.
         /// </summary>
         public static string newDb {
