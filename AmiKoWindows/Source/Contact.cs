@@ -21,6 +21,7 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 
 namespace AmiKoWindows
@@ -60,14 +61,22 @@ namespace AmiKoWindows
         public string FamilyName
         {
             get { return _FamilyName; }
-            set { SetField(ref _FamilyName, value, "FamilyName"); }
+            set
+            {
+                SetField(ref _FamilyName, value, "FamilyName");
+                OnPropertyChanged("Fullname");
+            }
         }
 
         private string _GivenName;
         public string GivenName
         {
             get { return _GivenName; }
-            set { SetField(ref _GivenName, value, "GivenName"); }
+            set
+            {
+                SetField(ref _GivenName, value, "GivenName");
+                OnPropertyChanged("Fullname");
+            }
         }
 
         private string _Birthdate;
@@ -133,14 +142,22 @@ namespace AmiKoWindows
         public string Zip
         {
             get { return _Zip; }
-            set { SetField(ref _Zip, value, "Zip"); }
+            set
+            {
+                SetField(ref _Zip, value, "Zip");
+                OnPropertyChanged("Place");
+            }
         }
 
         private string _City;
         public string City
         {
             get { return _City; }
-            set { SetField(ref _City, value, "City"); }
+            set
+            {
+                SetField(ref _City, value, "City");
+                OnPropertyChanged("Place");
+            }
         }
 
         private string _Country;
@@ -171,7 +188,8 @@ namespace AmiKoWindows
             set { SetField(ref _Email, value, "Email"); }
         }
 
-        // Additional virtual properties for `Gender` (TwoWay for RadioButton in Xaml)
+        #region Virtual Fields
+        // for `Gender` (TwoWay for RadioButton in Xaml)
         public bool IsFemale
         {
             get { return _Gender == GENDER_FEMALE; }
@@ -183,6 +201,29 @@ namespace AmiKoWindows
             get { return _Gender == GENDER_MALE; }
             set { SetField(ref _Gender, value ? GENDER_MALE : GENDER_FEMALE, "Gender"); }
         }
+
+        public string Fullname
+        {
+            get {
+                var keys = new string[]{"GivenName", "FamilyName"};
+                return String.Join("", keys.Select(k => {
+                    var v = this[k] as string;
+                    if (v != null && !v.Equals(string.Empty))
+                        v += " ";
+                    return v;
+                }));
+            }
+        }
+
+        public string Place
+        {
+            get {
+                if (this.Zip == null || this.Zip.Equals(""))
+                    return this.City;
+                return String.Format("{0} {1}", this.Zip, this.City);
+            }
+        }
+        #endregion
 
         #region Setter/Getter Utilities
         public object this[string propertyName]

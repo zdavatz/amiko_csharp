@@ -509,6 +509,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Patient suchen.
+        /// </summary>
+        public static string patientSearch {
+            get {
+                return ResourceManager.GetString("patientSearch", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Telefonnr.
         /// </summary>
         public static string phone {

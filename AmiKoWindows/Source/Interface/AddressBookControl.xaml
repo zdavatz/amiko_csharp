@@ -192,6 +192,7 @@
                         SelectionChanged="ContactItem_SelectionChanged"
                         KeyboardNavigation.DirectionalNavigation="Cycle"
                         KeyDown="ContactList_KeyDown"
+                        MouseDoubleClick="ContactList_MouseDoubleClick"
                         ItemsSource="{Binding Path=ContactListItems}" Height="430">
                         <ListBox.ItemTemplate>
                             <DataTemplate>

@@ -346,6 +346,33 @@ namespace AmiKoWindows
             }
         }
 
+        // DoubleClick
+        private async void ContactList_MouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            if (object.ReferenceEquals(sender, this.ContactList))
+            {
+                if (ContactList.SelectedItem != null)
+                {
+                    Log.WriteLine("{0}", ContactList.SelectedItem);
+
+                    var item = this.ContactList.SelectedItem as Item;
+                    if (item != null && item.Id != null)
+                    {
+                        long id = item.Id.Value;
+                        Contact contact = await _patientDb.GetContactById(id);
+                        if (contact != null)
+                        {
+                            this.CurrentEntry = contact;
+                            if (this._mainWindow != null)
+                                this._mainWindow.ActiveContact = contact;
+                        }
+                    }
+                }
+            }
+            if (_parent != null)
+                _parent.IsOpen = false;
+        }
+
         // Preview action
         private void ContactItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

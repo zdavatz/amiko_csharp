@@ -62,13 +62,27 @@ namespace AmiKoWindows
         FrameworkElement _browser;
         FrameworkElement _manager;
 
+        public string Hoi = "Test";
         #region Public Fields
-        private Operator _CurrentOperator;
-        public Operator CurrentOperator {
-            get { return _CurrentOperator; }
-            set {
-                _CurrentOperator = value;
-                OnPropertyChanged("CurrentOperator");
+        private Contact _ActiveContact;
+        public Contact ActiveContact
+        {
+            get { return _ActiveContact; }
+            set
+            {
+                _ActiveContact = value;
+                OnPropertyChanged("ActiveContact");
+            }
+        }
+
+        private Operator _ActiveOperator;
+        public Operator ActiveOperator
+        {
+            get { return _ActiveOperator; }
+            set
+            {
+                _ActiveOperator = value;
+                OnPropertyChanged("ActiveOperator");
             }
         }
         #endregion
@@ -329,9 +343,11 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Form", false);
                 SwitchViewContext();
 
+                FillContactFields();
+
                 var operatorInfo = GetElementInMainArea("OperatorInfo") as Grid;
                 if (operatorInfo != null)
-                    operatorInfo.DataContext = this.CurrentOperator;
+                    operatorInfo.DataContext = ActiveOperator;
 
                 LoadOperatorPicture();
 
@@ -401,7 +417,7 @@ namespace AmiKoWindows
             this.Compendium.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
             if (Operator.IsSet())
-                this.CurrentOperator = Properties.Settings.Default.Operator;
+                this.ActiveOperator = Properties.Settings.Default.Operator;
 
             this.DataContext = new ViewType("Html");
             SwitchViewContext();
@@ -886,6 +902,7 @@ namespace AmiKoWindows
                 return;
 
             Log.WriteLine(source.Name);
+            FillContactFields();
 
             // Re:enable animations for next time
             source.AreAnimationsEnabled = true;
@@ -902,7 +919,7 @@ namespace AmiKoWindows
 
             if (Operator.IsSet())
             {
-                this.CurrentOperator = Properties.Settings.Default.Operator;
+                this.ActiveOperator = Properties.Settings.Default.Operator;
                 LoadOperatorPicture();
             }
 
@@ -911,13 +928,32 @@ namespace AmiKoWindows
             e.Handled = true;
         }
 
+        private void FillContactFields()
+        {
+            if (ActiveContact == null)
+                return;
+
+            var fields = new string[] {"Fullname", "Address", "Place", "Phone", "Email"};
+            foreach (var f in fields)
+            {
+                var key = String.Format("Contact{0}", f);
+                var block = GetElementInMainArea(key) as TextBlock;
+                if (block != null)
+                {
+                    Log.WriteLine("Text: {0}", ActiveContact[f]);
+                    block.Text = (string)ActiveContact[f];
+                    block.UpdateLayout();
+                }
+            }
+        }
+
         private void LoadOperatorPicture()
         {
             try
             {
                 Image image = GetElementInMainArea("OperatorPicture") as Image;
-                if (image != null && Operator.IsSet() && this.CurrentOperator != null)
-                    Utilities.LoadPictureInto(image, this.CurrentOperator.PictureFile);
+                if (image != null && Operator.IsSet() && ActiveOperator != null)
+                    Utilities.LoadPictureInto(image, ActiveOperator.PictureFile);
             }
             catch (Exception ex)
             {

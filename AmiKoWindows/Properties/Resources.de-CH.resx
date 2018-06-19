@@ -267,6 +267,9 @@
   <data name="patientManagement" xml:space="preserve">
     <value>Patientenverwaltung</value>
   </data>
+  <data name="patientSearch" xml:space="preserve">
+    <value>Patient suchen</value>
+  </data>
   <data name="phone" xml:space="preserve">
     <value>Telefonnr.</value>
   </data>
