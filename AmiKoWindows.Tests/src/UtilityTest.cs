@@ -79,6 +79,19 @@ namespace AmiKoWindows.Tests
         }
 
         [Test]
+        public void Test_Contact()
+        {
+            Assert.AreEqual("Foo Bar Baz", Utilities.Concat("Foo", "Bar", "Baz"));
+            Assert.AreEqual("Foo Baz", Utilities.Concat("Foo", "", "Baz"));
+            Assert.AreEqual("Baz", Utilities.Concat("", "", "Baz"));
+            Assert.AreEqual("Foo", Utilities.Concat("Foo", "", ""));
+
+            Assert.AreEqual("Foo Baz", Utilities.Concat("Foo", null, "Baz"));
+            Assert.AreEqual("Bar Baz", Utilities.Concat(null, "Bar", "Baz"));
+            Assert.AreEqual("", Utilities.Concat(null, null, null));
+        }
+
+        [Test]
         public void Test_GenerateHash_Equality()
         {
             string hashA, hashB;

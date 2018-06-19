@@ -86,5 +86,39 @@ namespace AmiKoWindows.Tests
 
             Assert.AreNotEqual(expected, contactD.GenerateUid());
         }
+
+        [Test]
+        public void Test_VirtualField_Fullname()
+        {
+            Contact contact;
+
+            contact = new Contact();
+            contact.GivenName = "John";
+            Assert.AreEqual("John", contact.Fullname);
+
+            contact = new Contact();
+            contact.FamilyName = "Smith";
+            Assert.AreEqual("Smith", contact.Fullname);
+
+            contact = new Contact();
+            contact.GivenName = "John";
+            contact.FamilyName = "Smith";
+            Assert.AreEqual("John Smith", contact.Fullname);
+        }
+
+        [Test]
+        public void Test_VirtualField_Place()
+        {
+            Contact contact;
+
+            contact = new Contact();
+            contact.Zip = "123";
+            contact.City = "ZÃrich";
+            Assert.AreEqual("123 ZÃrich", contact.Place);
+
+            contact = new Contact();
+            contact.City = "Bern";
+            Assert.AreEqual("Bern", contact.Place);
+        }
     }
 }

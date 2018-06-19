@@ -21,7 +21,6 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 
 namespace AmiKoWindows
@@ -204,24 +203,12 @@ namespace AmiKoWindows
 
         public string Fullname
         {
-            get {
-                var keys = new string[]{"GivenName", "FamilyName"};
-                return String.Join("", keys.Select(k => {
-                    var v = this[k] as string;
-                    if (v != null && !v.Equals(string.Empty))
-                        v += " ";
-                    return v;
-                }));
-            }
+            get { return Utilities.Concat(this.GivenName, this.FamilyName); }
         }
 
         public string Place
         {
-            get {
-                if (this.Zip == null || this.Zip.Equals(""))
-                    return this.City;
-                return String.Format("{0} {1}", this.Zip, this.City);
-            }
+            get { return Utilities.Concat(this.Zip, this.City); }
         }
         #endregion
 

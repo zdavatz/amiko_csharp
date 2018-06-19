@@ -185,6 +185,20 @@ namespace AmiKoWindows
             return newText;
         }
 
+        // Makes a string using arguments concatenated as string
+        public static string Concat(params string[] parts)
+        {
+            var text = String.Join("", parts.Select(v => {
+                if (v == null || v.Equals(string.Empty))
+                    return "";
+                return String.Format("{0} ", v);
+            }));
+            if (text.Length > 1)
+                text = text.Substring(0, text.Length - 1);
+            return text;
+
+        }
+
         public static string GenerateHash(string baseString)
         {
             HashAlgorithm algorithm = SHA256.Create();
