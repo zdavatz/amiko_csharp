@@ -136,9 +136,13 @@ namespace AmiKoWindows
         public string Fullname
         {
             get {
-                if (this.GivenName == null || this.GivenName.Equals(""))
-                    return this.FamilyName;
-                return String.Format("{0} {1}", this.GivenName, this.FamilyName);
+                var keys = new string[]{"Title", "GivenName", "FamilyName"};
+                return String.Join("", keys.Select(k => {
+                    var v = this[k] as string;
+                    if (v != null && !v.Equals(string.Empty))
+                        v += " ";
+                    return v;
+                }));
             }
         }
 
