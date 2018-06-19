@@ -394,7 +394,7 @@ namespace AmiKoWindows
                 using (var input = File.OpenRead(inputFile))
                 using (var output = File.Create(outputFile))
                 {
-                    Utilities.ResizeImageFileAsPng(input, output, 200, 200);
+                    Utilities.SaveImageFileAsPng(input, output);
                 }
                 this.PictureFile = outputFile;
             }

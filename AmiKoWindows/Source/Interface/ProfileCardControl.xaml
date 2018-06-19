@@ -121,7 +121,7 @@
                         </Button>
                     </StackPanel>
                     <Border BorderThickness="1" BorderBrush="LightGray" Background="{StaticResource PaleGray}" Width="Auto" Height="80" CornerRadius="1" Margin="7,3,16,6" Padding="0,6,0,6">
-                        <Image Name="Picture" Width="100" Height="70" />
+                        <Image Name="Picture" Height="70" />
                     </Border>
                 </StackPanel>
             </Grid>
