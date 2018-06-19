@@ -127,7 +127,7 @@ namespace AmiKoWindows
             else
                 this.PictureFile = path;
 
-            if (DoesPictureFileExist)
+            if (!DoesPictureFileExist)
                 EnableDeletePictureButton(false);
             else
                 LoadPicture();
@@ -239,7 +239,6 @@ namespace AmiKoWindows
                 EnableDeletePictureButton(false);
             else
             {
-                this.PictureFile = path;
                 LoadPicture();
                 ValidateField(this.Picture);
             }
