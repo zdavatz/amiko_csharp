@@ -201,12 +201,12 @@ namespace AmiKoWindows
         public static string GenerateHash(string baseString)
         {
             long hash = Hash(baseString);
-			// cast signed long to unsigned long (same as macOS Version of AmiKo)
+            // cast signed long to unsigned long (same as macOS Version of AmiKo)
             return String.Format("{0}", (ulong)Hash(baseString));
         }
 
         // https://opensource.apple.com/source/CF/CF-1151.16/CFString.c.auto.html
-		// See also `UtilityTest.cs`
+        // See also `UtilityTest.cs`
         public static long Hash(string baseString)
         {
             char[] chars = baseString.ToCharArray();
