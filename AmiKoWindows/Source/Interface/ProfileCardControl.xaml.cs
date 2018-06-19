@@ -55,13 +55,20 @@ namespace AmiKoWindows
         #region Private Fields
         MainWindow _mainWindow;
         MahApps.Metro.Controls.Flyout _parent;
+
+        private bool DoesPictureFileExist
+        {
+            get { return (this.PictureFile != null && !this.PictureFile.Equals(string.Empty) && File.Exists(this.PictureFile)); }
+        }
         #endregion
 
         #region Public Fields
         private Operator _CurrentEntry;
-        public Operator CurrentEntry {
+        public Operator CurrentEntry
+        {
             get { return _CurrentEntry; }
-            set {
+            set
+            {
                 _CurrentEntry = value;
                 OnPropertyChanged("CurrentEntry");
             }
@@ -70,7 +77,8 @@ namespace AmiKoWindows
         private string _PictureFile;
         public string PictureFile {
             get { return _PictureFile; }
-            set {
+            set
+            {
                 _PictureFile = value;
                 OnPropertyChanged("PictureFile");
                 if (this.CurrentEntry != null)
@@ -110,6 +118,8 @@ namespace AmiKoWindows
 
             this.CurrentEntry = Properties.Settings.Default.Operator;
 
+            if (!DetectCamera())
+                this.TakePictureButton.Visibility = Visibility.Hidden;
 
             var path = Utilities.OperatorPictureFilePath();
             if (!File.Exists(path))
@@ -117,7 +127,7 @@ namespace AmiKoWindows
             else
                 this.PictureFile = path;
 
-            if (this.PictureFile == null || this.PictureFile.Equals(string.Empty) || !File.Exists(this.PictureFile))
+            if (DoesPictureFileExist)
                 EnableDeletePictureButton(false);
             else
                 LoadPicture();
@@ -220,17 +230,43 @@ namespace AmiKoWindows
             }
         }
 
+        private void SetAccountAvatarButton_Click(object sender, RoutedEventArgs e)
+        {
+            var path = Utilities.OperatorPictureFilePath();
+            SetUserDefaultPicture(path);
+
+            if (!DoesPictureFileExist)
+                EnableDeletePictureButton(false);
+            else
+            {
+                this.PictureFile = path;
+                LoadPicture();
+                ValidateField(this.Picture);
+            }
+        }
+
         private async void TakePictureButton_Click(object sender, RoutedEventArgs e)
         {
-            var capture = new MediaCapture();
-            await capture.InitializeAsync();
+            MediaCapture capture = null;
+            try
+            {
+                capture = new MediaCapture();
+                await capture.InitializeAsync();
+            }
+            catch (TypeLoadException ex)
+            {
+                Log.WriteLine(ex.Message);
+            }
 
-            var preview = new PreviewImage(capture);
-            this.Picture.Source = preview;
-            await preview.StartAsync();
+            if (capture != null)
+            {
+                var preview = new PreviewImage(capture);
+                this.Picture.Source = preview;
+                await preview.StartAsync();
 
-            var outputFile = Utilities.OperatorPictureFilePath();
-            TakePicture(capture, preview, outputFile, 3);
+                var outputFile = Utilities.OperatorPictureFilePath();
+                TakePicture(capture, preview, outputFile, 3);
+            }
         }
 
         private void DeletePictureButton_Click(object sender, RoutedEventArgs e)
@@ -287,8 +323,7 @@ namespace AmiKoWindows
                     hasError = true;
                 else
                 {
-                    if (img.Source == null || this.PictureFile == null || this.PictureFile.Equals(string.Empty) ||
-                        !img.Source.ToString().Contains(Path.GetFileName(this.PictureFile)) || !File.Exists(this.PictureFile))
+                    if (img.Source == null || !DoesPictureFileExist || !img.Source.ToString().Contains(Path.GetFileName(this.PictureFile)))
                         hasError = true;
 
                     this.FeedbackField<Image>(img, hasError);
@@ -456,6 +491,21 @@ namespace AmiKoWindows
                     image.Foreground = Brushes.Black;
                 else
                     image.Foreground = Brushes.LightGray;
+        }
+
+        private bool DetectCamera()
+        {
+            try
+            {
+                // is camera available?
+                var _ = new MediaCapture();
+                return true;
+            }
+            catch (TypeLoadException ex)
+            {
+                Log.WriteLine(ex.Message);
+                return false;
+            }
         }
     }
 }
