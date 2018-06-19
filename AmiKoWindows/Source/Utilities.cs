@@ -25,7 +25,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Media.Imaging;
 
@@ -201,14 +200,59 @@ namespace AmiKoWindows
 
         public static string GenerateHash(string baseString)
         {
-            HashAlgorithm algorithm = SHA256.Create();
-            byte[] hash = algorithm.ComputeHash(Encoding.UTF8.GetBytes(baseString));
+            long hash = Hash(baseString);
+			// cast signed long to unsigned long (same as macOS Version of AmiKo)
+            return String.Format("{0}", (ulong)Hash(baseString));
+        }
 
-            StringBuilder builder = new StringBuilder();
-            foreach (byte b in hash)
-                builder.Append(b.ToString("X2"));
-            return builder.ToString();
+        // https://opensource.apple.com/source/CF/CF-1151.16/CFString.c.auto.html
+		// See also `UtilityTest.cs`
+        public static long Hash(string baseString)
+        {
+            char[] chars = baseString.ToCharArray();
+            int len = baseString.Length;
 
+            long result = len;
+            if (len <= 96)
+            {
+                int to4 = (len & ~3);
+                int end = len;
+                int i = 0;
+                while (i < to4)
+                {
+                    result = result * 67503105 + chars[i] * 16974593 + chars[i + 1] * 66049 + chars[i + 2] * 257 + chars[i + 3];
+                    i += 4;
+                }
+
+                while (i < end)
+                    result = result * 257 + chars[i++];
+            }
+            else
+            {
+                int end;
+                var i = 0;
+                end = 29;
+                while (i < end)
+                {
+                    result = result * 67503105 + chars[i] * 16974593 + chars[i + 1] * 66049 + chars[i + 2] * 257 + chars[i + 3];
+                    i += 4;
+                }
+                var j = ((len / 2) - 16);
+                end = ((len / 2) + 15);
+                while (j < end)
+                {
+                    result = result * 67503105 + chars[j] * 16974593 + chars[j + 1] * 66049 + chars[j + 2] * 257 + chars[j + 3];
+                    j += 4;
+                }
+                var k = (len - 32);
+                end = (k + 29);
+                while (k < end)
+                {
+                    result = result * 67503105 + chars[k] * 16974593 + chars[k + 1] * 66049 + chars[k + 2] * 257 + chars[k + 3];
+                    k += 4;
+                }
+            }
+            return (result + (result << (len & 31)));
         }
 
         public static string GetCurrentTimeInUTC()

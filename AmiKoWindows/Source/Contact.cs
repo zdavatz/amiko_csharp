@@ -243,14 +243,24 @@ namespace AmiKoWindows
         // NOTE:
         //
         // See also the early implementation on macOS/iOS Version (til, AmiKo macOS v3.4.4, AmiKo iOS v2.8.143):
-		// Its rely on the value of NSString's `hash` (It might need migration or something).
-        // The requirement has been changed (https://github.com/zdavatz/amiko_csharp/issues/81).
+		// Its rely on the value of __current__ NSString's `hash`.
 		//
         // * https://github.com/zdavatz/amiko-osx/blob/a4892277bde48e358c9e3042b14bf8b6cddd22c4/MLPatient.m#L70
         // * https://github.com/zdavatz/AmiKo-iOS/blob/d1ad38727931bb3b079bfff85d1d93dbcc8de567/AmiKoDesitin/MLPatient.m#L50
         //
+        // This `GenerateUid` based on the same hashed value by NSString's (CFString CF-1151.16) Hash Implementation in C# (in Utilities.cs).
+        // AmiKo iOS and OSX (both) are going to have same __embedded__ implementation soon.
+        //
+        // On Swift 3.0.1, `hash` property is same result with output by hash implementation in following file:
+        //
+        // * https://opensource.apple.com/source/CF/CF-1151.16/CFString.c.auto.html
+        //
+        // See also `Utilities.Hash` and unit tests.
+        //
 		// ## Reference
 		//
+        // * https://opensource.apple.com/source/CF/CF-1151.16/CFString.c.auto.html
+        // * https://developer.apple.com/documentation/foundation/nsstring/1417245-hash
         // * https://developer.apple.com/documentation/foundation/nsstring/1417245-hash?language=objc
         // * https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418859-hash?language=objc
         public string GenerateUid()
@@ -258,7 +268,6 @@ namespace AmiKoWindows
             // e.g. davatz.zeno.2.6.1942
             string baseString = String.Format(
                 "{0}.{1}.{2}", this.FamilyName, this.GivenName, this.Birthdate).ToLower();
-            //Log.WriteLine("baseString: {0}", baseString);
             return Utilities.GenerateHash(baseString);
         }
 

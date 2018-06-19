@@ -92,6 +92,45 @@ namespace AmiKoWindows.Tests
         }
 
         [Test]
+        public void Test_Hash()
+        {
+            // NOTE: https://repl.it/ may be usefull to check the value (on swift)
+            /**
+             *
+             * ```swift
+             * import Foundation
+             *
+             * var s: NSString = "Hoi"
+             * print(s.hash)
+             *
+             * var t: NSString = "ZÃ¤me"
+             * print(t.hash)
+             *
+             * var r: NSString = "FooBarBaz"
+             * print(r.hash)
+             * print(NSString(format: "%lu", r.hash))
+             *
+             * var i: NSString = "FooBarBazQuxQuuxFooBarBazQuxQuux"
+             * print(i.hash)
+             *
+             * var n = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+             * print(n.hash)
+             * ```
+             */
+            Assert.AreEqual(501371451, Utilities.Hash("Hoi"));
+            Assert.AreEqual(30817822292, Utilities.Hash("Zäme"));
+            Assert.AreEqual(-1575337182486860193, Utilities.Hash("FooBarBaz"));
+            Assert.AreEqual(2098610509559846236, Utilities.Hash("FooBarBazQuxQuuxFooBarBazQuxQuux"));
+            Assert.AreEqual(6539383804322955524, Utilities.Hash(new String('a', 100)));
+
+            Assert.AreEqual("501371451", Utilities.GenerateHash("Hoi"));
+            Assert.AreEqual("30817822292", Utilities.GenerateHash("Zäme"));
+            Assert.AreEqual("16871406891222691423", Utilities.GenerateHash("FooBarBaz"));
+            Assert.AreEqual("2098610509559846236", Utilities.GenerateHash("FooBarBazQuxQuuxFooBarBazQuxQuux"));
+            Assert.AreEqual("6539383804322955524", Utilities.Hash(new String('a', 100)));
+        }
+
+        [Test]
         public void Test_GenerateHash_Equality()
         {
             string hashA, hashB;
