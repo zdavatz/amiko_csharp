@@ -152,7 +152,7 @@ namespace AmiKoWindows
             {
                 foreach (Article article in list)
                 {
-                    if (uiState.IsCompendium() || (uiState.IsFavorites() && article.IsFavorite))
+                    if (uiState.IsCompendium || (uiState.IsFavorites && article.IsFavorite) || (uiState.IsPrescriptions))
                     {
                         List<string> packInfoList = article.PackInfo.Split('\n').ToList();
                         List<string> packagesList = article.Packages.Split('\n').ToList();
@@ -167,7 +167,7 @@ namespace AmiKoWindows
                             ChildItems = ci
                         });
                     }
-                    else if (uiState.IsInteractions())
+                    else if (uiState.IsInteractions)
                     {
                         // Calculate number of child items (number of packages)
                         var packagesList = article.Packages.Split('\n');
@@ -194,8 +194,7 @@ namespace AmiKoWindows
             {
                 foreach (Article article in list)
                 {
-                    bool cond = uiState.IsCompendium() || uiState.IsInteractions() || (uiState.IsFavorites() && article.IsFavorite);
-                    if (cond)
+                    if (uiState.IsCompendium || uiState.IsInteractions || (uiState.IsFavorites && article.IsFavorite) || uiState.IsPrescriptions)
                     {
                         Add(new Item()
                         {
@@ -214,7 +213,7 @@ namespace AmiKoWindows
             {
                 foreach (Article article in list)
                 {
-                    if (uiState.IsCompendium() || (uiState.IsFavorites() && article.IsFavorite))
+                    if (uiState.IsCompendium || (uiState.IsFavorites && article.IsFavorite) || uiState.IsPrescriptions)
                     {
                         ChildItemsObservableCollection ci = new ChildItemsObservableCollection();
                         // ATC code + ATC name
@@ -240,7 +239,7 @@ namespace AmiKoWindows
                             ChildItems = ci
                         });
                     }
-                    else if (uiState.IsInteractions())
+                    else if (uiState.IsInteractions)
                     {
                         ChildItemsObservableCollection ci = new ChildItemsObservableCollection();
                         // ATC code + ATC name
@@ -263,8 +262,7 @@ namespace AmiKoWindows
             {
                 foreach (Article article in list)
                 {
-                    bool cond = uiState.IsCompendium() || uiState.IsInteractions() || (uiState.IsFavorites() && article.IsFavorite);
-                    if (cond)
+                    if (uiState.IsCompendium || uiState.IsInteractions || (uiState.IsFavorites && article.IsFavorite) || uiState.IsPrescriptions)
                     {
                         Add(new Item()
                         {
@@ -283,8 +281,7 @@ namespace AmiKoWindows
             {
                 foreach (Article article in list)
                 {
-                    bool cond = uiState.IsCompendium() || uiState.IsInteractions() || (uiState.IsFavorites() && article.IsFavorite);
-                    if (cond)
+                    if (uiState.IsCompendium || uiState.IsInteractions || (uiState.IsFavorites && article.IsFavorite) || uiState.IsPrescriptions)
                     {
                         ChildItemsObservableCollection ci = new ChildItemsObservableCollection();
                         List<string> listOfApplications = article?.Application.Split(';').ToList();
@@ -315,8 +312,7 @@ namespace AmiKoWindows
             {
                 foreach (FullTextEntry entry in list)
                 {
-                    bool cond = uiState.FullTextQueryEnabled();
-                    if (cond)
+                    if (uiState.FullTextQueryEnabled)
                     {
                         Add(new Item()
                         {

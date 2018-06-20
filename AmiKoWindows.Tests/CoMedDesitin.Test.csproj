@@ -71,6 +71,7 @@
     <Compile Include="src\ContactTest.cs" />
     <Compile Include="src\OperatorTest.cs" />
     <Compile Include="src\PatientDbTest.cs" />
+    <Compile Include="src\UIStateTest.cs" />
     <Compile Include="src\UtilityTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
