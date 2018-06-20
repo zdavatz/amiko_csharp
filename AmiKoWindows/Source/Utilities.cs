@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -184,15 +185,20 @@ namespace AmiKoWindows
             return newText;
         }
 
-        // Makes a string using arguments concatenated as string
         public static string Concat(params string[] parts)
+        {
+            return ConcatWith(" ", parts);
+        }
+
+        // Makes a string using arguments concatenated as string
+        public static string ConcatWith(string delimiter, params string[] parts)
         {
             var text = String.Join("", parts.Select(v => {
                 if (v == null || v.Equals(string.Empty))
                     return "";
-                return String.Format("{0} ", v);
+                return String.Format("{0}{1}", v, delimiter);
             }));
-            if (text.Length > 1)
+            if (delimiter.Length > 0 && text.Length > 1)
                 text = text.Substring(0, text.Length - 1);
             return text;
 

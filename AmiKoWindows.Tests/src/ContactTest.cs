@@ -113,12 +113,58 @@ namespace AmiKoWindows.Tests
 
             contact = new Contact();
             contact.Zip = "123";
-            contact.City = "ZÃrich";
-            Assert.AreEqual("123 ZÃrich", contact.Place);
+            contact.City = "Zürich";
+            Assert.AreEqual("123 Zürich", contact.Place);
 
             contact = new Contact();
             contact.City = "Bern";
             Assert.AreEqual("Bern", contact.Place);
+        }
+
+        [Test]
+        public void Test_VirtualField_PersonalInfo()
+        {
+            Contact contact;
+
+            contact = new Contact();
+            contact.IsFemale = true;
+            contact.RawWeightKg = 45.9f;
+            contact.RawHeightCm = 168.3f;
+            contact.Birthdate = "13.6.1993";
+            Assert.AreEqual("45.9kg/168.3cm F 13.6.1993", contact.PersonalInfo);
+
+            contact = new Contact();
+            contact.IsMale = true;
+            contact.RawWeightKg = 70.3f;
+            contact.RawHeightCm = 186.7f;
+            contact.Birthdate = "30.11.1990";
+            Assert.AreEqual("70.3kg/186.7cm M 30.11.1990", contact.PersonalInfo);
+
+            // F default, without decimal points
+            contact = new Contact();
+            contact.RawWeightKg = 60.0f;
+            contact.RawHeightCm = 170.0f;
+            contact.Birthdate = "1.1.1970";
+            Assert.AreEqual("60kg/170cm F 1.1.1970", contact.PersonalInfo);
+
+            // without size properties
+            contact = new Contact();
+            contact.Birthdate = "1.1.1970";
+            Assert.AreEqual("F 1.1.1970", contact.PersonalInfo);
+
+            // without weight
+            contact = new Contact();
+            contact.IsMale = true;
+            contact.RawHeightCm = 191.0f;
+            contact.Birthdate = "3.6.2000";
+            Assert.AreEqual("191cm M 3.6.2000", contact.PersonalInfo);
+
+            // without height
+            contact = new Contact();
+            contact.IsFemale = true;
+            contact.RawWeightKg = 58.3f;
+            contact.Birthdate = "22.2.2002";
+            Assert.AreEqual("58.3kg F 22.2.2002", contact.PersonalInfo);
         }
     }
 }

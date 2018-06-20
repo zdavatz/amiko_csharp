@@ -201,6 +201,7 @@ namespace AmiKoWindows
             set { SetField(ref _Gender, value ? GENDER_MALE : GENDER_FEMALE, "Gender"); }
         }
 
+        // for view
         public string Fullname
         {
             get { return Utilities.Concat(this.GivenName, this.FamilyName); }
@@ -209,6 +210,16 @@ namespace AmiKoWindows
         public string Place
         {
             get { return Utilities.Concat(this.Zip, this.City); }
+        }
+
+        public string PersonalInfo
+        {
+            get {
+                var w = this.WeightKg; if (w != null && !w.Equals(string.Empty)) w += "kg";
+                var h = this.HeightCm; if (h != null && !h.Equals(string.Empty)) h += "cm";
+                var g = ""; if (this.IsFemale) g = "F"; else if (this.IsMale) g = "M";
+                return Utilities.Concat(Utilities.ConcatWith("/", w, h), g, this.Birthdate);
+            }
         }
         #endregion
 

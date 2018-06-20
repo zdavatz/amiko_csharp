@@ -933,7 +933,7 @@ namespace AmiKoWindows
             if (ActiveContact == null)
                 return;
 
-            var fields = new string[] {"Fullname", "Address", "Place", "Phone", "Email"};
+            var fields = new string[] {"Fullname", "Address", "Place", "PersonalInfo", "Phone", "Email"};
             foreach (var f in fields)
             {
                 var key = String.Format("Contact{0}", f);

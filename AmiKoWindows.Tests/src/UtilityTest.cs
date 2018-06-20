@@ -92,6 +92,16 @@ namespace AmiKoWindows.Tests
         }
 
         [Test]
+        public void Test_ContactWith()
+        {
+            Assert.AreEqual("Foo Bar Baz", Utilities.ConcatWith(" ", "Foo", "Bar", "Baz"));
+            Assert.AreEqual("Foo/Bar/Baz", Utilities.ConcatWith("/", "Foo", "Bar", "Baz"));
+            Assert.AreEqual("FooBarBaz", Utilities.ConcatWith("", "Foo", "Bar", "Baz"));
+            Assert.AreEqual("Foo/Bar", Utilities.ConcatWith("/", "Foo", null, "", "Bar"));
+            Assert.AreEqual("Foo", Utilities.ConcatWith("/", "Foo", null, "", ""));
+        }
+
+        [Test]
         public void Test_Hash()
         {
             Assert.AreEqual(501371451, Utilities.Hash("Hoi"));

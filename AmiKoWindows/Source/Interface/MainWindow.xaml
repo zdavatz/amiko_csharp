@@ -78,6 +78,7 @@
                                         <TextBlock Name="ContactFullname"></TextBlock>
                                         <TextBlock Name="ContactAddress"></TextBlock>
                                         <TextBlock Name="ContactPlace"></TextBlock>
+                                        <TextBlock Name="ContactPersonalInfo"></TextBlock>
                                         <TextBlock Name="ContactPhone"></TextBlock>
                                         <TextBlock Name="ContactEmail"></TextBlock>
                                     </StackPanel>
