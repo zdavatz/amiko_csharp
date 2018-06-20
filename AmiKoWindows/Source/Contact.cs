@@ -240,29 +240,18 @@ namespace AmiKoWindows
         }
         #endregion
 
-        // NOTE:
+        // ## NOTE
         //
-        // See also the early implementation on macOS/iOS Version (til, AmiKo macOS v3.4.4, AmiKo iOS v2.8.143):
-		// Its rely on the value of __current__ NSString's `hash`.
+        // Check also the early implementation on macOS/iOS Version (til, AmiKo macOS v3.4.4, AmiKo iOS v2.8.143):
+		// Its rely on the value of __current__ NSString's `hash`. Thus We need to keep this hashed value by its algorithm for consistency.
 		//
         // * https://github.com/zdavatz/amiko-osx/blob/a4892277bde48e358c9e3042b14bf8b6cddd22c4/MLPatient.m#L70
         // * https://github.com/zdavatz/AmiKo-iOS/blob/d1ad38727931bb3b079bfff85d1d93dbcc8de567/AmiKoDesitin/MLPatient.m#L50
         //
-        // This `GenerateUid` based on the same hashed value by NSString's (CFString CF-1151.16) Hash Implementation in C# (in Utilities.cs).
-        // AmiKo iOS and OSX (both) are going to have same __embedded__ implementation soon.
+        // This `GenerateUid` function is based on the hashed value by `Utilities.Hash` function same as NSString's (CFString CF-1151.16) Hash Implementation in Obj-C.
+        // But it's written in C# (in Utilities.cs).
         //
-        // On Swift 3.0.1, `hash` property is same result with output by hash implementation in following file:
-        //
-        // * https://opensource.apple.com/source/CF/CF-1151.16/CFString.c.auto.html
-        //
-        // See also `Utilities.Hash` and unit tests.
-        //
-		// ## Reference
-		//
-        // * https://opensource.apple.com/source/CF/CF-1151.16/CFString.c.auto.html
-        // * https://developer.apple.com/documentation/foundation/nsstring/1417245-hash
-        // * https://developer.apple.com/documentation/foundation/nsstring/1417245-hash?language=objc
-        // * https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418859-hash?language=objc
+        // See also `Utilities.Hash` function (Utilities.cs) and unit tests (UtilityTest.cs).
         public string GenerateUid()
         {
             // e.g. davatz.zeno.2.6.1942

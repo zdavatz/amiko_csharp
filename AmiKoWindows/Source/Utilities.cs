@@ -205,8 +205,41 @@ namespace AmiKoWindows
             return String.Format("{0}", (ulong)Hash(baseString));
         }
 
-        // https://opensource.apple.com/source/CF/CF-1151.16/CFString.c.auto.html
-        // See also `UtilityTest.cs`
+        // Returns hashed long number same as NSString (CFString)'s Hash Implementation.
+        // 
+        // On Swift 3.0.1, it seems that `hash` property is same result with output by hash implementation in *CFString.c* (CF-1151.16)
+        // See also `UtilityTest.cs`.
+        // 
+        // ## Note
+        // 
+        // [Repl](https://repl.it/) may be useful to check the value (on Swift)
+        // 
+        // ```swift
+        // import Foundation
+        // 
+        // var s: NSString = "Hoi"
+        // print(s.hash)
+        // 
+        // var t: NSString = "Zäme"
+        // print(t.hash)
+        // 
+        // var r: NSString = "FooBarBaz"
+        // print(r.hash)
+        // print(NSString(format: "%lu", r.hash))
+        // 
+        // var i: NSString = "FooBarBazQuxQuuxFooBarBazQuxQuux"
+        // print(i.hash)
+        // 
+        // var n = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        // print(n.hash)
+        // ```
+        // 
+		// ## References
+		// 
+        // * https://opensource.apple.com/source/CF/CF-1151.16/CFString.c.auto.html
+        // * https://developer.apple.com/documentation/foundation/nsstring/1417245-hash
+        // * https://developer.apple.com/documentation/foundation/nsstring/1417245-hash?language=objc
+        // * https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418859-hash?language=objc
         public static long Hash(string baseString)
         {
             char[] chars = baseString.ToCharArray();
