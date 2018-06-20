@@ -247,18 +247,22 @@ namespace AmiKoWindows
         {
             char[] chars = baseString.ToCharArray();
             int len = baseString.Length;
-
+            int i = 0;
             long result = len;
+
+            // updates `result` and `i` in the scope
+            Action Calc = () =>
+            {
+                result = result * 67503105 + chars[i] * 16974593 + chars[i + 1] * 66049 + chars[i + 2] * 257 + chars[i + 3];
+                i += 4;
+            };
+
             if (len <= 96)
             {
                 int to4 = (len & ~3);
                 int end = len;
-                int i = 0;
                 while (i < to4)
-                {
-                    result = result * 67503105 + chars[i] * 16974593 + chars[i + 1] * 66049 + chars[i + 2] * 257 + chars[i + 3];
-                    i += 4;
-                }
+                    Calc();
 
                 while (i < end)
                     result = result * 257 + chars[i++];
@@ -266,27 +270,19 @@ namespace AmiKoWindows
             else
             {
                 int end;
-                var i = 0;
                 end = 29;
                 while (i < end)
-                {
-                    result = result * 67503105 + chars[i] * 16974593 + chars[i + 1] * 66049 + chars[i + 2] * 257 + chars[i + 3];
-                    i += 4;
-                }
-                var j = ((len / 2) - 16);
+                    Calc();
+
+                i = ((len / 2) - 16);
                 end = ((len / 2) + 15);
-                while (j < end)
-                {
-                    result = result * 67503105 + chars[j] * 16974593 + chars[j + 1] * 66049 + chars[j + 2] * 257 + chars[j + 3];
-                    j += 4;
-                }
-                var k = (len - 32);
-                end = (k + 29);
-                while (k < end)
-                {
-                    result = result * 67503105 + chars[k] * 16974593 + chars[k + 1] * 66049 + chars[k + 2] * 257 + chars[k + 3];
-                    k += 4;
-                }
+                while (i < end)
+                    Calc();
+
+                i = (len - 32);
+                end = (i + 29);
+                while (i < end)
+                    Calc();
             }
             return (result + (result << (len & 31)));
         }
