@@ -214,7 +214,7 @@ namespace AmiKoWindows
 
             //Log.WriteLine("new state: {0}", _uiState.GetState());
 
-            if (_uiState.FullTextQueryEnabled())
+            if (_uiState.FullTextQueryEnabled)
                 if (state.Equals("Farovites"))
                     await _fullTextDb.RetrieveFavorites();
                 _fullTextDb.UpdateSearchResults(_uiState);
@@ -283,7 +283,7 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Html");
                 SwitchViewContext();
 
-                if (_uiState.FullTextQueryEnabled())
+                if (_uiState.FullTextQueryEnabled)
                     SetFullTextSearchDataContext();
                 else
                 {
@@ -303,7 +303,7 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Html");
                 SwitchViewContext();
 
-                if (_uiState.FullTextQueryEnabled())
+                if (_uiState.FullTextQueryEnabled)
                     SetFullTextSearchDataContext();
                 else
                 {
@@ -323,7 +323,7 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Html");
                 SwitchViewContext();
 
-                if (_uiState.FullTextQueryEnabled())
+                if (_uiState.FullTextQueryEnabled)
                     SetFullTextSearchDataContext();
                 else
                 {
@@ -351,7 +351,7 @@ namespace AmiKoWindows
 
                 LoadOperatorPicture();
 
-                if (_uiState.FullTextQueryEnabled())
+                if (_uiState.FullTextQueryEnabled)
                     SetFullTextSearchDataContext();
                 else
                 {
@@ -435,7 +435,7 @@ namespace AmiKoWindows
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
                 long numResults = 0;
-                if (_uiState.FullTextQueryEnabled())
+                if (_uiState.FullTextQueryEnabled)
                     numResults = await _fullTextDb?.Search(_uiState, text);
                 else
                     numResults = await _sqlDb?.Search(_uiState, text);
@@ -454,7 +454,7 @@ namespace AmiKoWindows
             // Change the data context of the status bar
             Stopwatch sw = new Stopwatch();
             long numResults = 0;
-            if (!_uiState.FullTextQueryEnabled())
+            if (!_uiState.FullTextQueryEnabled)
                 numResults = await _sqlDb?.Search(_uiState, "");
             sw.Stop();
             double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
@@ -493,7 +493,7 @@ namespace AmiKoWindows
                     SetSpinnerEnabled(true);
 
                     Item selection = selectedItem as Item;
-                    if (_uiState.FullTextQueryEnabled())
+                    if (_uiState.FullTextQueryEnabled)
                     {
                         // Store selected fulltext search...
                         _selectedFullTextSearchKey = selection.Text;
@@ -515,12 +515,12 @@ namespace AmiKoWindows
                         if (_searchSelectionItemId != selection.Id)
                         {
                             _searchSelectionItemId = selection.Id;
-                            if (_uiState.IsCompendium() || _uiState.IsFavorites())
+                            if (_uiState.IsCompendium || _uiState.IsFavorites || _uiState.IsPrescriptions)
                             {
                                 Article a = await _sqlDb.GetArticleFromId(_searchSelectionItemId);
                                 _fachInfo.ShowFull(a);   // Load html in browser window
                             }
-                            else if (_uiState.IsInteractions())
+                            else if (_uiState.IsInteractions)
                             {
                                 Article a = await _sqlDb.GetArticleWithId(_searchSelectionItemId);
                                 if (a?.Id != null)
@@ -566,7 +566,7 @@ namespace AmiKoWindows
                         _searchSelectionChildItemId = selection.Id;
                         if (_searchSelectionChildItemId != null)
                         {
-                            if (_uiState.IsCompendium() || _uiState.IsFavorites())
+                            if (_uiState.IsCompendium || _uiState.IsFavorites || _uiState.IsPrescriptions)
                             {
                                 Article a = await _sqlDb.GetArticleFromId(_searchSelectionChildItemId);
                                 _fachInfo.ShowFull(a);   // Load html in browser window
@@ -593,7 +593,7 @@ namespace AmiKoWindows
                 TitleItem sectionTitle = searchTitlesList.SelectedItem as TitleItem;
                 if (sectionTitle!=null && sectionTitle.Id != null)
                 {
-                    if (!_uiState.FullTextQueryEnabled())
+                    if (!_uiState.FullTextQueryEnabled)
                     {
                         // Inject javascript to move to anchor
                         string jsCode = "document.getElementById('" + sectionTitle.Id + "').scrollIntoView(true);";
