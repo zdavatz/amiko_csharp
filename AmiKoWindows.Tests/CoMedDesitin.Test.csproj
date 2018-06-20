@@ -68,8 +68,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\AccountTest.cs" />
     <Compile Include="src\ContactTest.cs" />
-    <Compile Include="src\OperatorTest.cs" />
     <Compile Include="src\PatientDbTest.cs" />
     <Compile Include="src\UIStateTest.cs" />
     <Compile Include="src\UtilityTest.cs" />

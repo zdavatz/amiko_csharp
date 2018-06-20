@@ -26,12 +26,12 @@ namespace AmiKoWindows.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public Operator Operator {
+        public Account Account {
             get {
-                return ((Operator)(this["Operator"]));
+                return ((Account)(this["Account"]));
             }
             set {
-                this["Operator"] = value;
+                this["Account"] = value;
             }
         }
     }

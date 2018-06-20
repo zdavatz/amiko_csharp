@@ -128,10 +128,10 @@ namespace AmiKoWindows
             return path;
         }
 
-        public static string OperatorPictureFilePath()
+        public static string AccountPictureFilePath()
         {
             string path = Path.Combine(
-                AppRoamingDataFolder(), Constants.OPERATOR_PICTURE_FILE);
+                AppRoamingDataFolder(), Constants.ACCOUNT_PICTURE_FILE);
             return path;
         }
 
@@ -199,6 +199,14 @@ namespace AmiKoWindows
             return String.Join(delimiter, parts.Where(v => {
                 return (v != null && !v.Equals(string.Empty));
             }));
+        }
+
+        // Microsoft's GUID is UUID version 4 (RFC 4122)
+        public static string GenerateUUID()
+        {
+            var uuid = Guid.NewGuid().ToString();
+            // convert UPPERCASE (same as macOS Version of AmiKo)
+            return uuid.ToUpper();
         }
 
         public static string GenerateHash(string baseString)
@@ -287,24 +295,26 @@ namespace AmiKoWindows
             return (result + (result << (len & 31)));
         }
 
-        public static string GetCurrentTimeInUTC()
+        // GetUTCTimeAsString("yyyy-MM-dd'THH:mm.ss");
+        public static string GetUTCTimeAsString(string formatString)
         {
             DateTime datetime = DateTime.UtcNow;
-            return datetime.ToString("yyyy-MM-dd'T'HH:mm.ss");
+            return datetime.ToString(formatString);
         }
-
-        public static string GetLocalTime()
+        // GetLocalTimeAsString("dd.MM.yyyy (HH:mm:ss)");
+        // GetLocalTimeAsString("yyyy-MM-ddTHHmmss");
+        public static string GetLocalTimeAsString(string formatString)
         {
             DateTime datetime = DateTime.Now;
-            return datetime.ToString("dd.MM.yyyy (HH:mm:ss)");
+            return datetime.ToString(formatString);
         }
 
-        public static DateTime ConvertUTCToLocalTime(string utcString)
+        // GetLocalTimeAsString("2018-05-01T10:00.00", "dd.MM.yyyy (HH:mm:ss)");
+        public static string ConvertUTCToLocalTimeAsString(string utcString, string formatString)
         {
             DateTime utcTime = DateTime.Parse(utcString);
-            DateTime time = DateTime.SpecifyKind(
-                utcTime, DateTimeKind.Utc);
-            return time.ToLocalTime();
+            DateTime time = DateTime.SpecifyKind(utcTime, DateTimeKind.Utc);
+            return time.ToLocalTime().ToString(formatString);
         }
 
         public static void SaveImageFileAsPng(Stream input, Stream output)

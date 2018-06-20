@@ -68,6 +68,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to keine Arztadresse.
+        /// </summary>
+        public static string accountManagement {
+            get {
+                return ResourceManager.GetString("accountManagement", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Addresse.
         /// </summary>
         public static string address {
@@ -478,15 +487,6 @@ namespace AmiKoWindows.Properties {
         public static string nopacks {
             get {
                 return ResourceManager.GetString("nopacks", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to keine Arztadresse.
-        /// </summary>
-        public static string operatorManagement {
-            get {
-                return ResourceManager.GetString("operatorManagement", resourceCulture);
             }
         }
 

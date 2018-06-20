@@ -55,7 +55,7 @@ namespace AmiKoWindows
         FachInfo _fachInfo;
         FullTextSearch _fullTextSearch;
         InteractionsCart _interactions;
-        Prescriptions _prescriptions;
+        PrescriptionsBox _prescriptions;
         StatusBarHelper _statusBarHelper;
         string _selectedFullTextSearchKey;
 
@@ -75,14 +75,14 @@ namespace AmiKoWindows
             }
         }
 
-        private Operator _ActiveOperator;
-        public Operator ActiveOperator
+        private Account _ActiveAccount;
+        public Account ActiveAccount
         {
-            get { return _ActiveOperator; }
+            get { return _ActiveAccount; }
             set
             {
-                _ActiveOperator = value;
-                OnPropertyChanged("ActiveOperator");
+                _ActiveAccount = value;
+                OnPropertyChanged("ActiveAccount");
             }
         }
         #endregion
@@ -123,9 +123,9 @@ namespace AmiKoWindows
             _interactions = new InteractionsCart();
             _interactions.LoadFiles();
 
-            // Initialize prescriptions list
-            _prescriptions = new Prescriptions();
-            _prescriptions.Load();
+            // Initialize prescriptions container
+            _prescriptions = new PrescriptionsBox();
+            _prescriptions.LoadFiles();
 
             _statusBarHelper = new StatusBarHelper();
 
@@ -263,7 +263,7 @@ namespace AmiKoWindows
                 this.Prescriptions.IsChecked = true;
 
                 Button button = GetElementInMainArea("OpenProfileCardButton") as Button;
-                if (button != null && !Operator.IsSet())
+                if (button != null && !Account.IsSet())
                     button.Visibility = Visibility.Visible;
 
                 // TODO
@@ -343,13 +343,17 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Form", false);
                 SwitchViewContext();
 
-                FillContactFields();
+                if (ActiveContact != null)
+                    FillContactFields();
 
-                var operatorInfo = GetElementInMainArea("OperatorInfo") as Grid;
-                if (operatorInfo != null)
-                    operatorInfo.DataContext = ActiveOperator;
+                if (ActiveAccount != null)
+                {
+                    var accountInfo = GetElementInMainArea("AccountInfo") as Grid;
+                    if (accountInfo != null)
+                        accountInfo.DataContext = ActiveAccount;
 
-                LoadOperatorPicture();
+                    LoadAccountPicture();
+                }
 
                 if (_uiState.FullTextQueryEnabled)
                     SetFullTextSearchDataContext();
@@ -416,8 +420,8 @@ namespace AmiKoWindows
             this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             this.Compendium.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
-            if (Operator.IsSet())
-                this.ActiveOperator = Properties.Settings.Default.Operator;
+            if (Account.IsSet())
+                this.ActiveAccount = Properties.Settings.Default.Account;
 
             this.DataContext = new ViewType("Html");
             SwitchViewContext();
@@ -658,7 +662,7 @@ namespace AmiKoWindows
                     await _fachInfo.ShowReport();
                 }
             }
-            else if (name.Equals("OperatorAddress"))
+            else if (name.Equals("AccountAddress"))
             {
                 ViewType viewType;
                 viewType = this.DataContext as ViewType;
@@ -861,7 +865,8 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            //Log.WriteLine(source.Name);
+            Log.WriteLine(source.Name);
+            _prescriptions.Renew();
             e.Handled = true;
         }
 
@@ -875,13 +880,14 @@ namespace AmiKoWindows
             e.Handled = true;
         }
 
-        private void SavePrescriptionButton_Click(object sender, RoutedEventArgs e)
+        private async void SavePrescriptionButton_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
                 return;
 
             Log.WriteLine(source.Name);
+            await _prescriptions.Save();
             e.Handled = true;
         }
 
@@ -902,7 +908,12 @@ namespace AmiKoWindows
                 return;
 
             Log.WriteLine(source.Name);
-            FillContactFields();
+
+            if (ActiveContact != null)
+            {
+                _prescriptions.Patient = ActiveContact;
+                FillContactFields();
+            }
 
             // Re:enable animations for next time
             source.AreAnimationsEnabled = true;
@@ -917,10 +928,10 @@ namespace AmiKoWindows
 
             Log.WriteLine(source.Name);
 
-            if (Operator.IsSet())
+            if (Account.IsSet() && ActiveAccount != null)
             {
-                this.ActiveOperator = Properties.Settings.Default.Operator;
-                LoadOperatorPicture();
+                _prescriptions.Operator = ActiveAccount;
+                LoadAccountPicture();
             }
 
             // Re:enable animations for next time
@@ -930,9 +941,6 @@ namespace AmiKoWindows
 
         private void FillContactFields()
         {
-            if (ActiveContact == null)
-                return;
-
             var fields = new string[] {"Fullname", "Address", "Place", "PersonalInfo", "Phone", "Email"};
             foreach (var f in fields)
             {
@@ -947,13 +955,13 @@ namespace AmiKoWindows
             }
         }
 
-        private void LoadOperatorPicture()
+        private void LoadAccountPicture()
         {
             try
             {
-                Image image = GetElementInMainArea("OperatorPicture") as Image;
-                if (image != null && Operator.IsSet() && ActiveOperator != null)
-                    Utilities.LoadPictureInto(image, ActiveOperator.PictureFile);
+                Image image = GetElementInMainArea("AccountPicture") as Image;
+                if (image != null && Account.IsSet() && ActiveAccount != null)
+                    Utilities.LoadPictureInto(image, ActiveAccount.PictureFile);
             }
             catch (Exception ex)
             {

@@ -120,6 +120,9 @@
   <data name="about" xml:space="preserve">
     <value>AmiKo Desitin</value>
   </data>
+  <data name="accountManagement" xml:space="preserve">
+    <value>Arztadresse</value>
+  </data>
   <data name="address" xml:space="preserve">
     <value>Addresse</value>
   </data>
@@ -257,9 +260,6 @@
   </data>
   <data name="nopacks" xml:space="preserve">
     <value>keine Packungen</value>
-  </data>
-  <data name="operatorManagement" xml:space="preserve">
-    <value>Arztadresse</value>
   </data>
   <data name="packs" xml:space="preserve">
     <value>Packungen</value>

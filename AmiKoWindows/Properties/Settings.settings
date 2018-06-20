@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="AmiKoWindows.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Operator" Type="AmiKoWindows.Operator" Scope="User">
+    <Setting Name="Account" Type="AmiKoWindows.Account" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>
