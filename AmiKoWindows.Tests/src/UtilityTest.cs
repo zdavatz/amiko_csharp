@@ -108,7 +108,7 @@ namespace AmiKoWindows.Tests
             Assert.AreEqual("30817822292", Utilities.GenerateHash("Zäme"));
             Assert.AreEqual("16871406891222691423", Utilities.GenerateHash("FooBarBaz"));
             Assert.AreEqual("2098610509559846236", Utilities.GenerateHash("FooBarBazQuxQuuxFooBarBazQuxQuux"));
-            Assert.AreEqual("6539383804322955524", Utilities.Hash(new String('a', 100)));
+            Assert.AreEqual("6539383804322955524", Utilities.GenerateHash(new String('a', 100)));
         }
 
         [Test]
