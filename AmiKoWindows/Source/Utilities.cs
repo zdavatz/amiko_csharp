@@ -156,6 +156,9 @@ namespace AmiKoWindows
         // TitleCase -> snake_case
         public static string ConvertTitleCaseToSnakeCase(string text)
         {
+            if (text == null || text.Equals(string.Empty))
+                return "";
+
             return string.Concat(text.Select(
                 (x, i) => {
                     if (i == 0)
@@ -193,15 +196,9 @@ namespace AmiKoWindows
         // Makes a string using arguments concatenated as string
         public static string ConcatWith(string delimiter, params string[] parts)
         {
-            var text = String.Join("", parts.Select(v => {
-                if (v == null || v.Equals(string.Empty))
-                    return "";
-                return String.Format("{0}{1}", v, delimiter);
+            return String.Join(delimiter, parts.Where(v => {
+                return (v != null && !v.Equals(string.Empty));
             }));
-            if (delimiter.Length > 0 && text.Length > 1)
-                text = text.Substring(0, text.Length - 1);
-            return text;
-
         }
 
         public static string GenerateHash(string baseString)

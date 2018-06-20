@@ -54,28 +54,22 @@ namespace AmiKoWindows.Tests
         [Test]
         public void Test_ConvertTitleCaseToSnakeCase()
         {
-            Assert.AreEqual(
-                "given_name", AmiKoWindows.Utilities.ConvertTitleCaseToSnakeCase("GivenName"));
-            Assert.AreEqual(
-                "given_name_family_name", AmiKoWindows.Utilities.ConvertTitleCaseToSnakeCase("GivenNameFamilyName"));
+            Assert.AreEqual("", AmiKoWindows.Utilities.ConvertTitleCaseToSnakeCase(""));
 
-            Assert.AreEqual(
-                "phone", AmiKoWindows.Utilities.ConvertTitleCaseToSnakeCase("Phone"));
+            Assert.AreEqual("given_name", AmiKoWindows.Utilities.ConvertTitleCaseToSnakeCase("GivenName"));
+            Assert.AreEqual("given_name_family_name", AmiKoWindows.Utilities.ConvertTitleCaseToSnakeCase("GivenNameFamilyName"));
+            Assert.AreEqual("phone", AmiKoWindows.Utilities.ConvertTitleCaseToSnakeCase("Phone"));
         }
 
         [Test]
         public void Test_ConvertSnakeCaseToTitleCase()
         {
-            Assert.AreEqual(
-                "Id", AmiKoWindows.Utilities.ConvertSnakeCaseToTitleCase("_id"));
+            Assert.AreEqual("", AmiKoWindows.Utilities.ConvertSnakeCaseToTitleCase(""));
+            Assert.AreEqual("Id", AmiKoWindows.Utilities.ConvertSnakeCaseToTitleCase("_id"));
 
-            Assert.AreEqual(
-                "FamilyName", AmiKoWindows.Utilities.ConvertSnakeCaseToTitleCase("family_name"));
-            Assert.AreEqual(
-                "FamilyNameGivenName", AmiKoWindows.Utilities.ConvertSnakeCaseToTitleCase("family_name_given_name"));
-
-            Assert.AreEqual(
-                "Email", AmiKoWindows.Utilities.ConvertSnakeCaseToTitleCase("email"));
+            Assert.AreEqual("FamilyName", AmiKoWindows.Utilities.ConvertSnakeCaseToTitleCase("family_name"));
+            Assert.AreEqual("FamilyNameGivenName", AmiKoWindows.Utilities.ConvertSnakeCaseToTitleCase("family_name_given_name"));
+            Assert.AreEqual("Email", AmiKoWindows.Utilities.ConvertSnakeCaseToTitleCase("email"));
         }
 
         [Test]
