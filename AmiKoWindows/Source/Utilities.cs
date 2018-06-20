@@ -156,6 +156,9 @@ namespace AmiKoWindows
         // TitleCase -> snake_case
         public static string ConvertTitleCaseToSnakeCase(string text)
         {
+            if (text == null || text.Equals(string.Empty))
+                return "";
+
             return string.Concat(text.Select(
                 (x, i) => {
                     if (i == 0)
