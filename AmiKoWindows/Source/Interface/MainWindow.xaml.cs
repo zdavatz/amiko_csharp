@@ -27,6 +27,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -62,7 +63,8 @@ namespace AmiKoWindows
         FrameworkElement _browser;
         FrameworkElement _manager;
 
-        public string Hoi = "Test";
+        private bool _contextMenuIsOpen = false;
+
         #region Public Fields
         private Contact _ActiveContact;
         public Contact ActiveContact
@@ -139,7 +141,7 @@ namespace AmiKoWindows
         }
 
         /**
-         * Returns a root element in main area after datatemplate is switched by trigger
+         * Returns an element in main area after datatemplate is switched by trigger
          */
         private FrameworkElement GetElementInMainArea(string elementName)
         {
@@ -476,9 +478,15 @@ namespace AmiKoWindows
          */
         private void OnSearchResultChild_PreviewMouseDown(object sender, RoutedEventArgs e)
         {
-            var item = ItemsControl.ContainerFromElement(sender as ListBox, e.OriginalSource as DependencyObject) as ListBoxItem;
+            if (!(sender is ListBox))
+                return;
+
+            ListBox listBox = sender as ListBox;
+            var item = ItemsControl.ContainerFromElement(listBox, e.OriginalSource as DependencyObject) as ListBoxItem;
             if (item != null)
                 item.IsSelected = false;
+
+            //e.Handled = true; don't set here
         }
 
         /**
@@ -557,21 +565,21 @@ namespace AmiKoWindows
         static long? _searchSelectionChildItemId = 0;
         private async void OnSearchChildItem_Selection(object sender, SelectionChangedEventArgs e)
         {
-            ListBox searchResultList = sender as ListBox;
-            if (searchResultList?.Items.Count > 0)
+            //Log.WriteLine(sender.GetType().Name);
+            var listBox = sender as ListBox;
+            if (listBox?.Items.Count > 0)
             {
-                object selectedItem = searchResultList.SelectedItem;
-                if (selectedItem?.GetType() == typeof(ChildItem))
+                object item = listBox.SelectedItem;
+                if (item?.GetType() == typeof(ChildItem))
                 {
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
-
                     SetSpinnerEnabled(true);
 
-                    ChildItem selection = selectedItem as ChildItem;
-                    if (_searchSelectionChildItemId != selection.Id)
+                    ChildItem childItem = item as ChildItem;
+                    if (_searchSelectionChildItemId != childItem.Id)
                     {
-                        _searchSelectionChildItemId = selection.Id;
+                        _searchSelectionChildItemId = childItem.Id;
                         if (_searchSelectionChildItemId != null)
                         {
                             if (_uiState.IsCompendium || _uiState.IsFavorites || _uiState.IsPrescriptions)
@@ -583,10 +591,70 @@ namespace AmiKoWindows
                     }
 
                     SetSpinnerEnabled(false);
-
                     sw.Stop();
-                    //Log.WriteLine("ChildItem " + _searchSelectionChildItemId + "/" + selection.Id + " -> " + sw.ElapsedMilliseconds + "ms");
                 }
+            }
+        }
+
+        // Makes it same behavior as context menu on macOS Version
+        private void ToggleContextMenu(TextBlock block)
+        {
+            var menu = block?.ContextMenu;
+            if (menu != null)
+            {
+                if (_contextMenuIsOpen)
+                    menu.IsOpen = false;
+                else
+                {
+                    var menuItem = new MenuItem();
+                    menuItem.Header = block.Text;
+                    menuItem.Focusable = false;
+                    menuItem.IsEnabled = false;
+                    menu.Items.Clear();
+                    menu.Items.Insert(0, menuItem);
+                    menu.PlacementTarget = block;
+                    menu.IsOpen = true;
+                }
+            }
+        }
+
+        private void SearchChildItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            // prevent default action (on right click)
+            _contextMenuIsOpen = true;
+            e.Handled = true;
+        }
+
+        private void SearchChildItem_ContextMenuClosing(object sender, ContextMenuEventArgs e)
+        {
+            _contextMenuIsOpen = false;
+            e.Handled = true;
+        }
+
+        private void SearchChildItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //Log.WriteLine(sender.GetType().Name);
+            if (!_uiState.IsPrescriptions)
+            {
+                ToggleContextMenu(null);
+                e.Handled = false;
+                return;
+            }
+
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                ToggleContextMenu(sender as TextBlock);
+                e.Handled = true;
+            }
+        }
+
+        private void SearchChildItem_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //Log.WriteLine(sender.GetType().Name);
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                ToggleContextMenu(sender as TextBlock);
+                e.Handled = true;
             }
         }
 

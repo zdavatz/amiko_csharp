@@ -346,14 +346,22 @@
                                             <TextBlock Text="{Binding Path=Text}" VerticalAlignment="Center" />
                                             <ListBox Style="{StaticResource SearchListBoxChild}" ItemContainerStyle="{StaticResource SearchListBoxChildItem}"
                                                      ItemsSource="{Binding Path=ChildItems}"
-                                                     SelectionChanged="OnSearchChildItem_Selection"
                                                      ScrollViewer.CanContentScroll="False"
+                                                     SelectionChanged="OnSearchChildItem_Selection"
                                                      PreviewMouseDown="OnSearchResultChild_PreviewMouseDown">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBlock Style="{StaticResource SearchListBoxChildItemText}"
-                                                                   Text="{Binding Path=Text}"
-                                                                   Foreground="{Binding Path=Color}" />
+                                                        <TextBlock 
+                                                            Name="ItemName" Style="{StaticResource SearchListBoxChildItemText}" Text="{Binding Path=Text}" Foreground="{Binding Path=Color}"
+                                                            ContextMenuOpening="SearchChildItem_ContextMenuOpening"
+                                                            ContextMenuClosing="SearchChildItem_ContextMenuClosing"
+                                                            MouseLeftButtonDown="SearchChildItem_MouseLeftButtonDown"
+                                                            MouseRightButtonDown="SearchChildItem_MouseRightButtonDown">
+                                                            <TextBlock.ContextMenu>
+                                                                <ContextMenu Name="ItemContextMenu">
+                                                                </ContextMenu>
+                                                            </TextBlock.ContextMenu>
+                                                        </TextBlock>
                                                     </DataTemplate>
                                                 </ListBox.ItemTemplate>
                                             </ListBox>
