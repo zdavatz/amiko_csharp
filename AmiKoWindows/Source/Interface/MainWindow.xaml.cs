@@ -924,7 +924,6 @@ namespace AmiKoWindows
             {
                 _prescriptions.Patient = ActiveContact;
                 FillContactFields();
-                EnableButton("SavePrescriptionButton", true);
             }
 
             // Re:enable animations for next time
