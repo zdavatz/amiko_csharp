@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AmiKoWindows
@@ -28,12 +29,15 @@ namespace AmiKoWindows
     // Prescription Manager Object
     class PrescriptionsBox
     {
-        const string FILE_SUFFIX_DATE_FORMAT = "yyyy-MM-dd'T'HHmmss";
+        const string AMIKO_FILE_PLACE_DATE_FORMAT = "dd.MM.yyyy (HH:mm:ss)";
+        const string FILE_NAME_SUFFIX_DATE_FORMAT = "yyyy-MM-dd'T'HHmmss";
+
+        private static readonly Regex AMIKO_FILE_EXTENSION_RGX = new Regex(@"\.amk$", RegexOptions.Compiled);
 
         HashSet<string> _setOfFiles = new HashSet<string>();
         HashSet<string> _setOfMedicationIds = new HashSet<string>();
 
-        string _userDataDir;
+        string _dataDir;
 
         #region Public Fields
         public Contact Patient { get; set; }
@@ -54,20 +58,36 @@ namespace AmiKoWindows
 
         public PrescriptionsBox()
         {
-            _userDataDir = Utilities.AppRoamingDataFolder();
-            CheckDir(_userDataDir);
+            _dataDir = Utilities.AppRoamingDataFolder();
+            EnforceDir(_dataDir);
         }
 
-        private static string CheckDir(string dir)
+        public string GetPlaceDate()
         {
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-            return dir;
+            var placeDate = "";
+            if (Operator != null)
+                placeDate = Utilities.ConcatWith(", ", Operator.City, Utilities.GetLocalTimeAsString(AMIKO_FILE_PLACE_DATE_FORMAT));
+            return placeDate;
         }
 
         public void LoadFiles()
         {
-            // TODO
+            if (Patient == null)
+                return;
+
+            string userDir = Path.Combine(_dataDir, Patient.Uid);
+            Log.WriteLine("userDir: {0}", userDir);
+            if (EnforceDir(userDir))
+            {
+                string[] files = Directory.GetFiles(userDir);
+                foreach (var f in files)
+                {
+                    if (!AMIKO_FILE_EXTENSION_RGX.IsMatch(@"\.amk$"))
+                        continue;
+
+                    Log.WriteLine("file: {0}", f);
+                }
+            }
         }
 
         public void ShowDetail()
@@ -77,7 +97,10 @@ namespace AmiKoWindows
         public void Renew()
         {
             this.Hash = Utilities.GenerateUUID();
-            this.PlaceDate = "";
+            if (Operator != null)
+                this.PlaceDate = GetPlaceDate();
+
+            Log.WriteLine("PlaceDate: {0}", PlaceDate);
         }
 
         public async Task Save()
@@ -87,7 +110,7 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                var outputFile = String.Format("RZ_{0}", Utilities.GetLocalTimeAsString(FILE_SUFFIX_DATE_FORMAT));
+                var outputFile = String.Format("RZ_{0}", Utilities.GetLocalTimeAsString(FILE_NAME_SUFFIX_DATE_FORMAT));
                 try
                 {
                     Log.WriteLine("prescription_hash: {0}", Hash);
@@ -123,6 +146,13 @@ namespace AmiKoWindows
         public bool Contains(string file)
         {
             return _setOfFiles.Contains(file);
+        }
+
+        private static bool EnforceDir(string dir)
+        {
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+            return Directory.Exists(dir);
         }
     }
 }

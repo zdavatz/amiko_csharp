@@ -69,35 +69,38 @@
                                 <Grid Grid.Row="0">
                                     <Button
                                         Name="OpenAddressBookButton" Style="{StaticResource NoHighlightedButton}"
-                                        Margin="0,1,0,9" HorizontalAlignment="Left" Click="OpenAddressBookButton_Click">
+                                        Margin="0,1,0,1" HorizontalAlignment="Left" Click="OpenAddressBookButton_Click">
                                         <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.patientSearch}" />
                                     </Button>
                                 </Grid>
                                 <Grid Grid.Row="1">
-                                    <StackPanel Margin="1,2,0,0" HorizontalAlignment="Left">
+                                    <StackPanel Margin="1,5,0,0" HorizontalAlignment="Left">
                                         <TextBlock Name="ContactFullname"></TextBlock>
                                         <TextBlock Name="ContactAddress"></TextBlock>
                                         <TextBlock Name="ContactPlace"></TextBlock>
                                         <TextBlock Name="ContactPersonalInfo"></TextBlock>
                                         <TextBlock Name="ContactPhone"></TextBlock>
                                         <TextBlock Name="ContactEmail"></TextBlock>
+                                        <StackPanel Margin="1,16,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Name="PlaceDate"></TextBlock>
+                                        </StackPanel>
                                     </StackPanel>
                                 </Grid>
                               </Grid>
                               <!-- Account (Operator) -->
                               <Grid Name="AccountInfo" Grid.Column="1" Margin="0" DataContext="{Binding Path=ActiveAccount, UpdateSourceTrigger=PropertyChanged}">
-                                  <DockPanel Margin="0,1,4,3">
+                                  <DockPanel Margin="0,5,4,4">
                                       <Button Name="OpenProfileCardButton" Style="{StaticResource NoHighlightedButton}"
                                           DockPanel.Dock="Top" Click="OpenProfileCardButton_Click" Cursor="Hand" Visibility="Collapsed">
                                           <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.msgProfileUnsetWarning}" />
                                       </Button>
-                                      <StackPanel DockPanel.Dock="Top" Margin="0,2,0,0" HorizontalAlignment="Right">
+                                      <StackPanel DockPanel.Dock="Top" Margin="0,0,0,0" HorizontalAlignment="Right">
                                           <TextBlock Name="AccountFullName" Text="{Binding Path=Fullname, Mode=OneWay}"></TextBlock>
                                           <TextBlock Name="AccountAddress" Text="{Binding Path=Address, Mode=OneWay}"></TextBlock>
                                           <TextBlock Name="AccountPlace" Text="{Binding Path=Place, Mode=OneWay}"></TextBlock>
                                           <TextBlock Name="AccountPhone" Text="{Binding Path=Phone, Mode=OneWay}"></TextBlock>
                                           <TextBlock Name="AccountEmail" Text="{Binding Path=Email, Mode=OneWay}"></TextBlock>
-                                          <Image Name="AccountPicture" Height="64" Margin="0,6,0,0" HorizontalAlignment="Left" />
+                                          <Image Name="AccountPicture" Height="64" Margin="1,13,0,0" HorizontalAlignment="Left" />
                                       </StackPanel>
                                   </DockPanel>
                               </Grid>

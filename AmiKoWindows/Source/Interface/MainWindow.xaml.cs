@@ -422,7 +422,10 @@ namespace AmiKoWindows
             this.Compendium.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
             if (Account.IsSet())
+            {
                 this.ActiveAccount = Properties.Settings.Default.Account;
+                _prescriptions.Operator = ActiveAccount;
+            }
 
             this.DataContext = new ViewType("Html");
             SwitchViewContext();
@@ -868,6 +871,9 @@ namespace AmiKoWindows
 
             Log.WriteLine(source.Name);
             _prescriptions.Renew();
+
+            FillPlaceDate();
+
             EnableButton("CheckInteractionButton", false);
             EnableButton("SavePrescriptionButton", false);
             EnableButton("SendPrescriptionButton", false);
@@ -948,17 +954,27 @@ namespace AmiKoWindows
 
         private void FillContactFields()
         {
+            TextBlock block = null;
             var fields = new string[] {"Fullname", "Address", "Place", "PersonalInfo", "Phone", "Email"};
             foreach (var f in fields)
             {
                 var key = String.Format("Contact{0}", f);
-                var block = GetElementInMainArea(key) as TextBlock;
+                block = GetElementInMainArea(key) as TextBlock;
                 if (block != null)
                 {
-                    Log.WriteLine("Text: {0}", ActiveContact[f]);
                     block.Text = (string)ActiveContact[f];
                     block.UpdateLayout();
                 }
+            }
+        }
+
+        private void FillPlaceDate()
+        {
+            var block = GetElementInMainArea("PlaceDate") as TextBlock;
+            if (block != null)
+            {
+                block.Text = _prescriptions.GetPlaceDate();
+                block.UpdateLayout();
             }
         }
 
