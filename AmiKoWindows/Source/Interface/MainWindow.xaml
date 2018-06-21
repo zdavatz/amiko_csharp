@@ -118,24 +118,24 @@
                                     </Grid.ColumnDefinitions>
                                     <Button
                                         Name="NewPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
-                                        Grid.Column="0" Margin="0,3,5,1" HorizontalAlignment="Left" Click="NewPrescriptionButton_Click">
-                                        Neues Rezept
+                                        Grid.Column="0" Margin="0,3,5,1" HorizontalAlignment="Left" Click="NewPrescriptionButton_Click" IsEnabled="False">
+                                        <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.newPrescription}" />
                                     </Button>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                         <Button
                                             Name="CheckInteractionButton" Style="{StaticResource NoHighlightedButton}"
-                                            Margin="0,3,6,1" HorizontalAlignment="Right" Click="CheckInteractionButton_Click">
-                                            Interaktionen überprüfen
+                                            Margin="0,3,6,1" HorizontalAlignment="Right" Click="CheckInteractionButton_Click" IsEnabled="False">
+                                            <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.checkInteractions}" />
                                         </Button>
                                         <Button
                                             Name="SavePrescriptionButton" Style="{StaticResource NoHighlightedButton}"
-                                            Margin="6,3,3,1" HorizontalAlignment="Right" Click="SavePrescriptionButton_Click">
-                                            Speichern
+                                            Margin="6,3,3,1" HorizontalAlignment="Right" Click="SavePrescriptionButton_Click" IsEnabled="False">
+                                            <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.save}" />
                                         </Button>
                                         <Button
                                             Name="SendPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
-                                            Margin="6,3,0,1" HorizontalAlignment="Right" Click="SendPrescriptionButton_Click">
-                                            Senden
+                                            Margin="6,3,0,1" HorizontalAlignment="Right" Click="SendPrescriptionButton_Click" IsEnabled="False">
+                                            <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.send}" />
                                         </Button>
                                     </StackPanel>
                                 </Grid>

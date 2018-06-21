@@ -171,6 +171,9 @@
   <data name="category" xml:space="preserve">
     <value>Cat</value>
   </data>
+  <data name="checkInteractions" xml:space="preserve">
+    <value>Vérifier les interactions</value>
+  </data>
   <data name="city" xml:space="preserve">
     <value>Résidence</value>
   </data>
@@ -252,6 +255,9 @@
   <data name="newDb" xml:space="preserve">
     <value>Nouvelle banque de données disponible!</value>
   </data>
+  <data name="newPrescription" xml:space="preserve">
+    <value>Nouvelle ordonnance</value>
+  </data>
   <data name="noclick" xml:space="preserve">
     <value>Choisir un article, s'il vous plait.</value>
   </data>
@@ -305,6 +311,9 @@
   </data>
   <data name="selectPicture" xml:space="preserve">
     <value>Signature du fichier</value>
+  </data>
+  <data name="send" xml:space="preserve">
+    <value>Envoyer</value>
   </data>
   <data name="settings" xml:space="preserve">
     <value>Paramètres</value>

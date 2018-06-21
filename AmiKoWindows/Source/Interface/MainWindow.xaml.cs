@@ -353,6 +353,7 @@ namespace AmiKoWindows
                         accountInfo.DataContext = ActiveAccount;
 
                     LoadAccountPicture();
+                    EnableButton("NewPrescriptionButton", true);
                 }
 
                 if (_uiState.FullTextQueryEnabled)
@@ -867,6 +868,9 @@ namespace AmiKoWindows
 
             Log.WriteLine(source.Name);
             _prescriptions.Renew();
+            EnableButton("CheckInteractionButton", false);
+            EnableButton("SavePrescriptionButton", false);
+            EnableButton("SendPrescriptionButton", false);
             e.Handled = true;
         }
 
@@ -888,6 +892,7 @@ namespace AmiKoWindows
 
             Log.WriteLine(source.Name);
             await _prescriptions.Save();
+            EnableButton("SendPrescriptionButton", true);
             e.Handled = true;
         }
 
@@ -913,6 +918,7 @@ namespace AmiKoWindows
             {
                 _prescriptions.Patient = ActiveContact;
                 FillContactFields();
+                EnableButton("SavePrescriptionButton", true);
             }
 
             // Re:enable animations for next time
@@ -932,6 +938,7 @@ namespace AmiKoWindows
             {
                 _prescriptions.Operator = ActiveAccount;
                 LoadAccountPicture();
+                EnableButton("NewPrescriptionButton", true);
             }
 
             // Re:enable animations for next time
@@ -970,6 +977,13 @@ namespace AmiKoWindows
                 else
                     throw ex;
             }
+        }
+
+        private void EnableButton(string name, bool isEnabled)
+        {
+            Button button = GetElementInMainArea(name) as Button;
+            if (button != null)
+                button.IsEnabled = isEnabled;
         }
     }
 

@@ -171,6 +171,9 @@
   <data name="category" xml:space="preserve">
     <value>Kat</value>
   </data>
+  <data name="checkInteractions" xml:space="preserve">
+    <value>Interaktionen überprüfen</value>
+  </data>
   <data name="city" xml:space="preserve">
     <value>Wohnort</value>
   </data>
@@ -252,6 +255,9 @@
   <data name="newDb" xml:space="preserve">
     <value>Neue Datenbank verfügbar!</value>
   </data>
+  <data name="newPrescription" xml:space="preserve">
+    <value>Neues Rezept</value>
+  </data>
   <data name="noclick" xml:space="preserve">
     <value>Bitte wählen Sie ein Produkt.</value>
   </data>
@@ -305,6 +311,9 @@
   </data>
   <data name="selectPicture" xml:space="preserve">
     <value>Unterschrift aus Datei</value>
+  </data>
+  <data name="send" xml:space="preserve">
+    <value>Senden</value>
   </data>
   <data name="settings" xml:space="preserve">
     <value>Einstellungen</value>

@@ -221,6 +221,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Interaktionen überprüfen.
+        /// </summary>
+        public static string checkInteractions {
+            get {
+                return ResourceManager.GetString("checkInteractions", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Wohnort.
         /// </summary>
         public static string city {
@@ -464,6 +473,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Neues Rezept.
+        /// </summary>
+        public static string newPrescription {
+            get {
+                return ResourceManager.GetString("newPrescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Bitte wählen Sie ein Produkt..
         /// </summary>
         public static string noclick {
@@ -622,6 +640,15 @@ namespace AmiKoWindows.Properties {
         public static string selectPicture {
             get {
                 return ResourceManager.GetString("selectPicture", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Senden.
+        /// </summary>
+        public static string send {
+            get {
+                return ResourceManager.GetString("send", resourceCulture);
             }
         }
 
