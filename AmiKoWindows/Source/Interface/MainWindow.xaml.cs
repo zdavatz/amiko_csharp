@@ -840,7 +840,6 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            //Log.WriteLine(source.Name);
             this.DataContext = new ViewType("Form", true);
             e.Handled = true;
         }
@@ -869,7 +868,6 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            Log.WriteLine(source.Name);
             _prescriptions.Renew();
 
             FillPlaceDate();
@@ -923,7 +921,9 @@ namespace AmiKoWindows
             if (ActiveContact != null)
             {
                 _prescriptions.Patient = ActiveContact;
+                _prescriptions.LoadFiles();
                 FillContactFields();
+                FillPlaceDate();
             }
 
             // Re:enable animations for next time
@@ -943,6 +943,7 @@ namespace AmiKoWindows
             {
                 _prescriptions.Operator = ActiveAccount;
                 LoadAccountPicture();
+                FillPlaceDate();
                 EnableButton("NewPrescriptionButton", true);
             }
 

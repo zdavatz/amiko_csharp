@@ -65,7 +65,8 @@ namespace AmiKoWindows
         public string GetPlaceDate()
         {
             var placeDate = "";
-            if (Operator != null)
+            // return empty string if prescription is not loaded yet
+            if (Operator != null && Hash != null)
                 placeDate = Utilities.ConcatWith(", ", Operator.City, Utilities.GetLocalTimeAsString(AMIKO_FILE_PLACE_DATE_FORMAT));
             return placeDate;
         }
@@ -74,6 +75,8 @@ namespace AmiKoWindows
         {
             if (Patient == null)
                 return;
+
+            this.Hash = null;
 
             string userDir = Path.Combine(_dataDir, Patient.Uid);
             Log.WriteLine("userDir: {0}", userDir);
