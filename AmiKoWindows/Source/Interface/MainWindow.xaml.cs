@@ -355,7 +355,10 @@ namespace AmiKoWindows
                         accountInfo.DataContext = ActiveAccount;
 
                     LoadAccountPicture();
+                    FillPlaceDate();
                     EnableButton("NewPrescriptionButton", true);
+                    if (!_prescriptions.IsActivePrescriptionPersisted && _prescriptions.Medications.Count > 0)
+                        EnableButton("SavePrescriptionButton", true);
                 }
 
                 if (_uiState.FullTextQueryEnabled)
@@ -669,6 +672,12 @@ namespace AmiKoWindows
 
                     if (ActiveContact != null && ActiveAccount != null)
                         EnableButton("SavePrescriptionButton", true);
+
+                    if (!_uiState.IsPrescriptions)
+                    {
+                        SetState(UIState.State.Prescriptions);
+                        this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    }
 
                     e.Handled = true;
                 }

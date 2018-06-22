@@ -56,6 +56,12 @@ namespace AmiKoWindows
         {
             get { return new List<Medication>(_Medications); }
         }
+
+        public bool IsActivePrescriptionPersisted
+        {
+            // TODO
+            get { return ((PlaceDate != null && !PlaceDate.Equals(string.Empty)) && Medications.Count > 0); }
+        }
         #endregion
 
         #region for prescription manager
