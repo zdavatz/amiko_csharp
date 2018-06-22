@@ -1010,7 +1010,7 @@ namespace AmiKoWindows
 
             if (ActiveContact != null)
             {
-                if (_prescriptions.Patient != null) // change of patient
+                if (_prescriptions.Patient != null && _prescriptions.Patient.Uid != ActiveContact.Uid) // change of patient
                     _prescriptions.Renew();
 
                 _prescriptions.Patient = ActiveContact;
