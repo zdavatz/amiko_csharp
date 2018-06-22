@@ -177,8 +177,7 @@ namespace AmiKoWindows
 
         private string GeneratePlaceDate()
         {
-            // return empty string if prescription is not loaded yet
-            if (Operator != null && Hash != null)
+            if (Operator != null)
                 return Utilities.ConcatWith(", ", Operator.City, Utilities.GetLocalTimeAsString(AMIKO_FILE_PLACE_DATE_FORMAT));
             return "";
         }
