@@ -241,6 +241,7 @@
     <Compile Include="Source\FachInfo.cs" />
     <Compile Include="Source\Favorites.cs" />
     <Compile Include="Source\MainSqlDb.cs" />
+    <Compile Include="Source\Medication.cs" />
     <Compile Include="Source\Network.cs" />
     <Compile Include="Source\PatientDb.cs" />
     <Compile Include="Source\PrescriptionsBox.cs" />

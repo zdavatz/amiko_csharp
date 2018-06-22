@@ -26,7 +26,14 @@ using System.Threading.Tasks;
 
 namespace AmiKoWindows
 {
-    // Prescription Manager Object
+    // Prescription Manager Object which knows active (opened) prescription.
+    //
+    // ```
+    // # properties for active prescription
+    // Contact Patient
+    // Account Operotar
+    // List<Medication> Medications
+    // ```
     class PrescriptionsBox
     {
         const string AMIKO_FILE_PLACE_DATE_FORMAT = "dd.MM.yyyy (HH:mm:ss)";
@@ -34,25 +41,42 @@ namespace AmiKoWindows
 
         private static readonly Regex AMIKO_FILE_EXTENSION_RGX = new Regex(@"\.amk$", RegexOptions.Compiled);
 
-        HashSet<string> _setOfFiles = new HashSet<string>();
-        HashSet<string> _setOfMedicationIds = new HashSet<string>();
-
         string _dataDir;
 
         #region Public Fields
+        #region for active prescription
+        public string PlaceDate { get; set; }
+        public string Hash { get; set; }
+
         public Contact Patient { get; set; }
         public Account Operator { get; set; }
 
-        public string PlaceDate { get; set; }
-        public string Hash { get; set; }
-        public List<string> MedicationIds
+        private HashSet<Medication> _Medications = new HashSet<Medication>();
+        public List<Medication> Medications
         {
-            get { return new List<string>(_setOfMedicationIds); }
+            get { return new List<Medication>(_Medications); }
         }
+        #endregion
 
+        #region for prescription manager
+        private HashSet<string> _Files = new HashSet<string>();
         public List<string> Files
         {
-            get { return new List<string>(_setOfFiles); }
+            get { return new List<string>(_Files); }
+        }
+        #endregion
+        #endregion
+
+        #region Dependency Properties
+        private ItemsObservableCollection _medicationListItems = new ItemsObservableCollection();
+        public ItemsObservableCollection MedicationListItems
+        {
+            get { return _medicationListItems; }
+            private set
+            {
+                if (value != _medicationListItems)
+                    _medicationListItems = value;
+            }
         }
         #endregion
 
@@ -62,13 +86,66 @@ namespace AmiKoWindows
             EnforceDir(_dataDir);
         }
 
-        public string GetPlaceDate()
+        public void UpdateMedicationList()
         {
-            var placeDate = "";
-            // return empty string if prescription is not loaded yet
-            if (Operator != null && Hash != null)
-                placeDate = Utilities.ConcatWith(", ", Operator.City, Utilities.GetLocalTimeAsString(AMIKO_FILE_PLACE_DATE_FORMAT));
-            return placeDate;
+            MedicationListItems.Clear();
+            MedicationListItems.AddRange(Medications);
+        }
+
+        public void ShowDetail()
+        {
+        }
+
+        public void Renew()
+        {
+            _Medications.Clear();
+            UpdateMedicationList();
+
+            this.Hash = Utilities.GenerateUUID();
+            this.PlaceDate = "";
+        }
+
+        public async Task Save()
+        {
+            this.PlaceDate = GeneratePlaceDate();
+            if (Hash == null)
+                this.Hash = Utilities.GenerateUUID(); // new
+
+            await Task.Run(() =>
+            {
+                var outputFile = String.Format("RZ_{0}", Utilities.GetLocalTimeAsString(FILE_NAME_SUFFIX_DATE_FORMAT));
+                try
+                {
+                    Log.WriteLine("prescription_hash: {0}", Hash);
+                    //if (File.Exists(outputFile))
+                    //    File.Delete(outputFile);
+
+                    //using (var output = File.Create(outputFile))
+                    //{
+                    //}
+                }
+                catch (IOException ex)
+                {
+                    Log.WriteLine(ex.Message);
+                }
+            });
+        }
+
+        public void AddMedication(Medication medication)
+        {
+            _Medications.Add(medication);
+            UpdateMedicationList();
+        }
+
+        public void RemoveMedication(Medication medication)
+        {
+            _Medications.Remove(medication);
+            UpdateMedicationList();
+        }
+
+        public bool Contains(Medication medication)
+        {
+            return _Medications.Contains(medication);
         }
 
         public void LoadFiles()
@@ -93,62 +170,17 @@ namespace AmiKoWindows
             }
         }
 
-        public void ShowDetail()
-        {
-        }
-
-        public void Renew()
-        {
-            this.Hash = Utilities.GenerateUUID();
-            if (Operator != null)
-                this.PlaceDate = GetPlaceDate();
-
-            Log.WriteLine("PlaceDate: {0}", PlaceDate);
-        }
-
-        public async Task Save()
-        {
-            if (Hash == null)
-                this.Hash = Utilities.GenerateUUID(); // new
-
-            await Task.Run(() =>
-            {
-                var outputFile = String.Format("RZ_{0}", Utilities.GetLocalTimeAsString(FILE_NAME_SUFFIX_DATE_FORMAT));
-                try
-                {
-                    Log.WriteLine("prescription_hash: {0}", Hash);
-                    //if (File.Exists(outputFile))
-                    //    File.Delete(outputFile);
-
-                    //using (var output = File.Create(outputFile))
-                    //{
-                    //}
-                }
-                catch (IOException ex)
-                {
-                    Log.WriteLine(ex.Message);
-                }
-            });
-        }
-
-        public void AddMedication(string entry)
-        {
-            // TODO
-        }
-
-        public void RemoveMedication(string entry)
-        {
-            // TODO
-        }
-
         public void DeleteFile(string hash)
         {
 
         }
 
-        public bool Contains(string file)
+        private string GeneratePlaceDate()
         {
-            return _setOfFiles.Contains(file);
+            // return empty string if prescription is not loaded yet
+            if (Operator != null && Hash != null)
+                return Utilities.ConcatWith(", ", Operator.City, Utilities.GetLocalTimeAsString(AMIKO_FILE_PLACE_DATE_FORMAT));
+            return "";
         }
 
         private static bool EnforceDir(string dir)

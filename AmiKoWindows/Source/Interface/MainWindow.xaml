@@ -106,12 +106,18 @@
                               </Grid>
                             </Grid>
 
-                            <ScrollViewer Grid.Row="1" Margin="7,5,7,2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                <Border Margin="0" Padding="1" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1">
-                                    <StackPanel>
-                                    </StackPanel>
-                                </Border>
-                            </ScrollViewer>
+                            <Border Grid.Row="1" Margin="7,5,7,2" Padding="1" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1" DataContext="{Binding Path=_prescriptions, UpdateSourceTrigger=PropertyChanged}">
+                                <ListBox
+                                    Name="MedicationList" Style="{StaticResource MedicationListBox}" ItemContainerStyle="{StaticResource MedicationListBoxItem}"
+                                    KeyboardNavigation.DirectionalNavigation="Cycle"
+                                    ItemsSource="{Binding Path=MedicationListItems}" Height="430">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Text}" Margin="0,0,11,0" Padding="4,6,9,4" FontWeight="Normal" VerticalAlignment="Center" Focusable="False" />
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
 
                             <Grid Margin="7,2,7,7" Grid.Row="2">
                                 <Grid>
@@ -351,7 +357,7 @@
                                                      PreviewMouseDown="OnSearchResultChild_PreviewMouseDown">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBlock 
+                                                        <TextBlock
                                                             Name="ItemName" Style="{StaticResource SearchListBoxChildItemText}" Text="{Binding Path=Text}" Foreground="{Binding Path=Color}"
                                                             ContextMenuOpening="SearchChildItem_ContextMenuOpening"
                                                             ContextMenuClosing="SearchChildItem_ContextMenuClosing"
@@ -359,6 +365,8 @@
                                                             MouseRightButtonDown="SearchChildItem_MouseRightButtonDown">
                                                             <TextBlock.ContextMenu>
                                                                 <ContextMenu Name="ItemContextMenu">
+                                                                    <MenuItem Header="{Binding Path=Text}" Focusable="False" IsEnabled="False" />
+                                                                    <MenuItem Header="{x:Static p:Resources.prescription}" Click="SearchChildItemContextMenuItem_Click" />
                                                                 </ContextMenu>
                                                             </TextBlock.ContextMenu>
                                                         </TextBlock>

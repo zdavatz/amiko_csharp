@@ -365,6 +365,10 @@ namespace AmiKoWindows
                     this.SearchResult.DataContext = _sqlDb;
                     this.SectionTitles.DataContext = _prescriptions;
 
+                    var medicationList = GetElementInMainArea("MedicationList") as ListBox;
+                    if (medicationList != null)
+                        medicationList.DataContext = _prescriptions;
+
                     var grid = GetView() as Grid;
                     if (grid != null)
                     {
@@ -606,12 +610,6 @@ namespace AmiKoWindows
                     menu.IsOpen = false;
                 else
                 {
-                    var menuItem = new MenuItem();
-                    menuItem.Header = block.Text;
-                    menuItem.Focusable = false;
-                    menuItem.IsEnabled = false;
-                    menu.Items.Clear();
-                    menu.Items.Insert(0, menuItem);
                     menu.PlacementTarget = block;
                     menu.IsOpen = true;
                 }
@@ -620,8 +618,7 @@ namespace AmiKoWindows
 
         private void SearchChildItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            // prevent default action (on right click)
-            _contextMenuIsOpen = true;
+            _contextMenuIsOpen = true; // prevent default action (on right click)
             e.Handled = true;
         }
 
@@ -655,6 +652,26 @@ namespace AmiKoWindows
             {
                 ToggleContextMenu(sender as TextBlock);
                 e.Handled = true;
+            }
+        }
+
+        private async void SearchChildItemContextMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+            ChildItem item = (sender as MenuItem)?.DataContext as ChildItem;
+            if (item != null && !item.Ean.Equals(string.Empty))
+            {
+                Article article = await _sqlDb.GetArticleWithId(item.Id);
+                if (article != null)
+                {
+                    var medication = new Medication(item.Ean, article);
+                    _prescriptions.AddMedication(medication);
+
+                    if (ActiveContact != null && ActiveAccount != null)
+                        EnableButton("SavePrescriptionButton", true);
+
+                    e.Handled = true;
+                }
             }
         }
 
@@ -937,6 +954,7 @@ namespace AmiKoWindows
                 return;
 
             _prescriptions.Renew();
+            Log.WriteLine("{0}", _prescriptions.Medications.Count);
 
             FillPlaceDate();
 
@@ -964,7 +982,11 @@ namespace AmiKoWindows
 
             Log.WriteLine(source.Name);
             await _prescriptions.Save();
+
+            FillPlaceDate();
+            EnableButton("SavePrescriptionButton", false);
             EnableButton("SendPrescriptionButton", true);
+
             e.Handled = true;
         }
 
@@ -988,10 +1010,16 @@ namespace AmiKoWindows
 
             if (ActiveContact != null)
             {
+                if (_prescriptions.Patient != null) // change of patient
+                    _prescriptions.Renew();
+
                 _prescriptions.Patient = ActiveContact;
                 _prescriptions.LoadFiles();
                 FillContactFields();
                 FillPlaceDate();
+
+                if (ActiveAccount != null && _prescriptions.Medications.Count > 0)
+                    EnableButton("SavePrescriptionButton", true);
             }
 
             // Re:enable animations for next time
@@ -1041,7 +1069,7 @@ namespace AmiKoWindows
             var block = GetElementInMainArea("PlaceDate") as TextBlock;
             if (block != null)
             {
-                block.Text = _prescriptions.GetPlaceDate();
+                block.Text = _prescriptions.PlaceDate;
                 block.UpdateLayout();
             }
         }

@@ -282,6 +282,9 @@
   <data name="position" xml:space="preserve">
     <value>Pos</value>
   </data>
+  <data name="prescription" xml:space="preserve">
+    <value>Prescription</value>
+  </data>
   <data name="prescriptions" xml:space="preserve">
     <value>Prescriptions</value>
   </data>
