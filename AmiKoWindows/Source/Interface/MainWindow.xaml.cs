@@ -27,6 +27,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -55,14 +56,15 @@ namespace AmiKoWindows
         FachInfo _fachInfo;
         FullTextSearch _fullTextSearch;
         InteractionsCart _interactions;
-        Prescriptions _prescriptions;
+        PrescriptionsBox _prescriptions;
         StatusBarHelper _statusBarHelper;
         string _selectedFullTextSearchKey;
 
         FrameworkElement _browser;
         FrameworkElement _manager;
 
-        public string Hoi = "Test";
+        private bool _contextMenuIsOpen = false;
+
         #region Public Fields
         private Contact _ActiveContact;
         public Contact ActiveContact
@@ -75,14 +77,14 @@ namespace AmiKoWindows
             }
         }
 
-        private Operator _ActiveOperator;
-        public Operator ActiveOperator
+        private Account _ActiveAccount;
+        public Account ActiveAccount
         {
-            get { return _ActiveOperator; }
+            get { return _ActiveAccount; }
             set
             {
-                _ActiveOperator = value;
-                OnPropertyChanged("ActiveOperator");
+                _ActiveAccount = value;
+                OnPropertyChanged("ActiveAccount");
             }
         }
         #endregion
@@ -123,9 +125,9 @@ namespace AmiKoWindows
             _interactions = new InteractionsCart();
             _interactions.LoadFiles();
 
-            // Initialize prescriptions list
-            _prescriptions = new Prescriptions();
-            _prescriptions.Load();
+            // Initialize prescriptions container
+            _prescriptions = new PrescriptionsBox();
+            _prescriptions.LoadFiles();
 
             _statusBarHelper = new StatusBarHelper();
 
@@ -139,7 +141,7 @@ namespace AmiKoWindows
         }
 
         /**
-         * Returns a root element in main area after datatemplate is switched by trigger
+         * Returns an element in main area after datatemplate is switched by trigger
          */
         private FrameworkElement GetElementInMainArea(string elementName)
         {
@@ -263,7 +265,7 @@ namespace AmiKoWindows
                 this.Prescriptions.IsChecked = true;
 
                 Button button = GetElementInMainArea("OpenProfileCardButton") as Button;
-                if (button != null && !Operator.IsSet())
+                if (button != null && !Account.IsSet())
                     button.Visibility = Visibility.Visible;
 
                 // TODO
@@ -343,13 +345,21 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Form", false);
                 SwitchViewContext();
 
-                FillContactFields();
+                if (ActiveContact != null)
+                    FillContactFields();
 
-                var operatorInfo = GetElementInMainArea("OperatorInfo") as Grid;
-                if (operatorInfo != null)
-                    operatorInfo.DataContext = ActiveOperator;
+                if (ActiveAccount != null)
+                {
+                    var accountInfo = GetElementInMainArea("AccountInfo") as Grid;
+                    if (accountInfo != null)
+                        accountInfo.DataContext = ActiveAccount;
 
-                LoadOperatorPicture();
+                    LoadAccountPicture();
+                    FillPlaceDate();
+                    EnableButton("NewPrescriptionButton", true);
+                    if (!_prescriptions.IsActivePrescriptionPersisted && _prescriptions.Medications.Count > 0)
+                        EnableButton("SavePrescriptionButton", true);
+                }
 
                 if (_uiState.FullTextQueryEnabled)
                     SetFullTextSearchDataContext();
@@ -357,6 +367,10 @@ namespace AmiKoWindows
                 {
                     this.SearchResult.DataContext = _sqlDb;
                     this.SectionTitles.DataContext = _prescriptions;
+
+                    var medicationList = GetElementInMainArea("MedicationList") as ListBox;
+                    if (medicationList != null)
+                        medicationList.DataContext = _prescriptions;
 
                     var grid = GetView() as Grid;
                     if (grid != null)
@@ -416,8 +430,11 @@ namespace AmiKoWindows
             this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             this.Compendium.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
-            if (Operator.IsSet())
-                this.ActiveOperator = Properties.Settings.Default.Operator;
+            if (Account.IsSet())
+            {
+                this.ActiveAccount = Properties.Settings.Default.Account;
+                _prescriptions.Operator = ActiveAccount;
+            }
 
             this.DataContext = new ViewType("Html");
             SwitchViewContext();
@@ -468,9 +485,15 @@ namespace AmiKoWindows
          */
         private void OnSearchResultChild_PreviewMouseDown(object sender, RoutedEventArgs e)
         {
-            var item = ItemsControl.ContainerFromElement(sender as ListBox, e.OriginalSource as DependencyObject) as ListBoxItem;
+            if (!(sender is ListBox))
+                return;
+
+            ListBox listBox = sender as ListBox;
+            var item = ItemsControl.ContainerFromElement(listBox, e.OriginalSource as DependencyObject) as ListBoxItem;
             if (item != null)
                 item.IsSelected = false;
+
+            //e.Handled = true; don't set here
         }
 
         /**
@@ -549,21 +572,21 @@ namespace AmiKoWindows
         static long? _searchSelectionChildItemId = 0;
         private async void OnSearchChildItem_Selection(object sender, SelectionChangedEventArgs e)
         {
-            ListBox searchResultList = sender as ListBox;
-            if (searchResultList?.Items.Count > 0)
+            //Log.WriteLine(sender.GetType().Name);
+            var listBox = sender as ListBox;
+            if (listBox?.Items.Count > 0)
             {
-                object selectedItem = searchResultList.SelectedItem;
-                if (selectedItem?.GetType() == typeof(ChildItem))
+                object item = listBox.SelectedItem;
+                if (item?.GetType() == typeof(ChildItem))
                 {
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
-
                     SetSpinnerEnabled(true);
 
-                    ChildItem selection = selectedItem as ChildItem;
-                    if (_searchSelectionChildItemId != selection.Id)
+                    ChildItem childItem = item as ChildItem;
+                    if (_searchSelectionChildItemId != childItem.Id)
                     {
-                        _searchSelectionChildItemId = selection.Id;
+                        _searchSelectionChildItemId = childItem.Id;
                         if (_searchSelectionChildItemId != null)
                         {
                             if (_uiState.IsCompendium || _uiState.IsFavorites || _uiState.IsPrescriptions)
@@ -575,9 +598,88 @@ namespace AmiKoWindows
                     }
 
                     SetSpinnerEnabled(false);
-
                     sw.Stop();
-                    //Log.WriteLine("ChildItem " + _searchSelectionChildItemId + "/" + selection.Id + " -> " + sw.ElapsedMilliseconds + "ms");
+                }
+            }
+        }
+
+        // Makes it same behavior as context menu on macOS Version
+        private void ToggleContextMenu(TextBlock block)
+        {
+            var menu = block?.ContextMenu;
+            if (menu != null)
+            {
+                if (_contextMenuIsOpen)
+                    menu.IsOpen = false;
+                else
+                {
+                    menu.PlacementTarget = block;
+                    menu.IsOpen = true;
+                }
+            }
+        }
+
+        private void SearchChildItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            _contextMenuIsOpen = true; // prevent default action (on right click)
+            e.Handled = true;
+        }
+
+        private void SearchChildItem_ContextMenuClosing(object sender, ContextMenuEventArgs e)
+        {
+            _contextMenuIsOpen = false;
+            e.Handled = true;
+        }
+
+        private void SearchChildItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //Log.WriteLine(sender.GetType().Name);
+            if (!_uiState.IsPrescriptions)
+            {
+                ToggleContextMenu(null);
+                e.Handled = false;
+                return;
+            }
+
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                ToggleContextMenu(sender as TextBlock);
+                e.Handled = true;
+            }
+        }
+
+        private void SearchChildItem_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //Log.WriteLine(sender.GetType().Name);
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                ToggleContextMenu(sender as TextBlock);
+                e.Handled = true;
+            }
+        }
+
+        private async void SearchChildItemContextMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+            ChildItem item = (sender as MenuItem)?.DataContext as ChildItem;
+            if (item != null && !item.Ean.Equals(string.Empty))
+            {
+                Article article = await _sqlDb.GetArticleWithId(item.Id);
+                if (article != null)
+                {
+                    var medication = new Medication(item.Ean, article);
+                    _prescriptions.AddMedication(medication);
+
+                    if (ActiveContact != null && ActiveAccount != null)
+                        EnableButton("SavePrescriptionButton", true);
+
+                    if (!_uiState.IsPrescriptions)
+                    {
+                        SetState(UIState.State.Prescriptions);
+                        this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    }
+
+                    e.Handled = true;
                 }
             }
         }
@@ -658,7 +760,7 @@ namespace AmiKoWindows
                     await _fachInfo.ShowReport();
                 }
             }
-            else if (name.Equals("OperatorAddress"))
+            else if (name.Equals("AccountAddress"))
             {
                 ViewType viewType;
                 viewType = this.DataContext as ViewType;
@@ -832,7 +934,6 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            //Log.WriteLine(source.Name);
             this.DataContext = new ViewType("Form", true);
             e.Handled = true;
         }
@@ -861,7 +962,14 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            //Log.WriteLine(source.Name);
+            _prescriptions.Renew();
+            Log.WriteLine("{0}", _prescriptions.Medications.Count);
+
+            FillPlaceDate();
+
+            EnableButton("CheckInteractionButton", false);
+            EnableButton("SavePrescriptionButton", false);
+            EnableButton("SendPrescriptionButton", false);
             e.Handled = true;
         }
 
@@ -875,13 +983,19 @@ namespace AmiKoWindows
             e.Handled = true;
         }
 
-        private void SavePrescriptionButton_Click(object sender, RoutedEventArgs e)
+        private async void SavePrescriptionButton_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
                 return;
 
             Log.WriteLine(source.Name);
+            await _prescriptions.Save();
+
+            FillPlaceDate();
+            EnableButton("SavePrescriptionButton", false);
+            EnableButton("SendPrescriptionButton", true);
+
             e.Handled = true;
         }
 
@@ -902,7 +1016,20 @@ namespace AmiKoWindows
                 return;
 
             Log.WriteLine(source.Name);
-            FillContactFields();
+
+            if (ActiveContact != null)
+            {
+                if (_prescriptions.Patient != null && _prescriptions.Patient.Uid != ActiveContact.Uid) // change of patient
+                    _prescriptions.Renew();
+
+                _prescriptions.Patient = ActiveContact;
+                _prescriptions.LoadFiles();
+                FillContactFields();
+                FillPlaceDate();
+
+                if (ActiveAccount != null && _prescriptions.Medications.Count > 0)
+                    EnableButton("SavePrescriptionButton", true);
+            }
 
             // Re:enable animations for next time
             source.AreAnimationsEnabled = true;
@@ -917,10 +1044,12 @@ namespace AmiKoWindows
 
             Log.WriteLine(source.Name);
 
-            if (Operator.IsSet())
+            if (Account.IsSet() && ActiveAccount != null)
             {
-                this.ActiveOperator = Properties.Settings.Default.Operator;
-                LoadOperatorPicture();
+                _prescriptions.Operator = ActiveAccount;
+                LoadAccountPicture();
+                FillPlaceDate();
+                EnableButton("NewPrescriptionButton", true);
             }
 
             // Re:enable animations for next time
@@ -930,30 +1059,37 @@ namespace AmiKoWindows
 
         private void FillContactFields()
         {
-            if (ActiveContact == null)
-                return;
-
+            TextBlock block = null;
             var fields = new string[] {"Fullname", "Address", "Place", "PersonalInfo", "Phone", "Email"};
             foreach (var f in fields)
             {
                 var key = String.Format("Contact{0}", f);
-                var block = GetElementInMainArea(key) as TextBlock;
+                block = GetElementInMainArea(key) as TextBlock;
                 if (block != null)
                 {
-                    Log.WriteLine("Text: {0}", ActiveContact[f]);
                     block.Text = (string)ActiveContact[f];
                     block.UpdateLayout();
                 }
             }
         }
 
-        private void LoadOperatorPicture()
+        private void FillPlaceDate()
+        {
+            var block = GetElementInMainArea("PlaceDate") as TextBlock;
+            if (block != null)
+            {
+                block.Text = _prescriptions.PlaceDate;
+                block.UpdateLayout();
+            }
+        }
+
+        private void LoadAccountPicture()
         {
             try
             {
-                Image image = GetElementInMainArea("OperatorPicture") as Image;
-                if (image != null && Operator.IsSet() && ActiveOperator != null)
-                    Utilities.LoadPictureInto(image, ActiveOperator.PictureFile);
+                Image image = GetElementInMainArea("AccountPicture") as Image;
+                if (image != null && Account.IsSet() && ActiveAccount != null)
+                    Utilities.LoadPictureInto(image, ActiveAccount.PictureFile);
             }
             catch (Exception ex)
             {
@@ -962,6 +1098,13 @@ namespace AmiKoWindows
                 else
                     throw ex;
             }
+        }
+
+        private void EnableButton(string name, bool isEnabled)
+        {
+            Button button = GetElementInMainArea(name) as Button;
+            if (button != null)
+                button.IsEnabled = isEnabled;
         }
     }
 

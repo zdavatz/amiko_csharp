@@ -34,13 +34,13 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" Margin="18,10,24,0">
                 <TextBlock FontSize="14" FontWeight="Bold" HorizontalAlignment="Left">
-                    <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.operatorManagement}" Focusable="True" />
+                    <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.accountManagement}" Focusable="True" />
                 </TextBlock>
                 <TextBlock HorizontalAlignment="Right">
                     <Label Margin="0,3,1,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="Red" Content="*" /><Label Margin="0,3,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="{x:Static p:Resources.required}" />
                 </TextBlock>
             </Grid>
-            <!-- Doctor Contact Info (Profile) -->
+            <!-- Doctor Account Info (Profile) -->
             <Grid Grid.Row="1" Margin="9,21,9,9" DataContext="{Binding Path=CurrentEntry, UpdateSourceTrigger=PropertyChanged}">
                 <StackPanel>
                     <DockPanel Margin="7,3,15,6" HorizontalAlignment="Left">

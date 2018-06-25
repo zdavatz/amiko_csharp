@@ -42,7 +42,7 @@ namespace AmiKoWindows
     using ControlExtensions;
 
     /// <summary>
-    /// View controls for doctor's (operator) profile and signature.
+    /// View controls for doctor's profile (account) and signature.
     /// </summary>
     public partial class ProfileCardControl : UserControl, INotifyPropertyChanged
     {
@@ -63,8 +63,8 @@ namespace AmiKoWindows
         #endregion
 
         #region Public Fields
-        private Operator _CurrentEntry;
-        public Operator CurrentEntry
+        private Account _CurrentEntry;
+        public Account CurrentEntry
         {
             get { return _CurrentEntry; }
             set
@@ -104,10 +104,10 @@ namespace AmiKoWindows
                 this.DataContext = this;
             };
 
-            if (Properties.Settings.Default.Operator == null)
-                Properties.Settings.Default.Operator = new Operator();
+            if (Properties.Settings.Default.Account == null)
+                Properties.Settings.Default.Account = new Account();
             else
-                Properties.Settings.Default.Operator.Reload();
+                Properties.Settings.Default.Account.Reload();
 
             InitializeComponent();
         }
@@ -116,12 +116,12 @@ namespace AmiKoWindows
         {
             Log.WriteLine(e.ToString());
 
-            this.CurrentEntry = Properties.Settings.Default.Operator;
+            this.CurrentEntry = Properties.Settings.Default.Account;
 
             if (!DetectCamera())
                 this.TakePictureButton.Visibility = Visibility.Hidden;
 
-            var path = Utilities.OperatorPictureFilePath();
+            var path = Utilities.AccountPictureFilePath();
             if (!File.Exists(path))
                 SetUserDefaultPicture(path);
             else
@@ -201,9 +201,11 @@ namespace AmiKoWindows
 
             if (valid)
             {
-                Properties.Settings.Default.Operator = this.CurrentEntry;
-                Properties.Settings.Default.Operator.Save();
+                Properties.Settings.Default.Account = this.CurrentEntry;
+                Properties.Settings.Default.Account.Save();
                 Properties.Settings.Default.Save();
+
+                _mainWindow.ActiveAccount = this.CurrentEntry;
             }
 
             if (_parent != null)
@@ -220,7 +222,7 @@ namespace AmiKoWindows
             switch (result)
             {
                 case System.Windows.Forms.DialogResult.OK:
-                    ImportPicture(dialog.FileName, Utilities.OperatorPictureFilePath());
+                    ImportPicture(dialog.FileName, Utilities.AccountPictureFilePath());
                     LoadPicture();
                     ValidateField(this.Picture);
                     break;
@@ -232,7 +234,7 @@ namespace AmiKoWindows
 
         private void SetAccountAvatarButton_Click(object sender, RoutedEventArgs e)
         {
-            var path = Utilities.OperatorPictureFilePath();
+            var path = Utilities.AccountPictureFilePath();
             SetUserDefaultPicture(path);
 
             if (!DoesPictureFileExist)
@@ -263,7 +265,7 @@ namespace AmiKoWindows
                 this.Picture.Source = preview;
                 await preview.StartAsync();
 
-                var outputFile = Utilities.OperatorPictureFilePath();
+                var outputFile = Utilities.AccountPictureFilePath();
                 TakePicture(capture, preview, outputFile, 3);
             }
         }
@@ -311,8 +313,8 @@ namespace AmiKoWindows
             if (element is TextBox)
             {
                 var box = element as TextBox;
-                // Check text using Operator's validation method
-                hasError = !Operator.ValidateProperty(box.Name, box.Text);
+                // Check text using Account's validation method
+                hasError = !Account.ValidateProperty(box.Name, box.Text);
                 this.FeedbackField<TextBox>(box, hasError);
             }
             else if (element is Image)

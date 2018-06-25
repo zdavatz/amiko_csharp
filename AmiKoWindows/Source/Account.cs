@@ -27,7 +27,7 @@ namespace AmiKoWindows
 {
     /// https://msdn.microsoft.com/en-us/library/system.configuration.applicationsettingsbase%28v=vs.110%29.aspx?f=255&MSPPError=-2147217396
     [Serializable]
-    public class Operator : ApplicationSettingsBase, INotifyPropertyChanged
+    public class Account : ApplicationSettingsBase, INotifyPropertyChanged
     {
         [UserScopedSetting()]
         [SettingsSerializeAs(System.Configuration.SettingsSerializeAs.Binary)]
@@ -146,7 +146,7 @@ namespace AmiKoWindows
         public string PictureFile
         {
             get {
-                return Utilities.OperatorPictureFilePath();
+                return Utilities.AccountPictureFilePath();
             }
         }
         #endregion
@@ -155,19 +155,19 @@ namespace AmiKoWindows
             "GivenName", "FamilyName", "Address", "City", "Zip",
         };
 
-        // Returns operator's profile (required text fields) is saved in user.config
+        // Returns profile (required text fields) is saved in user.config
         static public bool IsSet()
         {
             // NOTE: Namespace `AmiKoWindows` is required in static context
             if (AmiKoWindows.Properties.Settings.Default == null)
                 return false;
 
-            Operator op = AmiKoWindows.Properties.Settings.Default.Operator as Operator;
-            if (op == null)
+            Account account = AmiKoWindows.Properties.Settings.Default.Account as Account;
+            if (account == null)
                 return false;
 
             return 0 == requiredPlainTextFields.Where(f => {
-                string v = (string)op[f];
+                string v = (string)account[f];
                 return (v == null || v.Equals(string.Empty));
             }).Count();
         }

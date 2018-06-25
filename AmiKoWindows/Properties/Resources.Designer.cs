@@ -68,6 +68,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to keine Arztadresse.
+        /// </summary>
+        public static string accountManagement {
+            get {
+                return ResourceManager.GetString("accountManagement", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Addresse.
         /// </summary>
         public static string address {
@@ -208,6 +217,15 @@ namespace AmiKoWindows.Properties {
         public static string category {
             get {
                 return ResourceManager.GetString("category", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Interaktionen überprüfen.
+        /// </summary>
+        public static string checkInteractions {
+            get {
+                return ResourceManager.GetString("checkInteractions", resourceCulture);
             }
         }
 
@@ -455,6 +473,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Neues Rezept.
+        /// </summary>
+        public static string newPrescription {
+            get {
+                return ResourceManager.GetString("newPrescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Bitte wählen Sie ein Produkt..
         /// </summary>
         public static string noclick {
@@ -478,15 +505,6 @@ namespace AmiKoWindows.Properties {
         public static string nopacks {
             get {
                 return ResourceManager.GetString("nopacks", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to keine Arztadresse.
-        /// </summary>
-        public static string operatorManagement {
-            get {
-                return ResourceManager.GetString("operatorManagement", resourceCulture);
             }
         }
 
@@ -532,6 +550,15 @@ namespace AmiKoWindows.Properties {
         public static string position {
             get {
                 return ResourceManager.GetString("position", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Rezepte.
+        /// </summary>
+        public static string prescription {
+            get {
+                return ResourceManager.GetString("prescription", resourceCulture);
             }
         }
 
@@ -622,6 +649,15 @@ namespace AmiKoWindows.Properties {
         public static string selectPicture {
             get {
                 return ResourceManager.GetString("selectPicture", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Senden.
+        /// </summary>
+        public static string send {
+            get {
+                return ResourceManager.GetString("send", resourceCulture);
             }
         }
 
