@@ -60,14 +60,22 @@ namespace AmiKoWindows
         public string FamilyName
         {
             get { return _FamilyName; }
-            set { SetField(ref _FamilyName, value, "FamilyName"); }
+            set
+            {
+                SetField(ref _FamilyName, value, "FamilyName");
+                OnPropertyChanged("Fullname");
+            }
         }
 
         private string _GivenName;
         public string GivenName
         {
             get { return _GivenName; }
-            set { SetField(ref _GivenName, value, "GivenName"); }
+            set
+            {
+                SetField(ref _GivenName, value, "GivenName");
+                OnPropertyChanged("Fullname");
+            }
         }
 
         private string _Birthdate;
@@ -133,14 +141,22 @@ namespace AmiKoWindows
         public string Zip
         {
             get { return _Zip; }
-            set { SetField(ref _Zip, value, "Zip"); }
+            set
+            {
+                SetField(ref _Zip, value, "Zip");
+                OnPropertyChanged("Place");
+            }
         }
 
         private string _City;
         public string City
         {
             get { return _City; }
-            set { SetField(ref _City, value, "City"); }
+            set
+            {
+                SetField(ref _City, value, "City");
+                OnPropertyChanged("Place");
+            }
         }
 
         private string _Country;
@@ -171,7 +187,8 @@ namespace AmiKoWindows
             set { SetField(ref _Email, value, "Email"); }
         }
 
-        // Additional virtual properties for `Gender` (TwoWay for RadioButton in Xaml)
+        #region Virtual Fields
+        // for `Gender` (TwoWay for RadioButton in Xaml)
         public bool IsFemale
         {
             get { return _Gender == GENDER_FEMALE; }
@@ -183,6 +200,28 @@ namespace AmiKoWindows
             get { return _Gender == GENDER_MALE; }
             set { SetField(ref _Gender, value ? GENDER_MALE : GENDER_FEMALE, "Gender"); }
         }
+
+        // for view
+        public string Fullname
+        {
+            get { return Utilities.Concat(this.GivenName, this.FamilyName); }
+        }
+
+        public string Place
+        {
+            get { return Utilities.Concat(this.Zip, this.City); }
+        }
+
+        public string PersonalInfo
+        {
+            get {
+                var w = this.WeightKg; if (w != null && !w.Equals(string.Empty)) w += "kg";
+                var h = this.HeightCm; if (h != null && !h.Equals(string.Empty)) h += "cm";
+                var g = ""; if (this.IsFemale) g = "F"; else if (this.IsMale) g = "M";
+                return Utilities.Concat(Utilities.ConcatWith("/", w, h), g, this.Birthdate);
+            }
+        }
+        #endregion
 
         #region Setter/Getter Utilities
         public object this[string propertyName]
@@ -212,25 +251,23 @@ namespace AmiKoWindows
         }
         #endregion
 
-        // NOTE:
+        // ## NOTE
         //
-        // See also the early implementation on macOS/iOS Version (til, AmiKo macOS v3.4.4, AmiKo iOS v2.8.143):
-		// Its rely on the value of NSString's `hash` (It might need migration or something).
-        // The requirement has been changed (https://github.com/zdavatz/amiko_csharp/issues/81).
+        // Check also the early implementation on macOS/iOS Version (til, AmiKo macOS v3.4.4, AmiKo iOS v2.8.143):
+		// Its rely on the value of __current__ NSString's `hash`. Thus We need to keep this hashed value by its algorithm for consistency.
 		//
         // * https://github.com/zdavatz/amiko-osx/blob/a4892277bde48e358c9e3042b14bf8b6cddd22c4/MLPatient.m#L70
         // * https://github.com/zdavatz/AmiKo-iOS/blob/d1ad38727931bb3b079bfff85d1d93dbcc8de567/AmiKoDesitin/MLPatient.m#L50
         //
-		// ## Reference
-		//
-        // * https://developer.apple.com/documentation/foundation/nsstring/1417245-hash?language=objc
-        // * https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418859-hash?language=objc
+        // This `GenerateUid` function is based on the hashed value by `Utilities.Hash` function same as NSString's (CFString CF-1151.16) Hash Implementation in Obj-C.
+        // But it's written in C# (in Utilities.cs).
+        //
+        // See also `Utilities.Hash` function (Utilities.cs) and unit tests (UtilityTest.cs).
         public string GenerateUid()
         {
             // e.g. davatz.zeno.2.6.1942
             string baseString = String.Format(
                 "{0}.{1}.{2}", this.FamilyName, this.GivenName, this.Birthdate).ToLower();
-            //Log.WriteLine("baseString: {0}", baseString);
             return Utilities.GenerateHash(baseString);
         }
 

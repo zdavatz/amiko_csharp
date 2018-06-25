@@ -18,11 +18,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Media.Imaging;
 
 namespace AmiKoWindows
 {
@@ -123,6 +128,13 @@ namespace AmiKoWindows
             return path;
         }
 
+        public static string OperatorPictureFilePath()
+        {
+            string path = Path.Combine(
+                AppRoamingDataFolder(), Constants.OPERATOR_PICTURE_FILE);
+            return path;
+        }
+
         public static string ReportPath()
         {
             string reportPath = "http://pillbox.oddb.org/amiko_report_de.html";
@@ -144,6 +156,9 @@ namespace AmiKoWindows
         // TitleCase -> snake_case
         public static string ConvertTitleCaseToSnakeCase(string text)
         {
+            if (text == null || text.Equals(string.Empty))
+                return "";
+
             return string.Concat(text.Select(
                 (x, i) => {
                     if (i == 0)
@@ -173,16 +188,103 @@ namespace AmiKoWindows
             return newText;
         }
 
+        public static string Concat(params string[] parts)
+        {
+            return ConcatWith(" ", parts);
+        }
+
+        // Makes a string using arguments concatenated as string
+        public static string ConcatWith(string delimiter, params string[] parts)
+        {
+            return String.Join(delimiter, parts.Where(v => {
+                return (v != null && !v.Equals(string.Empty));
+            }));
+        }
+
         public static string GenerateHash(string baseString)
         {
-            HashAlgorithm algorithm = SHA256.Create();
-            byte[] hash = algorithm.ComputeHash(Encoding.UTF8.GetBytes(baseString));
+            long hash = Hash(baseString);
+            // cast signed long to unsigned long (same as macOS Version of AmiKo)
+            return String.Format("{0}", (ulong)Hash(baseString));
+        }
 
-            StringBuilder builder = new StringBuilder();
-            foreach (byte b in hash)
-                builder.Append(b.ToString("X2"));
-            return builder.ToString();
+        // Returns hashed long number same as NSString (CFString)'s Hash Implementation.
+        //
+        // On Swift 3.0.1, it seems that `hash` property is same result with output by hash implementation in *CFString.c* (CF-1151.16)
+        // See also `UtilityTest.cs`.
+        //
+        // ## Note
+        //
+        // [Repl](https://repl.it/) may be useful to check the value (on Swift)
+        //
+        // ```swift
+        // import Foundation
+        //
+        // var s: NSString = "Hoi"
+        // print(s.hash)
+        //
+        // var t: NSString = "Zäme"
+        // print(t.hash)
+        //
+        // var r: NSString = "FooBarBaz"
+        // print(r.hash)
+        // print(NSString(format: "%lu", r.hash))
+        //
+        // var i: NSString = "FooBarBazQuxQuuxFooBarBazQuxQuux"
+        // print(i.hash)
+        //
+        // var n = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        // print(n.hash)
+        // ```
+        //
+        // ## References
+        //
+        // * https://opensource.apple.com/source/CF/CF-1151.16/CFString.c.auto.html
+        // * https://developer.apple.com/documentation/foundation/nsstring/1417245-hash
+        // * https://developer.apple.com/documentation/foundation/nsstring/1417245-hash?language=objc
+        // * https://developer.apple.com/documentation/objectivec/1418956-nsobject/1418859-hash?language=objc
+        public static long Hash(string baseString)
+        {
+            char[] chars = baseString.ToCharArray();
+            int len = baseString.Length;
+            int i = 0;
+            long result = len;
 
+            // updates `result` and `i` in the scope
+            Action Calc = () =>
+            {
+                result = result * 67503105 + chars[i] * 16974593 + chars[i + 1] * 66049 + chars[i + 2] * 257 + chars[i + 3];
+                i += 4;
+            };
+
+            if (len <= 96)
+            {
+                int to4 = (len & ~3);
+                int end = len;
+                while (i < to4)
+                    Calc();
+
+                while (i < end)
+                    result = result * 257 + chars[i++];
+            }
+            else
+            {
+                int end;
+                end = 29;
+                while (i < end)
+                    Calc();
+
+                i = ((len / 2) - 16);
+                end = ((len / 2) + 15);
+                while (i < end)
+                    Calc();
+
+                i = (len - 32);
+                end = (i + 29);
+                while (i < end)
+                    Calc();
+            }
+            return (result + (result << (len & 31)));
         }
 
         public static string GetCurrentTimeInUTC()
@@ -203,6 +305,55 @@ namespace AmiKoWindows
             DateTime time = DateTime.SpecifyKind(
                 utcTime, DateTimeKind.Utc);
             return time.ToLocalTime();
+        }
+
+        public static void SaveImageFileAsPng(Stream input, Stream output)
+        {
+            using (var image = System.Drawing.Image.FromStream(input))
+            using (var bitmap = new Bitmap(image.Width, image.Height))
+            using (var graphics = Graphics.FromImage(bitmap))
+            {
+                graphics.CompositingQuality = CompositingQuality.HighSpeed;
+                graphics.SmoothingMode = SmoothingMode.HighSpeed;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                // save as same width/height
+                graphics.DrawImage(image, new Rectangle(0, 0, image.Width, image.Height));
+                bitmap.Save(output, ImageFormat.Png);
+            }
+        }
+        #endregion
+
+        #region UI Functions
+        // Loads image on memory (to make it deletable on another view)
+        public static bool LoadPictureInto(System.Windows.Controls.Image image, string path)
+        {
+            var loaded = false;
+            if ((image is System.Windows.Controls.Image) && path != null && !path.Equals(string.Empty) && File.Exists(path))
+            {
+                var source = new System.Windows.Media.Imaging.BitmapImage();
+                source.BeginInit();
+                source.CacheOption = BitmapCacheOption.OnLoad;
+                source.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                source.UriSource = new Uri(path, UriKind.Absolute);
+                source.EndInit();
+                image.Source = source;
+                source.Freeze();
+                loaded = true;
+            }
+            return loaded;
+        }
+
+        #endregion
+
+        #region Shell Functions
+        [DllImport("shell32.dll", EntryPoint="#261", CharSet=CharSet.Unicode, PreserveSig=false)]
+        public static extern void GetUserAvatarFilePath(string username, UInt32 whatever, StringBuilder picpath, int maxLength);
+
+        public static string GetUserAvatarFilePath(string username)
+        {
+            var builder = new StringBuilder(1000);
+            GetUserAvatarFilePath(username, 0x80000000, builder, builder.Capacity);
+            return builder.ToString();
         }
         #endregion
     }

@@ -20,9 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Navigation;
@@ -37,50 +39,12 @@ namespace AmiKoWindows
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     {
         class ExtendedDataContext
         {
             public Network Network { get; set; }
             public MainSqlDb MainSqlDb { get; set; }
-        }
-
-        // for main view area triggers
-        public class ViewType : INotifyPropertyChanged
-        {
-            private string _mode;
-
-            public string Mode
-            {
-                get { return this._mode; }
-                set { this._mode = value; NotifyChanged("Mode"); }
-            }
-
-            private bool _hasControl;
-
-            public bool HasControl
-            {
-                get { return this._hasControl; }
-                set { this._hasControl = value; NotifyChanged("HasControl"); }
-            }
-
-            public ViewType(string modeName) {
-              this.Mode = modeName;
-              this.HasControl = false;
-            }
-
-            public ViewType(string mode, bool hasControl) {
-              this.Mode = mode;
-              this.HasControl = hasControl;
-            }
-
-
-            public event PropertyChangedEventHandler PropertyChanged;
-            void NotifyChanged(string property)
-            {
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
         }
 
         static bool _willNavigate = false;
@@ -97,6 +61,40 @@ namespace AmiKoWindows
 
         FrameworkElement _browser;
         FrameworkElement _manager;
+
+        public string Hoi = "Test";
+        #region Public Fields
+        private Contact _ActiveContact;
+        public Contact ActiveContact
+        {
+            get { return _ActiveContact; }
+            set
+            {
+                _ActiveContact = value;
+                OnPropertyChanged("ActiveContact");
+            }
+        }
+
+        private Operator _ActiveOperator;
+        public Operator ActiveOperator
+        {
+            get { return _ActiveOperator; }
+            set
+            {
+                _ActiveOperator = value;
+                OnPropertyChanged("ActiveOperator");
+            }
+        }
+        #endregion
+
+        #region Event Handlers
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
 
         public MainWindow()
         {
@@ -162,7 +160,7 @@ namespace AmiKoWindows
         public void SwitchViewContext()
         {
             var viewType = this.DataContext as ViewType;
-            if (viewType.Mode == "Form")
+            if (viewType.Mode.Equals("Form"))
             {
                 if (_browser != null)
                 {
@@ -187,14 +185,12 @@ namespace AmiKoWindows
             FrameworkElement element = null;
 
             var viewType = this.DataContext as ViewType;
-            if (viewType.Mode == "Form")
-            {
+            if (viewType.Mode.Equals("Form"))
                 element = _manager;
-                //Log.WriteLine("manager: {0}", element);
-            } else {
+            else
                 element = _browser;
-                //Log.WriteLine("browser: {0}", element);
-            }
+
+            //Log.WriteLine("element: {0}", element);
             return element;
         }
 
@@ -218,7 +214,7 @@ namespace AmiKoWindows
 
             //Log.WriteLine("new state: {0}", _uiState.GetState());
 
-            if (_uiState.FullTextQueryEnabled())
+            if (_uiState.FullTextQueryEnabled)
                 if (state.Equals("Farovites"))
                     await _fullTextDb.RetrieveFavorites();
                 _fullTextDb.UpdateSearchResults(_uiState);
@@ -265,6 +261,11 @@ namespace AmiKoWindows
                 this.Favorites.IsChecked = false;
                 this.Interactions.IsChecked = false;
                 this.Prescriptions.IsChecked = true;
+
+                Button button = GetElementInMainArea("OpenProfileCardButton") as Button;
+                if (button != null && !Operator.IsSet())
+                    button.Visibility = Visibility.Visible;
+
                 // TODO
                 _prescriptions.ShowDetail();
             }
@@ -282,7 +283,7 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Html");
                 SwitchViewContext();
 
-                if (_uiState.FullTextQueryEnabled())
+                if (_uiState.FullTextQueryEnabled)
                     SetFullTextSearchDataContext();
                 else
                 {
@@ -302,7 +303,7 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Html");
                 SwitchViewContext();
 
-                if (_uiState.FullTextQueryEnabled())
+                if (_uiState.FullTextQueryEnabled)
                     SetFullTextSearchDataContext();
                 else
                 {
@@ -322,7 +323,7 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Html");
                 SwitchViewContext();
 
-                if (_uiState.FullTextQueryEnabled())
+                if (_uiState.FullTextQueryEnabled)
                     SetFullTextSearchDataContext();
                 else
                 {
@@ -342,7 +343,15 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Form", false);
                 SwitchViewContext();
 
-                if (_uiState.FullTextQueryEnabled())
+                FillContactFields();
+
+                var operatorInfo = GetElementInMainArea("OperatorInfo") as Grid;
+                if (operatorInfo != null)
+                    operatorInfo.DataContext = ActiveOperator;
+
+                LoadOperatorPicture();
+
+                if (_uiState.FullTextQueryEnabled)
                     SetFullTextSearchDataContext();
                 else
                 {
@@ -407,6 +416,9 @@ namespace AmiKoWindows
             this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             this.Compendium.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
+            if (Operator.IsSet())
+                this.ActiveOperator = Properties.Settings.Default.Operator;
+
             this.DataContext = new ViewType("Html");
             SwitchViewContext();
         }
@@ -423,7 +435,7 @@ namespace AmiKoWindows
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
                 long numResults = 0;
-                if (_uiState.FullTextQueryEnabled())
+                if (_uiState.FullTextQueryEnabled)
                     numResults = await _fullTextDb?.Search(_uiState, text);
                 else
                     numResults = await _sqlDb?.Search(_uiState, text);
@@ -442,7 +454,7 @@ namespace AmiKoWindows
             // Change the data context of the status bar
             Stopwatch sw = new Stopwatch();
             long numResults = 0;
-            if (!_uiState.FullTextQueryEnabled())
+            if (!_uiState.FullTextQueryEnabled)
                 numResults = await _sqlDb?.Search(_uiState, "");
             sw.Stop();
             double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
@@ -481,7 +493,7 @@ namespace AmiKoWindows
                     SetSpinnerEnabled(true);
 
                     Item selection = selectedItem as Item;
-                    if (_uiState.FullTextQueryEnabled())
+                    if (_uiState.FullTextQueryEnabled)
                     {
                         // Store selected fulltext search...
                         _selectedFullTextSearchKey = selection.Text;
@@ -503,12 +515,12 @@ namespace AmiKoWindows
                         if (_searchSelectionItemId != selection.Id)
                         {
                             _searchSelectionItemId = selection.Id;
-                            if (_uiState.IsCompendium() || _uiState.IsFavorites())
+                            if (_uiState.IsCompendium || _uiState.IsFavorites || _uiState.IsPrescriptions)
                             {
                                 Article a = await _sqlDb.GetArticleFromId(_searchSelectionItemId);
                                 _fachInfo.ShowFull(a);   // Load html in browser window
                             }
-                            else if (_uiState.IsInteractions())
+                            else if (_uiState.IsInteractions)
                             {
                                 Article a = await _sqlDb.GetArticleWithId(_searchSelectionItemId);
                                 if (a?.Id != null)
@@ -554,7 +566,7 @@ namespace AmiKoWindows
                         _searchSelectionChildItemId = selection.Id;
                         if (_searchSelectionChildItemId != null)
                         {
-                            if (_uiState.IsCompendium() || _uiState.IsFavorites())
+                            if (_uiState.IsCompendium || _uiState.IsFavorites || _uiState.IsPrescriptions)
                             {
                                 Article a = await _sqlDb.GetArticleFromId(_searchSelectionChildItemId);
                                 _fachInfo.ShowFull(a);   // Load html in browser window
@@ -581,7 +593,7 @@ namespace AmiKoWindows
                 TitleItem sectionTitle = searchTitlesList.SelectedItem as TitleItem;
                 if (sectionTitle!=null && sectionTitle.Id != null)
                 {
-                    if (!_uiState.FullTextQueryEnabled())
+                    if (!_uiState.FullTextQueryEnabled)
                     {
                         // Inject javascript to move to anchor
                         string jsCode = "document.getElementById('" + sectionTitle.Id + "').scrollIntoView(true);";
@@ -646,9 +658,34 @@ namespace AmiKoWindows
                     await _fachInfo.ShowReport();
                 }
             }
-            else if (name.Equals("Settings"))
+            else if (name.Equals("OperatorAddress"))
             {
-                // TODO
+                ViewType viewType;
+                viewType = this.DataContext as ViewType;
+                if (viewType == null)
+                    return;
+
+                if (viewType.Mode.Equals("Html"))
+                {
+                    // NOTE
+                    // WebBrowser does not allow to put controls over on it :'(
+                    // Thus, flyouts does not work on HTML Context.
+                    //
+                    // https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/wpf-and-win32-interoperation
+                    SetState(UIState.State.Prescriptions);
+                    viewType = this.DataContext as ViewType;
+                    this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                }
+                else
+                {
+                    // close addressbook if it's visible.
+                    viewType.HasBook = false;
+                }
+                viewType.HasCard = true;
+                this.DataContext = viewType;
+
+                // ProfileCard
+                this.FlyoutMenu.IsOpen = false;
             }
             else if (name.Equals("Feedback"))
             {
@@ -800,6 +837,24 @@ namespace AmiKoWindows
             e.Handled = true;
         }
 
+        private void OpenProfileCardButton_Click(object sender, RoutedEventArgs e)
+        {
+            var source = e.OriginalSource as FrameworkElement;
+            if (source == null)
+                return;
+
+            ViewType viewType;
+            viewType = this.DataContext as ViewType;
+            if (viewType == null)
+                return;
+
+            viewType.HasCard = true;
+            this.DataContext = viewType;
+
+            this.FlyoutMenu.IsOpen = false;
+            e.Handled = true;
+        }
+
         private void NewPrescriptionButton_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
@@ -847,10 +902,66 @@ namespace AmiKoWindows
                 return;
 
             Log.WriteLine(source.Name);
+            FillContactFields();
 
             // Re:enable animations for next time
             source.AreAnimationsEnabled = true;
             e.Handled = true;
+        }
+
+        private void ProfileCardControl_ClosingFinished(object sender, RoutedEventArgs e)
+        {
+            var source = e.OriginalSource as MahApps.Metro.Controls.Flyout;
+            if (source == null)
+                return;
+
+            Log.WriteLine(source.Name);
+
+            if (Operator.IsSet())
+            {
+                this.ActiveOperator = Properties.Settings.Default.Operator;
+                LoadOperatorPicture();
+            }
+
+            // Re:enable animations for next time
+            source.AreAnimationsEnabled = true;
+            e.Handled = true;
+        }
+
+        private void FillContactFields()
+        {
+            if (ActiveContact == null)
+                return;
+
+            var fields = new string[] {"Fullname", "Address", "Place", "PersonalInfo", "Phone", "Email"};
+            foreach (var f in fields)
+            {
+                var key = String.Format("Contact{0}", f);
+                var block = GetElementInMainArea(key) as TextBlock;
+                if (block != null)
+                {
+                    Log.WriteLine("Text: {0}", ActiveContact[f]);
+                    block.Text = (string)ActiveContact[f];
+                    block.UpdateLayout();
+                }
+            }
+        }
+
+        private void LoadOperatorPicture()
+        {
+            try
+            {
+                Image image = GetElementInMainArea("OperatorPicture") as Image;
+                if (image != null && Operator.IsSet() && ActiveOperator != null)
+                    Utilities.LoadPictureInto(image, ActiveOperator.PictureFile);
+            }
+            catch (Exception ex)
+            {
+                if (ex is IOException || ex is NotSupportedException)
+                    Log.WriteLine(ex.Message);
+                else
+                    throw ex;
+            }
         }
     }
 

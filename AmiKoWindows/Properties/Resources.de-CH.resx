@@ -240,6 +240,12 @@
   <data name="msgContactSaveSuccess" xml:space="preserve">
     <value>Kontakt wurde im AmiKo Desitin Addressbuch gespeichert.</value>
   </data>
+  <data name="msgProfileSaveFailure" xml:space="preserve">
+    <value>Die Arztadresse wurde nicht gespeichert. Bitte korrigieren Sie die roten Felder.</value>
+  </data>
+  <data name="msgProfileUnsetWarning" xml:space="preserve">
+    <value>Bitte Arztadresse hinzufügen</value>
+  </data>
   <data name="newDb" xml:space="preserve">
     <value>Neue Datenbank verfügbar!</value>
   </data>
@@ -252,11 +258,17 @@
   <data name="nopacks" xml:space="preserve">
     <value>keine Packungen</value>
   </data>
+  <data name="operatorManagement" xml:space="preserve">
+    <value>Arztadresse</value>
+  </data>
   <data name="packs" xml:space="preserve">
     <value>Packungen</value>
   </data>
   <data name="patientManagement" xml:space="preserve">
     <value>Patientenverwaltung</value>
+  </data>
+  <data name="patientSearch" xml:space="preserve">
+    <value>Patient suchen</value>
   </data>
   <data name="phone" xml:space="preserve">
     <value>Telefonnr.</value>
@@ -291,11 +303,17 @@
   <data name="search" xml:space="preserve">
     <value>Suche</value>
   </data>
+  <data name="selectPicture" xml:space="preserve">
+    <value>Unterschrift aus Datei</value>
+  </data>
   <data name="settings" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
   <data name="subscribe" xml:space="preserve">
     <value>Abonnieren</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>Titel</value>
   </data>
   <data name="update" xml:space="preserve">
     <value>Aktualisieren</value>

@@ -11,7 +11,7 @@
   </Target>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' Or '$(Platform)' == 'AnyCPU' ">x64</Platform>
     <ProjectGuid>{F0543A39-DB11-4241-9429-AE25480BFAB6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -25,7 +25,13 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Platform)' == 'x64' Or '$(Platform)' == 'AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -34,7 +40,7 @@
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\CoMed</OutputPath>
@@ -57,11 +63,16 @@
     <Reference Include="NUnit3.TestAdapter, Version=3.10.0.21, Culture=neutral, PublicKeyToken=4cb40d35494691ac">
       <HintPath>..\Packages\NUnit3TestAdapter.3.10.0\build\net35\NUnit3.TestAdapter.dll</HintPath>
     </Reference>
+    <Reference Include="Moq, Version=4.8.2, Culture=neutral, PublicKeyToken=">
+      <HintPath>..\Packages\Moq.4.8.2\lib\net45\Moq.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src/ContactTest.cs" />
+    <Compile Include="src\ContactTest.cs" />
+    <Compile Include="src\OperatorTest.cs" />
     <Compile Include="src\PatientDbTest.cs" />
-    <Compile Include="src/UtilityTest.cs" />
+    <Compile Include="src\UIStateTest.cs" />
+    <Compile Include="src\UtilityTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

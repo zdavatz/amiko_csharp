@@ -145,7 +145,7 @@ on PowerShell:
 
 ```powershell
 # Downloads NuGet.exe (windows x86 Commandline) here
-C:\Users\<USER>\AmiKo> .\NuGet.exe install "AmiKoWindows/Packages.config"
+C:\Users\<USER>\AmiKo> .\NuGet.exe install "AmiKoWindows/packages.config"
 ```
 
 On Linux on Windows, it's not affected to long path name problem.  
@@ -153,7 +153,7 @@ on Bash (Linux on Windows with Mono):
 
 ```bash
 # You can just do it (e.g. `/usr/local/bin/nuget.exe`)
-user@host:/path/to/project $ nuget install AmiKoWindows/Packages.config
+user@host:/path/to/project $ nuget install AmiKoWindows/packages.config
 ```
 
 ### Make
@@ -161,7 +161,7 @@ user@host:/path/to/project $ nuget install AmiKoWindows/Packages.config
 From this step, you may need to use PowerShell on Windows.
 
 * Configuration (`Debug` or `Release`)
-* Platform (`AnyCPU` etc.)
+* Platform (`AnyCPU`, `x86` or `x64`.)
 * Log (`Trace` or None)
 
 #### Using MSBuild
@@ -270,6 +270,38 @@ TODO
 * [Package a UWP app with Visual Studio](https://docs.microsoft.com/en-us/windows/uwp/packaging/packaging-uwp-apps)
 
 
+### Clean up
+
+```powershell
+PS C:\Users\... > taskkill /im 'AmiKo Desitin.exe' /f
+PS C:\Users\... > MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Clean
+
+PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
+PS C:\Users\... > MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Clean
+```
+
+#### User Settings
+
+```bash
+# Just delete these directories (or delete `user.config` in there)
+$ rm -fr /mnt/c/Users/<USER>/AppData/Local/ywesee/AmiKo_Desitin.exe*
+$ rm -fr /mnt/c/Users/<USER>/AppData/Local/ywesee/CoMed_Desitin.exe*
+```
+
+#### Application Resources
+
+* Fachinfo Text DB
+* Favorites
+* Interaction Basket
+* Doctor(Operator) Profile Photo
+
+```bash
+# e.g. Profile Photo
+$ rm /mnt/c/Users/<USER>/AppData/Roaming/ywesee/AmiKo\ Desitin/*.png
+$ rm /mnt/c/Users/<USER>/AppData/Roaming/ywesee/CoMed\ Desitin/*.png
+```
+
+
 ## Test
 
 See projects in `AmiKoWindows.Tests`. Tests are written in NUnit.
@@ -279,12 +311,12 @@ PS C:\Users\... > taskkill /im 'MSBuild.exe' /f
 
 # AmiKoDesitin
 PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\AmiKoDesitin.Test.csproj /t:Clean
-PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\AmiKoDesitin.Test.csproj /t:Build /p:Configuration=Debug /p:Platform=AnyCPU
+PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\AmiKoDesitin.Test.csproj /t:Build /p:Configuration=Debug /p:Platform=x64
 PS C:\Users\... > .\Package\NUnit.ConseleRunner.3.8.0\tools\nunit3-console.exe .\AmiKoWindows.Tests\bin\Debug\AmiKo\AmiKoDesitin.Test.dll --output TestOutput.log
 
 # CoMedDesitin
 PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\CoMedDesitin.Test.csproj /t:Clean
-PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\CoMedDesitin.Test.csproj /t:Build /p:Configuration=Debug /p:Platform=AnyCPU
+PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\CoMedDesitin.Test.csproj /t:Build /p:Configuration=Debug /p:Platform=x64
 PS C:\Users\... > .\Package\NUnit.ConsoleRunner.3.8.0\tools\nunit3-console.exe .\AmiKoWindows.Tests\bin\Debug\CoMed\CoMedDesitin.Test.dll --output TestOutput.log
 ```
 

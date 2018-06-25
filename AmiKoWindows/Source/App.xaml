@@ -1,11 +1,14 @@
-﻿<Application x:Class="AmiKoWindows.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
-             xmlns:local="clr-namespace:AmiKoWindows">
+﻿<Application
+    x:Class="AmiKoWindows.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:properties="clr-namespace:AmiKoWindows.Properties"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:local="clr-namespace:AmiKoWindows">
 
     <Application.Resources>
         <ResourceDictionary>
+            <properties:Settings x:Key="Settings" />
             <system:Double x:Key="WindowTitleFontSize">14</system:Double>
             <FontFamily x:Key="HeaderFontFamily">Segoe UI</FontFamily>
             <ResourceDictionary.MergedDictionaries>
@@ -18,5 +21,4 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
-
 </Application>

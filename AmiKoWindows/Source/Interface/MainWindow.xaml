@@ -36,6 +36,7 @@
                     <DataTemplate x:Key="HtmlTemplate" DataType="Html">
                         <WebBrowser
                           x:Name="Browser"
+                          Panel.ZIndex="900"
                           local:BrowserBehavior.Html="{Binding Path=HtmlText}"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch"
@@ -54,54 +55,60 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                          <Grid Margin="7,7,7,4" Grid.Row="0" Name="Meta">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*" MinWidth="250" MaxWidth="500" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="2*" MinWidth="250" MaxWidth="500" />
-                            </Grid.ColumnDefinitions>
-                            <!-- Patient -->
-                            <Grid Grid.Column="0">
-                              <Grid.RowDefinitions>
-                                  <RowDefinition Height="Auto" />
-                                  <RowDefinition Height="Auto" />
-                              </Grid.RowDefinitions>
-                              <Grid Grid.Row="0">
-                                  <Button
-                                      Name="OpenAddressBookButton" Style="{StaticResource NoHighlightedButton}"
-                                      Margin="0,1,0,9" HorizontalAlignment="Left" Click="OpenAddressBookButton_Click">
-                                      Patient suchen
-                                  </Button>
+                            <Grid Grid.Row="0" Name="Meta" Margin="7,7,7,4">
+                              <Grid.ColumnDefinitions>
+                                  <ColumnDefinition Width="2*" MinWidth="200" MaxWidth="350" />
+                                  <ColumnDefinition Width="2*" MinWidth="200" MaxWidth="350" />
+                              </Grid.ColumnDefinitions>
+                              <!-- Contact (Patient) -->
+                              <Grid Name="PatientInfo" Grid.Column="0" Margin="0" DataContext="{Binding DataContext.ActiveContact, ElementName=MainWindow, UpdateSourceTrigger=PropertyChanged}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="0">
+                                    <Button
+                                        Name="OpenAddressBookButton" Style="{StaticResource NoHighlightedButton}"
+                                        Margin="0,1,0,9" HorizontalAlignment="Left" Click="OpenAddressBookButton_Click">
+                                        <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.patientSearch}" />
+                                    </Button>
+                                </Grid>
+                                <Grid Grid.Row="1">
+                                    <StackPanel Margin="1,2,0,0" HorizontalAlignment="Left">
+                                        <TextBlock Name="ContactFullname"></TextBlock>
+                                        <TextBlock Name="ContactAddress"></TextBlock>
+                                        <TextBlock Name="ContactPlace"></TextBlock>
+                                        <TextBlock Name="ContactPersonalInfo"></TextBlock>
+                                        <TextBlock Name="ContactPhone"></TextBlock>
+                                        <TextBlock Name="ContactEmail"></TextBlock>
+                                    </StackPanel>
+                                </Grid>
                               </Grid>
-                              <Grid Grid.Row="1">
-                                  <StackPanel Name="PatientInfo">
-                                      <TextBlock Name="PatientName">Name</TextBlock>
-                                      <TextBlock Name="PatientAddress">Address</TextBlock>
-                                      <TextBlock Name="PatientCity">City</TextBlock>
-                                      <TextBlock Name="PatientPhone">Phone</TextBlock>
-                                      <TextBlock Name="PatientEmail">E-mail</TextBlock>
-                                  </StackPanel>
+                              <!-- Operator -->
+                              <Grid Name="OperatorInfo" Grid.Column="1" Margin="0" DataContext="{Binding Path=ActiveOperator, UpdateSourceTrigger=PropertyChanged}">
+                                  <DockPanel Margin="0,1,4,3">
+                                      <Button Name="OpenProfileCardButton" Style="{StaticResource NoHighlightedButton}"
+                                          DockPanel.Dock="Top" Click="OpenProfileCardButton_Click" Cursor="Hand" Visibility="Collapsed">
+                                          <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.msgProfileUnsetWarning}" />
+                                      </Button>
+                                      <StackPanel DockPanel.Dock="Top" Margin="0,2,0,0" HorizontalAlignment="Right">
+                                          <TextBlock Name="OperatorFullName" Text="{Binding Path=Fullname, Mode=OneWay}"></TextBlock>
+                                          <TextBlock Name="OperatorAddress" Text="{Binding Path=Address, Mode=OneWay}"></TextBlock>
+                                          <TextBlock Name="OperatorPlace" Text="{Binding Path=Place, Mode=OneWay}"></TextBlock>
+                                          <TextBlock Name="OperatorPhone" Text="{Binding Path=Phone, Mode=OneWay}"></TextBlock>
+                                          <TextBlock Name="OperatorEmail" Text="{Binding Path=Email, Mode=OneWay}"></TextBlock>
+                                          <Image Name="OperatorPicture" Height="64" Margin="0,6,0,0" HorizontalAlignment="Left" />
+                                      </StackPanel>
+                                  </DockPanel>
                               </Grid>
                             </Grid>
-                            <!-- Operator -->
-                            <Grid Grid.Column="1">
-                                <StackPanel Name="OperatorInfo" Margin="126,3,0,9" HorizontalAlignment="Right">
-                                    <TextBlock Name="OperatorName">Name</TextBlock>
-                                    <TextBlock Name="OperatorAddress">Address</TextBlock>
-                                    <TextBlock Name="OperatorCity">City</TextBlock>
-                                    <TextBlock Name="OperatorPhone">Phone</TextBlock>
-                                    <TextBlock Name="OperatorEmail">E-mail</TextBlock>
-                                    <TextBlock Name="OperatorSignature">Signature</TextBlock>
-                                </StackPanel>
-                            </Grid>
-                          </Grid>
 
-                          <ScrollViewer Margin="7,5,7,2" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                              <Border Margin="0" Padding="1" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1">
-                                  <StackPanel>
-                                  </StackPanel>
-                              </Border>
-                          </ScrollViewer>
+                            <ScrollViewer Grid.Row="1" Margin="7,5,7,2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <Border Margin="0" Padding="1" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1">
+                                    <StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </ScrollViewer>
 
                             <Grid Margin="7,2,7,7" Grid.Row="2">
                                 <Grid>
@@ -166,7 +173,7 @@
                                 </Rectangle>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="{x:Static p:Resources.settings}" Name="Settings" Click="MenuItem_Click"
+                        <MenuItem Header="{x:Static p:Resources.operatorManagement}" Name="OperatorAddress" Click="MenuItem_Click"
                                   Foreground="White" Height="28" Margin="10" Cursor="Hand">
                             <MenuItem.Icon>
                                 <Rectangle Height="16" Width="16" Fill="White">
@@ -201,7 +208,7 @@
             </Controls:Flyout>
 
             <Controls:Flyout
-                Position="Top" Width="700" Height="600" Theme="Adapt" IsOpen="{Binding Path=HasControl}"
+                Position="Top" Width="700" Height="600" Theme="Adapt" IsOpen="{Binding Path=HasBook}"
                 IsModal="True"
                 AnimateOpacity="True"
                 TitleVisibility="Collapsed"
@@ -212,6 +219,20 @@
                 IsAutoCloseEnabled="False"
                 ClosingFinished="AddressBookControl_ClosingFinished">
                 <local:AddressBookControl />
+            </Controls:Flyout>
+
+            <Controls:Flyout
+                Position="Top" Width="450" Height="580" Theme="Adapt" IsOpen="{Binding Path=HasCard}"
+                IsModal="True"
+                AnimateOpacity="True"
+                TitleVisibility="Collapsed"
+                CloseButtonVisibility="Collapsed"
+                Margin="0,40,0,0"
+                RenderTransformOrigin="0,0"
+                AreAnimationsEnabled="True"
+                IsAutoCloseEnabled="False"
+                ClosingFinished="ProfileCardControl_ClosingFinished">
+                <local:ProfileCardControl />
             </Controls:Flyout>
       </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>

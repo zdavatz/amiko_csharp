@@ -240,6 +240,12 @@
   <data name="msgContactSaveSuccess" xml:space="preserve">
     <value>Contact enregistré dans le carnet d'adresses.</value>
   </data>
+  <data name="msgProfileSaveFailure" xml:space="preserve">
+    <value>L'adresse du médecin n'est pas enregistrée. Examinez vos données dans les cadres rouges.</value>
+  </data>
+  <data name="msgProfileUnsetWarning" xml:space="preserve">
+    <value>Ajoutez l'addresse du Médecin s.v.p.</value>
+  </data>
   <data name="newDb" xml:space="preserve">
     <value>Nouvelle banque de données disponible!</value>
   </data>
@@ -252,11 +258,17 @@
   <data name="nopacks" xml:space="preserve">
     <value>aucune présentation</value>
   </data>
+  <data name="operatorManagement" xml:space="preserve">
+    <value>Adresse médecin</value>
+  </data>
   <data name="packs" xml:space="preserve">
     <value>présentation</value>
   </data>
   <data name="patientManagement" xml:space="preserve">
     <value>Gestion des patients</value>
+  </data>
+  <data name="patientSearch" xml:space="preserve">
+    <value>Recherche un patient</value>
   </data>
   <data name="phone" xml:space="preserve">
     <value>No. téléphone</value>
@@ -291,11 +303,17 @@
   <data name="search" xml:space="preserve">
     <value>Recherche</value>
   </data>
+  <data name="selectPicture" xml:space="preserve">
+    <value>Signature du fichier</value>
+  </data>
   <data name="settings" xml:space="preserve">
     <value>Paramètres</value>
   </data>
   <data name="subscribe" xml:space="preserve">
     <value>Abonnement</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>Titre</value>
   </data>
   <data name="update" xml:space="preserve">
     <value>Misa à jour</value>

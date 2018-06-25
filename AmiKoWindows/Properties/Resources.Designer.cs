@@ -428,6 +428,24 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
+        public static string msgProfileSaveFailure {
+            get {
+                return ResourceManager.GetString("msgProfileSaveFailure", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
+        public static string msgProfileUnsetWarning {
+            get {
+                return ResourceManager.GetString("msgProfileUnsetWarning", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Neue Datenbank verfügbar!.
         /// </summary>
         public static string newDb {
@@ -464,11 +482,11 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to keine Öffnen.
+        ///   Looks up a localized string similar to keine Arztadresse.
         /// </summary>
-        public static string open {
+        public static string operatorManagement {
             get {
-                return ResourceManager.GetString("open", resourceCulture);
+                return ResourceManager.GetString("operatorManagement", resourceCulture);
             }
         }
 
@@ -487,6 +505,15 @@ namespace AmiKoWindows.Properties {
         public static string patientManagement {
             get {
                 return ResourceManager.GetString("patientManagement", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Patient suchen.
+        /// </summary>
+        public static string patientSearch {
+            get {
+                return ResourceManager.GetString("patientSearch", resourceCulture);
             }
         }
 
@@ -590,6 +617,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Unterschrift aus Datei.
+        /// </summary>
+        public static string selectPicture {
+            get {
+                return ResourceManager.GetString("selectPicture", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Einstellungen.
         /// </summary>
         public static string settings {
@@ -604,6 +640,15 @@ namespace AmiKoWindows.Properties {
         public static string subscribe {
             get {
                 return ResourceManager.GetString("subscribe", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Titel.
+        /// </summary>
+        public static string title {
+            get {
+                return ResourceManager.GetString("title", resourceCulture);
             }
         }
 

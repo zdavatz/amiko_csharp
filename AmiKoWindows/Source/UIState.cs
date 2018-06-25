@@ -28,7 +28,7 @@ namespace AmiKoWindows
     {
         public enum State
         {
-            Compendium=0x01, Favorites=0x02, Interactions=0x04, Prescriptions=0x03,
+            Compendium=0x01, Favorites=0x02, Interactions=0x03, Prescriptions=0x04,
             FullTextSearch=0x08,
         };
 
@@ -38,20 +38,12 @@ namespace AmiKoWindows
             Fulltext
         }
 
+        #region private Fields
         private State _uiState = State.Compendium;
         private Query _query = Query.Title;
+        #endregion
 
-        /**
-         * Properties
-         */
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void NotifyPropertyChanged(
-        [CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+        #region Public Fields
         private string _searchTextBoxWaterMark;
         public string SearchTextBoxWaterMark
         {
@@ -61,14 +53,46 @@ namespace AmiKoWindows
                 if (value != _searchTextBoxWaterMark)
                 {
                     _searchTextBoxWaterMark = value;
-                    NotifyPropertyChanged();
+                    OnPropertyChanged(string.Empty);
                 }
             }
         }
 
-        /**
-         * Constructors
-         */
+        public bool IsCompendium
+        {
+            get { return _uiState == State.Compendium; }
+        }
+
+        public bool IsFavorites
+        {
+            get { return _uiState == State.Favorites; }
+        }
+
+        public bool IsInteractions
+        {
+            get { return _uiState == State.Interactions; }
+        }
+
+        public bool IsPrescriptions
+        {
+            get { return _uiState == State.Prescriptions; }
+        }
+
+        public bool FullTextQueryEnabled
+        {
+            get { return _query == Query.Fulltext; }
+        }
+        #endregion
+
+        #region Event Handlers
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
+
         public UIState()
         {
         }
@@ -106,9 +130,6 @@ namespace AmiKoWindows
             return Query.Title;
         }
 
-        /**
-         * Public functions
-         */
         public void SetState(State uiState)
         {
             _uiState = uiState;
@@ -117,26 +138,6 @@ namespace AmiKoWindows
         public State GetState()
         {
             return _uiState;
-        }
-
-        public bool IsCompendium()
-        {
-            return _uiState == State.Compendium;
-        }
-
-        public bool IsFavorites()
-        {
-            return _uiState == State.Favorites;
-        }
-
-        public bool IsInteractions()
-        {
-            return _uiState == State.Interactions;
-        }
-
-        public bool IsPrescriptions()
-        {
-            return _uiState == State.Prescriptions;
         }
 
         public void SetQuery(Query query)
@@ -193,11 +194,6 @@ namespace AmiKoWindows
             else if (_query == Query.Fulltext)
                 return "fulltext";
             return "title";
-        }
-
-        public bool FullTextQueryEnabled()
-        {
-            return _query == Query.Fulltext;
         }
     }
 }

@@ -36,6 +36,8 @@ namespace AmiKoWindows
         public const string FULLTEXT_SHEET = @"Resources/css/fulltext_style_css.css";
         public const string SHOPPING_SHEET = @"Resources/css/shopping_css.css";
         public const string ROSE_SHEET = @"Resources/css/zurrose_css.css";
+        // User(Operator)'s profile (same as macOS version)
+        public const string OPERATOR_PICTURE_FILE = @"op_signature.png";
 
         // German section title abbreviations
         public static readonly string[] SectionTitlesDE = { "Zusammensetzung", "Galenische Form", "Kontraindikationen", "Indikationen",
@@ -47,8 +49,5 @@ namespace AmiKoWindows
         public static readonly string[] SectionTitlesFR = { "Composition", "Forme galénique", "Contre-indications", "Indications",
 			"Posologie", "Précautions", "Interactions", "Grossesse/All.", "Conduite", "Effets indésir.", "Surdosage", "Propriétés/Effets",
 			"Cinétique", "Préclinique", "Remarques", "Numéro d'autorisation", "Présentation", "Titulaire", "Mise à jour" };
-
-        public static string ErrorFieldColor = "#fad3d3";
-        public static string ErrorBrushColor = "#df1e43";
     }
 }
