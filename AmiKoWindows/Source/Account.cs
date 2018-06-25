@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.ComponentModel;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Windows;
 
@@ -147,6 +148,27 @@ namespace AmiKoWindows
         {
             get {
                 return Utilities.AccountPictureFilePath();
+            }
+        }
+
+        public string Signature
+        {
+            get {
+                string content = "";
+                try
+                {
+                    var path = PictureFile;
+                    if (path == null || path.Equals(string.Empty) || !File.Exists(path))
+                        return content;
+
+                    byte[] bytes = File.ReadAllBytes(path);
+                    content = Convert.ToBase64String(bytes);
+                }
+                catch (IOException ex)
+                {
+                    Log.WriteLine(ex.Message);
+                }
+                return content;
             }
         }
         #endregion

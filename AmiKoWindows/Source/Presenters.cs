@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
-using System.IO;
+using System.Collections.Generic;
 
 // JSON Data Presenters
 namespace AmiKoWindows
@@ -28,8 +28,33 @@ namespace AmiKoWindows
         public string prescription_hash { get; set; }
         public string place_date { get; set; }
 
-        public AccountJSONPresenter @operator { get; set; } // it will be "operator" in json
-        public ContactJSONPresenter patient { get; set; }
+        private AccountJSONPresenter _operator;
+        public Account Operator {
+            set { _operator = new AccountJSONPresenter(value); }
+        }
+        public AccountJSONPresenter @operator {
+            get { return _operator; }
+        }
+
+        private ContactJSONPresenter _patient;
+        public Contact Patient {
+            set { _patient = new ContactJSONPresenter(value); }
+        }
+        public ContactJSONPresenter patient {
+            get { return _patient; }
+        }
+
+        private Medication[] _medications;
+        public List<Medication> Medications {
+            set { _medications = value.ToArray(); }
+        }
+        public Medication[] medications {
+            get {
+                if (_medications == null)
+                    return new Medication[]{};
+                return _medications;
+            }
+        }
 
         public PrescriptionJSONPresenter(string hash , string placeDate)
         {
@@ -62,26 +87,7 @@ namespace AmiKoWindows
             this.zip_code = account.Zip;
             this.phone_number = account.Phone;
             this.email_address = account.Email;
-            this.signature = ReadPictureFile(account.PictureFile);
-        }
-
-        private string ReadPictureFile(string path)
-        {
-            string content = "";
-            try
-            {
-                if (path == null || path.Equals(string.Empty) || !File.Exists(path))
-                    return content;
-
-                byte[] bytes = File.ReadAllBytes(path);
-                content = Convert.ToBase64String(bytes);
-
-            }
-            catch (IOException ex)
-            {
-                Log.WriteLine(ex.Message);
-            }
-            return content;
+            this.signature = account.Signature;
         }
     }
 
@@ -108,7 +114,7 @@ namespace AmiKoWindows
             this.patient_id = patient.Uid;
             this.family_name = patient.FamilyName;
             this.given_name = patient.GivenName;
-            this.birth_date = patient.HeightCm;
+            this.birth_date = patient.Birthdate;
             this.gender = patient.IsMale ? "men" : "women";
             this.weight_kg = patient.WeightKg;
             this.height_cm = patient.HeightCm;

@@ -205,8 +205,9 @@ namespace AmiKoWindows
         {
             var serializer = new JavaScriptSerializer();
             var presenter = new PrescriptionJSONPresenter(Hash, PlaceDate);
-            presenter.@operator = new AccountJSONPresenter(Operator);
-            presenter.@patient = new ContactJSONPresenter(Patient);
+            presenter.Operator = Operator;
+            presenter.Patient = Patient;
+            presenter.Medications = new List<Medication>();
 
             return serializer.Serialize(presenter);
         }

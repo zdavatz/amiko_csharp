@@ -68,9 +68,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Web.Extensions" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="src\AccountTest.cs" />
     <Compile Include="src\ContactTest.cs" />
     <Compile Include="src\PatientDbTest.cs" />
+    <Compile Include="src\PresentersTest.cs" />
     <Compile Include="src\UIStateTest.cs" />
     <Compile Include="src\UtilityTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
