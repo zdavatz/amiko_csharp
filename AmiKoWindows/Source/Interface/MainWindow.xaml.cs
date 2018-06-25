@@ -445,7 +445,7 @@ namespace AmiKoWindows
             if (Account.IsSet())
             {
                 this.ActiveAccount = Properties.Settings.Default.Account;
-                _prescriptions.Operator = ActiveAccount;
+                _prescriptions.ActiveAccount = ActiveAccount;
             }
 
             this.DataContext = new ViewType("Html");
@@ -703,25 +703,26 @@ namespace AmiKoWindows
         {
             Log.WriteLine(sender.GetType().Name);
 
-            ListBox searchTitlesList = sender as ListBox;
-            if (searchTitlesList?.Items.Count > 0)
+            ListBox box = sender as ListBox;
+            if (box?.Items.Count > 0)
             {
-                TitleItem sectionTitle = searchTitlesList.SelectedItem as TitleItem;
-                if (sectionTitle!=null && sectionTitle.Id != null)
+                TitleItem item = box.SelectedItem as TitleItem;
+                if (item != null && item.Id != null)
                 {
                     if (!_uiState.FullTextQueryEnabled)
                     {
                         // Inject javascript to move to anchor
-                        string jsCode = "document.getElementById('" + sectionTitle.Id + "').scrollIntoView(true);";
+                        string jsCode = "document.getElementById('" + item.Id + "').scrollIntoView(true);";
                         InjectJS(jsCode);
                     }
                     else
                     {
                         // Set filter
-                        _fullTextSearch.Filter = sectionTitle.Id;
+                        _fullTextSearch.Filter = item.Id;
                         // Update result table
                         _fullTextSearch.UpdateTable();
                     }
+                    e.Handled = true;
                 }
             }
         }
@@ -729,7 +730,20 @@ namespace AmiKoWindows
         private void OnFileName_Selection(object sender, SelectionChangedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
-            // TODO
+
+            ListBox box = sender as ListBox;
+            if (box?.Items.Count > 0)
+            {
+                TitleItem item = box.SelectedItem as TitleItem;
+                if (item != null && item.Id != null)
+                {
+                    var file = String.Format("{0}.amk", item.Title);
+                    _prescriptions.LoadFile(file);
+
+                    FillPlaceDate();
+                    e.Handled = true;
+                }
+            }
         }
 
         private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
@@ -978,6 +992,12 @@ namespace AmiKoWindows
 
         private void NewPrescriptionButton_Click(object sender, RoutedEventArgs e)
         {
+            Keyboard.ClearFocus();
+
+            var box = GetElementIn("FileNames", this.RightArea) as ListBox;
+            if (box?.Items.Count > 0)
+                box.SelectedIndex = -1;
+
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
                 return;
@@ -1009,9 +1029,15 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
+            Keyboard.ClearFocus();
+
             Log.WriteLine(source.Name);
             await _prescriptions.Save();
             _prescriptions.LoadFiles();
+
+            var box = GetElementIn("FileNames", this.RightArea) as ListBox;
+            if (box?.Items.Count > 0)
+                box.SelectedIndex = 0;
 
             FillPlaceDate();
             EnableButton("SavePrescriptionButton", false);
@@ -1040,10 +1066,10 @@ namespace AmiKoWindows
 
             if (ActiveContact != null)
             {
-                if (_prescriptions.Patient != null && _prescriptions.Patient.Uid != ActiveContact.Uid) // change of patient
+                if (_prescriptions.ActiveContact != null && _prescriptions.ActiveContact.Uid != ActiveContact.Uid) // change of contact (patient)
                     _prescriptions.Renew();
 
-                _prescriptions.Patient = ActiveContact;
+                _prescriptions.ActiveContact = ActiveContact;
                 _prescriptions.LoadFiles();
                 FillContactFields();
                 FillPlaceDate();
@@ -1067,7 +1093,7 @@ namespace AmiKoWindows
 
             if (Account.IsSet() && ActiveAccount != null)
             {
-                _prescriptions.Operator = ActiveAccount;
+                _prescriptions.ActiveAccount = ActiveAccount;
                 LoadAccountPicture();
                 FillPlaceDate();
                 EnableButton("NewPrescriptionButton", true);

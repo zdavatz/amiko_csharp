@@ -30,13 +30,6 @@ using System.Web.Script.Serialization;
 namespace AmiKoWindows
 {
     // Prescription Manager Object which knows active (opened) prescription.
-    //
-    // ```
-    // # properties for active prescription
-    // Contact Patient
-    // Account Operotar
-    // List<Medication> Medications
-    // ```
     class PrescriptionsBox
     {
         const string AMIKO_FILE_PLACE_DATE_FORMAT = "dd.MM.yyyy (HH:mm:ss)";
@@ -50,8 +43,8 @@ namespace AmiKoWindows
         public string PlaceDate { get; set; }
         public string Hash { get; set; }
 
-        public Contact Patient { get; set; }
-        public Account Operator { get; set; }
+        public Contact ActiveContact { get; set; }
+        public Account ActiveAccount { get; set; }
 
         public bool IsActivePrescriptionPersisted // TODO
         {
@@ -135,7 +128,7 @@ namespace AmiKoWindows
             await Task.Run(() =>
             {
                 var outputFile = String.Format("RZ_{0}.amk", Utilities.GetLocalTimeAsString(FILE_NAME_SUFFIX_DATE_FORMAT));
-                string outputPath = Path.Combine(_dataDir, Patient.Uid, outputFile);
+                string outputPath = Path.Combine(_dataDir, ActiveContact.Uid, outputFile);
                 Log.WriteLine("outputPath: {0}", outputPath);
                 try
                 {
@@ -168,14 +161,32 @@ namespace AmiKoWindows
             UpdateMedicationList();
         }
 
+        public void LoadFile(string filename)
+        {
+            if (ActiveContact == null || ActiveAccount == null)
+                return;
+
+            string userDir = Path.Combine(_dataDir, ActiveContact.Uid);
+            if (EnforceDir(userDir))
+            {
+                var path = Path.Combine(userDir, filename);
+                if (!File.Exists(path))
+                    return;
+
+                string json = File.ReadAllText(path);
+                DeserializeJson(json);
+            }
+            UpdateMedicationList();
+        }
+
         public void LoadFiles()
         {
-            if (Patient == null)
+            if (ActiveContact == null)
                 return;
 
             _Files.Clear();
 
-            string userDir = Path.Combine(_dataDir, Patient.Uid);
+            string userDir = Path.Combine(_dataDir, ActiveContact.Uid);
             // Log.WriteLine("userDir: {0}", userDir);
             if (EnforceDir(userDir))
             {
@@ -205,17 +216,37 @@ namespace AmiKoWindows
         {
             var serializer = new JavaScriptSerializer();
             var presenter = new PrescriptionJSONPresenter(Hash, PlaceDate);
-            presenter.Operator = Operator;
-            presenter.Patient = Patient;
-            presenter.Medications = new List<Medication>();
+
+            presenter.Account = ActiveAccount;
+            presenter.Contact = ActiveContact;
+
+            presenter.medications = new Medication[] {};
 
             return serializer.Serialize(presenter);
         }
 
+        // Restores properties from json file
+        private void DeserializeJson(string json)
+        {
+            var serializer = new JavaScriptSerializer();
+            var presenter = serializer.Deserialize<PrescriptionJSONPresenter>(json);
+
+            this.Hash = presenter.prescription_hash;
+            this.PlaceDate = presenter.place_date;
+
+            // TODO
+            // How to handle properties are different than *current* data?
+            //
+            // this.ActiveAccount = ?
+            // this.ActiveContact = ?
+
+            _Medications = new HashSet<Medication>(presenter.medications.ToList());
+        }
+
         private string GeneratePlaceDate()
         {
-            if (Operator != null)
-                return Utilities.ConcatWith(", ", Operator.City, Utilities.GetLocalTimeAsString(AMIKO_FILE_PLACE_DATE_FORMAT));
+            if (ActiveAccount != null)
+                return Utilities.ConcatWith(", ", ActiveAccount.City, Utilities.GetLocalTimeAsString(AMIKO_FILE_PLACE_DATE_FORMAT));
             return "";
         }
 

@@ -23,37 +23,50 @@ using System.Collections.Generic;
 // JSON Data Presenters
 namespace AmiKoWindows
 {
+    // NOTE
+    //
+    // json properties for prescription
+    // ```
+    // Contact -> patient
+    // Account -> operotar
+    // Medication[] -> medications
+    // ```
     class PrescriptionJSONPresenter
     {
         public string prescription_hash { get; set; }
         public string place_date { get; set; }
 
-        private AccountJSONPresenter _operator;
-        public Account Operator {
-            set { _operator = new AccountJSONPresenter(value); }
+        private AccountJSONPresenter _accountPresenter;
+        public Account Account {
+            set { _accountPresenter = new AccountJSONPresenter(value); }
         }
         public AccountJSONPresenter @operator {
-            get { return _operator; }
+            get { return _accountPresenter; }
+            set { this._accountPresenter = value; }
         }
 
-        private ContactJSONPresenter _patient;
-        public Contact Patient {
-            set { _patient = new ContactJSONPresenter(value); }
+        private ContactJSONPresenter _contactPresenter;
+        public Contact Contact {
+            set { _contactPresenter = new ContactJSONPresenter(value); }
         }
         public ContactJSONPresenter patient {
-            get { return _patient; }
+            get { return _contactPresenter; }
+            set { this._contactPresenter = value; }
         }
 
-        private Medication[] _medications;
-        public List<Medication> Medications {
-            set { _medications = value.ToArray(); }
-        }
+        private Medication[] _medicationsArray;
         public Medication[] medications {
             get {
-                if (_medications == null)
+                if (_medicationsArray == null)
                     return new Medication[]{};
-                return _medications;
+                return _medicationsArray;
             }
+            set { this._medicationsArray = value; }
+        }
+
+        public PrescriptionJSONPresenter()
+        {
+            // pass (for deserialization)
         }
 
         public PrescriptionJSONPresenter(string hash , string placeDate)
@@ -76,6 +89,11 @@ namespace AmiKoWindows
         public string phone_number { get; set; }
         public string email_address { get; set; }
         public string signature { get; set; }
+
+        public AccountJSONPresenter()
+        {
+            // pass (for deserialization)
+        }
 
         public AccountJSONPresenter(Account account)
         {
@@ -108,6 +126,11 @@ namespace AmiKoWindows
         public string postal_address { get; set; }
         public string phone_number { get; set; }
         public string email_address { get; set; }
+
+        public ContactJSONPresenter()
+        {
+            // pass (for deserialization)
+        }
 
         public ContactJSONPresenter(Contact patient)
         {
