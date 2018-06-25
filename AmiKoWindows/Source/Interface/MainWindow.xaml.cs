@@ -143,13 +143,16 @@ namespace AmiKoWindows
         /**
          * Returns an element in main area after datatemplate is switched by trigger
          */
-        private FrameworkElement GetElementInMainArea(string elementName)
+        private FrameworkElement GetElementIn(string elementName, ContentControl area)
         {
+            if (area == null || !(area is ContentControl))
+                return null;
+
             FrameworkElement element = null;
-            int n = VisualTreeHelper.GetChildrenCount(this.MainArea);
+            int n = VisualTreeHelper.GetChildrenCount(area);
             if (n == 1)
             {
-                ContentPresenter presenter = VisualTreeHelper.GetChild(this.MainArea, 0) as ContentPresenter;
+                ContentPresenter presenter = VisualTreeHelper.GetChild(area, 0) as ContentPresenter;
                 // Presenter's template is not applied yet, whyyyy :'(
                 // https://stackoverflow.com/a/15467687
                 presenter.ApplyTemplate();
@@ -170,7 +173,7 @@ namespace AmiKoWindows
                     _browser = null;
                 }
                 if (_manager == null)
-                    _manager = GetElementInMainArea("Manager");
+                    _manager = GetElementIn("Manager", MainArea);
             } else { // Html
                 if (_manager != null)
                 {
@@ -178,7 +181,7 @@ namespace AmiKoWindows
                     _manager = null;
                 }
                 if (_browser == null)
-                    _browser = GetElementInMainArea("Browser");
+                    _browser = GetElementIn("Browser", MainArea);
             }
         }
 
@@ -264,12 +267,11 @@ namespace AmiKoWindows
                 this.Interactions.IsChecked = false;
                 this.Prescriptions.IsChecked = true;
 
-                Button button = GetElementInMainArea("OpenProfileCardButton") as Button;
+                Button button = GetElementIn("OpenProfileCardButton", MainArea) as Button;
                 if (button != null && !Account.IsSet())
                     button.Visibility = Visibility.Visible;
 
-                // TODO
-                _prescriptions.ShowDetail();
+                _prescriptions.LoadFiles();
             }
         }
 
@@ -290,7 +292,9 @@ namespace AmiKoWindows
                 else
                 {
                     this.SearchResult.DataContext = _sqlDb;
-                    this.SectionTitles.DataContext = _fachInfo;
+                    var titles = GetElementIn("SectionTitles", RightArea) as ListBox;
+                    if (titles != null)
+                        titles.DataContext = _fachInfo;
 
                     var browser = GetView() as WebBrowser;
                     if (browser != null)
@@ -310,7 +314,9 @@ namespace AmiKoWindows
                 else
                 {
                     this.SearchResult.DataContext = _sqlDb;
-                    this.SectionTitles.DataContext = _fachInfo;
+                    var titles = GetElementIn("SectionTitles", RightArea) as ListBox;
+                    if (titles != null)
+                        titles.DataContext = _fachInfo;
 
                     var browser = GetView() as WebBrowser;
                     if (browser != null)
@@ -330,7 +336,9 @@ namespace AmiKoWindows
                 else
                 {
                     this.SearchResult.DataContext = _sqlDb;
-                    this.SectionTitles.DataContext = _interactions;
+                    var titles = GetElementIn("SectionTitles", RightArea) as ListBox;
+                    if (titles != null)
+                        titles.DataContext = _interactions;
 
                     var browser = GetView() as WebBrowser;
                     if (browser != null)
@@ -350,7 +358,7 @@ namespace AmiKoWindows
 
                 if (ActiveAccount != null)
                 {
-                    var accountInfo = GetElementInMainArea("AccountInfo") as Grid;
+                    var accountInfo = GetElementIn("AccountInfo", MainArea) as Grid;
                     if (accountInfo != null)
                         accountInfo.DataContext = ActiveAccount;
 
@@ -366,9 +374,11 @@ namespace AmiKoWindows
                 else
                 {
                     this.SearchResult.DataContext = _sqlDb;
-                    this.SectionTitles.DataContext = _prescriptions;
+                    var names = GetElementIn("FileNames", RightArea) as ListBox;
+                    if (names != null)
+                        names.DataContext = _prescriptions;
 
-                    var medicationList = GetElementInMainArea("MedicationList") as ListBox;
+                    var medicationList = GetElementIn("MedicationList", MainArea) as ListBox;
                     if (medicationList != null)
                         medicationList.DataContext = _prescriptions;
 
@@ -384,7 +394,9 @@ namespace AmiKoWindows
         public void SetFullTextSearchDataContext()
         {
             this.SearchResult.DataContext = _fullTextDb;
-            this.SectionTitles.DataContext = _fullTextSearch;
+            var titles = GetElementIn("SectionTitles", RightArea) as ListBox;
+            if (titles != null)
+                titles.DataContext = _fullTextSearch;
 
             var browser = GetView() as WebBrowser;
             if (browser != null)
@@ -689,6 +701,8 @@ namespace AmiKoWindows
         */
         private void OnSectionTitle_Selection(object sender, SelectionChangedEventArgs e)
         {
+            Log.WriteLine(sender.GetType().Name);
+
             ListBox searchTitlesList = sender as ListBox;
             if (searchTitlesList?.Items.Count > 0)
             {
@@ -710,6 +724,12 @@ namespace AmiKoWindows
                     }
                 }
             }
+        }
+
+        private void OnFileName_Selection(object sender, SelectionChangedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+            // TODO
         }
 
         private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
@@ -991,6 +1011,7 @@ namespace AmiKoWindows
 
             Log.WriteLine(source.Name);
             await _prescriptions.Save();
+            _prescriptions.LoadFiles();
 
             FillPlaceDate();
             EnableButton("SavePrescriptionButton", false);
@@ -1064,7 +1085,7 @@ namespace AmiKoWindows
             foreach (var f in fields)
             {
                 var key = String.Format("Contact{0}", f);
-                block = GetElementInMainArea(key) as TextBlock;
+                block = GetElementIn(key, MainArea) as TextBlock;
                 if (block != null)
                 {
                     block.Text = (string)ActiveContact[f];
@@ -1075,7 +1096,7 @@ namespace AmiKoWindows
 
         private void FillPlaceDate()
         {
-            var block = GetElementInMainArea("PlaceDate") as TextBlock;
+            var block = GetElementIn("PlaceDate", MainArea) as TextBlock;
             if (block != null)
             {
                 block.Text = _prescriptions.PlaceDate;
@@ -1087,7 +1108,7 @@ namespace AmiKoWindows
         {
             try
             {
-                Image image = GetElementInMainArea("AccountPicture") as Image;
+                Image image = GetElementIn("AccountPicture", MainArea) as Image;
                 if (image != null && Account.IsSet() && ActiveAccount != null)
                     Utilities.LoadPictureInto(image, ActiveAccount.PictureFile);
             }
@@ -1102,7 +1123,7 @@ namespace AmiKoWindows
 
         private void EnableButton(string name, bool isEnabled)
         {
-            Button button = GetElementInMainArea(name) as Button;
+            Button button = GetElementIn(name, MainArea) as Button;
             if (button != null)
                 button.IsEnabled = isEnabled;
         }

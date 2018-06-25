@@ -20,9 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace AmiKoWindows
 {
@@ -39,17 +42,21 @@ namespace AmiKoWindows
         const string AMIKO_FILE_PLACE_DATE_FORMAT = "dd.MM.yyyy (HH:mm:ss)";
         const string FILE_NAME_SUFFIX_DATE_FORMAT = "yyyy-MM-dd'T'HHmmss";
 
-        private static readonly Regex AMIKO_FILE_EXTENSION_RGX = new Regex(@"\.amk$", RegexOptions.Compiled);
+        private static readonly Regex AMIKO_FILE_EXTENSION_RGX = new Regex(@"\.amk\z", RegexOptions.Compiled);
 
         string _dataDir;
 
         #region Public Fields
-        #region for active prescription
         public string PlaceDate { get; set; }
         public string Hash { get; set; }
 
         public Contact Patient { get; set; }
         public Account Operator { get; set; }
+
+        public bool IsActivePrescriptionPersisted // TODO
+        {
+            get { return ((PlaceDate != null && !PlaceDate.Equals(string.Empty)) && Medications.Count > 0); }
+        }
 
         private HashSet<Medication> _Medications = new HashSet<Medication>();
         public List<Medication> Medications
@@ -57,18 +64,11 @@ namespace AmiKoWindows
             get { return new List<Medication>(_Medications); }
         }
 
-        public bool IsActivePrescriptionPersisted
+        #region Prescription File Manager
+        private HashSet<TitleItem> _Files = new HashSet<TitleItem>();
+        public List<TitleItem> Files
         {
-            // TODO
-            get { return ((PlaceDate != null && !PlaceDate.Equals(string.Empty)) && Medications.Count > 0); }
-        }
-        #endregion
-
-        #region for prescription manager
-        private HashSet<string> _Files = new HashSet<string>();
-        public List<string> Files
-        {
-            get { return new List<string>(_Files); }
+            get { return new List<TitleItem>(_Files); }
         }
         #endregion
         #endregion
@@ -84,6 +84,19 @@ namespace AmiKoWindows
                     _medicationListItems = value;
             }
         }
+
+        #region Prescription File Manager
+        private TitlesObservableCollection _fileNames = new TitlesObservableCollection();
+        public TitlesObservableCollection FileNames
+        {
+            get { return _fileNames; }
+            private set
+            {
+                if (value != _fileNames)
+                    _fileNames = value;
+            }
+        }
+        #endregion
         #endregion
 
         public PrescriptionsBox()
@@ -98,8 +111,10 @@ namespace AmiKoWindows
             MedicationListItems.AddRange(Medications);
         }
 
-        public void ShowDetail()
+        public void UpdateFileNames()
         {
+            FileNames.Clear();
+            FileNames.AddRange(Files); // string[]
         }
 
         public void Renew()
@@ -119,16 +134,20 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                var outputFile = String.Format("RZ_{0}", Utilities.GetLocalTimeAsString(FILE_NAME_SUFFIX_DATE_FORMAT));
+                var outputFile = String.Format("RZ_{0}.amk", Utilities.GetLocalTimeAsString(FILE_NAME_SUFFIX_DATE_FORMAT));
+                string outputPath = Path.Combine(_dataDir, Patient.Uid, outputFile);
+                Log.WriteLine("outputPath: {0}", outputPath);
                 try
                 {
-                    Log.WriteLine("prescription_hash: {0}", Hash);
-                    //if (File.Exists(outputFile))
-                    //    File.Delete(outputFile);
+                    if (File.Exists(outputPath))
+                        File.Delete(outputPath);
 
-                    //using (var output = File.Create(outputFile))
-                    //{
-                    //}
+                    string json = SerializeCurrentData();
+                    using (var output = File.Create(outputPath))
+                    {
+                        byte[] bytes = new UTF8Encoding(false).GetBytes(json);
+                        output.Write(bytes, 0, bytes.Length);
+                    }
                 }
                 catch (IOException ex)
                 {
@@ -149,36 +168,47 @@ namespace AmiKoWindows
             UpdateMedicationList();
         }
 
-        public bool Contains(Medication medication)
-        {
-            return _Medications.Contains(medication);
-        }
-
         public void LoadFiles()
         {
             if (Patient == null)
                 return;
 
-            this.Hash = null;
+            _Files.Clear();
 
             string userDir = Path.Combine(_dataDir, Patient.Uid);
-            Log.WriteLine("userDir: {0}", userDir);
+            // Log.WriteLine("userDir: {0}", userDir);
             if (EnforceDir(userDir))
             {
-                string[] files = Directory.GetFiles(userDir);
-                foreach (var f in files)
+                string[] files = Directory.GetFiles(userDir).OrderByDescending(f => f).ToArray();
+                foreach (var path in files)
                 {
-                    if (!AMIKO_FILE_EXTENSION_RGX.IsMatch(@"\.amk$"))
+                    //Log.WriteLine("filepath: {0}", path);
+                    var filename = Path.GetFileName(path);
+                    if (!AMIKO_FILE_EXTENSION_RGX.IsMatch(filename))
                         continue;
-
-                    Log.WriteLine("file: {0}", f);
+                    var item = new TitleItem() {
+                        Id = filename, Title = AMIKO_FILE_EXTENSION_RGX.Replace(filename, "")
+                    };
+                    _Files.Add(item);
                 }
             }
+            UpdateFileNames();
         }
 
         public void DeleteFile(string hash)
         {
 
+        }
+
+        // Returns json as string
+        private string SerializeCurrentData()
+        {
+            var serializer = new JavaScriptSerializer();
+            var presenter = new PrescriptionJSONPresenter(Hash, PlaceDate);
+            presenter.@operator = new AccountJSONPresenter(Operator);
+            presenter.@patient = new ContactJSONPresenter(Patient);
+
+            return serializer.Serialize(presenter);
         }
 
         private string GeneratePlaceDate()

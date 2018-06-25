@@ -246,6 +246,7 @@
     <Compile Include="Source\PatientDb.cs" />
     <Compile Include="Source\PrescriptionsBox.cs" />
     <Compile Include="Source\PreviewImage.cs" />
+    <Compile Include="Source\Presenters.cs" />
     <Compile Include="Source\StatusBarHelper.cs" />
     <Compile Include="Source\UIState.cs" />
     <Compile Include="Source\UpdateDb.cs" />
