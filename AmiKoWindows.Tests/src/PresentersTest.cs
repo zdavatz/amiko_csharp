@@ -177,9 +177,10 @@ namespace AmiKoWindows.Tests
             var presenter = new PrescriptionJSONPresenter(hash, placeDate);
 
             // set properties
-            presenter.Patient = contact;
-            presenter.Operator = account;
-            presenter.Medications = new List<Medication>();
+            presenter.Contact = contact;
+            presenter.Account = account;
+
+            presenter.medications = new Medication[] {};
 
             string resultJSON = Serializer.Serialize(presenter);
 
