@@ -69,46 +69,72 @@
                                 <Grid Grid.Row="0">
                                     <Button
                                         Name="OpenAddressBookButton" Style="{StaticResource NoHighlightedButton}"
-                                        Margin="0,1,0,9" HorizontalAlignment="Left" Click="OpenAddressBookButton_Click">
+                                        Margin="0,1,0,1" HorizontalAlignment="Left" Click="OpenAddressBookButton_Click">
                                         <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.patientSearch}" />
                                     </Button>
                                 </Grid>
                                 <Grid Grid.Row="1">
-                                    <StackPanel Margin="1,2,0,0" HorizontalAlignment="Left">
+                                    <StackPanel Margin="1,5,0,0" HorizontalAlignment="Left">
                                         <TextBlock Name="ContactFullname"></TextBlock>
                                         <TextBlock Name="ContactAddress"></TextBlock>
                                         <TextBlock Name="ContactPlace"></TextBlock>
                                         <TextBlock Name="ContactPersonalInfo"></TextBlock>
                                         <TextBlock Name="ContactPhone"></TextBlock>
                                         <TextBlock Name="ContactEmail"></TextBlock>
+                                        <StackPanel Margin="1,16,0,0" HorizontalAlignment="Left">
+                                            <TextBlock Name="PlaceDate"></TextBlock>
+                                        </StackPanel>
                                     </StackPanel>
                                 </Grid>
                               </Grid>
-                              <!-- Operator -->
-                              <Grid Name="OperatorInfo" Grid.Column="1" Margin="0" DataContext="{Binding Path=ActiveOperator, UpdateSourceTrigger=PropertyChanged}">
-                                  <DockPanel Margin="0,1,4,3">
+                              <!-- Account (Operator) -->
+                              <Grid Name="AccountInfo" Grid.Column="1" Margin="0" DataContext="{Binding Path=ActiveAccount, UpdateSourceTrigger=PropertyChanged}">
+                                  <DockPanel Margin="0,5,4,4">
                                       <Button Name="OpenProfileCardButton" Style="{StaticResource NoHighlightedButton}"
                                           DockPanel.Dock="Top" Click="OpenProfileCardButton_Click" Cursor="Hand" Visibility="Collapsed">
                                           <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.msgProfileUnsetWarning}" />
                                       </Button>
-                                      <StackPanel DockPanel.Dock="Top" Margin="0,2,0,0" HorizontalAlignment="Right">
-                                          <TextBlock Name="OperatorFullName" Text="{Binding Path=Fullname, Mode=OneWay}"></TextBlock>
-                                          <TextBlock Name="OperatorAddress" Text="{Binding Path=Address, Mode=OneWay}"></TextBlock>
-                                          <TextBlock Name="OperatorPlace" Text="{Binding Path=Place, Mode=OneWay}"></TextBlock>
-                                          <TextBlock Name="OperatorPhone" Text="{Binding Path=Phone, Mode=OneWay}"></TextBlock>
-                                          <TextBlock Name="OperatorEmail" Text="{Binding Path=Email, Mode=OneWay}"></TextBlock>
-                                          <Image Name="OperatorPicture" Height="64" Margin="0,6,0,0" HorizontalAlignment="Left" />
+                                      <StackPanel DockPanel.Dock="Top" Margin="0,0,0,0" HorizontalAlignment="Right">
+                                          <TextBlock Name="AccountFullName" Text="{Binding Path=Fullname, Mode=OneWay}"></TextBlock>
+                                          <TextBlock Name="AccountAddress" Text="{Binding Path=Address, Mode=OneWay}"></TextBlock>
+                                          <TextBlock Name="AccountPlace" Text="{Binding Path=Place, Mode=OneWay}"></TextBlock>
+                                          <TextBlock Name="AccountPhone" Text="{Binding Path=Phone, Mode=OneWay}"></TextBlock>
+                                          <TextBlock Name="AccountEmail" Text="{Binding Path=Email, Mode=OneWay}"></TextBlock>
+                                          <Image Name="AccountPicture" Height="64" Margin="1,13,0,0" HorizontalAlignment="Left" />
                                       </StackPanel>
                                   </DockPanel>
                               </Grid>
                             </Grid>
 
-                            <ScrollViewer Grid.Row="1" Margin="7,5,7,2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                <Border Margin="0" Padding="1" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1">
-                                    <StackPanel>
-                                    </StackPanel>
-                                </Border>
-                            </ScrollViewer>
+                            <Border Grid.Row="1" Margin="7,5,7,2" Padding="1" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1"
+                                DataContext="{Binding Path=_prescriptions, UpdateSourceTrigger=PropertyChanged}">
+                                <ListBox
+                                    Name="MedicationList" Style="{StaticResource MedicationListBox}" ItemContainerStyle="{StaticResource MedicationListBoxItem}"
+                                    KeyboardNavigation.DirectionalNavigation="Cycle"
+                                    ItemsSource="{Binding Path=MedicationListItems}" Height="430">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="80" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Path=Text}"
+                                                    Margin="0,0,11,0" Padding="4,6,9,4" Width="Auto" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Left" Focusable="False" />
+                                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                                    <Button
+                                                        Name="DeleteMedicationButton" Style="{StaticResource WhiteIconButton}"
+                                                        Margin="0,2,0,2" Height="28" Width="28" HorizontalAlignment="Right" Click="DeleteMedicationButton_Click"
+                                                        Cursor="Hand">
+                                                        <fa:ImageAwesome Name="Backspace" Icon="Trash" Visibility="Visible" Foreground="LightGray"
+                                                            VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
+                                                    </Button>
+                                                </StackPanel>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
 
                             <Grid Margin="7,2,7,7" Grid.Row="2">
                                 <Grid>
@@ -118,29 +144,71 @@
                                     </Grid.ColumnDefinitions>
                                     <Button
                                         Name="NewPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
-                                        Grid.Column="0" Margin="0,3,5,1" HorizontalAlignment="Left" Click="NewPrescriptionButton_Click">
-                                        Neues Rezept
+                                        Grid.Column="0" Margin="0,3,5,1" HorizontalAlignment="Left" Click="NewPrescriptionButton_Click" IsEnabled="False">
+                                        <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.newPrescription}" />
                                     </Button>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                         <Button
                                             Name="CheckInteractionButton" Style="{StaticResource NoHighlightedButton}"
-                                            Margin="0,3,6,1" HorizontalAlignment="Right" Click="CheckInteractionButton_Click">
-                                            Interaktionen überprüfen
+                                            Margin="0,3,6,1" HorizontalAlignment="Right" Click="CheckInteractionButton_Click" IsEnabled="False">
+                                            <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.checkInteractions}" />
                                         </Button>
                                         <Button
                                             Name="SavePrescriptionButton" Style="{StaticResource NoHighlightedButton}"
-                                            Margin="6,3,3,1" HorizontalAlignment="Right" Click="SavePrescriptionButton_Click">
-                                            Speichern
+                                            Margin="6,3,3,1" HorizontalAlignment="Right" Click="SavePrescriptionButton_Click" IsEnabled="False">
+                                            <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.save}" />
                                         </Button>
                                         <Button
                                             Name="SendPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
-                                            Margin="6,3,0,1" HorizontalAlignment="Right" Click="SendPrescriptionButton_Click">
-                                            Senden
+                                            Margin="6,3,0,1" HorizontalAlignment="Right" Click="SendPrescriptionButton_Click" IsEnabled="False">
+                                            <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.send}" />
                                         </Button>
                                     </StackPanel>
                                 </Grid>
                             </Grid>
                         </Grid>
+                    </DataTemplate>
+
+                    <!-- Compendium, Favorites and Interactions -->
+                    <DataTemplate x:Key="TitleListTemplate" DataType="Html">
+                        <ListBox
+                            x:Name="SectionTitles" Style="{StaticResource SectionTitlesListBox}"
+                            KeyboardNavigation.DirectionalNavigation="Cycle" ItemsSource="{Binding Path=SectionTitles}"
+                            Margin="0,0,0,0" Padding="0,16,0,16" SelectionChanged="OnSectionTitle_Selection">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Height="24">
+                                        <TextBlock
+                                            Text="{Binding Path=Title}" Margin="0" Padding="9,3,18,3" Foreground="{Binding Path=Color}"
+                                            Height="18" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </DataTemplate>
+                    <!-- Prescriptions -->
+                    <DataTemplate x:Key="FileListTemplate" DataType="Form">
+                        <ListBox
+                            Name="FileNames" Style="{StaticResource FileNamesListBox}" ItemContainerStyle="{StaticResource FileNamesListBoxItem}"
+                            KeyboardNavigation.DirectionalNavigation="Cycle" ItemsSource="{Binding Path=FileNames}"
+                            Margin="0,0,0,0" Padding="0,16,0,16" SelectionChanged="OnFileName_Selection">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Height="24" Orientation="Horizontal">
+                                        <TextBlock
+                                            Text="{Binding Path=Title}" Margin="0" Padding="9,3,18,3" Foreground="{Binding Path=Color}"
+                                            Height="18" VerticalAlignment="Center">
+                                            <TextBlock.ContextMenu>
+                                                <ContextMenu Name="ItemContextMenu">
+                                                    <MenuItem Header="{Binding Path=Title}" Focusable="False" IsEnabled="False" />
+                                                    <MenuItem Header="{x:Static p:Resources.delete}" Click="FileNameContextMenuItem_Click" />
+                                                </ContextMenu>
+                                            </TextBlock.ContextMenu>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </DataTemplate>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
@@ -173,7 +241,7 @@
                                 </Rectangle>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="{x:Static p:Resources.operatorManagement}" Name="OperatorAddress" Click="MenuItem_Click"
+                        <MenuItem Header="{x:Static p:Resources.accountManagement}" Name="AccountAddress" Click="MenuItem_Click"
                                   Foreground="White" Height="28" Margin="10" Cursor="Hand">
                             <MenuItem.Icon>
                                 <Rectangle Height="16" Width="16" Fill="White">
@@ -283,9 +351,9 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*" MinWidth="200" />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="4*" MinWidth="450" />
+                        <ColumnDefinition Width="4*" MinWidth="480" />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="1*" MinWidth="150" />
+                        <ColumnDefinition Width="2*" MinWidth="190" />
                     </Grid.ColumnDefinitions>
 
                     <DockPanel Grid.Column="0" LastChildFill="True">
@@ -343,14 +411,24 @@
                                             <TextBlock Text="{Binding Path=Text}" VerticalAlignment="Center" />
                                             <ListBox Style="{StaticResource SearchListBoxChild}" ItemContainerStyle="{StaticResource SearchListBoxChildItem}"
                                                      ItemsSource="{Binding Path=ChildItems}"
-                                                     SelectionChanged="OnSearchChildItem_Selection"
                                                      ScrollViewer.CanContentScroll="False"
+                                                     SelectionChanged="OnSearchChildItem_Selection"
                                                      PreviewMouseDown="OnSearchResultChild_PreviewMouseDown">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBlock Style="{StaticResource SearchListBoxChildItemText}"
-                                                                   Text="{Binding Path=Text}"
-                                                                   Foreground="{Binding Path=Color}" />
+                                                        <TextBlock
+                                                            Name="ItemName" Style="{StaticResource SearchListBoxChildItemText}" Text="{Binding Path=Text}" Foreground="{Binding Path=Color}"
+                                                            ContextMenuOpening="SearchChildItem_ContextMenuOpening"
+                                                            ContextMenuClosing="SearchChildItem_ContextMenuClosing"
+                                                            MouseLeftButtonDown="SearchChildItem_MouseLeftButtonDown"
+                                                            MouseRightButtonDown="SearchChildItem_MouseRightButtonDown">
+                                                            <TextBlock.ContextMenu>
+                                                                <ContextMenu Name="ItemContextMenu">
+                                                                    <MenuItem Header="{Binding Path=Text}" Focusable="False" IsEnabled="False" />
+                                                                    <MenuItem Header="{x:Static p:Resources.prescription}" Click="SearchChildItemContextMenuItem_Click" />
+                                                                </ContextMenu>
+                                                            </TextBlock.ContextMenu>
+                                                        </TextBlock>
                                                     </DataTemplate>
                                                 </ListBox.ItemTemplate>
                                             </ListBox>
@@ -381,18 +459,21 @@
 
                     <GridSplitter HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="3" Width="3" />
 
-                    <ListBox x:Name="SectionTitles"
-                            Style="{StaticResource SectionTitlesListBox}" ItemsSource="{Binding Path=SectionTitles}"
-                            Grid.Column="4" Margin="4,0,0,0" Padding="0,24,0,0" SelectionChanged="OnSectionTitle_Selection">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Height="20" Orientation="Vertical">
-                                    <TextBlock Text="{Binding Path=Title}" Foreground="{Binding Path=Color}"
-                                               Height="18" VerticalAlignment="Center" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <ContentControl x:Name="RightArea" Grid.Column="4">
+                        <ContentControl.Style>
+                            <Style TargetType="{x:Type ContentControl}">
+                                <Setter Property="ContentTemplate" Value="{StaticResource TitleListTemplate}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=Mode}" Value="Html">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource TitleListTemplate}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=Mode}" Value="Form">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource FileListTemplate}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
                 </Grid>
             </DockPanel>
         </Border>

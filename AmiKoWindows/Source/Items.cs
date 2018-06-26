@@ -344,6 +344,7 @@ namespace AmiKoWindows
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
+        // PatientDb
         public void AddRange(IEnumerable<Contact> list)
         {
             if (list == null)
@@ -356,6 +357,26 @@ namespace AmiKoWindows
                 {
                     Id = contact.Id,
                     Text = String.Format("{0} {1}", contact.GivenName, contact.FamilyName),
+                });
+            }
+
+            _suppressNotification = false;
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        // PrescriptionsBox
+        public void AddRange(List<Medication> list)
+        {
+            if (list == null)
+                throw new ArgumentNullException("list");
+
+            _suppressNotification = true;
+            foreach (Medication medication in list)
+            {
+                Add(new Item()
+                {
+                    Id = list.IndexOf(medication),
+                    Text = medication.Package,
                 });
             }
 

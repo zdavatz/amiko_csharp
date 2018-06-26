@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,6 +28,45 @@ namespace AmiKoWindows
 {
     namespace ControlExtensions
     {
+        /// <summary>
+        /// The extension methods for the finding in visual tree.
+        /// </summary>
+        public static class VisualTreeFinder
+        {
+            public static IEnumerable<T> FindVisualChildren<T>(this DependencyObject obj) where T: DependencyObject
+            {
+                if (obj == null)
+                    yield break;
+
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                    if (child != null && child is T)
+                        yield return (T)child;
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                        yield return childOfChild;
+                }
+            }
+
+            public static T FindVisualChild<T>(this DependencyObject obj) where T: DependencyObject
+            {
+                foreach (T child in FindVisualChildren<T>(obj))
+                {
+                    return child;
+                }
+                return null;
+            }
+
+            public static T FindVisualAncestor<T>(this Control _control, FrameworkElement element) where T: FrameworkElement
+            {
+                var parent = VisualTreeHelper.GetParent(element);
+                if (parent != null && !(parent is T))
+                    return (T)FindVisualAncestor<T>(_control, parent as FrameworkElement);
+                return (T)parent;
+            }
+        }
+
         /// <summary>
         /// The extension methods for user feedback on custom user control.
         /// </summary>

@@ -56,17 +56,6 @@ namespace AmiKoWindows
             set { SetField(ref _Uid, value, "Uid"); }
         }
 
-        private string _FamilyName;
-        public string FamilyName
-        {
-            get { return _FamilyName; }
-            set
-            {
-                SetField(ref _FamilyName, value, "FamilyName");
-                OnPropertyChanged("Fullname");
-            }
-        }
-
         private string _GivenName;
         public string GivenName
         {
@@ -74,6 +63,17 @@ namespace AmiKoWindows
             set
             {
                 SetField(ref _GivenName, value, "GivenName");
+                OnPropertyChanged("Fullname");
+            }
+        }
+
+        private string _FamilyName;
+        public string FamilyName
+        {
+            get { return _FamilyName; }
+            set
+            {
+                SetField(ref _FamilyName, value, "FamilyName");
                 OnPropertyChanged("Fullname");
             }
         }

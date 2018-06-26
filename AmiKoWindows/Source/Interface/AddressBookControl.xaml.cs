@@ -256,8 +256,6 @@ namespace AmiKoWindows
                     {
                         contact.Id = id.Value;
                         this.SearchPatientBox.Text = "";
-                        // TODO
-                        // copied/update issued prescriptions if uid has been changed
                     }
                     else
                         // TODO need another message?
@@ -432,13 +430,20 @@ namespace AmiKoWindows
                 var item = this.ContactList.SelectedItem as Item;
                 if (item != null && item.Id != null)
                 {
+                    Contact contact = await _patientDb.GetContactById(item.Id.Value);
+                    if (contact == null)
+                        return;
+
+                    var uid = contact.Uid;
                     ResetFields();
                     this.CurrentEntry = new Contact();
 
-                    await _patientDb.DeleteContact(item.Id.Value);
+                    await _patientDb.DeleteContact(contact.Id.Value);
                     await _patientDb.LoadAllContacts();
                     this.RawContactsCount = _patientDb.Count;
                     _patientDb.UpdateContactList();
+
+                    await PrescriptionsBox.DeleteAllPrescriptions(uid);
                 }
                 EnableMinusButton(false);
             }

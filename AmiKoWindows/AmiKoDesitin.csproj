@@ -117,6 +117,7 @@
     <Reference Include="System.Runtime" />
     <Reference Include="System.Runtime.InteropServices.WindowsRuntime" />
     <Reference Include="System.Runtime.WindowsRuntime" />
+    <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -224,6 +225,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Source\Account.cs" />
     <Compile Include="Source\DatabaseHelper.cs" />
     <Compile Include="Source\FileOps.cs" />
     <Compile Include="Source\FullTextDb.cs" />
@@ -240,11 +242,12 @@
     <Compile Include="Source\FachInfo.cs" />
     <Compile Include="Source\Favorites.cs" />
     <Compile Include="Source\MainSqlDb.cs" />
+    <Compile Include="Source\Medication.cs" />
     <Compile Include="Source\Network.cs" />
-    <Compile Include="Source\Operator.cs" />
     <Compile Include="Source\PatientDb.cs" />
-    <Compile Include="Source\Prescriptions.cs" />
+    <Compile Include="Source\PrescriptionsBox.cs" />
     <Compile Include="Source\PreviewImage.cs" />
+    <Compile Include="Source\Presenters.cs" />
     <Compile Include="Source\StatusBarHelper.cs" />
     <Compile Include="Source\UIState.cs" />
     <Compile Include="Source\UpdateDb.cs" />
