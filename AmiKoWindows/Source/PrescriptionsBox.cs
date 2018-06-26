@@ -149,6 +149,29 @@ namespace AmiKoWindows
             });
         }
 
+        public async Task DeleteFile(string filename)
+        {
+            if (ActiveContact == null || ActiveAccount == null)
+                return;
+
+            await Task.Run(() =>
+            {
+                string userDir = Path.Combine(_dataDir, ActiveContact.Uid);
+                if (EnforceDir(userDir))
+                {
+                    var path = String.Format("{0}.amk", Path.Combine(userDir, filename));
+                    if (!File.Exists(path))
+                        return;
+
+                    var item = new TitleItem() { Id = filename, Title = filename };
+                    _Files.Remove(item);
+
+                    Log.WriteLine("path: {0}", path);
+                    File.Delete(path);
+                }
+            });
+        }
+
         public void AddMedication(Medication medication)
         {
             if (medication != null)
@@ -173,11 +196,8 @@ namespace AmiKoWindows
                 return;
 
             var i = Convert.ToInt32(index);
-            if (i != null)
-            {
-                var medication = _Medications.ElementAt(i);
-                RemoveMedication(medication);
-            }
+            var medication = _Medications.ElementAt(i);
+            RemoveMedication(medication);
         }
 
         public void LoadFile(string filename)
@@ -223,11 +243,6 @@ namespace AmiKoWindows
                 }
             }
             UpdateFileNames();
-        }
-
-        public void DeleteFile(string hash)
-        {
-
         }
 
         // Returns json as string

@@ -186,6 +186,9 @@
   <data name="datei" xml:space="preserve">
     <value>Fichier</value>
   </data>
+  <data name="delete" xml:space="preserve">
+    <value>Effacer</value>
+  </data>
   <data name="ean" xml:space="preserve">
     <value>EAN</value>
   </data>

@@ -698,6 +698,22 @@ namespace AmiKoWindows
             }
         }
 
+        private async void FileNameContextMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+            var item = (sender as MenuItem)?.DataContext as TitleItem;
+            Log.WriteLine("item: {0}", item);
+            if (item != null && !item.Title.Equals(string.Empty))
+            {
+                var file = item.Title;
+                await _prescriptions.DeleteFile(file);
+                _prescriptions.LoadFiles();
+
+                var button = GetElementIn("NewPrescriptionButton", this.MainArea);
+                button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            }
+        }
+
         private void DeleteMedicationButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);

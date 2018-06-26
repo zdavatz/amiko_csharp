@@ -197,7 +197,14 @@
                                     <StackPanel Height="24" Orientation="Horizontal">
                                         <TextBlock
                                             Text="{Binding Path=Title}" Margin="0" Padding="9,3,18,3" Foreground="{Binding Path=Color}"
-                                            Height="18" VerticalAlignment="Center" />
+                                            Height="18" VerticalAlignment="Center">
+                                            <TextBlock.ContextMenu>
+                                                <ContextMenu Name="ItemContextMenu">
+                                                    <MenuItem Header="{Binding Path=Title}" Focusable="False" IsEnabled="False" />
+                                                    <MenuItem Header="{x:Static p:Resources.delete}" Click="FileNameContextMenuItem_Click" />
+                                                </ContextMenu>
+                                            </TextBlock.ContextMenu>
+                                        </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>

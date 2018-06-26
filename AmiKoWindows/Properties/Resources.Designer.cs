@@ -266,6 +266,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Löschen.
+        /// </summary>
+        public static string delete {
+            get {
+                return ResourceManager.GetString("delete", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to EAN.
         /// </summary>
         public static string ean {
