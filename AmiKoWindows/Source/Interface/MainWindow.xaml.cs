@@ -652,9 +652,13 @@ namespace AmiKoWindows
 
         private void SearchChildItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            Log.WriteLine("query: {0}", _uiState.GetQueryTypeAsName());
             if (e.ChangedButton == MouseButton.Left)
             {
-                if (_uiState.GetQueryTypeAsName().Equals("title"))
+                // NOTE:
+                // Search result of title query on Interactions tab, it seems
+                // that macOS and Windows version have different child items.
+                if (_uiState.GetQueryTypeAsName().Equals("title") && !_uiState.IsInteractions)
                     ToggleContextMenu(sender as TextBlock);
 
                 e.Handled = true;
@@ -665,7 +669,7 @@ namespace AmiKoWindows
         {
             Log.WriteLine(sender.GetType().Name);
             ChildItem item = (sender as MenuItem)?.DataContext as ChildItem;
-            if (item != null && !item.Ean.Equals(string.Empty))
+            if (item != null && item.Ean != null && !item.Ean.Equals(string.Empty))
             {
                 Article article = await _sqlDb.GetArticleWithId(item.Id);
                 if (article != null)
