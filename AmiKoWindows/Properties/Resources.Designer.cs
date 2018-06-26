@@ -457,6 +457,15 @@ namespace AmiKoWindows.Properties {
         /// <summary>
         ///   Looks up a localized string similar to ...
         /// </summary>
+        public static string msgPrescriptionDeleteConfirmation {
+            get {
+                return ResourceManager.GetString("msgPrescriptionDeleteConfirmation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
         public static string msgPrescriptionSavingContextConfirmation {
             get {
                 return ResourceManager.GetString("msgPrescriptionSavingContextConfirmation", resourceCulture);

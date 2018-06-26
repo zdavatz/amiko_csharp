@@ -182,6 +182,7 @@ namespace AmiKoWindows
             });
         }
 
+        // takes filename argument without ext
         public async Task DeleteFile(string filename)
         {
             if (ActiveContact == null || ActiveAccount == null)

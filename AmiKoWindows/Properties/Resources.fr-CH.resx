@@ -249,6 +249,9 @@
   <data name="msgContactSaveSuccess" xml:space="preserve">
     <value>Contact enregistré dans le carnet d'adresses.</value>
   </data>
+  <data name="msgPrescriptionDeleteConfirmation" xml:space="preserve">
+    <value>Voulez-vous vraiment effacer cette ordonnance?</value>
+  </data>
   <data name="msgPrescriptionSavingContextConfirmation" xml:space="preserve">
     <value>Voulez-vous vraiment écraser l'ordonnance existante ou générer une nouvelle?</value>
   </data>

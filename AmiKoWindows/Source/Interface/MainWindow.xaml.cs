@@ -785,6 +785,38 @@ namespace AmiKoWindows
             }
         }
 
+        private async void OnFileName_KeyDown(object sender, KeyEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+
+            if (e.Key == Key.Back)
+            {
+                var dialog = Utilities.MessageDialog(
+                    Properties.Resources.msgPrescriptionDeleteConfirmation, "", "OKCancel");
+                dialog.ShowDialog();
+
+                var result = dialog.MessageBoxResult;
+                if (result == MessageBoxResult.OK)
+                {
+                    ListBox box = sender as ListBox;
+                    if (box?.Items.Count > 0)
+                    {
+                        TitleItem item = box.SelectedItem as TitleItem;
+                        if (item != null && item.Id != null)
+                        {
+                            var file = item.Title;
+                            await _prescriptions.DeleteFile(file);
+                            _prescriptions.LoadFiles();
+                            EnableButton("SavePrescriptionButton", false);
+
+                            FillPlaceDate();
+                            e.Handled = true;
+                        }
+                    }
+                }
+            }
+        }
+
         private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             CheckBox favoriteCheckBox = sender as CheckBox;

@@ -192,7 +192,7 @@
                         <ListBox
                             Name="FileNames" Style="{StaticResource FileNamesListBox}" ItemContainerStyle="{StaticResource FileNamesListBoxItem}"
                             KeyboardNavigation.DirectionalNavigation="Cycle" ItemsSource="{Binding Path=FileNames}"
-                            Margin="0,0,0,0" Padding="0,16,0,16" SelectionChanged="OnFileName_Selection">
+                            Margin="0,0,0,0" Padding="0,16,0,16" SelectionChanged="OnFileName_Selection" KeyDown="OnFileName_KeyDown">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Height="24" Orientation="Horizontal">
