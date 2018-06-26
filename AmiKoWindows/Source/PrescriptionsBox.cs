@@ -92,6 +92,25 @@ namespace AmiKoWindows
         #endregion
         #endregion
 
+        public async static Task DeleteAllPrescriptions(string uid)
+        {
+            await Task.Run(() =>
+            {
+                string userDir = Path.Combine(Utilities.AppRoamingDataFolder(), uid);
+                if (EnforceDir(userDir))
+                {
+                    if (!Directory.Exists(userDir))
+                        return;
+
+                    var info = new DirectoryInfo(userDir);
+                    foreach (FileInfo file in info.GetFiles())
+                        file.Delete();
+
+                    info.Delete(true);
+                }
+            });
+        }
+
         public PrescriptionsBox()
         {
             _dataDir = Utilities.AppRoamingDataFolder();
