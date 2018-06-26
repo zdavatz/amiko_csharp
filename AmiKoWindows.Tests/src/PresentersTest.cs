@@ -51,8 +51,8 @@ namespace AmiKoWindows.Tests
             contact = new Contact();
             Dictionary<string, string> properties = new Dictionary<string, string>();
             properties.Add("Uid", contact.GenerateUid());
-            properties.Add("FamilyName", "Smith");
             properties.Add("GivenName", "John");
+            properties.Add("FamilyName", "Smith");
             properties.Add("Birthdate", "3.12.2001");
             properties.Add("Gender", "1");
             properties.Add("WeightKg", "70.3");
@@ -94,8 +94,9 @@ namespace AmiKoWindows.Tests
 
             account = new Account();
             Dictionary<string, string> properties = new Dictionary<string, string>();
-            properties.Add("FamilyName", "Smith");
+            properties.Add("Title", "Mr.");
             properties.Add("GivenName", "John");
+            properties.Add("FamilyName", "Smith");
             properties.Add("Zip", "123");
             properties.Add("Address", "Internetstrasse 42");
             properties.Add("Phone", "+00 123 456 789 0");
@@ -145,8 +146,8 @@ namespace AmiKoWindows.Tests
             Contact contact = new Contact();
             Dictionary<string, string> contactProperties = new Dictionary<string, string>();
             contactProperties.Add("Uid", contact.GenerateUid());
-            contactProperties.Add("FamilyName", "Smith");
             contactProperties.Add("GivenName", "John");
+            contactProperties.Add("FamilyName", "Smith");
             contactProperties.Add("Birthdate", "3.12.2001");
             contactProperties.Add("Gender", "1");
             contactProperties.Add("WeightKg", "70.3");
@@ -162,8 +163,9 @@ namespace AmiKoWindows.Tests
 
             Account account = new Account();
             Dictionary<string, string> accountProperties = new Dictionary<string, string>();
-            accountProperties.Add("FamilyName", "Smith");
+            accountProperties.Add("Title", "Dr.");
             accountProperties.Add("GivenName", "John");
+            accountProperties.Add("FamilyName", "Smith");
             accountProperties.Add("Zip", "123");
             accountProperties.Add("Address", "Internetstrasse 42");
             accountProperties.Add("Phone", "+00 123 456 789 0");
@@ -218,8 +220,8 @@ namespace AmiKoWindows.Tests
         {
             return String.Format(WHITESPACES.Replace(@"{{
                 ""patient_id"":{0},
-                ""family_name"":{1},
-                ""given_name"":{2},
+                ""given_name"":{1},
+                ""family_name"":{2},
                 ""birth_date"":{3},
                 ""gender"":{4},
                 ""weight_kg"":{5},
@@ -232,8 +234,8 @@ namespace AmiKoWindows.Tests
                 ""email_address"":{12}
             }}", ""),
                 GetStringValue(contact.Uid),
-                GetStringValue(contact.FamilyName),
                 GetStringValue(contact.GivenName),
+                GetStringValue(contact.FamilyName),
                 GetStringValue(contact.Birthdate),
                 GetStringValue(contact.IsMale ? "man" : "woman"),
                 GetStringValue(contact.WeightKg),
@@ -261,8 +263,8 @@ namespace AmiKoWindows.Tests
                 ""signature"":{8}
             }}", ""),
                 GetStringValue(account.Title),
-                GetStringValue(account.FamilyName),
                 GetStringValue(account.GivenName),
+                GetStringValue(account.FamilyName),
                 GetStringValue(account.Address),
                 GetStringValue(account.City),
                 GetStringValue(account.Zip),

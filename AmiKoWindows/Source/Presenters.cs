@@ -92,8 +92,8 @@ namespace AmiKoWindows
                 // There are no fields like `_Id` and `TimeStamp` for Patient (Contact) in json
                 var contact = new Contact();
                 contact.Uid = _contactPresenter.patient_id;
-                contact.FamilyName = _contactPresenter.family_name;
                 contact.GivenName = _contactPresenter.given_name;
+                contact.FamilyName = _contactPresenter.family_name;
                 contact.Birthdate = _contactPresenter.birth_date;
                 contact.IsFemale = _contactPresenter.gender.Equals(Constants.JSON_GENDER_WOMAN); // Gender
                 contact.WeightKg = _contactPresenter.weight_kg;
@@ -185,8 +185,8 @@ namespace AmiKoWindows
     public class ContactJSONPresenter
     {
         public string patient_id { get; set; }
-        public string family_name { get; set; }
         public string given_name { get; set; }
+        public string family_name { get; set; }
         public string birth_date { get; set; }
         public string gender { get; set; }
         public string weight_kg { get; set; }
@@ -208,8 +208,8 @@ namespace AmiKoWindows
             if (patient != null)
             {
                 this.patient_id = patient.Uid;
-                this.family_name = patient.FamilyName;
                 this.given_name = patient.GivenName;
+                this.family_name = patient.FamilyName;
                 this.birth_date = patient.Birthdate;
                 this.gender = patient.IsMale ? Constants.JSON_GENDER_MAN : Constants.JSON_GENDER_WOMAN;
                 this.weight_kg = patient.WeightKg;
