@@ -375,7 +375,7 @@ namespace AmiKoWindows
             {
                 Add(new Item()
                 {
-                    Id = medication.articleId,
+                    Id = list.IndexOf(medication),
                     Text = medication.Package,
                 });
             }

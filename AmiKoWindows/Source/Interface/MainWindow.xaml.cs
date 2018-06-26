@@ -37,6 +37,8 @@ using MahApps.Metro.Controls;
 
 namespace AmiKoWindows
 {
+    using ControlExtensions;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -693,6 +695,21 @@ namespace AmiKoWindows
 
                     e.Handled = true;
                 }
+            }
+        }
+
+        private void DeleteMedicationButton_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+
+            var button = sender as Button;
+            var listBoxItem = this.FindVisualAncestor<ListBoxItem>(button);
+            var item = listBoxItem.Content as Item;
+            if (item != null)
+            {
+                var index = item.Id;
+                _prescriptions.RemoveMedicationAtIndex(index);
+                EnableButton("SavePrescriptionButton", true);
             }
         }
 

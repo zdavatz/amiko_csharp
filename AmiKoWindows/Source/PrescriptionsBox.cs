@@ -151,14 +151,33 @@ namespace AmiKoWindows
 
         public void AddMedication(Medication medication)
         {
-            _Medications.Add(medication);
-            UpdateMedicationList();
+            if (medication != null)
+            {
+                _Medications.Add(medication);
+                UpdateMedicationList();
+            }
         }
 
         public void RemoveMedication(Medication medication)
         {
-            _Medications.Remove(medication);
-            UpdateMedicationList();
+            if (medication != null)
+            {
+                _Medications.Remove(medication);
+                UpdateMedicationList();
+            }
+        }
+
+        public void RemoveMedicationAtIndex(long? index)
+        {
+            if (index == null)
+                return;
+
+            var i = Convert.ToInt32(index);
+            if (i != null)
+            {
+                var medication = _Medications.ElementAt(i);
+                RemoveMedication(medication);
+            }
         }
 
         public void LoadFile(string filename)

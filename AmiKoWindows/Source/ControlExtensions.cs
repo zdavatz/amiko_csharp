@@ -57,6 +57,14 @@ namespace AmiKoWindows
                 }
                 return null;
             }
+
+            public static T FindVisualAncestor<T>(this Control _control, FrameworkElement element) where T: FrameworkElement
+            {
+                var parent = VisualTreeHelper.GetParent(element);
+                if (parent != null && !(parent is T))
+                    return (T)FindVisualAncestor<T>(_control, parent as FrameworkElement);
+                return (T)parent;
+            }
         }
 
         /// <summary>

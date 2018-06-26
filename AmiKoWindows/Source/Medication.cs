@@ -24,7 +24,6 @@ namespace AmiKoWindows
 {
     public class Medication
     {
-        public long articleId { get; set; }
         public long timestamp { get; set; }
 
         public string Regnrs { get; set; }

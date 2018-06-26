@@ -88,7 +88,8 @@ namespace AmiKoWindows
                 if (_contactPresenter == null)
                     return null;
 
-                // NOTE: There are no fields for `_Id` and `TimeStamp` in json
+                // NOTE:
+                // There are no fields like `_Id` and `TimeStamp` for Patient (Contact) in json
                 var contact = new Contact();
                 contact.Uid = _contactPresenter.patient_id;
                 contact.FamilyName = _contactPresenter.family_name;
@@ -116,7 +117,7 @@ namespace AmiKoWindows
                 else if (_medications.Length == 0)
                     return new List<Medication>();
 
-                // NOTE: There are no fields for `articleId` and `TimeStamp` in json
+                // NOTE: There is no field `TimeStamp` for Medication in json
                 return _medications.Select(m => {
                     var medication = new Medication();
                     medication.Regnrs = m.regnrs;

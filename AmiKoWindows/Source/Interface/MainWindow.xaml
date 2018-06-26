@@ -106,14 +106,31 @@
                               </Grid>
                             </Grid>
 
-                            <Border Grid.Row="1" Margin="7,5,7,2" Padding="1" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1" DataContext="{Binding Path=_prescriptions, UpdateSourceTrigger=PropertyChanged}">
+                            <Border Grid.Row="1" Margin="7,5,7,2" Padding="1" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1"
+                                DataContext="{Binding Path=_prescriptions, UpdateSourceTrigger=PropertyChanged}">
                                 <ListBox
                                     Name="MedicationList" Style="{StaticResource MedicationListBox}" ItemContainerStyle="{StaticResource MedicationListBoxItem}"
                                     KeyboardNavigation.DirectionalNavigation="Cycle"
                                     ItemsSource="{Binding Path=MedicationListItems}" Height="430">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Path=Text}" Margin="0,0,11,0" Padding="4,6,9,4" FontWeight="Normal" VerticalAlignment="Center" Focusable="False" />
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="80" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Path=Text}"
+                                                    Margin="0,0,11,0" Padding="4,6,9,4" Width="Auto" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Left" Focusable="False" />
+                                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                                    <Button
+                                                        Name="DeleteMedicationButton" Style="{StaticResource WhiteIconButton}"
+                                                        Margin="0,2,0,2" Height="28" Width="28" HorizontalAlignment="Right" Click="DeleteMedicationButton_Click"
+                                                        Cursor="Hand">
+                                                        <fa:ImageAwesome Name="Backspace" Icon="Trash" Visibility="Visible" Foreground="LightGray"
+                                                            VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
+                                                    </Button>
+                                                </StackPanel>
+                                            </Grid>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
@@ -160,7 +177,7 @@
                             Margin="0,0,0,0" Padding="0,16,0,16" SelectionChanged="OnSectionTitle_Selection">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Height="24" Orientation="Vertical">
+                                    <StackPanel Height="24">
                                         <TextBlock
                                             Text="{Binding Path=Title}" Margin="0" Padding="9,3,18,3" Foreground="{Binding Path=Color}"
                                             Height="18" VerticalAlignment="Center" />
@@ -177,10 +194,10 @@
                             Margin="0,0,0,0" Padding="0,16,0,16" SelectionChanged="OnFileName_Selection">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Height="24" Orientation="Vertical">
+                                    <StackPanel Height="24" Orientation="Horizontal">
                                         <TextBlock
-                                          Text="{Binding Path=Title}" Margin="0" Padding="9,3,18,3" Foreground="{Binding Path=Color}"
-                                          Height="18" VerticalAlignment="Center" />
+                                            Text="{Binding Path=Title}" Margin="0" Padding="9,3,18,3" Foreground="{Binding Path=Color}"
+                                            Height="18" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
