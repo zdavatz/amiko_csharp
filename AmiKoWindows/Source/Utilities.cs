@@ -331,6 +331,22 @@ namespace AmiKoWindows
                 bitmap.Save(output, ImageFormat.Png);
             }
         }
+
+        public static string Base64Encode(string input)
+        {
+            if (input == null)
+                return null;
+            var bytes = Encoding.UTF8.GetBytes(input);
+            return Convert.ToBase64String(bytes);
+        }
+
+        public static string Base64Decode(string input)
+        {
+            if (input == null)
+                return null;
+            var bytes = Convert.FromBase64String(input);
+            return Encoding.UTF8.GetString(bytes);
+        }
         #endregion
 
         #region UI Functions

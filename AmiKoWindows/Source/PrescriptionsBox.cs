@@ -154,7 +154,7 @@ namespace AmiKoWindows
                     if (File.Exists(outputPath))
                         File.Delete(outputPath);
 
-                    string json = SerializeCurrentData();
+                    string json = Utilities.Base64Encode(SerializeCurrentData()) ?? "";
                     using (var output = File.Create(outputPath))
                     {
                         byte[] bytes = new UTF8Encoding(false).GetBytes(json);
@@ -231,7 +231,7 @@ namespace AmiKoWindows
                 if (!File.Exists(path))
                     return;
 
-                string json = File.ReadAllText(path);
+                string json = Utilities.Base64Decode(File.ReadAllText(path)) ?? "{}";
                 DeserializeJson(json);
             }
             UpdateMedicationList();
