@@ -421,8 +421,7 @@
                                                             Name="ItemName" Style="{StaticResource SearchListBoxChildItemText}" Text="{Binding Path=Text}" Foreground="{Binding Path=Color}"
                                                             ContextMenuOpening="SearchChildItem_ContextMenuOpening"
                                                             ContextMenuClosing="SearchChildItem_ContextMenuClosing"
-                                                            MouseLeftButtonDown="SearchChildItem_MouseLeftButtonDown"
-                                                            MouseRightButtonDown="SearchChildItem_MouseRightButtonDown">
+                                                            MouseLeftButtonDown="SearchChildItem_MouseLeftButtonDown">
                                                             <TextBlock.ContextMenu>
                                                                 <ContextMenu Name="ItemContextMenu">
                                                                     <MenuItem Header="{Binding Path=Text}" Focusable="False" IsEnabled="False" />

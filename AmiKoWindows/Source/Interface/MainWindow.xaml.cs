@@ -66,7 +66,7 @@ namespace AmiKoWindows
         FrameworkElement _browser;
         FrameworkElement _manager;
 
-        private bool _contextMenuIsOpen = false;
+        private bool _searchResultContextMenuIsOpen = false;
 
         #region Public Fields
         private Contact _ActiveContact;
@@ -628,7 +628,7 @@ namespace AmiKoWindows
             var menu = block?.ContextMenu;
             if (menu != null)
             {
-                if (_contextMenuIsOpen)
+                if (_searchResultContextMenuIsOpen)
                     menu.IsOpen = false;
                 else
                 {
@@ -640,39 +640,23 @@ namespace AmiKoWindows
 
         private void SearchChildItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            _contextMenuIsOpen = true; // prevent default action (on right click)
+            _searchResultContextMenuIsOpen = true;
             e.Handled = true;
         }
 
         private void SearchChildItem_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {
-            _contextMenuIsOpen = false;
+            _searchResultContextMenuIsOpen = false;
             e.Handled = true;
         }
 
         private void SearchChildItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //Log.WriteLine(sender.GetType().Name);
-            if (!_uiState.IsPrescriptions)
-            {
-                ToggleContextMenu(null);
-                e.Handled = false;
-                return;
-            }
-
             if (e.ChangedButton == MouseButton.Left)
             {
-                ToggleContextMenu(sender as TextBlock);
-                e.Handled = true;
-            }
-        }
+                if (_uiState.GetQueryTypeAsName().Equals("title"))
+                    ToggleContextMenu(sender as TextBlock);
 
-        private void SearchChildItem_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            //Log.WriteLine(sender.GetType().Name);
-            if (e.ChangedButton == MouseButton.Right)
-            {
-                ToggleContextMenu(sender as TextBlock);
                 e.Handled = true;
             }
         }
