@@ -21,6 +21,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -1067,20 +1068,37 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            Keyboard.ClearFocus();
-
             Log.WriteLine(source.Name);
-            await _prescriptions.Save();
-            _prescriptions.LoadFiles();
 
-            var box = GetElementIn("FileNames", this.RightArea) as ListBox;
-            if (box?.Items.Count > 0)
-                box.SelectedIndex = 0;
+            var msg = new Xceed.Wpf.Toolkit.MessageBox();
+            // ugh :'(
+            var prop = msg.GetType().GetField("_button", BindingFlags.NonPublic | BindingFlags.Instance);
+            prop.SetValue(msg, MessageBoxButton.YesNoCancel);
+            System.Windows.VisualStateManager.GoToState(msg, "YesNoCancel", false);
+            // Note: see Style.xaml about style of MessageBox
+            msg.CancelButtonContent = Properties.Resources.cancel;
+            msg.YesButtonContent = Properties.Resources.rewrite;
+            msg.NoButtonContent = Properties.Resources.newPrescription;
+            msg.Text = Properties.Resources.msgPrescriptionSavingContextConfirmation;
+            msg.Caption = "";
+            msg.ShowDialog();
 
-            FillPlaceDate();
-            EnableButton("SavePrescriptionButton", false);
-            EnableButton("SendPrescriptionButton", true);
+            var result = msg.MessageBoxResult;
+            if (result == MessageBoxResult.Yes || result == MessageBoxResult.No)
+            {
+                await _prescriptions.Save((result == MessageBoxResult.Yes));
 
+                Keyboard.ClearFocus();
+                _prescriptions.LoadFiles();
+
+                var box = GetElementIn("FileNames", this.RightArea) as ListBox;
+                if (box?.Items.Count > 0)
+                    box.SelectedIndex = 0;
+
+                FillPlaceDate();
+                EnableButton("SavePrescriptionButton", false);
+                EnableButton("SendPrescriptionButton", true);
+            }
             e.Handled = true;
         }
 

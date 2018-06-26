@@ -249,6 +249,9 @@
   <data name="msgContactSaveSuccess" xml:space="preserve">
     <value>Kontakt wurde im AmiKo Desitin Addressbuch gespeichert.</value>
   </data>
+  <data name="msgPrescriptionSavingContextConfirmation" xml:space="preserve">
+    <value>Wollen Sie dieses Rezept überschreiben oder ein neues Rezept erstellen?</value>
+  </data>
   <data name="msgProfileSaveFailure" xml:space="preserve">
     <value>Die Arztadresse wurde nicht gespeichert. Bitte korrigieren Sie die roten Felder.</value>
   </data>
@@ -308,6 +311,9 @@
   </data>
   <data name="result" xml:space="preserve">
     <value>Suchresultat</value>
+  </data>
+  <data name="rewrite" xml:space="preserve">
+    <value>Überschreiben</value>
   </data>
   <data name="save" xml:space="preserve">
     <value>Speichern</value>

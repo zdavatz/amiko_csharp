@@ -457,6 +457,15 @@ namespace AmiKoWindows.Properties {
         /// <summary>
         ///   Looks up a localized string similar to ...
         /// </summary>
+        public static string msgPrescriptionSavingContextConfirmation {
+            get {
+                return ResourceManager.GetString("msgPrescriptionSavingContextConfirmation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
         public static string msgProfileSaveFailure {
             get {
                 return ResourceManager.GetString("msgProfileSaveFailure", resourceCulture);
@@ -631,6 +640,15 @@ namespace AmiKoWindows.Properties {
         public static string result {
             get {
                 return ResourceManager.GetString("result", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Überschreiben.
+        /// </summary>
+        public static string rewrite {
+            get {
+                return ResourceManager.GetString("rewrite", resourceCulture);
             }
         }
 

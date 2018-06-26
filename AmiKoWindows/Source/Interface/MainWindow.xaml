@@ -27,6 +27,7 @@
             <Style TargetType="{x:Type Window}">
                 <Setter Property="FontFamily" Value="pack://application:,,,/Resources/font/Roboto-Regular.ttf" />
             </Style>
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Style.xaml" />
                 <ResourceDictionary Source="/Resources/Icon.xaml" />

@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -138,17 +139,30 @@ namespace AmiKoWindows
             this.PlaceDate = "";
         }
 
-        public async Task Save()
+        public async Task Save(bool asRewriting)
         {
+            if (this.Hash != null && this.PlaceDate != null && asRewriting)
+            {
+                var savedAt = this.PlaceDate.Substring(this.PlaceDate.LastIndexOf(',') + 2, AMIKO_FILE_PLACE_DATE_FORMAT.Length);
+                Log.WriteLine("savedAt: {0}", savedAt);
+                if (savedAt != null && !savedAt.Equals(string.Empty))
+                {   // place_date -> .amk filename
+                    DateTime dt = DateTime.ParseExact(savedAt, AMIKO_FILE_PLACE_DATE_FORMAT, CultureInfo.InvariantCulture);
+                    var currentPath = GetFilePathByDateString(dt.ToString(FILE_NAME_SUFFIX_DATE_FORMAT));
+                    if (File.Exists(currentPath))
+                        File.Delete(currentPath);
+                }
+            }
+
+            this.Hash = Utilities.GenerateUUID(); // always as new
             this.PlaceDate = GeneratePlaceDate();
-            if (Hash == null)
-                this.Hash = Utilities.GenerateUUID(); // new
+
+            if (this.Hash == null)
+                return;
 
             await Task.Run(() =>
             {
-                var outputFile = String.Format("RZ_{0}.amk", Utilities.GetLocalTimeAsString(FILE_NAME_SUFFIX_DATE_FORMAT));
-                string outputPath = Path.Combine(_dataDir, ActiveContact.Uid, outputFile);
-                Log.WriteLine("outputPath: {0}", outputPath);
+                var outputPath = GetFilePathByDateString(Utilities.GetLocalTimeAsString(FILE_NAME_SUFFIX_DATE_FORMAT));
                 try
                 {
                     if (File.Exists(outputPath))
@@ -262,6 +276,14 @@ namespace AmiKoWindows
                 }
             }
             UpdateFileNames();
+        }
+
+        private string GetFilePathByDateString(string dateString)
+        {
+            var name = String.Format("RZ_{0}.amk", dateString);
+            string path = Path.Combine(_dataDir, ActiveContact.Uid, name);
+            Log.WriteLine("path: {0}", path);
+            return path;
         }
 
         // Returns json as string

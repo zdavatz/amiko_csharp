@@ -249,6 +249,9 @@
   <data name="msgContactSaveSuccess" xml:space="preserve">
     <value>Contact enregistré dans le carnet d'adresses.</value>
   </data>
+  <data name="msgPrescriptionSavingContextConfirmation" xml:space="preserve">
+    <value>Voulez-vous vraiment écraser l'ordonnance existante ou générer une nouvelle?</value>
+  </data>
   <data name="msgProfileSaveFailure" xml:space="preserve">
     <value>L'adresse du médecin n'est pas enregistrée. Examinez vos données dans les cadres rouges.</value>
   </data>
@@ -308,6 +311,9 @@
   </data>
   <data name="result" xml:space="preserve">
     <value>Résultat de la recherche</value>
+  </data>
+  <data name="rewrite" xml:space="preserve">
+    <value>Écraser</value>
   </data>
   <data name="save" xml:space="preserve">
     <value>Sauver</value>
