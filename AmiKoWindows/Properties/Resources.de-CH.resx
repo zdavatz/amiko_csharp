@@ -273,6 +273,9 @@
   <data name="nopacks" xml:space="preserve">
     <value>keine Packungen</value>
   </data>
+  <data name="ok" xml:space="preserve">
+    <value>Ok</value>
+  </data>
   <data name="packs" xml:space="preserve">
     <value>Packungen</value>
   </data>

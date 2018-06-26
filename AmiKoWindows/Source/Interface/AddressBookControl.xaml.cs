@@ -422,9 +422,11 @@ namespace AmiKoWindows
         private async void MinusButton_Click(object sender, RoutedEventArgs e)
         {
             //Log.WriteLine(sender.GetType().Name);
-            MessageBoxResult result = MessageBox.Show(
-                Properties.Resources.msgContactDeleteConfirmation, "", MessageBoxButton.OKCancel,
-                MessageBoxImage.Warning);
+            var dialog = Utilities.MessageDialog(
+                Properties.Resources.msgContactDeleteConfirmation, "", "OKCancel");
+            dialog.ShowDialog();
+            var result = dialog.MessageBoxResult;
+
             if (result == MessageBoxResult.OK)
             {
                 var item = this.ContactList.SelectedItem as Item;

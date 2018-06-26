@@ -486,6 +486,7 @@
        <Setter Property="Foreground" Value="Gray" />
        <Setter Property="YesButtonStyle" Value="{StaticResource NoHighlightedButton}" />
        <Setter Property="NoButtonStyle" Value="{StaticResource NoHighlightedButton}" />
+       <Setter Property="OkButtonStyle" Value="{StaticResource NoHighlightedButton}" />
        <Setter Property="CancelButtonStyle" Value="{StaticResource NoHighlightedButton}" />
     </Style>
 </ResourceDictionary>

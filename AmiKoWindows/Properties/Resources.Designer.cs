@@ -527,6 +527,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Ok.
+        /// </summary>
+        public static string ok {
+            get {
+                return ResourceManager.GetString("ok", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Packungen.
         /// </summary>
         public static string packs {

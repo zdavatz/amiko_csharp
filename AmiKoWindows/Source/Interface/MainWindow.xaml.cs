@@ -1070,20 +1070,14 @@ namespace AmiKoWindows
 
             Log.WriteLine(source.Name);
 
-            var msg = new Xceed.Wpf.Toolkit.MessageBox();
-            // ugh :'(
-            var prop = msg.GetType().GetField("_button", BindingFlags.NonPublic | BindingFlags.Instance);
-            prop.SetValue(msg, MessageBoxButton.YesNoCancel);
-            System.Windows.VisualStateManager.GoToState(msg, "YesNoCancel", false);
+            var dialog = Utilities.MessageDialog(
+                Properties.Resources.msgPrescriptionSavingContextConfirmation, "", "YesNoCancel");
             // Note: see Style.xaml about style of MessageBox
-            msg.CancelButtonContent = Properties.Resources.cancel;
-            msg.YesButtonContent = Properties.Resources.rewrite;
-            msg.NoButtonContent = Properties.Resources.newPrescription;
-            msg.Text = Properties.Resources.msgPrescriptionSavingContextConfirmation;
-            msg.Caption = "";
-            msg.ShowDialog();
+            dialog.YesButtonContent = Properties.Resources.rewrite;
+            dialog.NoButtonContent = Properties.Resources.newPrescription;
+            dialog.ShowDialog();
 
-            var result = msg.MessageBoxResult;
+            var result = dialog.MessageBoxResult;
             if (result == MessageBoxResult.Yes || result == MessageBoxResult.No)
             {
                 await _prescriptions.Save((result == MessageBoxResult.Yes));
