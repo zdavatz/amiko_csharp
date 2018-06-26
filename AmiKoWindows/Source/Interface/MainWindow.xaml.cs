@@ -439,6 +439,10 @@ namespace AmiKoWindows
             _statusBarHelper.IsConnectedToInternet();
             await _sqlDb?.Search(_uiState, "");
 
+            _uiState.SetQuery(UIState.Query.Title);
+            this.TitleQuerySelectButton.Focus();
+            this.TitleQuerySelectButton.IsChecked = true;
+
             // TODO
             // Fix default MainArea's `ContentTemplate` (via style with triggers) loading issue
             this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
