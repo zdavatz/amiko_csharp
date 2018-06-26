@@ -776,6 +776,7 @@ namespace AmiKoWindows
                 {
                     var file = String.Format("{0}.amk", item.Title);
                     _prescriptions.LoadFile(file);
+                    EnableButton("SavePrescriptionButton", false);
 
                     FillPlaceDate();
                     e.Handled = true;
