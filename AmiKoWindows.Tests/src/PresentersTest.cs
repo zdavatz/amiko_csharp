@@ -179,8 +179,7 @@ namespace AmiKoWindows.Tests
             // set properties
             presenter.Contact = contact;
             presenter.Account = account;
-
-            presenter.medications = new Medication[] {};
+            presenter.MedicationsList = new List<Medication>();
 
             string resultJSON = Serializer.Serialize(presenter);
 
@@ -236,7 +235,7 @@ namespace AmiKoWindows.Tests
                 GetStringValue(contact.FamilyName),
                 GetStringValue(contact.GivenName),
                 GetStringValue(contact.Birthdate),
-                GetStringValue(contact.IsMale ? "male" : "women"),
+                GetStringValue(contact.IsMale ? "man" : "woman"),
                 GetStringValue(contact.WeightKg),
                 GetStringValue(contact.HeightCm),
                 GetStringValue(contact.Zip),

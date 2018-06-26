@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Web.Script.Serialization;
 
 // JSON Data Presenters
 namespace AmiKoWindows
@@ -31,38 +33,105 @@ namespace AmiKoWindows
     // Account -> operotar
     // Medication[] -> medications
     // ```
-    class PrescriptionJSONPresenter
+    public class PrescriptionJSONPresenter
     {
         public string prescription_hash { get; set; }
         public string place_date { get; set; }
 
         private AccountJSONPresenter _accountPresenter;
-        public Account Account {
-            set { _accountPresenter = new AccountJSONPresenter(value); }
-        }
         public AccountJSONPresenter @operator {
             get { return _accountPresenter; }
             set { this._accountPresenter = value; }
         }
 
         private ContactJSONPresenter _contactPresenter;
-        public Contact Contact {
-            set { _contactPresenter = new ContactJSONPresenter(value); }
-        }
         public ContactJSONPresenter patient {
             get { return _contactPresenter; }
             set { this._contactPresenter = value; }
         }
 
-        private Medication[] _medicationsArray;
-        public Medication[] medications {
+        private MedicationJSONPresenter[] _medications;
+        public MedicationJSONPresenter[] medications {
             get {
-                if (_medicationsArray == null)
-                    return new Medication[]{};
-                return _medicationsArray;
+                if (_medications == null)
+                    return new MedicationJSONPresenter[]{};
+                return _medications;
             }
-            set { this._medicationsArray = value; }
+            set { this._medications = value; }
         }
+
+        #region Accessors for Internal Objects
+        [ScriptIgnore]
+        public Account Account {
+            set { _accountPresenter = new AccountJSONPresenter(value); }
+            get {
+                if (_accountPresenter == null)
+                    return null;
+
+                var account = new Account();
+                account.Title = _accountPresenter.title;
+                account.GivenName = _accountPresenter.given_name;
+                account.FamilyName = _accountPresenter.family_name;
+                account.Address = _accountPresenter.postal_address;
+                account.City = _accountPresenter.city;
+                account.Zip = _accountPresenter.zip_code;
+                account.Phone = _accountPresenter.phone_number;
+                account.Email = _accountPresenter.email_address;
+                return account;
+            }
+        }
+
+        [ScriptIgnore]
+        public Contact Contact {
+            set { _contactPresenter = new ContactJSONPresenter(value); }
+            get {
+                if (_contactPresenter == null)
+                    return null;
+
+                // NOTE: There are no fields for `_Id` and `TimeStamp` in json
+                var contact = new Contact();
+                contact.Uid = _contactPresenter.patient_id;
+                contact.FamilyName = _contactPresenter.family_name;
+                contact.GivenName = _contactPresenter.given_name;
+                contact.Birthdate = _contactPresenter.birth_date;
+                contact.IsFemale = _contactPresenter.gender.Equals(Constants.JSON_GENDER_WOMAN); // Gender
+                contact.WeightKg = _contactPresenter.weight_kg;
+                contact.HeightCm = _contactPresenter.height_cm;
+                contact.Zip = _contactPresenter.zip_code;
+                contact.City = _contactPresenter.city;
+                contact.Country = _contactPresenter.country;
+                contact.Address = _contactPresenter.postal_address;
+                contact.Phone = _contactPresenter.phone_number;
+                contact.Email = _contactPresenter.email_address;
+                return contact;
+            }
+        }
+
+        [ScriptIgnore]
+        public List<Medication> MedicationsList {
+            set { _medications = value.Select(m => new MedicationJSONPresenter(m)).ToArray(); }
+            get {
+                if (_medications == null)
+                    return null;
+                else if (_medications.Length == 0)
+                    return new List<Medication>();
+
+                // NOTE: There are no fields for `articleId` and `TimeStamp` in json
+                return _medications.Select(m => {
+                    var medication = new Medication();
+                    medication.Regnrs = m.regnrs;
+                    medication.Owner = m.owner;
+                    medication.Atccode = m.atccode;
+                    medication.Title = m.title;
+                    medication.Package = m.package;
+                    medication.Comment = m.comment;
+                    medication.Eancode = m.eancode;
+                    medication.ProductName = m.product_name;
+                    return medication;
+                }).ToList();
+            }
+        }
+        #endregion
 
         public PrescriptionJSONPresenter()
         {
@@ -77,9 +146,8 @@ namespace AmiKoWindows
     }
 
     // Operator in Prescription
-    class AccountJSONPresenter
+    public class AccountJSONPresenter
     {
-        // NOTE: the type of all fields is string
         public string title { get; set; }
         public string given_name { get; set; }
         public string family_name { get; set; }
@@ -97,22 +165,24 @@ namespace AmiKoWindows
 
         public AccountJSONPresenter(Account account)
         {
-            this.title = account.Title;
-            this.given_name = account.GivenName;
-            this.family_name = account.FamilyName;
-            this.postal_address = account.Address;
-            this.city = account.City;
-            this.zip_code = account.Zip;
-            this.phone_number = account.Phone;
-            this.email_address = account.Email;
-            this.signature = account.Signature;
+            if (account != null)
+            {
+                this.title = account.Title;
+                this.given_name = account.GivenName;
+                this.family_name = account.FamilyName;
+                this.postal_address = account.Address;
+                this.city = account.City;
+                this.zip_code = account.Zip;
+                this.phone_number = account.Phone;
+                this.email_address = account.Email;
+                this.signature = account.Signature;
+            }
         }
     }
 
     // Patient in Prescription
-    class ContactJSONPresenter
+    public class ContactJSONPresenter
     {
-        // NOTE: the type of all fields is string
         public string patient_id { get; set; }
         public string family_name { get; set; }
         public string given_name { get; set; }
@@ -134,19 +204,59 @@ namespace AmiKoWindows
 
         public ContactJSONPresenter(Contact patient)
         {
-            this.patient_id = patient.Uid;
-            this.family_name = patient.FamilyName;
-            this.given_name = patient.GivenName;
-            this.birth_date = patient.Birthdate;
-            this.gender = patient.IsMale ? "men" : "women";
-            this.weight_kg = patient.WeightKg;
-            this.height_cm = patient.HeightCm;
-            this.zip_code = patient.Zip;
-            this.city = patient.City;
-            this.country = patient.Country;
-            this.postal_address = patient.Address;
-            this.phone_number = patient.Phone;
-            this.email_address = patient.Email;
+            if (patient != null)
+            {
+                this.patient_id = patient.Uid;
+                this.family_name = patient.FamilyName;
+                this.given_name = patient.GivenName;
+                this.birth_date = patient.Birthdate;
+                this.gender = patient.IsMale ? Constants.JSON_GENDER_MAN : Constants.JSON_GENDER_WOMAN;
+                this.weight_kg = patient.WeightKg;
+                this.height_cm = patient.HeightCm;
+                this.zip_code = patient.Zip;
+                this.city = patient.City;
+                this.country = patient.Country;
+                this.postal_address = patient.Address;
+                this.phone_number = patient.Phone;
+                this.email_address = patient.Email;
+            }
+        }
+    }
+
+    public class MedicationJSONPresenter
+    {
+        public string regnrs { get; set; }
+        public string owner { get; set; }
+        public string atccode { get; set; }
+        public string title { get; set; }
+        public string package { get; set; }
+        public string comment { get; set; }
+        public string eancode { get; set; }
+        public string product_name { get; set; }
+
+        public MedicationJSONPresenter()
+        {
+            // pass (for deserialization)
+        }
+
+        public MedicationJSONPresenter(Medication medication)
+        {
+            if (medication != null)
+            {
+                this.regnrs = medication.Regnrs;
+                this.owner = medication.Owner;
+                this.atccode = medication.Atccode;
+                this.title = medication.Title;
+                this.package = medication.Package;
+                this.comment = medication.Comment;
+
+                // Optional (same as macOS Version, v3.4.4)
+                // https://github.com/zdavatz/amiko-osx/blob/23ab3a89aa4e40c1a503fbad3d9fb33a9270fd31/MLPrescriptionsAdapter.m#L258-L259
+                if (medication.Eancode != null && !medication.Eancode.Equals(string.Empty))
+                    this.eancode = medication.Eancode;
+
+                this.product_name = medication.ProductName;
+            }
         }
     }
 }

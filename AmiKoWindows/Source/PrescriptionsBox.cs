@@ -214,14 +214,12 @@ namespace AmiKoWindows
         // Returns json as string
         private string SerializeCurrentData()
         {
-            var serializer = new JavaScriptSerializer();
             var presenter = new PrescriptionJSONPresenter(Hash, PlaceDate);
-
             presenter.Account = ActiveAccount;
             presenter.Contact = ActiveContact;
+            presenter.MedicationsList = Medications;
 
-            presenter.medications = new Medication[] {};
-
+            var serializer = new JavaScriptSerializer();
             return serializer.Serialize(presenter);
         }
 
@@ -231,16 +229,22 @@ namespace AmiKoWindows
             var serializer = new JavaScriptSerializer();
             var presenter = serializer.Deserialize<PrescriptionJSONPresenter>(json);
 
-            this.Hash = presenter.prescription_hash;
-            this.PlaceDate = presenter.place_date;
+            if (ActiveContact == null || presenter.patient == null)
+                return;
 
-            // TODO
-            // How to handle properties are different than *current* data?
-            //
-            // this.ActiveAccount = ?
-            // this.ActiveContact = ?
+            if (ActiveContact.Uid.Equals(presenter.patient.patient_id))
+            {
+                this.Hash = presenter.prescription_hash;
+                this.PlaceDate = presenter.place_date;
 
-            _Medications = new HashSet<Medication>(presenter.medications.ToList());
+                // TODO
+                // How to handle properties are different than *active*
+                // Account and Contact here?
+                //this.ActiveContact = presenter.Contact;
+                //this.ActiveAccount = presenter.Account;
+
+                this._Medications = new HashSet<Medication>(presenter.MedicationsList);
+            }
         }
 
         private string GeneratePlaceDate()

@@ -36,6 +36,11 @@ namespace AmiKoWindows
         public string Eancode { get; set; }
         public string ProductName { get; set; }
 
+        public Medication()
+        {
+            // pass
+        }
+
         public Medication(string eancode, Article article)
         {
             string package = "";

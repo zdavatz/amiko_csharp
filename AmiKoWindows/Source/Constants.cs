@@ -42,6 +42,10 @@ namespace AmiKoWindows
         // User's profile (Account)
         public const string ACCOUNT_PICTURE_FILE = @"op_signature.png"; // (same as macOS version)
 
+        // JSON values
+        public const string JSON_GENDER_WOMAN = "woman";
+        public const string JSON_GENDER_MAN = "man";
+
         // German section title abbreviations
         public static readonly string[] SectionTitlesDE = {
             "Zusammensetzung", "Galenische Form", "Kontraindikationen", "Indikationen",
