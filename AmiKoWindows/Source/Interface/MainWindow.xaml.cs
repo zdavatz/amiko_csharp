@@ -1156,6 +1156,8 @@ namespace AmiKoWindows
                 FillContactFields();
                 FillPlaceDate();
 
+                EnableButton("SendPrescriptionButton", false);
+
                 if (ActiveAccount != null && _prescriptions.Medications.Count > 0)
                     EnableButton("SavePrescriptionButton", true);
             }
