@@ -677,14 +677,14 @@ namespace AmiKoWindows
                     var medication = new Medication(item.Ean, article);
                     _prescriptions.AddMedication(medication);
 
-                    if (ActiveContact != null && ActiveAccount != null)
-                        EnableButton("SavePrescriptionButton", true);
-
                     if (!_uiState.IsPrescriptions)
                     {
                         SetState(UIState.State.Prescriptions);
                         this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     }
+
+                    if (ActiveContact != null && ActiveAccount != null)
+                        EnableButton("SavePrescriptionButton", true);
 
                     e.Handled = true;
                 }
