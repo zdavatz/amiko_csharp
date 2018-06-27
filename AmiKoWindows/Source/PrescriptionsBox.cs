@@ -145,7 +145,7 @@ namespace AmiKoWindows
             UpdateMedicationList();
 
             this.Hash = Utilities.GenerateUUID();
-            this.PlaceDate = "";
+            this.PlaceDate = null;
         }
 
         public async Task Save(bool asRewriting)
@@ -157,7 +157,7 @@ namespace AmiKoWindows
                     File.Delete(currentPath);
             }
 
-            this.Hash = Utilities.GenerateUUID(); // always as new
+            this.Hash = Utilities.GenerateUUID(); // always as new here (on save as new and rewriting both)
             this.PlaceDate = GeneratePlaceDate();
 
             if (this.Hash == null)

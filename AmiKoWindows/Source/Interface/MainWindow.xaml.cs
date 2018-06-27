@@ -1145,7 +1145,11 @@ namespace AmiKoWindows
             if (ActiveContact != null)
             {
                 if (_prescriptions.ActiveContact != null && _prescriptions.ActiveContact.Uid != ActiveContact.Uid) // change of contact (patient)
-                    _prescriptions.Renew();
+                {
+                    // doesn't renew here (keep current medications)
+                    _prescriptions.Hash = Utilities.GenerateUUID();
+                    _prescriptions.PlaceDate = null;
+                }
 
                 _prescriptions.ActiveContact = ActiveContact;
                 _prescriptions.LoadFiles();
