@@ -222,7 +222,7 @@
                             <Label FontSize="12" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.addressBook}" />
                             <LineBreak />
                             <Label FontSize="12" Name="AddressBookName" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.appTitle}" />
-                            <TextBlock FontSize="12" Name="ContactsCount" Margin="0,-3,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=ContactsCount}" />
+                            <TextBlock FontSize="12" Name="ContactsCountText" Margin="0,-3,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=ContactsCount}" />
                         </TextBlock>
                         <Button
                             Name="SwitchBookButton" Style="{StaticResource NoBorderedButton}"

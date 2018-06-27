@@ -69,6 +69,16 @@ namespace AmiKoWindows
         private bool _searchResultContextMenuIsOpen = false;
 
         #region Public Fields
+        private string _SearchTextBoxWaterMark;
+        public string SearchTextBoxWaterMark
+        {
+            get { return _SearchTextBoxWaterMark; }
+            set {
+                _SearchTextBoxWaterMark = value;
+                OnPropertyChanged("SearchTextBoxWaterMark");
+            }
+        }
+
         private Contact _ActiveContact;
         public Contact ActiveContact
         {
@@ -111,6 +121,7 @@ namespace AmiKoWindows
             // Set state machine
             _uiState.SetState(UIState.State.Compendium);
             _uiState.SetQuery(UIState.Query.Title);
+            this.SearchTextBoxWaterMark = _uiState.SearchTextBoxWaterMark;
 
             // Initialize Main SQLite DB
             _sqlDb = new MainSqlDb();
@@ -441,6 +452,7 @@ namespace AmiKoWindows
             await _sqlDb?.Search(_uiState, "");
 
             _uiState.SetQuery(UIState.Query.Title);
+            this.SearchTextBoxWaterMark = _uiState.SearchTextBoxWaterMark;
             this.TitleQuerySelectButton.Focus();
             this.TitleQuerySelectButton.IsChecked = true;
 
@@ -936,6 +948,7 @@ namespace AmiKoWindows
             if (query == UIState.Query.Fulltext)
             {
                 _uiState.SetQuery(UIState.Query.Fulltext);
+                this.SearchTextBoxWaterMark = _uiState.SearchTextBoxWaterMark;
 
                 // only change data context (keep state)
                 SetDataContext(state);
@@ -947,8 +960,11 @@ namespace AmiKoWindows
                     _fullTextDb.ClearFoundEntries();
                 }
                 _fullTextDb.UpdateSearchResults(_uiState);
-            } else {
+            }
+            else
+            {
                 _uiState.SetQuery(query);
+                this.SearchTextBoxWaterMark = _uiState.SearchTextBoxWaterMark;
                 SetState(state);
             }
         }

@@ -55,20 +55,31 @@ namespace AmiKoWindows
 
         bool _isItemClick = false;
 
+        public string ContactsCount { get; set; }
         private long RawContactsCount {
             set {
-                ContactsCount.Text = String.Format("({0})", value.ToString());
+                this.ContactsCount = String.Format("({0})", value.ToString());
                 OnPropertyChanged("ContactsCount");
             }
         }
         #endregion
 
         #region Public Fields
+        private string _SearchTextBoxWaterMark;
+        public string SearchTextBoxWaterMark
+        {
+            get { return _SearchTextBoxWaterMark; }
+            set {
+                _SearchTextBoxWaterMark = value;
+                OnPropertyChanged("SearchTextBoxWaterMark");
+            }
+        }
+
         private Contact _CurrentEntry;
         public Contact CurrentEntry {
             get { return _CurrentEntry; }
             set {
-                _CurrentEntry = value;
+                this._CurrentEntry = value;
                 OnPropertyChanged("CurrentEntry");
             }
         }

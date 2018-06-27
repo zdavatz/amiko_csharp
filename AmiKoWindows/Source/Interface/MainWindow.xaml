@@ -62,7 +62,7 @@
                                   <ColumnDefinition Width="2*" MinWidth="200" MaxWidth="350" />
                               </Grid.ColumnDefinitions>
                               <!-- Contact (Patient) -->
-                              <Grid Name="PatientInfo" Grid.Column="0" Margin="0" DataContext="{Binding DataContext.ActiveContact, ElementName=MainWindow, UpdateSourceTrigger=PropertyChanged}">
+                              <Grid Name="PatientInfo" Grid.Column="0" Margin="0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
@@ -107,8 +107,7 @@
                               </Grid>
                             </Grid>
 
-                            <Border Grid.Row="1" Margin="7,5,7,2" Padding="1" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1"
-                                DataContext="{Binding Path=_prescriptions, UpdateSourceTrigger=PropertyChanged}">
+                            <Border Grid.Row="1" Margin="7,5,7,2" Padding="1" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1">
                                 <ListBox
                                     Name="MedicationList" Style="{StaticResource MedicationListBox}" ItemContainerStyle="{StaticResource MedicationListBoxItem}"
                                     KeyboardNavigation.DirectionalNavigation="Cycle"
@@ -361,7 +360,7 @@
                         <DockPanel DockPanel.Dock="Top" Height="50" Background="White">
                             <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchTextBox}" Cursor="Hand"
                                      TextChanged="SearchBox_TextChanged" PreviewMouseDown="OnSearchTextBox_PreviewMouseDown"
-                                     Controls:TextBoxHelper.Watermark="{Binding Path=SearchTextBoxWaterMark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Controls:TextBoxHelper.Watermark="{Binding Path=SearchTextBoxWaterMark, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                      Margin="6,3,6,0">
                             </TextBox>
                         </DockPanel>
