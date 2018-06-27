@@ -794,6 +794,7 @@ namespace AmiKoWindows
                         {
                             var file = item.Title;
                             await _prescriptions.DeleteFile(file);
+                            _prescriptions.Renew();
                             _prescriptions.LoadFiles();
                             EnableButton("SavePrescriptionButton", false);
 
