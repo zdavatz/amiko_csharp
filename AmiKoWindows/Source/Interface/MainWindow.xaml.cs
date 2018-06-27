@@ -1090,17 +1090,25 @@ namespace AmiKoWindows
 
             Log.WriteLine(source.Name);
 
-            var dialog = Utilities.MessageDialog(
-                Properties.Resources.msgPrescriptionSavingContextConfirmation, "", "YesNoCancel");
-            // Note: see Style.xaml about style of MessageBox
-            dialog.YesButtonContent = Properties.Resources.rewrite;
-            dialog.NoButtonContent = Properties.Resources.newPrescription;
-            dialog.ShowDialog();
-
-            var result = dialog.MessageBoxResult;
-            if (result == MessageBoxResult.Yes || result == MessageBoxResult.No)
+            bool doSave = true;
+            bool asRewriting = false;
+            if (_prescriptions.IsActivePrescriptionPersisted)
             {
-                await _prescriptions.Save((result == MessageBoxResult.Yes));
+                var dialog = Utilities.MessageDialog(
+                    Properties.Resources.msgPrescriptionSavingContextConfirmation, "", "YesNoCancel");
+                // Note: see Style.xaml about style of MessageBox
+                dialog.YesButtonContent = Properties.Resources.rewrite;
+                dialog.NoButtonContent = Properties.Resources.newPrescription;
+                dialog.ShowDialog();
+                var result = dialog.MessageBoxResult;
+
+                doSave = (result == MessageBoxResult.Yes || result == MessageBoxResult.No);
+                asRewriting = (result == MessageBoxResult.Yes);
+            }
+
+            if (doSave)
+            {
+                await _prescriptions.Save(asRewriting);
 
                 Keyboard.ClearFocus();
                 _prescriptions.LoadFiles();
