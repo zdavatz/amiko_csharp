@@ -641,25 +641,23 @@ namespace AmiKoWindows
             if (menu != null)
             {
                 if (_searchResultContextMenuIsOpen)
+                {
+                    _searchResultContextMenuIsOpen = false;
                     menu.IsOpen = false;
+                }
                 else
                 {
+                    _searchResultContextMenuIsOpen = true;
                     menu.PlacementTarget = block;
                     menu.IsOpen = true;
                 }
             }
         }
 
-        private void SearchChildItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        private void SearchChildItem_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            _searchResultContextMenuIsOpen = true;
-            e.Handled = true;
-        }
-
-        private void SearchChildItem_ContextMenuClosing(object sender, ContextMenuEventArgs e)
-        {
-            _searchResultContextMenuIsOpen = false;
-            e.Handled = true;
+            // do nothing
+            e.Handled = false;
         }
 
         private void SearchChildItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

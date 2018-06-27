@@ -418,8 +418,7 @@
                                                     <DataTemplate>
                                                         <TextBlock
                                                             Name="ItemName" Style="{StaticResource SearchListBoxChildItemText}" Text="{Binding Path=Text}" Foreground="{Binding Path=Color}"
-                                                            ContextMenuOpening="SearchChildItem_ContextMenuOpening"
-                                                            ContextMenuClosing="SearchChildItem_ContextMenuClosing"
+                                                            MouseRightButtonDown="SearchChildItem_MouseRightButtonDown"
                                                             MouseLeftButtonDown="SearchChildItem_MouseLeftButtonDown">
                                                             <TextBlock.ContextMenu>
                                                                 <ContextMenu Name="ItemContextMenu">
