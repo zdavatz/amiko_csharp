@@ -47,9 +47,18 @@ namespace AmiKoWindows
         public Contact ActiveContact { get; set; }
         public Account ActiveAccount { get; set; }
 
-        public bool IsActivePrescriptionPersisted // TODO
+        public bool IsActivePrescriptionPersisted
         {
-            get { return ((PlaceDate != null && !PlaceDate.Equals(string.Empty)) && Medications.Count > 0); }
+            get {
+                // has valid properties && file saved?
+                if ((PlaceDate != null && !PlaceDate.Equals(string.Empty)) &&
+                    (Hash != null && !Hash.Equals(string.Empty)) && Medications.Count > 0)
+                {
+                    var path = GetFilePathByPlaceDate(PlaceDate);
+                    return path != null && File.Exists(path);
+                }
+                return false;
+            }
         }
 
         private HashSet<Medication> _Medications = new HashSet<Medication>();
@@ -143,15 +152,9 @@ namespace AmiKoWindows
         {
             if (this.Hash != null && this.PlaceDate != null && asRewriting)
             {
-                var savedAt = this.PlaceDate.Substring(this.PlaceDate.LastIndexOf(',') + 2, AMIKO_FILE_PLACE_DATE_FORMAT.Length);
-                Log.WriteLine("savedAt: {0}", savedAt);
-                if (savedAt != null && !savedAt.Equals(string.Empty))
-                {   // place_date -> .amk filename
-                    DateTime dt = DateTime.ParseExact(savedAt, AMIKO_FILE_PLACE_DATE_FORMAT, CultureInfo.InvariantCulture);
-                    var currentPath = GetFilePathByDateString(dt.ToString(FILE_NAME_SUFFIX_DATE_FORMAT));
-                    if (File.Exists(currentPath))
-                        File.Delete(currentPath);
-                }
+                var currentPath = GetFilePathByPlaceDate(this.PlaceDate);
+                if (currentPath != null && File.Exists(currentPath))
+                    File.Delete(currentPath);
             }
 
             this.Hash = Utilities.GenerateUUID(); // always as new
@@ -277,6 +280,22 @@ namespace AmiKoWindows
                 }
             }
             UpdateFileNames();
+        }
+
+        private string GetFilePathByPlaceDate(string placeDate)
+        {
+            string path = null;
+            if (placeDate == null || placeDate.Equals(string.Empty))
+                return path;
+
+            var savedAt = placeDate.Substring(placeDate.LastIndexOf(',') + 2, AMIKO_FILE_PLACE_DATE_FORMAT.Length);
+            Log.WriteLine("savedAt: {0}", savedAt);
+            if (savedAt != null && !savedAt.Equals(string.Empty))
+            {   // place_date -> .amk filename
+                DateTime dt = DateTime.ParseExact(savedAt, AMIKO_FILE_PLACE_DATE_FORMAT, CultureInfo.InvariantCulture);
+                path = GetFilePathByDateString(dt.ToString(FILE_NAME_SUFFIX_DATE_FORMAT));
+            }
+            return path;
         }
 
         private string GetFilePathByDateString(string dateString)
