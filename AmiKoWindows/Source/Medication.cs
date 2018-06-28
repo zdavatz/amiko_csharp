@@ -24,7 +24,6 @@ namespace AmiKoWindows
 {
     public class Medication
     {
-        public long articleId { get; set; }
         public long timestamp { get; set; }
 
         public string Regnrs { get; set; }
@@ -35,6 +34,11 @@ namespace AmiKoWindows
         public string Comment { get; set; }
         public string Eancode { get; set; }
         public string ProductName { get; set; }
+
+        public Medication()
+        {
+            // pass
+        }
 
         public Medication(string eancode, Article article)
         {

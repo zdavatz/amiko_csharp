@@ -177,6 +177,9 @@
   <data name="city" xml:space="preserve">
     <value>Résidence</value>
   </data>
+  <data name="comment" xml:space="preserve">
+    <value>Remarques</value>
+  </data>
   <data name="compendium" xml:space="preserve">
     <value>Compendium</value>
   </data>
@@ -185,6 +188,9 @@
   </data>
   <data name="datei" xml:space="preserve">
     <value>Fichier</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Effacer</value>
   </data>
   <data name="ean" xml:space="preserve">
     <value>EAN</value>
@@ -246,6 +252,12 @@
   <data name="msgContactSaveSuccess" xml:space="preserve">
     <value>Contact enregistré dans le carnet d'adresses.</value>
   </data>
+  <data name="msgPrescriptionDeleteConfirmation" xml:space="preserve">
+    <value>Voulez-vous vraiment effacer cette ordonnance?</value>
+  </data>
+  <data name="msgPrescriptionSavingContextConfirmation" xml:space="preserve">
+    <value>Voulez-vous vraiment écraser l'ordonnance existante ou générer une nouvelle?</value>
+  </data>
   <data name="msgProfileSaveFailure" xml:space="preserve">
     <value>L'adresse du médecin n'est pas enregistrée. Examinez vos données dans les cadres rouges.</value>
   </data>
@@ -266,6 +278,9 @@
   </data>
   <data name="nopacks" xml:space="preserve">
     <value>aucune présentation</value>
+  </data>
+  <data name="ok" xml:space="preserve">
+    <value>Ok</value>
   </data>
   <data name="packs" xml:space="preserve">
     <value>présentation</value>
@@ -306,11 +321,17 @@
   <data name="result" xml:space="preserve">
     <value>Résultat de la recherche</value>
   </data>
+  <data name="rewrite" xml:space="preserve">
+    <value>Écraser</value>
+  </data>
   <data name="save" xml:space="preserve">
     <value>Sauver</value>
   </data>
   <data name="search" xml:space="preserve">
     <value>Recherche</value>
+  </data>
+  <data name="searchPatient" xml:space="preserve">
+    <value>Recherche Patient...</value>
   </data>
   <data name="selectPicture" xml:space="preserve">
     <value>Signature du fichier</value>

@@ -19,37 +19,47 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace AmiKoWindows
 {
     // Prescription Manager Object which knows active (opened) prescription.
-    //
-    // ```
-    // # properties for active prescription
-    // Contact Patient
-    // Account Operotar
-    // List<Medication> Medications
-    // ```
     class PrescriptionsBox
     {
         const string AMIKO_FILE_PLACE_DATE_FORMAT = "dd.MM.yyyy (HH:mm:ss)";
         const string FILE_NAME_SUFFIX_DATE_FORMAT = "yyyy-MM-dd'T'HHmmss";
 
-        private static readonly Regex AMIKO_FILE_EXTENSION_RGX = new Regex(@"\.amk$", RegexOptions.Compiled);
+        private static readonly Regex AMIKO_FILE_EXTENSION_RGX = new Regex(@"\.amk\z", RegexOptions.Compiled);
 
         string _dataDir;
 
         #region Public Fields
-        #region for active prescription
         public string PlaceDate { get; set; }
         public string Hash { get; set; }
 
-        public Contact Patient { get; set; }
-        public Account Operator { get; set; }
+        public Contact ActiveContact { get; set; }
+        public Account ActiveAccount { get; set; }
+
+        public bool IsActivePrescriptionPersisted
+        {
+            get {
+                // has valid properties && file saved?
+                if ((PlaceDate != null && !PlaceDate.Equals(string.Empty)) &&
+                    (Hash != null && !Hash.Equals(string.Empty)) && Medications.Count > 0)
+                {
+                    var path = GetFilePathByPlaceDate(PlaceDate);
+                    return path != null && File.Exists(path);
+                }
+                return false;
+            }
+        }
 
         private HashSet<Medication> _Medications = new HashSet<Medication>();
         public List<Medication> Medications
@@ -57,25 +67,18 @@ namespace AmiKoWindows
             get { return new List<Medication>(_Medications); }
         }
 
-        public bool IsActivePrescriptionPersisted
+        #region Prescription File Manager
+        private HashSet<TitleItem> _Files = new HashSet<TitleItem>();
+        public List<TitleItem> Files
         {
-            // TODO
-            get { return ((PlaceDate != null && !PlaceDate.Equals(string.Empty)) && Medications.Count > 0); }
-        }
-        #endregion
-
-        #region for prescription manager
-        private HashSet<string> _Files = new HashSet<string>();
-        public List<string> Files
-        {
-            get { return new List<string>(_Files); }
+            get { return new List<TitleItem>(_Files); }
         }
         #endregion
         #endregion
 
         #region Dependency Properties
-        private ItemsObservableCollection _medicationListItems = new ItemsObservableCollection();
-        public ItemsObservableCollection MedicationListItems
+        private CommentItemsObservableCollection _medicationListItems = new CommentItemsObservableCollection();
+        public CommentItemsObservableCollection MedicationListItems
         {
             get { return _medicationListItems; }
             private set
@@ -84,7 +87,39 @@ namespace AmiKoWindows
                     _medicationListItems = value;
             }
         }
+
+        #region Prescription File Manager
+        private TitleItemsObservableCollection _fileNames = new TitleItemsObservableCollection();
+        public TitleItemsObservableCollection FileNames
+        {
+            get { return _fileNames; }
+            private set
+            {
+                if (value != _fileNames)
+                    _fileNames = value;
+            }
+        }
         #endregion
+        #endregion
+
+        public async static Task DeleteAllPrescriptions(string uid)
+        {
+            await Task.Run(() =>
+            {
+                string userDir = Path.Combine(Utilities.AppRoamingDataFolder(), uid);
+                if (EnforceDir(userDir))
+                {
+                    if (!Directory.Exists(userDir))
+                        return;
+
+                    var info = new DirectoryInfo(userDir);
+                    foreach (FileInfo file in info.GetFiles())
+                        file.Delete();
+
+                    info.Delete(true);
+                }
+            });
+        }
 
         public PrescriptionsBox()
         {
@@ -98,8 +133,10 @@ namespace AmiKoWindows
             MedicationListItems.AddRange(Medications);
         }
 
-        public void ShowDetail()
+        public void UpdateFileNames()
         {
+            FileNames.Clear();
+            FileNames.AddRange(Files); // string[]
         }
 
         public void Renew()
@@ -108,27 +145,38 @@ namespace AmiKoWindows
             UpdateMedicationList();
 
             this.Hash = Utilities.GenerateUUID();
-            this.PlaceDate = "";
+            this.PlaceDate = null;
         }
 
-        public async Task Save()
+        public async Task Save(bool asRewriting)
         {
+            if (this.Hash != null && this.PlaceDate != null && asRewriting)
+            {
+                var currentPath = GetFilePathByPlaceDate(this.PlaceDate);
+                if (currentPath != null && File.Exists(currentPath))
+                    File.Delete(currentPath);
+            }
+
+            this.Hash = Utilities.GenerateUUID(); // always as new here (on save as new and rewriting both)
             this.PlaceDate = GeneratePlaceDate();
-            if (Hash == null)
-                this.Hash = Utilities.GenerateUUID(); // new
+
+            if (this.Hash == null)
+                return;
 
             await Task.Run(() =>
             {
-                var outputFile = String.Format("RZ_{0}", Utilities.GetLocalTimeAsString(FILE_NAME_SUFFIX_DATE_FORMAT));
+                var outputPath = GetFilePathByDateString(Utilities.GetLocalTimeAsString(FILE_NAME_SUFFIX_DATE_FORMAT));
                 try
                 {
-                    Log.WriteLine("prescription_hash: {0}", Hash);
-                    //if (File.Exists(outputFile))
-                    //    File.Delete(outputFile);
+                    if (File.Exists(outputPath))
+                        File.Delete(outputPath);
 
-                    //using (var output = File.Create(outputFile))
-                    //{
-                    //}
+                    string json = Utilities.Base64Encode(SerializeCurrentData()) ?? "";
+                    using (var output = File.Create(outputPath))
+                    {
+                        byte[] bytes = new UTF8Encoding(false).GetBytes(json);
+                        output.Write(bytes, 0, bytes.Length);
+                    }
                 }
                 catch (IOException ex)
                 {
@@ -137,54 +185,186 @@ namespace AmiKoWindows
             });
         }
 
+        // takes filename argument without ext
+        public async Task DeleteFile(string filename)
+        {
+            if (ActiveContact == null || ActiveAccount == null)
+                return;
+
+            await Task.Run(() =>
+            {
+                string userDir = Path.Combine(_dataDir, ActiveContact.Uid);
+                if (EnforceDir(userDir))
+                {
+                    var path = String.Format("{0}.amk", Path.Combine(userDir, filename));
+                    if (!File.Exists(path))
+                        return;
+
+                    var item = new TitleItem() { Id = filename, Title = filename };
+                    _Files.Remove(item);
+
+                    Log.WriteLine("path: {0}", path);
+                    File.Delete(path);
+                }
+            });
+        }
+
         public void AddMedication(Medication medication)
         {
-            _Medications.Add(medication);
-            UpdateMedicationList();
+            if (medication != null)
+            {
+                _Medications.Add(medication);
+                UpdateMedicationList();
+            }
         }
 
         public void RemoveMedication(Medication medication)
         {
-            _Medications.Remove(medication);
-            UpdateMedicationList();
+            if (medication != null)
+            {
+                _Medications.Remove(medication);
+                UpdateMedicationList();
+            }
         }
 
-        public bool Contains(Medication medication)
+        public void RemoveMedicationAtIndex(long? index)
         {
-            return _Medications.Contains(medication);
+            if (index == null)
+                return;
+
+            var i = Convert.ToInt32(index);
+            var medication = _Medications.ElementAt(i);
+            RemoveMedication(medication);
+        }
+
+        public bool AddMedicationCommentAtIndex(long? index, string comment)
+        {
+            if (index == null)
+                return false;
+
+            var i = Convert.ToInt32(index);
+            var medication = _Medications.ElementAt(i);
+            var currentComment = (medication.Comment != null ? medication.Comment : "");
+
+            if (currentComment.Equals(comment))
+                return false;
+
+            medication.Comment = comment;
+            return true;
+        }
+
+        public void LoadFile(string filename)
+        {
+            if (ActiveContact == null || ActiveAccount == null)
+                return;
+
+            string userDir = Path.Combine(_dataDir, ActiveContact.Uid);
+            if (EnforceDir(userDir))
+            {
+                var path = Path.Combine(userDir, filename);
+                if (!File.Exists(path))
+                    return;
+
+                string json = Utilities.Base64Decode(File.ReadAllText(path)) ?? "{}";
+                DeserializeJson(json);
+            }
+            UpdateMedicationList();
         }
 
         public void LoadFiles()
         {
-            if (Patient == null)
-                return;
+            _Files.Clear();
 
-            this.Hash = null;
-
-            string userDir = Path.Combine(_dataDir, Patient.Uid);
-            Log.WriteLine("userDir: {0}", userDir);
-            if (EnforceDir(userDir))
+            if (ActiveContact != null)
             {
-                string[] files = Directory.GetFiles(userDir);
-                foreach (var f in files)
+                string userDir = Path.Combine(_dataDir, ActiveContact.Uid);
+                // Log.WriteLine("userDir: {0}", userDir);
+                if (EnforceDir(userDir))
                 {
-                    if (!AMIKO_FILE_EXTENSION_RGX.IsMatch(@"\.amk$"))
-                        continue;
-
-                    Log.WriteLine("file: {0}", f);
+                    string[] files = Directory.GetFiles(userDir).OrderByDescending(f => f).ToArray();
+                    foreach (var path in files)
+                    {
+                        //Log.WriteLine("filepath: {0}", path);
+                        var filename = Path.GetFileName(path);
+                        if (!AMIKO_FILE_EXTENSION_RGX.IsMatch(filename))
+                            continue;
+                        var item = new TitleItem() {
+                            Id = filename, Title = AMIKO_FILE_EXTENSION_RGX.Replace(filename, "")
+                        };
+                        _Files.Add(item);
+                    }
                 }
             }
+            UpdateFileNames();
         }
 
-        public void DeleteFile(string hash)
+        private string GetFilePathByPlaceDate(string placeDate)
         {
+            string path = null;
+            if (placeDate == null || placeDate.Equals(string.Empty))
+                return path;
 
+            var savedAt = placeDate.Substring(placeDate.LastIndexOf(',') + 2, AMIKO_FILE_PLACE_DATE_FORMAT.Length);
+            Log.WriteLine("savedAt: {0}", savedAt);
+            if (savedAt != null && !savedAt.Equals(string.Empty))
+            {   // place_date -> .amk filename
+                DateTime dt = DateTime.ParseExact(savedAt, AMIKO_FILE_PLACE_DATE_FORMAT, CultureInfo.InvariantCulture);
+                path = GetFilePathByDateString(dt.ToString(FILE_NAME_SUFFIX_DATE_FORMAT));
+            }
+            return path;
+        }
+
+        private string GetFilePathByDateString(string dateString)
+        {
+            if (ActiveContact == null)
+                return null;
+
+            var name = String.Format("RZ_{0}.amk", dateString);
+            string path = Path.Combine(_dataDir, ActiveContact.Uid, name);
+            Log.WriteLine("path: {0}", path);
+            return path;
+        }
+
+        // Returns json as string
+        private string SerializeCurrentData()
+        {
+            var presenter = new PrescriptionJSONPresenter(Hash, PlaceDate);
+            presenter.Account = ActiveAccount;
+            presenter.Contact = ActiveContact;
+            presenter.MedicationsList = Medications;
+
+            var serializer = new JavaScriptSerializer();
+            return serializer.Serialize(presenter);
+        }
+
+        // Restores properties from json file
+        private void DeserializeJson(string json)
+        {
+            var serializer = new JavaScriptSerializer();
+            var presenter = serializer.Deserialize<PrescriptionJSONPresenter>(json);
+
+            if (ActiveContact == null || presenter.patient == null)
+                return;
+
+            if (ActiveContact.Uid.Equals(presenter.patient.patient_id))
+            {
+                this.Hash = presenter.prescription_hash;
+                this.PlaceDate = presenter.place_date;
+
+                // TODO
+                // How to handle properties are different than *active*
+                // Account and Contact here?
+                //this.ActiveContact = presenter.Contact;
+                //this.ActiveAccount = presenter.Account;
+
+                this._Medications = new HashSet<Medication>(presenter.MedicationsList);
+            }
         }
 
         private string GeneratePlaceDate()
         {
-            if (Operator != null)
-                return Utilities.ConcatWith(", ", Operator.City, Utilities.GetLocalTimeAsString(AMIKO_FILE_PLACE_DATE_FORMAT));
+            if (ActiveAccount != null)
+                return Utilities.ConcatWith(", ", ActiveAccount.City, Utilities.GetLocalTimeAsString(AMIKO_FILE_PLACE_DATE_FORMAT));
             return "";
         }
 

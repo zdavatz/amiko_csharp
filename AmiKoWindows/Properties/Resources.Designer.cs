@@ -239,6 +239,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Bemerkungen.
+        /// </summary>
+        public static string comment {
+            get {
+                return ResourceManager.GetString("comment", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Kompendium.
         /// </summary>
         public static string compendium {
@@ -262,6 +271,15 @@ namespace AmiKoWindows.Properties {
         public static string datei {
             get {
                 return ResourceManager.GetString("datei", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Löschen.
+        /// </summary>
+        public static string delete {
+            get {
+                return ResourceManager.GetString("delete", resourceCulture);
             }
         }
 
@@ -448,6 +466,24 @@ namespace AmiKoWindows.Properties {
         /// <summary>
         ///   Looks up a localized string similar to ...
         /// </summary>
+        public static string msgPrescriptionDeleteConfirmation {
+            get {
+                return ResourceManager.GetString("msgPrescriptionDeleteConfirmation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
+        public static string msgPrescriptionSavingContextConfirmation {
+            get {
+                return ResourceManager.GetString("msgPrescriptionSavingContextConfirmation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
         public static string msgProfileSaveFailure {
             get {
                 return ResourceManager.GetString("msgProfileSaveFailure", resourceCulture);
@@ -505,6 +541,15 @@ namespace AmiKoWindows.Properties {
         public static string nopacks {
             get {
                 return ResourceManager.GetString("nopacks", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Ok.
+        /// </summary>
+        public static string ok {
+            get {
+                return ResourceManager.GetString("ok", resourceCulture);
             }
         }
 
@@ -626,6 +671,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Überschreiben.
+        /// </summary>
+        public static string rewrite {
+            get {
+                return ResourceManager.GetString("rewrite", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Speichern.
         /// </summary>
         public static string save {
@@ -640,6 +694,15 @@ namespace AmiKoWindows.Properties {
         public static string search {
             get {
                 return ResourceManager.GetString("search", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Suche Patient....
+        /// </summary>
+        public static string searchPatient {
+            get {
+                return ResourceManager.GetString("searchPatient", resourceCulture);
             }
         }
 

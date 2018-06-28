@@ -25,16 +25,6 @@ using System.Linq;
 
 namespace AmiKoWindows
 {
-    public class ChildItem
-    {
-        // Properties, must be public (these are not fields!)
-        public long? Id { get; set; }
-        public string Ean { get; set; }
-        public string Text { get; set; }
-        public string Color { get; set; }
-        public string Decoration { get; set; }
-    }
-
     public class Item
     {
         // Properties, must be public (these are not fields!)
@@ -45,12 +35,27 @@ namespace AmiKoWindows
         public ChildItemsObservableCollection ChildItems { get; set; }
     }
 
+    public class ChildItem
+    {
+        public long? Id { get; set; }
+        public string Ean { get; set; }
+        public string Text { get; set; }
+        public string Color { get; set; }
+        public string Decoration { get; set; }
+    }
+
     public class TitleItem
     {
-        // Properties, must be public (these are not fields!)
         public string Id { get; set; }
         public string Title { get; set; }
         public string Color { get; set; }
+    }
+
+    public class CommentItem
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
+        public string Comment { get; set; }
     }
 
     public class ChildItemsObservableCollection : ObservableCollection<ChildItem>
@@ -363,29 +368,9 @@ namespace AmiKoWindows
             _suppressNotification = false;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
-
-        // PrescriptionsBox
-        public void AddRange(List<Medication> list)
-        {
-            if (list == null)
-                throw new ArgumentNullException("list");
-
-            _suppressNotification = true;
-            foreach (Medication medication in list)
-            {
-                Add(new Item()
-                {
-                    Id = medication.articleId,
-                    Text = medication.Package,
-                });
-            }
-
-            _suppressNotification = false;
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-        }
     }
 
-    public class TitlesObservableCollection : ObservableCollection<TitleItem>
+    public class TitleItemsObservableCollection : ObservableCollection<TitleItem>
     {
         private bool _suppressNotification = false;
 
@@ -410,6 +395,38 @@ namespace AmiKoWindows
                     Color = Colors.SectionTitles
                 });
             }
+            _suppressNotification = false;
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+    }
+
+    // for PrescriptionsBox
+    public class CommentItemsObservableCollection : ObservableCollection<CommentItem>
+    {
+        private bool _suppressNotification = false;
+
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (!_suppressNotification)
+                base.OnCollectionChanged(e);
+        }
+
+        public void AddRange(List<Medication> list)
+        {
+            if (list == null)
+                throw new ArgumentNullException("list");
+
+            _suppressNotification = true;
+            foreach (Medication medication in list)
+            {
+                Add(new CommentItem()
+                {
+                    Id = list.IndexOf(medication),
+                    Text = medication.Package,
+                    Comment = medication.Comment,
+                });
+            }
+
             _suppressNotification = false;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }

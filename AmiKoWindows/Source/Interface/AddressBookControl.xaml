@@ -184,15 +184,16 @@
                 <!-- Address Book: Search TextBox -->
                 <TextBox Name="SearchPatientBox" Width="Auto" Height="21" Background="White" BorderBrush="DarkGray"
                    TextChanged="SearchPatientBox_TextChanged" PreviewMouseDown="SearchPatientBox_PreviewMouseDown"
-                   Controls:TextBoxHelper.Watermark="{Binding Path=SearchTextBoxWaterMark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                   Controls:TextBoxHelper.Watermark="{x:Static p:Resources.searchPatient}"></TextBox>
                 <!-- Address Book: ListBox -->
                 <Border Margin="0,21,0,16" Background="White" Padding="0" VerticalAlignment="Stretch" BorderThickness="0">
                     <ListBox
                         Name="ContactList" Style="{StaticResource ContactListBox}" ItemContainerStyle="{StaticResource ContactListBoxItem}"
+                        ScrollViewer.CanContentScroll="True"
                         SelectionChanged="ContactItem_SelectionChanged"
                         KeyboardNavigation.DirectionalNavigation="Cycle"
-                        KeyDown="ContactList_KeyDown"
-                        MouseDoubleClick="ContactList_MouseDoubleClick"
+                        PreviewKeyDown="ContactList_PreviewKeyDown" KeyDown="ContactList_KeyDown" MouseDoubleClick="ContactList_MouseDoubleClick"
+                        IsSynchronizedWithCurrentItem="True"
                         ItemsSource="{Binding Path=ContactListItems}" Height="430">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -222,7 +223,7 @@
                             <Label FontSize="12" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.addressBook}" />
                             <LineBreak />
                             <Label FontSize="12" Name="AddressBookName" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.appTitle}" />
-                            <TextBlock FontSize="12" Name="ContactsCount" Margin="0,-3,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=ContactsCount}" />
+                            <TextBlock FontSize="12" Name="ContactsCountText" Margin="0,-3,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=ContactsCount}" />
                         </TextBlock>
                         <Button
                             Name="SwitchBookButton" Style="{StaticResource NoBorderedButton}"

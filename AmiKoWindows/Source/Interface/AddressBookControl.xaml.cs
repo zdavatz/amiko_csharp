@@ -55,20 +55,31 @@ namespace AmiKoWindows
 
         bool _isItemClick = false;
 
+        public string ContactsCount { get; set; }
         private long RawContactsCount {
             set {
-                ContactsCount.Text = String.Format("({0})", value.ToString());
+                this.ContactsCount = String.Format("({0})", value.ToString());
                 OnPropertyChanged("ContactsCount");
             }
         }
         #endregion
 
         #region Public Fields
+        private string _SearchTextBoxWaterMark;
+        public string SearchTextBoxWaterMark
+        {
+            get { return _SearchTextBoxWaterMark; }
+            set {
+                _SearchTextBoxWaterMark = value;
+                OnPropertyChanged("SearchTextBoxWaterMark");
+            }
+        }
+
         private Contact _CurrentEntry;
         public Contact CurrentEntry {
             get { return _CurrentEntry; }
             set {
-                _CurrentEntry = value;
+                this._CurrentEntry = value;
                 OnPropertyChanged("CurrentEntry");
             }
         }
@@ -123,6 +134,8 @@ namespace AmiKoWindows
                 _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
                 _patientDb.UpdateContactList();
                 this.RawContactsCount = _patientDb.Count;
+
+                SetSelectedIndex();
             }
             else
                 _mainWindow = null;
@@ -233,7 +246,7 @@ namespace AmiKoWindows
             if (result)
             {
                 Dictionary<string, string> values = GetContactValues();
-                contact = this.CurrentEntry;
+                contact = CurrentEntry;
                 if (contact == null || contact.Uid == null || contact.Uid.Equals(string.Empty))
                     contact = _patientDb.InitContact(values);
 
@@ -247,7 +260,10 @@ namespace AmiKoWindows
                 }
 
                 if (contact.Uid != null && !contact.Uid.Equals(string.Empty) && contact.Uid.Equals(contact.GenerateUid()))
+                {
                     await _patientDb.UpdateContact(contact);
+                    await _patientDb.LoadAllContacts();  // need reload all :'(
+                }
                 else
                 {
                     // NEW Entry or `Contact.Uid` has been changed
@@ -256,11 +272,9 @@ namespace AmiKoWindows
                     {
                         contact.Id = id.Value;
                         this.SearchPatientBox.Text = "";
-                        // TODO
-                        // copied/update issued prescriptions if uid has been changed
                     }
                     else
-                        // TODO need another message?
+                        // TODO need another message? (already exists)
                         ShowMessage(true);
 
                     await _patientDb.LoadAllContacts();
@@ -272,13 +286,13 @@ namespace AmiKoWindows
                 return;
             else
             {
+                this.CurrentEntry = contact;
+                _patientDb.UpdateContactList();
+
                 // See ContactList_ItemStatusChanged
                 this.ContactList.ItemContainerGenerator.StatusChanged += ContactList_ItemStatusChanged;
-
-                this.CurrentEntry = contact;
-                this.ContactList.UpdateLayout();
-                _patientDb.UpdateContactList();
             }
+            e.Handled = true;
         }
         #endregion
 
@@ -298,51 +312,48 @@ namespace AmiKoWindows
             this.SearchPatientBox.Text = "";
         }
 
+        private void ContactList_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            // a hack to enable item selection using arrow keys as tab
+            if (object.ReferenceEquals(sender, ContactList) && e.IsDown)
+            {
+                if ((e.Key == Key.Down) || e.Key == Key.Up)
+                {
+                    _isItemClick = true;
+                    // it works same as `sendkeys(\t)`
+                    if (Keyboard.PrimaryDevice != null && Keyboard.PrimaryDevice.ActiveSource != null)
+                    {
+                        var key = Key.Tab;
+                        var args = new KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, key)
+                        {
+                            RoutedEvent = Keyboard.KeyUpEvent,
+                        };
+                        InputManager.Current.ProcessInput(args);
+                    }
+                }
+            }
+            e.Handled = false;
+        }
+
         private void ContactList_KeyDown(object sender, KeyEventArgs e)
         {
-            // Enable item selection using arrow keys + `Return`
-            if (object.ReferenceEquals(sender, this.ContactList))
-            {
-                if (!e.IsDown || e.Key != Key.Return)
-                    return;
+            if (object.ReferenceEquals(sender, ContactList) && e.IsDown && e.Key == Key.Tab)
+                _isItemClick = true;
 
-                e.Handled = true;
-                ListBoxItem li = (ListBoxItem)this.ContactList.ItemContainerGenerator.ContainerFromItem(
-                    this.ContactList.SelectedItem);
-
-                this.ContactItem_MouseLeftButtonDown(li, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left));
-                this.ContactItem_SelectionChanged(li, new RoutedEventArgs());
-            }
+            e.Handled = false;
         }
 
         // ItemContainerGenerator
         private void ContactList_ItemStatusChanged(object sender, EventArgs e)
         {
-            Log.WriteLine("");
+            Log.WriteLine(sender.GetType().Name);
 
             // Re:set selected list item, `UpdateLayout` is needed.
             if (this.ContactList.ItemContainerGenerator.Status == System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
             {
                 this.ContactList.ItemContainerGenerator.StatusChanged -= ContactList_ItemStatusChanged;
 
-                //foreach (Item item in this.ContactList.Items)
-                for (var i = 0; i < this.ContactList.Items.Count; i++)
-                {
-                    var item = this.ContactList.Items[i] as Item;
-                    if (item != null && item.Id == this.CurrentEntry.Id)
-                    {
-                        var li = (ListBoxItem)this.ContactList.ItemContainerGenerator.ContainerFromIndex(i);
-                        if (li != null)
-                        {
-                            li.IsSelected = true;
-                            li.Focus();
-                            this.ContactList.SelectedIndex = i;
-                            this.ContactList.SelectedItem = li;
-                            this.ContactList.ScrollIntoView(item);
-                            break;
-                        }
-                    }
-                }
+                SetSelectedIndex();
             }
         }
 
@@ -377,6 +388,7 @@ namespace AmiKoWindows
         private void ContactItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //Log.WriteLine(sender.GetType().Name);
+
             _isItemClick = true;
             EnableMinusButton(true);
         }
@@ -384,6 +396,10 @@ namespace AmiKoWindows
         private async void ContactItem_SelectionChanged(object sender, EventArgs e)
         {
             //Log.WriteLine(sender.GetType().Name);
+
+            // fix scroll position
+            ContactList.ScrollIntoView(ContactList.SelectedItem);
+
             // NOTE:
             // This private variable prevents event triggered by the manual assignment
             // to `IsSelected` in `SaveButton_Click`
@@ -391,7 +407,7 @@ namespace AmiKoWindows
                 return;
             _isItemClick = false;
 
-            var item = this.ContactList.SelectedItem as Item;
+            var item = ContactList.SelectedItem as Item;
             if (item != null && item.Id != null)
             {
                 ResetMessage();
@@ -424,21 +440,37 @@ namespace AmiKoWindows
         private async void MinusButton_Click(object sender, RoutedEventArgs e)
         {
             //Log.WriteLine(sender.GetType().Name);
-            MessageBoxResult result = MessageBox.Show(
-                Properties.Resources.msgContactDeleteConfirmation, "", MessageBoxButton.OKCancel,
-                MessageBoxImage.Warning);
+            var dialog = Utilities.MessageDialog(
+                Properties.Resources.msgContactDeleteConfirmation, "", "OKCancel");
+            dialog.ShowDialog();
+            var result = dialog.MessageBoxResult;
+
             if (result == MessageBoxResult.OK)
             {
                 var item = this.ContactList.SelectedItem as Item;
                 if (item != null && item.Id != null)
                 {
+                    Contact contact = await _patientDb.GetContactById(item.Id.Value);
+                    if (contact == null)
+                        return;
+
+                    if (_mainWindow != null && _mainWindow.ActiveContact != null &&
+                        _mainWindow.ActiveContact.Id == contact.Id)
+                    {
+                        _mainWindow.ActiveContact = null;
+                        _mainWindow.FillContactFields();
+                    }
+
+                    var uid = contact.Uid;
                     ResetFields();
                     this.CurrentEntry = new Contact();
 
-                    await _patientDb.DeleteContact(item.Id.Value);
+                    await _patientDb.DeleteContact(contact.Id.Value);
                     await _patientDb.LoadAllContacts();
                     this.RawContactsCount = _patientDb.Count;
                     _patientDb.UpdateContactList();
+
+                    await PrescriptionsBox.DeleteAllPrescriptions(uid);
                 }
                 EnableMinusButton(false);
             }
@@ -449,6 +481,22 @@ namespace AmiKoWindows
             Log.WriteLine(sender.GetType().Name);
         }
         #endregion
+
+        private void SetSelectedIndex()
+        {
+            if (CurrentEntry == null)
+                return;
+
+            for (var i = 0; i < this.ContactList.Items.Count; i++)
+            {
+                var item = this.ContactList.Items[i] as Item;
+                if (item != null && item.Id == this.CurrentEntry.Id)
+                {
+                    this.ContactList.SelectedIndex = i;
+                    break;
+                }
+            }
+        }
 
         // returns dictionary contains key (propertyName) and value
         private Dictionary<string, string> GetContactValues()

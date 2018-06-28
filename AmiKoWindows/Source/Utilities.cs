@@ -27,6 +27,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace AmiKoWindows
@@ -331,6 +332,22 @@ namespace AmiKoWindows
                 bitmap.Save(output, ImageFormat.Png);
             }
         }
+
+        public static string Base64Encode(string input)
+        {
+            if (input == null)
+                return null;
+            var bytes = Encoding.UTF8.GetBytes(input);
+            return Convert.ToBase64String(bytes);
+        }
+
+        public static string Base64Decode(string input)
+        {
+            if (input == null)
+                return null;
+            var bytes = Convert.FromBase64String(input);
+            return Encoding.UTF8.GetString(bytes);
+        }
         #endregion
 
         #region UI Functions
@@ -353,6 +370,20 @@ namespace AmiKoWindows
             return loaded;
         }
 
+        public static Xceed.Wpf.Toolkit.MessageBox MessageDialog(string text, string caption, string buttonType)
+        {
+            var box = new Xceed.Wpf.Toolkit.MessageBox();
+            // ugh :'(
+            var button = box.GetType().GetField("_button", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo field = typeof(MessageBoxButton).GetField(buttonType, BindingFlags.Public | BindingFlags.Static);
+            button.SetValue(box, (MessageBoxButton)field.GetValue(null));
+            System.Windows.VisualStateManager.GoToState(box, buttonType, false);
+            box.Text = text;
+            box.Caption = caption;
+            box.OkButtonContent = Properties.Resources.ok;
+            box.CancelButtonContent = Properties.Resources.cancel;
+            return box;
+        }
         #endregion
 
         #region Shell Functions

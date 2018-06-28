@@ -177,6 +177,9 @@
   <data name="city" xml:space="preserve">
     <value>Wohnort</value>
   </data>
+  <data name="comment" xml:space="preserve">
+    <value>Bemerkungen</value>
+  </data>
   <data name="compendium" xml:space="preserve">
     <value>Kompendium</value>
   </data>
@@ -185,6 +188,9 @@
   </data>
   <data name="datei" xml:space="preserve">
     <value>Datei</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Löschen</value>
   </data>
   <data name="ean" xml:space="preserve">
     <value>EAN</value>
@@ -196,7 +202,7 @@
     <value>Fachinformation</value>
   </data>
   <data name="familyName" xml:space="preserve">
-    <value>Vorname</value>
+    <value>Nachname</value>
   </data>
   <data name="favorites" xml:space="preserve">
     <value>Favoriten</value>
@@ -211,7 +217,7 @@
     <value>Geschlecht</value>
   </data>
   <data name="givenName" xml:space="preserve">
-    <value>Name</value>
+    <value>Vorname</value>
   </data>
   <data name="heightCm" xml:space="preserve">
     <value>Grösse in cm</value>
@@ -246,6 +252,12 @@
   <data name="msgContactSaveSuccess" xml:space="preserve">
     <value>Kontakt wurde im AmiKo Desitin Addressbuch gespeichert.</value>
   </data>
+  <data name="msgPrescriptionDeleteConfirmation" xml:space="preserve">
+    <value>Wollen Sie dieses Rezept wirklich löschen?</value>
+  </data>
+  <data name="msgPrescriptionSavingContextConfirmation" xml:space="preserve">
+    <value>Wollen Sie dieses Rezept überschreiben oder ein neues Rezept erstellen?</value>
+  </data>
   <data name="msgProfileSaveFailure" xml:space="preserve">
     <value>Die Arztadresse wurde nicht gespeichert. Bitte korrigieren Sie die roten Felder.</value>
   </data>
@@ -266,6 +278,9 @@
   </data>
   <data name="nopacks" xml:space="preserve">
     <value>keine Packungen</value>
+  </data>
+  <data name="ok" xml:space="preserve">
+    <value>Ok</value>
   </data>
   <data name="packs" xml:space="preserve">
     <value>Packungen</value>
@@ -306,11 +321,17 @@
   <data name="result" xml:space="preserve">
     <value>Suchresultat</value>
   </data>
+  <data name="rewrite" xml:space="preserve">
+    <value>Überschreiben</value>
+  </data>
   <data name="save" xml:space="preserve">
     <value>Speichern</value>
   </data>
   <data name="search" xml:space="preserve">
     <value>Suche</value>
+  </data>
+  <data name="searchPatient" xml:space="preserve">
+    <value>Suche Patient...</value>
   </data>
   <data name="selectPicture" xml:space="preserve">
     <value>Unterschrift aus Datei</value>

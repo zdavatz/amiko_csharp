@@ -4,6 +4,9 @@
 param([string]$application)
 Write-Host $application
 
+$platform = "x64"
+$configuration = "Debug"
+
 # NOTE:
 #
 # > powershell.exe -ExecutionPolicy Bypass -File .\RunTest.ps1 "AmiKo"
@@ -18,12 +21,12 @@ taskkill /im 'MSBuild.exe' /f
 taskkill /im "$application Desitin.exe" /f
 
 # Linux
-wsl rm -f "AmiKoWindows/bin/Debug/$application/$application\ Desitin.exe*"
-wsl rm -f "AmiKoWindows/obj/Debug/$application\ Desitin.exe*"
+wsl rm -f "AmiKoWindows/bin/${configuration}/${application}/${application}\ Desitin.exe"
+wsl rm -f "AmiKoWindows/obj/${platform}/${configuration}/${application}\ Desitin.exe"
 
 ## Clean All (resources, db and cache etc.)
-#wsl rm -fr "AmiKoWindows/bin/Debug/$application/*"
-#wsl rm -fr "AmiKoWindows/obj/Debug/$application/*"
+wsl rm -fr "AmiKoWindows/bin/Debug/$application/*exe*"
+wsl rm -fr "AmiKoWindows/obj/**/Debug/*exe"
 
 MSBuild.exe .\AmiKoWindows.Tests\"$application"Desitin.Test.csproj /t:Clean
 
