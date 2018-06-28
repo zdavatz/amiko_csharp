@@ -454,6 +454,13 @@ namespace AmiKoWindows
                     if (contact == null)
                         return;
 
+                    if (_mainWindow != null && _mainWindow.ActiveContact != null &&
+                        _mainWindow.ActiveContact.Id == contact.Id)
+                    {
+                        _mainWindow.ActiveContact = null;
+                        _mainWindow.FillContactFields();
+                    }
+
                     var uid = contact.Uid;
                     ResetFields();
                     this.CurrentEntry = new Contact();

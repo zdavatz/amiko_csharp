@@ -273,26 +273,26 @@ namespace AmiKoWindows
 
         public void LoadFiles()
         {
-            if (ActiveContact == null)
-                return;
-
             _Files.Clear();
 
-            string userDir = Path.Combine(_dataDir, ActiveContact.Uid);
-            // Log.WriteLine("userDir: {0}", userDir);
-            if (EnforceDir(userDir))
+            if (ActiveContact != null)
             {
-                string[] files = Directory.GetFiles(userDir).OrderByDescending(f => f).ToArray();
-                foreach (var path in files)
+                string userDir = Path.Combine(_dataDir, ActiveContact.Uid);
+                // Log.WriteLine("userDir: {0}", userDir);
+                if (EnforceDir(userDir))
                 {
-                    //Log.WriteLine("filepath: {0}", path);
-                    var filename = Path.GetFileName(path);
-                    if (!AMIKO_FILE_EXTENSION_RGX.IsMatch(filename))
-                        continue;
-                    var item = new TitleItem() {
-                        Id = filename, Title = AMIKO_FILE_EXTENSION_RGX.Replace(filename, "")
-                    };
-                    _Files.Add(item);
+                    string[] files = Directory.GetFiles(userDir).OrderByDescending(f => f).ToArray();
+                    foreach (var path in files)
+                    {
+                        //Log.WriteLine("filepath: {0}", path);
+                        var filename = Path.GetFileName(path);
+                        if (!AMIKO_FILE_EXTENSION_RGX.IsMatch(filename))
+                            continue;
+                        var item = new TitleItem() {
+                            Id = filename, Title = AMIKO_FILE_EXTENSION_RGX.Replace(filename, "")
+                        };
+                        _Files.Add(item);
+                    }
                 }
             }
             UpdateFileNames();

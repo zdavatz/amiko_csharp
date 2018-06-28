@@ -1198,25 +1198,25 @@ namespace AmiKoWindows
 
             Log.WriteLine(source.Name);
 
-            if (ActiveContact != null)
+            if (_prescriptions.ActiveContact != null && ActiveContact != null &&
+                _prescriptions.ActiveContact.Uid != ActiveContact.Uid) // change of contact (patient)
             {
-                if (_prescriptions.ActiveContact != null && _prescriptions.ActiveContact.Uid != ActiveContact.Uid) // change of contact (patient)
-                {
-                    // doesn't renew here (keep current medications)
-                    _prescriptions.Hash = Utilities.GenerateUUID();
-                    _prescriptions.PlaceDate = null;
-                }
-
-                _prescriptions.ActiveContact = ActiveContact;
-                _prescriptions.LoadFiles();
-                FillContactFields();
-                FillPlaceDate();
-
-                EnableButton("SendPrescriptionButton", false);
-
-                if (ActiveAccount != null && _prescriptions.Medications.Count > 0)
-                    EnableButton("SavePrescriptionButton", true);
+                // doesn't renew here (keep current medications)
+                _prescriptions.Hash = Utilities.GenerateUUID();
+                _prescriptions.PlaceDate = null;
             }
+
+            _prescriptions.ActiveContact = ActiveContact;
+            _prescriptions.LoadFiles();
+            FillContactFields();
+            FillPlaceDate();
+
+            EnableButton("SendPrescriptionButton", false);
+
+            if (ActiveAccount != null && ActiveContact != null && _prescriptions.Medications.Count > 0)
+                EnableButton("SavePrescriptionButton", true);
+            else
+                EnableButton("SavePrescriptionButton", false);
 
             // Re:enable animations for next time
             source.AreAnimationsEnabled = true;
@@ -1250,7 +1250,8 @@ namespace AmiKoWindows
             e.Handled = true;
         }
 
-        private void FillAccountFields()
+        #region Fill Methods
+        public void FillAccountFields()
         {
             TextBlock block = null;
             var fields = new string[] {"Fullname", "Address", "Place", "Phone", "Email"};
@@ -1260,13 +1261,16 @@ namespace AmiKoWindows
                 block = GetElementIn(key, MainArea) as TextBlock;
                 if (block != null)
                 {
-                    block.Text = (string)ActiveAccount.GetType().GetProperty(f).GetValue(ActiveAccount, null);
+                    if (ActiveAccount != null)
+                        block.Text = (string)ActiveAccount.GetType().GetProperty(f).GetValue(ActiveAccount, null);
+                    else
+                        block.Text = "";
                     block.UpdateLayout();
                 }
             }
         }
 
-        private void FillContactFields()
+        public void FillContactFields()
         {
             TextBlock block = null;
             var fields = new string[] {"Fullname", "Address", "Place", "PersonalInfo", "Phone", "Email"};
@@ -1276,21 +1280,28 @@ namespace AmiKoWindows
                 block = GetElementIn(key, MainArea) as TextBlock;
                 if (block != null)
                 {
-                    block.Text = (string)ActiveContact[f];
+                    if (ActiveContact != null)
+                        block.Text = (string)ActiveContact[f];
+                    else 
+                        block.Text = "";
                     block.UpdateLayout();
                 }
             }
         }
 
-        private void FillPlaceDate()
+        public void FillPlaceDate()
         {
             var block = GetElementIn("PlaceDate", MainArea) as TextBlock;
             if (block != null)
             {
-                block.Text = _prescriptions.PlaceDate;
+                if (ActiveContact != null && ActiveAccount != null)
+                    block.Text = _prescriptions.PlaceDate;
+                else 
+                    block.Text = "";
                 block.UpdateLayout();
             }
         }
+        #endregion
 
         private void LoadAccountPicture()
         {
