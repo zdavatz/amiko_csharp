@@ -118,7 +118,7 @@
                                             <Grid VerticalAlignment="Top">
                                               <Grid.RowDefinitions>
                                                   <RowDefinition Height="32" />
-                                                  <RowDefinition Height="32" />
+                                                  <RowDefinition Height="Auto" MinHeight="32" />
                                               </Grid.RowDefinitions>
                                               <Grid Grid.Row="0" VerticalAlignment="Top">
                                                   <Grid.ColumnDefinitions>
@@ -141,6 +141,7 @@
                                               </Grid>
                                               <Grid Grid.Row="1" VerticalAlignment="Top">
                                                   <TextBox x:Name="MedicationCommentTextBox" Style="{StaticResource MedicationCommentTextBox}" Text="{Binding Path=Comment}"
+                                                      TextWrapping="Wrap" AcceptsReturn="True" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                                       TextChanged="MedicationCommentTextBox_TextChanged"
                                                       Controls:TextBoxHelper.Watermark="{x:Static p:Resources.comment}" />
                                               </Grid>

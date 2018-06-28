@@ -482,7 +482,7 @@
         <Setter Property="BorderBrush" Value="White" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
         <Setter Property="Controls:ControlsHelper.FocusBorderBrush" Value="LightGray" />
         <Setter Property="Controls:TextBoxHelper.UseFloatingWatermark" Value="False" />
         <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="True" />
