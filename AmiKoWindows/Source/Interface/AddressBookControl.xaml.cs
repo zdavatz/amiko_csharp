@@ -134,6 +134,8 @@ namespace AmiKoWindows
                 _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
                 _patientDb.UpdateContactList();
                 this.RawContactsCount = _patientDb.Count;
+
+                SetSelectedIndex();
             }
             else
                 _mainWindow = null;
@@ -351,15 +353,7 @@ namespace AmiKoWindows
             {
                 this.ContactList.ItemContainerGenerator.StatusChanged -= ContactList_ItemStatusChanged;
 
-                for (var i = 0; i < this.ContactList.Items.Count; i++)
-                {
-                    var item = this.ContactList.Items[i] as Item;
-                    if (item != null && item.Id == this.CurrentEntry.Id)
-                    {
-                        this.ContactList.SelectedIndex = i;
-                        break;
-                    }
-                }
+                SetSelectedIndex();
             }
         }
 
@@ -480,6 +474,22 @@ namespace AmiKoWindows
             Log.WriteLine(sender.GetType().Name);
         }
         #endregion
+
+        private void SetSelectedIndex()
+        {
+            if (CurrentEntry == null)
+                return;
+
+            for (var i = 0; i < this.ContactList.Items.Count; i++)
+            {
+                var item = this.ContactList.Items[i] as Item;
+                if (item != null && item.Id == this.CurrentEntry.Id)
+                {
+                    this.ContactList.SelectedIndex = i;
+                    break;
+                }
+            }
+        }
 
         // returns dictionary contains key (propertyName) and value
         private Dictionary<string, string> GetContactValues()
