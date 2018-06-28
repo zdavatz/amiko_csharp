@@ -191,8 +191,7 @@
                         Name="ContactList" Style="{StaticResource ContactListBox}" ItemContainerStyle="{StaticResource ContactListBoxItem}"
                         SelectionChanged="ContactItem_SelectionChanged"
                         KeyboardNavigation.DirectionalNavigation="Cycle"
-                        KeyDown="ContactList_KeyDown"
-                        MouseDoubleClick="ContactList_MouseDoubleClick"
+                        PreviewKeyDown="ContactList_PreviewKeyDown" KeyDown="ContactList_KeyDown" MouseDoubleClick="ContactList_MouseDoubleClick"
                         ItemsSource="{Binding Path=ContactListItems}" Height="430">
                         <ListBox.ItemTemplate>
                             <DataTemplate>

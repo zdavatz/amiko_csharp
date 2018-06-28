@@ -307,21 +307,35 @@ namespace AmiKoWindows
             this.SearchPatientBox.Text = "";
         }
 
+        private void ContactList_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            // a hack to enable item selection using arrow keys as tab
+            if (object.ReferenceEquals(sender, ContactList) && e.IsDown)
+            {
+                if ((e.Key == Key.Down) || e.Key == Key.Up)
+                {
+                    _isItemClick = true;
+                    // it works same as `sendkeys(\t)`
+                    if (Keyboard.PrimaryDevice != null && Keyboard.PrimaryDevice.ActiveSource != null)
+                    {
+                        var key = Key.Tab;
+                        var args = new KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, key)
+                        {
+                            RoutedEvent = Keyboard.KeyUpEvent,
+                        };
+                        InputManager.Current.ProcessInput(args);
+                    }
+                }
+            }
+            e.Handled = false;
+        }
+
         private void ContactList_KeyDown(object sender, KeyEventArgs e)
         {
-            // Enable item selection using arrow keys + `Return`
-            if (object.ReferenceEquals(sender, this.ContactList))
-            {
-                if (!e.IsDown || e.Key != Key.Return)
-                    return;
+            if (object.ReferenceEquals(sender, ContactList) && e.IsDown && e.Key == Key.Tab)
+                _isItemClick = true;
 
-                e.Handled = true;
-                ListBoxItem li = (ListBoxItem)this.ContactList.ItemContainerGenerator.ContainerFromItem(
-                    this.ContactList.SelectedItem);
-
-                this.ContactItem_MouseLeftButtonDown(li, new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left));
-                this.ContactItem_SelectionChanged(li, new RoutedEventArgs());
-            }
+            e.Handled = false;
         }
 
         // ItemContainerGenerator

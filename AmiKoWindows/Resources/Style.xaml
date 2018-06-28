@@ -330,7 +330,7 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
     </Style>
 
     <Style x:Key="FileNamesListBoxItem" TargetType="{x:Type ListBoxItem}">
@@ -385,6 +385,7 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
     </Style>
 
     <Style x:Key="ContactListBoxItem" TargetType="{x:Type ListBoxItem}">
@@ -394,6 +395,7 @@
         <Setter Property="IsTabStop" Value="True" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
+        <Setter Property="IsTabStop" Value="True" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Template">
             <Setter.Value>

@@ -842,6 +842,8 @@ namespace AmiKoWindows
                     }
                 }
             }
+            else
+                e.Handled = false;
         }
 
         private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)

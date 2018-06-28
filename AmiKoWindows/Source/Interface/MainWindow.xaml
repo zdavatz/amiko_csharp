@@ -452,7 +452,7 @@
 
                     <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="1" Width="3" IsTabStop="False" />
 
-                    <ContentControl x:Name="MainArea" Grid.Column="2">
+                    <ContentControl x:Name="MainArea" Grid.Column="2" IsTabStop="False">
                         <ContentControl.Style>
                             <Style TargetType="{x:Type ContentControl}">
                                 <Setter Property="ContentTemplate" Value="{StaticResource HtmlTemplate}" />
@@ -470,7 +470,7 @@
 
                     <GridSplitter HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="3" Width="3" IsTabStop="False" />
 
-                    <ContentControl x:Name="RightArea" Grid.Column="4">
+                    <ContentControl x:Name="RightArea" Grid.Column="4" IsTabStop="False">
                         <ContentControl.Style>
                             <Style TargetType="{x:Type ContentControl}">
                                 <Setter Property="ContentTemplate" Value="{StaticResource TitleListTemplate}" />
