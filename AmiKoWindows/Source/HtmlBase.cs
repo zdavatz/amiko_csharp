@@ -52,8 +52,8 @@ namespace AmiKoWindows
             }
         }
 
-        private TitlesObservableCollection _sectionTitles = new TitlesObservableCollection();
-        public TitlesObservableCollection SectionTitles
+        private TitleItemsObservableCollection _sectionTitles = new TitleItemsObservableCollection();
+        public TitleItemsObservableCollection SectionTitles
         {
             get { return _sectionTitles; }
             private set

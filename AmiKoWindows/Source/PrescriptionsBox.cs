@@ -77,8 +77,8 @@ namespace AmiKoWindows
         #endregion
 
         #region Dependency Properties
-        private ItemsObservableCollection _medicationListItems = new ItemsObservableCollection();
-        public ItemsObservableCollection MedicationListItems
+        private CommentItemsObservableCollection _medicationListItems = new CommentItemsObservableCollection();
+        public CommentItemsObservableCollection MedicationListItems
         {
             get { return _medicationListItems; }
             private set
@@ -89,8 +89,8 @@ namespace AmiKoWindows
         }
 
         #region Prescription File Manager
-        private TitlesObservableCollection _fileNames = new TitlesObservableCollection();
-        public TitlesObservableCollection FileNames
+        private TitleItemsObservableCollection _fileNames = new TitleItemsObservableCollection();
+        public TitleItemsObservableCollection FileNames
         {
             get { return _fileNames; }
             private set
@@ -235,6 +235,22 @@ namespace AmiKoWindows
             var i = Convert.ToInt32(index);
             var medication = _Medications.ElementAt(i);
             RemoveMedication(medication);
+        }
+
+        public bool AddMedicationCommentAtIndex(long? index, string comment)
+        {
+            if (index == null)
+                return false;
+
+            var i = Convert.ToInt32(index);
+            var medication = _Medications.ElementAt(i);
+            var currentComment = (medication.Comment != null ? medication.Comment : "");
+
+            if (currentComment.Equals(comment))
+                return false;
+
+            medication.Comment = comment;
+            return true;
         }
 
         public void LoadFile(string filename)

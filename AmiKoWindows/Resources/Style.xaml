@@ -207,7 +207,6 @@
         <Setter Property="Controls:ControlsHelper.FocusBorderBrush" Value="DarkGray" />
         <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="True" />
         <Setter Property="Controls:TextBoxHelper.UseFloatingWatermark" Value="True" />
-
         <Style.Triggers>
             <Trigger Property="Controls:TextBoxHelper.HasText" Value="False">
                 <Setter Property="Foreground" Value="#FF4F7B8F" />
@@ -321,6 +320,7 @@
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="IsTabStop" Value="False" />
     </Style>
 
     <Style x:Key="FileNamesListBox" TargetType="{x:Type ListBox}">
@@ -330,6 +330,7 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
+        <Setter Property="IsTabStop" Value="False" />
     </Style>
 
     <Style x:Key="FileNamesListBoxItem" TargetType="{x:Type ListBoxItem}">
@@ -442,37 +443,58 @@
     <Style x:Key="MedicationListBox" TargetType="{x:Type ListBox}">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
-        <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
     </Style>
 
     <Style x:Key="MedicationListBoxItem" TargetType="{x:Type ListBoxItem}">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Foreground" Value="Black" />
-        <Setter Property="IsTabStop" Value="True" />
+        <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Focusable" Value="False" />
-        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
                     <StackPanel Name="Panel">
                       <ContentPresenter />
                     </StackPanel>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Panel" Property="Background" Value="AliceBlue" />
-                        </Trigger>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Panel" Property="Background" Value="LightGray" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="MedicationCommentTextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MetroTextBox}">
+        <Setter Property="Height" Value="29" />
+        <Setter Property="Margin" Value="0,0,2,3" />
+        <Setter Property="Padding" Value="0,0,2,0" />
+        <Setter Property="Cursor" Value="IBeam" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="IsTabStop" Value="True" />
+        <Setter Property="Foreground" Value="Gray" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="BorderBrush" Value="White" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Controls:ControlsHelper.FocusBorderBrush" Value="LightGray" />
+        <Setter Property="Controls:TextBoxHelper.UseFloatingWatermark" Value="False" />
+        <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="True" />
+        <Style.Triggers>
+            <Trigger Property="Controls:TextBoxHelper.HasText" Value="True">
+                <Setter Property="Padding" Value="2,0,2,0" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" Value="LightGray" />
+            </Trigger>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="BorderBrush" Value="Gray" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <!-- Extended.Wpf.Toolkit -->

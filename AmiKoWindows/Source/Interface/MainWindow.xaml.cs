@@ -701,6 +701,37 @@ namespace AmiKoWindows
             }
         }
 
+        private void MedicationCommentTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var box = sender as TextBox;
+            string text = "";
+            if (box != null)
+            {
+                text = box.Text;
+
+                // fix for watermark position issue
+                Thickness t = box.Padding;
+                t.Left = (text.Equals(string.Empty)) ? 0 : 2;
+                box.Padding = t;
+            }
+
+            if (!text.Equals(string.Empty))
+            {
+                var listBoxItem = this.FindVisualAncestor<ListBoxItem>(box);
+                var item = listBoxItem.Content as CommentItem;
+                if (item != null)
+                {
+                    var index = item.Id;
+                    var added = _prescriptions.AddMedicationCommentAtIndex(index, text);
+
+                    if (added && ActiveContact != null && ActiveAccount != null)
+                        EnableButton("SavePrescriptionButton", true);
+
+                    e.Handled = true;
+                }
+            }
+        }
+
         private async void FileNameContextMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
@@ -723,7 +754,7 @@ namespace AmiKoWindows
 
             var button = sender as Button;
             var listBoxItem = this.FindVisualAncestor<ListBoxItem>(button);
-            var item = listBoxItem.Content as Item;
+            var item = listBoxItem.Content as CommentItem;
             if (item != null)
             {
                 var index = item.Id;

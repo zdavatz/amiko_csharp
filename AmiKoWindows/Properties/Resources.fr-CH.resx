@@ -177,6 +177,9 @@
   <data name="city" xml:space="preserve">
     <value>Résidence</value>
   </data>
+  <data name="comment" xml:space="preserve">
+    <value>Remarques</value>
+  </data>
   <data name="compendium" xml:space="preserve">
     <value>Compendium</value>
   </data>
