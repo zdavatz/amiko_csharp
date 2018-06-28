@@ -244,7 +244,7 @@ namespace AmiKoWindows
             if (result)
             {
                 Dictionary<string, string> values = GetContactValues();
-                contact = this.CurrentEntry;
+                contact = CurrentEntry;
                 if (contact == null || contact.Uid == null || contact.Uid.Equals(string.Empty))
                     contact = _patientDb.InitContact(values);
 
@@ -258,7 +258,10 @@ namespace AmiKoWindows
                 }
 
                 if (contact.Uid != null && !contact.Uid.Equals(string.Empty) && contact.Uid.Equals(contact.GenerateUid()))
+                {
                     await _patientDb.UpdateContact(contact);
+                    await _patientDb.LoadAllContacts();  // need reload all :'(
+                }
                 else
                 {
                     // NEW Entry or `Contact.Uid` has been changed
@@ -269,7 +272,7 @@ namespace AmiKoWindows
                         this.SearchPatientBox.Text = "";
                     }
                     else
-                        // TODO need another message?
+                        // TODO need another message? (already exists)
                         ShowMessage(true);
 
                     await _patientDb.LoadAllContacts();
@@ -281,13 +284,13 @@ namespace AmiKoWindows
                 return;
             else
             {
+                this.CurrentEntry = contact;
+                _patientDb.UpdateContactList();
+
                 // See ContactList_ItemStatusChanged
                 this.ContactList.ItemContainerGenerator.StatusChanged += ContactList_ItemStatusChanged;
-
-                this.CurrentEntry = contact;
-                this.ContactList.UpdateLayout();
-                _patientDb.UpdateContactList();
             }
+            e.Handled = true;
         }
         #endregion
 
@@ -341,29 +344,20 @@ namespace AmiKoWindows
         // ItemContainerGenerator
         private void ContactList_ItemStatusChanged(object sender, EventArgs e)
         {
-            Log.WriteLine("");
+            Log.WriteLine(sender.GetType().Name);
 
             // Re:set selected list item, `UpdateLayout` is needed.
             if (this.ContactList.ItemContainerGenerator.Status == System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
             {
                 this.ContactList.ItemContainerGenerator.StatusChanged -= ContactList_ItemStatusChanged;
 
-                //foreach (Item item in this.ContactList.Items)
                 for (var i = 0; i < this.ContactList.Items.Count; i++)
                 {
                     var item = this.ContactList.Items[i] as Item;
                     if (item != null && item.Id == this.CurrentEntry.Id)
                     {
-                        var li = (ListBoxItem)this.ContactList.ItemContainerGenerator.ContainerFromIndex(i);
-                        if (li != null)
-                        {
-                            li.IsSelected = true;
-                            li.Focus();
-                            this.ContactList.SelectedIndex = i;
-                            this.ContactList.SelectedItem = li;
-                            this.ContactList.ScrollIntoView(item);
-                            break;
-                        }
+                        this.ContactList.SelectedIndex = i;
+                        break;
                     }
                 }
             }
@@ -400,6 +394,7 @@ namespace AmiKoWindows
         private void ContactItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //Log.WriteLine(sender.GetType().Name);
+
             _isItemClick = true;
             EnableMinusButton(true);
         }
@@ -407,6 +402,10 @@ namespace AmiKoWindows
         private async void ContactItem_SelectionChanged(object sender, EventArgs e)
         {
             //Log.WriteLine(sender.GetType().Name);
+
+            // fix scroll position
+            ContactList.ScrollIntoView(ContactList.SelectedItem);
+
             // NOTE:
             // This private variable prevents event triggered by the manual assignment
             // to `IsSelected` in `SaveButton_Click`
@@ -414,7 +413,7 @@ namespace AmiKoWindows
                 return;
             _isItemClick = false;
 
-            var item = this.ContactList.SelectedItem as Item;
+            var item = ContactList.SelectedItem as Item;
             if (item != null && item.Id != null)
             {
                 ResetMessage();
