@@ -22,10 +22,10 @@ wsl rm -f "AmiKoWindows/bin/Debug/$application/$application Desitin.exe"
 wsl rm -f "AmiKoWindows/obj/Debug/$application Desitin.exe"
 
 ## Clean All (resources, db and cache etc.)
-#wsl rm -fr "AmiKoWindows/bin/Debug/$application/*"
-#wsl rm -fr "AmiKoWindows/obj/Debug/*"
+wsl rm -fr "AmiKoWindows/bin/Debug/$application/*exe*"
+wsl rm -fr "AmiKoWindows/obj/**/Debug/*exe"
 
-#MSBuild.exe .\AmiKoWindows\"$application"Desitin.csproj /t:Clean
+MSBuild.exe .\AmiKoWindows\"$application"Desitin.csproj /t:Clean
 
 # Build
 MSBuild.exe .\AmiKoWindows\"$application"Desitin.csproj /t:Build `
