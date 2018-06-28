@@ -316,6 +316,9 @@ namespace AmiKoWindows
 
         private string GetFilePathByDateString(string dateString)
         {
+            if (ActiveContact == null)
+                return null;
+
             var name = String.Format("RZ_{0}.amk", dateString);
             string path = Path.Combine(_dataDir, ActiveContact.Uid, name);
             Log.WriteLine("path: {0}", path);

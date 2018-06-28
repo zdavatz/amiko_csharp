@@ -379,7 +379,8 @@ namespace AmiKoWindows
                     LoadAccountPicture();
                     FillPlaceDate();
                     EnableButton("NewPrescriptionButton", true);
-                    if (!_prescriptions.IsActivePrescriptionPersisted && _prescriptions.Medications.Count > 0)
+
+                    if (ActiveAccount != null && ActiveContact != null && !_prescriptions.IsActivePrescriptionPersisted)
                         EnableButton("SavePrescriptionButton", true);
                 }
 
