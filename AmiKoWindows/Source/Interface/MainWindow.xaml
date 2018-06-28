@@ -91,12 +91,12 @@
                               <!-- Account (Operator) -->
                               <Grid Name="AccountInfo" Grid.Column="1" Margin="0" DataContext="{Binding Path=ActiveAccount, UpdateSourceTrigger=PropertyChanged}">
                                   <DockPanel Margin="0,5,4,4">
-                                      <Button Name="OpenProfileCardButton" Style="{StaticResource NoHighlightedButton}"
+                                      <Button Name="OpenProfileCardButton" HorizontalAlignment="Right" Style="{StaticResource NoHighlightedButton}"
                                           DockPanel.Dock="Top" Click="OpenProfileCardButton_Click" Cursor="Hand" Visibility="Collapsed">
                                           <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.msgProfileUnsetWarning}" />
                                       </Button>
                                       <StackPanel DockPanel.Dock="Top" Margin="0,0,0,0" HorizontalAlignment="Right">
-                                          <TextBlock Name="AccountFullName" Text="{Binding Path=Fullname, Mode=OneWay}"></TextBlock>
+                                          <TextBlock Name="AccountFullname" Text="{Binding Path=Fullname, Mode=OneWay}"></TextBlock>
                                           <TextBlock Name="AccountAddress" Text="{Binding Path=Address, Mode=OneWay}"></TextBlock>
                                           <TextBlock Name="AccountPlace" Text="{Binding Path=Place, Mode=OneWay}"></TextBlock>
                                           <TextBlock Name="AccountPhone" Text="{Binding Path=Phone, Mode=OneWay}"></TextBlock>

@@ -1222,13 +1222,35 @@ namespace AmiKoWindows
             {
                 _prescriptions.ActiveAccount = ActiveAccount;
                 LoadAccountPicture();
+                FillAccountFields(); // only for initial loading (at first time)
                 FillPlaceDate();
+
+                var button = GetElementIn("OpenProfileCardButton", this.MainArea) as Button;
+                if (button != null)
+                    button.Visibility = Visibility.Collapsed;
+
                 EnableButton("NewPrescriptionButton", true);
             }
 
             // Re:enable animations for next time
             source.AreAnimationsEnabled = true;
             e.Handled = true;
+        }
+
+        private void FillAccountFields()
+        {
+            TextBlock block = null;
+            var fields = new string[] {"Fullname", "Address", "Place", "Phone", "Email"};
+            foreach (var f in fields)
+            {
+                var key = String.Format("Account{0}", f);
+                block = GetElementIn(key, MainArea) as TextBlock;
+                if (block != null)
+                {
+                    block.Text = (string)ActiveAccount.GetType().GetProperty(f).GetValue(ActiveAccount, null);
+                    block.UpdateLayout();
+                }
+            }
         }
 
         private void FillContactFields()
