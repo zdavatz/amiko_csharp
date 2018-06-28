@@ -698,6 +698,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Suche Patient....
+        /// </summary>
+        public static string searchPatient {
+            get {
+                return ResourceManager.GetString("searchPatient", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unterschrift aus Datei.
         /// </summary>
         public static string selectPicture {

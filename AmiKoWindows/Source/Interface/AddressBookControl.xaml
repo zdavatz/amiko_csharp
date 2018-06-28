@@ -184,7 +184,7 @@
                 <!-- Address Book: Search TextBox -->
                 <TextBox Name="SearchPatientBox" Width="Auto" Height="21" Background="White" BorderBrush="DarkGray"
                    TextChanged="SearchPatientBox_TextChanged" PreviewMouseDown="SearchPatientBox_PreviewMouseDown"
-                   Controls:TextBoxHelper.Watermark="{Binding Path=SearchTextBoxWaterMark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                   Controls:TextBoxHelper.Watermark="{x:Static p:Resources.searchPatient}"></TextBox>
                 <!-- Address Book: ListBox -->
                 <Border Margin="0,21,0,16" Background="White" Padding="0" VerticalAlignment="Stretch" BorderThickness="0">
                     <ListBox

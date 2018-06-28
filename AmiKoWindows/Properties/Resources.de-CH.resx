@@ -330,6 +330,9 @@
   <data name="search" xml:space="preserve">
     <value>Suche</value>
   </data>
+  <data name="searchPatient" xml:space="preserve">
+    <value>Suche Patient...</value>
+  </data>
   <data name="selectPicture" xml:space="preserve">
     <value>Unterschrift aus Datei</value>
   </data>
