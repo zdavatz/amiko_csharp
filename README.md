@@ -246,6 +246,15 @@ Finally, You need to debug the app with `DebugView` or `WinDbg` etc. (Set `/p:Lo
 5. Rebuild target project (AmiKoDesitin or CoMedDesitin)
 6. (Publish)
 ```
+or you can add this to your Path
+```
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\amd64
+```
+and this will work as well from your Source Directory
+```
+Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
+MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Build /p:Configuration=Debug
+```
 
 ##### Reference
 
