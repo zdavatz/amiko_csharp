@@ -66,7 +66,7 @@ namespace AmiKoWindows
         FrameworkElement _browser;
         FrameworkElement _manager;
 
-        private bool _searchResultContextMenuIsOpen = false;
+        private ContextMenu _searchResultContextMenu = null;
 
         #region Public Fields
         private string _SearchTextBoxWaterMark;
@@ -640,16 +640,18 @@ namespace AmiKoWindows
             var menu = block?.ContextMenu;
             if (menu != null)
             {
-                if (_searchResultContextMenuIsOpen)
+                // check other menu is open or not
+                if (_searchResultContextMenu == null || !_searchResultContextMenu.IsOpen)
                 {
-                    _searchResultContextMenuIsOpen = false;
-                    menu.IsOpen = false;
-                }
-                else
-                {
-                    _searchResultContextMenuIsOpen = true;
                     menu.PlacementTarget = block;
                     menu.IsOpen = true;
+                    _searchResultContextMenu = menu;
+                }
+                else if (_searchResultContextMenu.IsOpen)
+                {   // don't open
+                    _searchResultContextMenu.IsOpen = false;
+                    _searchResultContextMenu = null;
+                    menu.IsOpen = false;
                 }
             }
         }
@@ -662,7 +664,7 @@ namespace AmiKoWindows
 
         private void SearchChildItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Log.WriteLine("query: {0}", _uiState.GetQueryTypeAsName());
+            //Log.WriteLine("query: {0}", _uiState.GetQueryTypeAsName());
             if (e.ChangedButton == MouseButton.Left)
             {
                 // NOTE:
@@ -675,9 +677,17 @@ namespace AmiKoWindows
             }
         }
 
+        private void SearchChildItemContextMenu_Closing(object sender, ContextMenuEventArgs e)
+        {
+            _searchResultContextMenu = null;
+            e.Handled = true;
+        }
+
         private async void SearchChildItemContextMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
+
+            _searchResultContextMenu = null;
             ChildItem item = (sender as MenuItem)?.DataContext as ChildItem;
             if (item != null && item.Ean != null && !item.Ean.Equals(string.Empty))
             {

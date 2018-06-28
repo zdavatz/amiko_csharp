@@ -414,7 +414,7 @@
                         <ListBox x:Name="SearchResult"
                                  Style="{StaticResource SearchListBox}" ItemContainerStyle="{StaticResource SearchListBoxItem}"
                                  ItemsSource="{Binding Path=SearchResultItems}" SelectionChanged="OnSearchItem_Selection"
-                                 Margin="6,6,6,0" Padding="0,7,0,0">
+                                 Margin="6,6,6,0" Padding="0,7,0,0" IsTabStop="False">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
@@ -433,6 +433,7 @@
                                                     <DataTemplate>
                                                         <TextBlock
                                                             Name="ItemName" Style="{StaticResource SearchListBoxChildItemText}" Text="{Binding Path=Text}" Foreground="{Binding Path=Color}"
+                                                            ContextMenuClosing="SearchChildItemContextMenu_Closing"
                                                             MouseRightButtonDown="SearchChildItem_MouseRightButtonDown"
                                                             MouseLeftButtonDown="SearchChildItem_MouseLeftButtonDown">
                                                             <TextBlock.ContextMenu>
