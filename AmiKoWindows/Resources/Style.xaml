@@ -488,6 +488,9 @@
             <Trigger Property="Controls:TextBoxHelper.HasText" Value="True">
                 <Setter Property="Padding" Value="2,0,2,0" />
             </Trigger>
+            <Trigger Property="Controls:TextBoxHelper.HasText" Value="False">
+                <Setter Property="Controls:TextBoxHelper.ClearTextButton" Value="False" />
+            </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="BorderBrush" Value="LightGray" />
             </Trigger>

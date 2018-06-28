@@ -713,10 +713,7 @@ namespace AmiKoWindows
                 Thickness t = box.Padding;
                 t.Left = (text.Equals(string.Empty)) ? 0 : 2;
                 box.Padding = t;
-            }
 
-            if (!text.Equals(string.Empty))
-            {
                 var listBoxItem = this.FindVisualAncestor<ListBoxItem>(box);
                 var item = listBoxItem.Content as CommentItem;
                 if (item != null)
