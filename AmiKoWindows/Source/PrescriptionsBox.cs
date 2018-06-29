@@ -33,10 +33,13 @@ namespace AmiKoWindows
     // Prescription Manager Object which knows active (opened) prescription.
     class PrescriptionsBox
     {
+        const string AMIKO_FILE_PREFIX = "RZ_";
+        const string AMIKO_FILE_SUFFIX = ".amk";
         const string AMIKO_FILE_PLACE_DATE_FORMAT = "dd.MM.yyyy (HH:mm:ss)";
         const string FILE_NAME_SUFFIX_DATE_FORMAT = "yyyy-MM-dd'T'HHmmss";
 
-        private static readonly Regex AMIKO_FILE_EXTENSION_RGX = new Regex(@"\.amk\z", RegexOptions.Compiled);
+        private static readonly Regex AMIKO_FILE_EXTENSION_RGX = new Regex(
+            String.Format(@"{0}\z", AMIKO_FILE_SUFFIX), RegexOptions.Compiled);
 
         string _dataDir;
 
@@ -185,8 +188,8 @@ namespace AmiKoWindows
             });
         }
 
-        // takes filename argument without ext
-        public async Task DeleteFile(string filename)
+        // takes (file) name argument without ext
+        public async Task DeleteFile(string name)
         {
             if (ActiveContact == null || ActiveAccount == null)
                 return;
@@ -196,14 +199,13 @@ namespace AmiKoWindows
                 string userDir = Path.Combine(_dataDir, ActiveContact.Uid);
                 if (EnforceDir(userDir))
                 {
-                    var path = String.Format("{0}.amk", Path.Combine(userDir, filename));
-                    if (!File.Exists(path))
+                    var path = FindFilePathByName(name);
+                    if (path == null)
                         return;
 
-                    var item = new TitleItem() { Id = filename, Title = filename };
+                    var item = new TitleItem() { Id = name, Title = name };
                     _Files.Remove(item);
 
-                    Log.WriteLine("path: {0}", path);
                     File.Delete(path);
                 }
             });
@@ -253,21 +255,14 @@ namespace AmiKoWindows
             return true;
         }
 
-        public void LoadFile(string filename)
+        public void LoadFile(string name)
         {
-            if (ActiveContact == null || ActiveAccount == null)
+            var path = FindFilePathByName(name);
+            if (path == null)
                 return;
 
-            string userDir = Path.Combine(_dataDir, ActiveContact.Uid);
-            if (EnforceDir(userDir))
-            {
-                var path = Path.Combine(userDir, filename);
-                if (!File.Exists(path))
-                    return;
-
-                string json = Utilities.Base64Decode(File.ReadAllText(path)) ?? "{}";
-                DeserializeJson(json);
-            }
+            string json = Utilities.Base64Decode(File.ReadAllText(path)) ?? "{}";
+            DeserializeJson(json);
             UpdateMedicationList();
         }
 
@@ -278,18 +273,16 @@ namespace AmiKoWindows
             if (ActiveContact != null)
             {
                 string userDir = Path.Combine(_dataDir, ActiveContact.Uid);
-                // Log.WriteLine("userDir: {0}", userDir);
                 if (EnforceDir(userDir))
                 {
                     string[] files = Directory.GetFiles(userDir).OrderByDescending(f => f).ToArray();
                     foreach (var path in files)
                     {
-                        //Log.WriteLine("filepath: {0}", path);
-                        var filename = Path.GetFileName(path);
-                        if (!AMIKO_FILE_EXTENSION_RGX.IsMatch(filename))
+                        var name = Path.GetFileName(path);
+                        if (!AMIKO_FILE_EXTENSION_RGX.IsMatch(name))
                             continue;
                         var item = new TitleItem() {
-                            Id = filename, Title = AMIKO_FILE_EXTENSION_RGX.Replace(filename, "")
+                            Id = name, Title = AMIKO_FILE_EXTENSION_RGX.Replace(name, "")
                         };
                         _Files.Add(item);
                     }
@@ -298,7 +291,43 @@ namespace AmiKoWindows
             UpdateFileNameList();
         }
 
-        private string GetFilePathByPlaceDate(string placeDate)
+        public string FindFilePathByName(string name)
+        {
+            var path = GetFilePathByName(name);
+            if (!File.Exists(path))
+                return null;
+            return path;
+        }
+
+        #region Private Path Utilities
+        // e.g. RZ_2018-06-29T204622 (without ext)
+        private string GetFilePathByName(string name)
+        {
+            string path = null;
+            if (ActiveContact == null)
+                return path;
+
+            string userDir = Path.Combine(_dataDir, ActiveContact.Uid);
+            if (!EnforceDir(userDir))
+                return path;
+            else
+            {
+                path = String.Format("{0}.amk", Path.Combine(userDir, name));
+                Log.WriteLine("path: {0}", path);
+                return path;
+            }
+        }
+
+        private string GetFilePathByDateString(string dateString)
+        {
+            if (dateString == null || dateString.Equals(string.Empty))
+                return null;
+
+            var name = String.Format("RZ_{0}", dateString);
+            return GetFilePathByName(name);
+        }
+
+        public string GetFilePathByPlaceDate(string placeDate)
         {
             string path = null;
             if (placeDate == null || placeDate.Equals(string.Empty))
@@ -313,17 +342,7 @@ namespace AmiKoWindows
             }
             return path;
         }
-
-        private string GetFilePathByDateString(string dateString)
-        {
-            if (ActiveContact == null)
-                return null;
-
-            var name = String.Format("RZ_{0}.amk", dateString);
-            string path = Path.Combine(_dataDir, ActiveContact.Uid, name);
-            Log.WriteLine("path: {0}", path);
-            return path;
-        }
+        #endregion
 
         // Returns json as string
         private string SerializeCurrentData()

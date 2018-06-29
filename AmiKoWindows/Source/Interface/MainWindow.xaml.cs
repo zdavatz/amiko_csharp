@@ -793,8 +793,7 @@ namespace AmiKoWindows
                 TitleItem item = box.SelectedItem as TitleItem;
                 if (item != null && item.Id != null)
                 {
-                    var file = String.Format("{0}.amk", item.Title);
-                    _prescriptions.LoadFile(file);
+                    _prescriptions.LoadFile(item.Title);
                     EnableButton("SavePrescriptionButton", false);
 
                     FillPlaceDate();
@@ -836,6 +835,71 @@ namespace AmiKoWindows
             }
             else
                 e.Handled = false;
+        }
+
+        // export
+        private void FileName_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+
+            ListBox box = sender as ListBox;
+            if (box != null)
+            {
+                FrameworkElement element = e.OriginalSource as FrameworkElement;
+                if (element != null)
+                {
+                    ListBoxItem li = (ListBoxItem)box.ItemContainerGenerator.ContainerFromItem(element.DataContext);
+                    var item = li.Content as TitleItem;
+
+                    string[] paths = new string[1];
+                    var path = _prescriptions.FindFilePathByName(item.Title);
+                    if (path != null)
+                        paths[0] = path;
+
+                    DragDrop.DoDragDrop(this, new DataObject(DataFormats.FileDrop, paths), DragDropEffects.Copy);
+                    e.Handled = true;
+                }
+            }
+            e.Handled = false;
+        }
+
+        private void FileName_DragEnter(object sender, DragEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effects = DragDropEffects.All;
+            else
+                e.Effects = DragDropEffects.None;
+
+            e.Handled = true;
+        }
+
+        private void FileName_DragOver(object sender, DragEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+            e.Handled = true;
+        }
+
+        private void FileName_DragLeave(object sender, DragEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+            e.Handled = true;
+        }
+
+        // import
+        private void FileName_Drop(object sender, DragEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+
+            var box = sender as ListBox;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // TODO
+                object data = e.Data.GetData(typeof(string));
+                Log.WriteLine("data: {0}", data);
+            }
+            e.Handled = true;
         }
         #endregion
 
