@@ -113,7 +113,7 @@ namespace AmiKoWindows
                 + "</head>";
             HtmlText = headStr + htmlStr;
 
-            SetSectionTitles(a);
+            UpdateSectionTitleList(a);
         }
 
         public async Task ShowReport()
@@ -138,12 +138,12 @@ namespace AmiKoWindows
             }
         }
 
-        public void SetSectionTitles(Article a)
+        public void UpdateSectionTitleList(Article a)
         {
-            SectionTitles.Clear();  
+            SectionTitleListItems.Clear();
             // List of section titles
             List<TitleItem> listOfSectionTitles = a.ListOfSectionTitleItems();
-            SectionTitles.AddRange(listOfSectionTitles);
+            SectionTitleListItems.AddRange(listOfSectionTitles);
         }
 
         public void LoadHtmlFromFile(string filePath)

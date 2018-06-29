@@ -154,9 +154,7 @@ namespace AmiKoWindows
             SetBrowserEmulationMode();
         }
 
-        /**
-         * Returns an element in main area after datatemplate is switched by trigger
-         */
+        // Returns an element in main area after datatemplate is switched by trigger
         private FrameworkElement GetElementIn(string elementName, ContentControl area)
         {
             if (area == null || !(area is ContentControl))
@@ -172,7 +170,6 @@ namespace AmiKoWindows
                 presenter.ApplyTemplate();
                 element = presenter.ContentTemplate.FindName(elementName, presenter) as FrameworkElement;
             }
-            //Log.WriteLine("element: {0}", element);
             return element;
         }
 
@@ -209,16 +206,12 @@ namespace AmiKoWindows
             else
                 element = _browser;
 
-            //Log.WriteLine("element: {0}", element);
             return element;
         }
 
         public async void SetState(string state)
         {
             // TODO: Fix Search result items after state changed with query Volltext -> Volltext
-            //Log.WriteLine("old state: {0}", _uiState.GetState());
-            //Log.WriteLine("str state: {0}", state);
-
             if (_uiState.GetState() == UIState.State.Favorites)
                 _fullTextDb.ClearFoundEntries();
 
@@ -230,8 +223,6 @@ namespace AmiKoWindows
                 SetState(UIState.State.Interactions);
             else if (state.Equals("Prescriptions"))
                 SetState(UIState.State.Prescriptions);
-
-            //Log.WriteLine("new state: {0}", _uiState.GetState());
 
             if (_uiState.FullTextQueryEnabled)
                 if (state.Equals("Farovites"))
@@ -295,7 +286,6 @@ namespace AmiKoWindows
                 this.StatusBar.DataContext = _statusBarHelper;
             }
 
-            // uistate
             if (state == UIState.State.Compendium)
             {
                 this.DataContext = new ViewType("Html");
@@ -306,9 +296,9 @@ namespace AmiKoWindows
                 else
                 {
                     this.SearchResult.DataContext = _sqlDb;
-                    var titles = GetElementIn("SectionTitles", RightArea) as ListBox;
-                    if (titles != null)
-                        titles.DataContext = _fachInfo;
+                    var box = GetElementIn("SectionTitleList", RightArea) as ListBox;
+                    if (box != null)
+                        box.DataContext = _fachInfo;
 
                     var browser = GetView() as WebBrowser;
                     if (browser != null)
@@ -328,9 +318,9 @@ namespace AmiKoWindows
                 else
                 {
                     this.SearchResult.DataContext = _sqlDb;
-                    var titles = GetElementIn("SectionTitles", RightArea) as ListBox;
-                    if (titles != null)
-                        titles.DataContext = _fachInfo;
+                    var box = GetElementIn("SectionTitleList", RightArea) as ListBox;
+                    if (box != null)
+                        box.DataContext = _fachInfo;
 
                     var browser = GetView() as WebBrowser;
                     if (browser != null)
@@ -350,9 +340,9 @@ namespace AmiKoWindows
                 else
                 {
                     this.SearchResult.DataContext = _sqlDb;
-                    var titles = GetElementIn("SectionTitles", RightArea) as ListBox;
-                    if (titles != null)
-                        titles.DataContext = _interactions;
+                    var box = GetElementIn("SectionTitleList", RightArea) as ListBox;
+                    if (box != null)
+                        box.DataContext = _interactions;
 
                     var browser = GetView() as WebBrowser;
                     if (browser != null)
@@ -389,7 +379,7 @@ namespace AmiKoWindows
                 else
                 {
                     this.SearchResult.DataContext = _sqlDb;
-                    var names = GetElementIn("FileNames", RightArea) as ListBox;
+                    var names = GetElementIn("FileNameList", RightArea) as ListBox;
                     if (names != null)
                         names.DataContext = _prescriptions;
 
@@ -409,9 +399,9 @@ namespace AmiKoWindows
         public void SetFullTextSearchDataContext()
         {
             this.SearchResult.DataContext = _fullTextDb;
-            var titles = GetElementIn("SectionTitles", RightArea) as ListBox;
-            if (titles != null)
-                titles.DataContext = _fullTextSearch;
+            var box = GetElementIn("SectionTitleList", RightArea) as ListBox;
+            if (box != null)
+                box.DataContext = _fullTextSearch;
 
             var browser = GetView() as WebBrowser;
             if (browser != null)
@@ -474,9 +464,8 @@ namespace AmiKoWindows
 
         private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // ... Get control that raised this event.
             var textBox = sender as TextBox;
-            // ... Change Window Title.
+            // Change Window Title.
             string text = textBox.Text;
             if (text.Length > 0)
             {
@@ -494,9 +483,7 @@ namespace AmiKoWindows
             }
         }
 
-        /**
-         * Listens to click events in search box
-         */
+        // Listens to click events in search box
         private async void OnSearchTextBox_PreviewMouseDown(object sender, RoutedEventArgs e)
         {
             this.SearchTextBox.Text = "";
@@ -528,9 +515,7 @@ namespace AmiKoWindows
             //e.Handled = true; don't set here
         }
 
-        /**
-         * This event handler is called when the user selects the title in the search result
-         */
+        // This event handler is called when the user selects the title in the search result
         static long? _searchSelectionItemId = 0;
         static string _searchSelectionItemHash = "";
         private async void OnSearchItem_Selection(object sender, SelectionChangedEventArgs e)
@@ -593,14 +578,11 @@ namespace AmiKoWindows
                     double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
                     if (numResults > 0)
                         _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numResults, elapsedTime));
-                    //Log.WriteLine("Item " + _searchSelectionItemId + " -> " + sw.ElapsedMilliseconds + "ms");
                 }
             }
         }
 
-        /**
-         * This event handler is called when the user selects a package
-         */
+        // This event handler is called when the user selects a package
         static long? _searchSelectionChildItemId = 0;
         private async void OnSearchChildItem_Selection(object sender, SelectionChangedEventArgs e)
         {
@@ -659,13 +641,11 @@ namespace AmiKoWindows
 
         private void SearchChildItem_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            // do nothing
-            e.Handled = false;
+            e.Handled = false;  // do nothing
         }
 
         private void SearchChildItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //Log.WriteLine("query: {0}", _uiState.GetQueryTypeAsName());
             if (e.ChangedButton == MouseButton.Left)
             {
                 // NOTE:
@@ -740,22 +720,6 @@ namespace AmiKoWindows
             }
         }
 
-        private async void FileNameContextMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            Log.WriteLine(sender.GetType().Name);
-            var item = (sender as MenuItem)?.DataContext as TitleItem;
-            Log.WriteLine("item: {0}", item);
-            if (item != null && !item.Title.Equals(string.Empty))
-            {
-                var file = item.Title;
-                await _prescriptions.DeleteFile(file);
-                _prescriptions.LoadFiles();
-
-                var button = GetElementIn("NewPrescriptionButton", this.MainArea);
-                button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            }
-        }
-
         private void DeleteMedicationButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
@@ -771,10 +735,9 @@ namespace AmiKoWindows
             }
         }
 
-        /**
-        * Event handler called when the user selects a section title, injects javascript into Browser window
-        */
-        private void OnSectionTitle_Selection(object sender, SelectionChangedEventArgs e)
+        #region SectionTitleList EventHandlers
+        // Event handler called when the user selects a section title, injects javascript into Browser window
+        private void SectionTitle_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
 
@@ -801,8 +764,26 @@ namespace AmiKoWindows
                 }
             }
         }
+        #endregion
 
-        private void OnFileName_Selection(object sender, SelectionChangedEventArgs e)
+        #region FileNameList EventHandlers
+        private async void FileNameContextMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+            var item = (sender as MenuItem)?.DataContext as TitleItem;
+            Log.WriteLine("item: {0}", item);
+            if (item != null && !item.Title.Equals(string.Empty))
+            {
+                var file = item.Title;
+                await _prescriptions.DeleteFile(file);
+                _prescriptions.LoadFiles();
+
+                var button = GetElementIn("NewPrescriptionButton", this.MainArea);
+                button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            }
+        }
+
+        private void FileName_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
 
@@ -822,7 +803,7 @@ namespace AmiKoWindows
             }
         }
 
-        private async void OnFileName_KeyDown(object sender, KeyEventArgs e)
+        private async void FileName_KeyDown(object sender, KeyEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
 
@@ -856,6 +837,7 @@ namespace AmiKoWindows
             else
                 e.Handled = false;
         }
+        #endregion
 
         private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
         {
@@ -983,7 +965,6 @@ namespace AmiKoWindows
             this.SearchTextBox.Focus();
             UIState.State state = _uiState.GetState();
 
-            //Log.WriteLine("source.Name: {0}", source.Name);
             if (query == UIState.Query.Fulltext)
             {
                 _uiState.SetQuery(UIState.Query.Fulltext);
@@ -992,7 +973,6 @@ namespace AmiKoWindows
                 // only change data context (keep state)
                 SetDataContext(state);
 
-                //Log.WriteLine("state: {0}", _uiState.GetState());
                 if (state == UIState.State.Favorites) {
                     await _fullTextDb.RetrieveFavorites();
                 } else {
@@ -1028,34 +1008,26 @@ namespace AmiKoWindows
             }
         }
 
-        /**
-         * Injects javascript into the current browser
-         */
+        // Injects javascript into the current browser
         public void InjectJS(string jsCode)
         {
-            //Log.WriteLine(String.Format("jsCode.Length: {0}", jsCode.Length));
             var browser = GetView() as WebBrowser;
             if (browser != null)
-            {
                 browser.InvokeScript("execScript", new Object[] { jsCode, "JavaScript" });
-            }
         }
 
         private void WebBrowser_Loaded(object sender, EventArgs e)
         {
-            //Log.WriteLine(sender.GetType().Name);
             // Pass
         }
 
         private void WebBrowser_LoadCompleted(object sender, NavigationEventArgs e)
         {
-            //Log.WriteLine(sender.GetType().Name);
             // Pass, See InjectJS
         }
 
         private async void WebBrowser_Navigating(object sender, NavigatingCancelEventArgs e)
         {
-            //Log.WriteLine(sender.GetType().Name);
             // First page needs to be loaded in webBrowser control
             if (!_willNavigate)
             {
@@ -1083,6 +1055,8 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
+            Log.WriteLine(source.Name);
+
             this.DataContext = new ViewType("Form", true);
             e.Handled = true;
         }
@@ -1092,6 +1066,8 @@ namespace AmiKoWindows
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
                 return;
+
+            Log.WriteLine(source.Name);
 
             ViewType viewType;
             viewType = this.DataContext as ViewType;
@@ -1109,7 +1085,7 @@ namespace AmiKoWindows
         {
             Keyboard.ClearFocus();
 
-            var box = GetElementIn("FileNames", this.RightArea) as ListBox;
+            var box = GetElementIn("FileNameList", this.RightArea) as ListBox;
             if (box?.Items.Count > 0)
                 box.SelectedIndex = -1;
 
@@ -1117,8 +1093,8 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
+            Log.WriteLine(source.Name);
             _prescriptions.Renew();
-            Log.WriteLine("{0}", _prescriptions.Medications.Count);
 
             FillPlaceDate();
 
@@ -1169,7 +1145,7 @@ namespace AmiKoWindows
                 Keyboard.ClearFocus();
                 _prescriptions.LoadFiles();
 
-                var box = GetElementIn("FileNames", this.RightArea) as ListBox;
+                var box = GetElementIn("FileNameList", this.RightArea) as ListBox;
                 if (box?.Items.Count > 0)
                     box.SelectedIndex = 0;
 
@@ -1187,6 +1163,7 @@ namespace AmiKoWindows
                 return;
 
             Log.WriteLine(source.Name);
+
             e.Handled = true;
         }
 
@@ -1354,15 +1331,9 @@ namespace AmiKoWindows
             {
                 var text = (string)e.NewValue;
                 if (text != null && text != string.Empty)
-                {
-                    //Log.WriteLine("text (len): {0}", text.Length);
                     browser.NavigateToString(text);
-                }
                 else
-                {
-                    //Log.WriteLine("empty");
-                    browser.NavigateToString(" "); // empty document
-                }
+                    browser.NavigateToString(" "); // set empty document
             }
         }
     }

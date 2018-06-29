@@ -187,9 +187,9 @@
                     <!-- Compendium, Favorites and Interactions -->
                     <DataTemplate x:Key="TitleListTemplate" DataType="Html">
                         <ListBox
-                            x:Name="SectionTitles" Style="{StaticResource SectionTitlesListBox}"
-                            KeyboardNavigation.DirectionalNavigation="Cycle" ItemsSource="{Binding Path=SectionTitles}"
-                            Margin="0,0,0,0" Padding="0,16,0,16" SelectionChanged="OnSectionTitle_Selection">
+                            x:Name="SectionTitleList" Style="{StaticResource SectionTitleListBox}"
+                            KeyboardNavigation.DirectionalNavigation="Cycle" ItemsSource="{Binding Path=SectionTitleListItems}"
+                            Margin="0,0,0,0" Padding="0,16,0,16" SelectionChanged="SectionTitle_SelectionChanged">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Height="24">
@@ -204,9 +204,11 @@
                     <!-- Prescriptions -->
                     <DataTemplate x:Key="FileListTemplate" DataType="Form">
                         <ListBox
-                            Name="FileNames" Style="{StaticResource FileNamesListBox}" ItemContainerStyle="{StaticResource FileNamesListBoxItem}"
-                            KeyboardNavigation.DirectionalNavigation="Cycle" ItemsSource="{Binding Path=FileNames}"
-                            Margin="0,0,0,0" Padding="0,16,0,16" SelectionChanged="OnFileName_Selection" KeyDown="OnFileName_KeyDown">
+                            Name="FileNameList" Style="{StaticResource FileNameListBox}" ItemContainerStyle="{StaticResource FileNameListBoxItem}"
+                            KeyboardNavigation.DirectionalNavigation="Cycle" ItemsSource="{Binding Path=FileNameListItems}"
+                            Margin="0,0,0,0" Padding="0,16,0,16" SelectionChanged="FileName_SelectionChanged" KeyDown="FileName_KeyDown"
+                            AllowDrop="True"
+                            MouseDown="FileName_MouseDown" DragEnter="FileName_DragEnter" DragLeave="FileName_DragLeave" DragOver="FileName_DragOver" Drop="FileName_Drop">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Height="24" Orientation="Horizontal">

@@ -271,7 +271,7 @@ namespace AmiKoWindows
             string htmlStr = "";
             List<TitleItem> listOfSectionTitles = new List<TitleItem>();
 
-            SectionTitles.Clear();
+            SectionTitleListItems.Clear();
 
             Dictionary<string, string> listOfATCCodePairs = new Dictionary<string, string>();
             foreach (var kvp1 in _articleBasket)
@@ -306,7 +306,7 @@ namespace AmiKoWindows
                 listOfSectionTitles.Add(new TitleItem { Id = "Legende", Title = "Legende" });
             }
 
-            SectionTitles.AddRange(listOfSectionTitles);
+            SectionTitleListItems.AddRange(listOfSectionTitles);
 
             return htmlStr;
         }

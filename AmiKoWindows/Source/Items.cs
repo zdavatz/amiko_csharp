@@ -189,7 +189,7 @@ namespace AmiKoWindows
                             IsFavorite = article.IsFavorite,
                             ChildItems = new ChildItemsObservableCollection
                             {
-                                new ChildItem() { Text = numPackagesStr, Color=Colors.SearchBoxChildItems }
+                                new ChildItem() { Text = numPackagesStr, Color = Colors.SearchBoxChildItems }
                             }
                         });
                     }
@@ -208,7 +208,7 @@ namespace AmiKoWindows
                             IsFavorite = article.IsFavorite,
                             ChildItems = new ChildItemsObservableCollection
                             {
-                                new ChildItem() { Text = article.Author, Color=Colors.SearchBoxChildItems }
+                                new ChildItem() { Text = article.Author, Color = Colors.SearchBoxChildItems }
                             }
                         });
                     }
@@ -276,7 +276,7 @@ namespace AmiKoWindows
                             IsFavorite = article.IsFavorite,
                             ChildItems = new ChildItemsObservableCollection
                             {
-                                new ChildItem() { Text = article.Regnrs, Color=Colors.SearchBoxChildItems }
+                                new ChildItem() { Text = article.Regnrs, Color = Colors.SearchBoxChildItems }
                             }
                         });
                     }

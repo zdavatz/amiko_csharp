@@ -141,7 +141,7 @@ namespace AmiKoWindows
             HtmlText = $"<!DOCTYPE html><html>{headStr}{htmlStr}</html>";
 
             // Section titles
-            SectionTitles.Clear();
+            SectionTitleListItems.Clear();
             List<TitleItem> listOfSectionTitles = new List<TitleItem>();
             foreach (var kvp in chaptersCountMap)
             {
@@ -151,7 +151,7 @@ namespace AmiKoWindows
                         Title = kvp.Key + " (" + kvp.Value + ")"
                     });
             }
-            SectionTitles.AddRange(listOfSectionTitles);
+            SectionTitleListItems.AddRange(listOfSectionTitles);
         }
         #endregion
     }

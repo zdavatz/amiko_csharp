@@ -315,7 +315,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="SectionTitlesListBox" TargetType="{x:Type ListBox}">
+    <Style x:Key="SectionTitleListBox" TargetType="{x:Type ListBox}">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
@@ -323,7 +323,7 @@
         <Setter Property="IsTabStop" Value="False" />
     </Style>
 
-    <Style x:Key="FileNamesListBox" TargetType="{x:Type ListBox}">
+    <Style x:Key="FileNameListBox" TargetType="{x:Type ListBox}">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
@@ -333,7 +333,7 @@
         <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
     </Style>
 
-    <Style x:Key="FileNamesListBoxItem" TargetType="{x:Type ListBoxItem}">
+    <Style x:Key="FileNameListBoxItem" TargetType="{x:Type ListBoxItem}">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Foreground" Value="Black" />

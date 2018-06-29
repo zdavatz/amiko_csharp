@@ -52,15 +52,15 @@ namespace AmiKoWindows
             }
         }
 
-        private TitleItemsObservableCollection _sectionTitles = new TitleItemsObservableCollection();
-        public TitleItemsObservableCollection SectionTitles
+        private TitleItemsObservableCollection _sectionTitleListItems = new TitleItemsObservableCollection();
+        public TitleItemsObservableCollection SectionTitleListItems
         {
-            get { return _sectionTitles; }
+            get { return _sectionTitleListItems; }
             private set
             {
-                if (value != _sectionTitles)
+                if (value != _sectionTitleListItems)
                 {
-                    _sectionTitles = value;
+                    _sectionTitleListItems = value;
                     // OnPropertyChanged is not necessary here...
                 }
             }

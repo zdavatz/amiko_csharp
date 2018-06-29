@@ -89,14 +89,14 @@ namespace AmiKoWindows
         }
 
         #region Prescription File Manager
-        private TitleItemsObservableCollection _fileNames = new TitleItemsObservableCollection();
-        public TitleItemsObservableCollection FileNames
+        private TitleItemsObservableCollection _fileNameListItems = new TitleItemsObservableCollection();
+        public TitleItemsObservableCollection FileNameListItems
         {
-            get { return _fileNames; }
+            get { return _fileNameListItems; }
             private set
             {
-                if (value != _fileNames)
-                    _fileNames = value;
+                if (value != _fileNameListItems)
+                    _fileNameListItems = value;
             }
         }
         #endregion
@@ -133,10 +133,10 @@ namespace AmiKoWindows
             MedicationListItems.AddRange(Medications);
         }
 
-        public void UpdateFileNames()
+        public void UpdateFileNameList()
         {
-            FileNames.Clear();
-            FileNames.AddRange(Files); // string[]
+            FileNameListItems.Clear();
+            FileNameListItems.AddRange(Files); // string[]
         }
 
         public void Renew()
@@ -295,7 +295,7 @@ namespace AmiKoWindows
                     }
                 }
             }
-            UpdateFileNames();
+            UpdateFileNameList();
         }
 
         private string GetFilePathByPlaceDate(string placeDate)
