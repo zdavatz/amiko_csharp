@@ -870,8 +870,6 @@ namespace AmiKoWindows
 
         private void FileName_DragEnter(object sender, DragEventArgs e)
         {
-            Log.WriteLine(sender.GetType().Name);
-
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
                 e.Effects = DragDropEffects.All;
             else
@@ -882,13 +880,13 @@ namespace AmiKoWindows
 
         private void FileName_DragOver(object sender, DragEventArgs e)
         {
-            Log.WriteLine(sender.GetType().Name);
+            // pass
             e.Handled = true;
         }
 
         private void FileName_DragLeave(object sender, DragEventArgs e)
         {
-            Log.WriteLine(sender.GetType().Name);
+            e.Effects = DragDropEffects.None;
             e.Handled = true;
         }
 
