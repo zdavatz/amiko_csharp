@@ -38,6 +38,8 @@ namespace AmiKoWindows
         const string AMIKO_FILE_PLACE_DATE_FORMAT = "dd.MM.yyyy (HH:mm:ss)";
         const string FILE_NAME_SUFFIX_DATE_FORMAT = "yyyy-MM-dd'T'HHmmss";
 
+        private static readonly string notSaved = String.Format("({0})", Properties.Resources.unsaved);
+
         private static readonly Regex AMIKO_FILE_EXTENSION_RGX = new Regex(
             String.Format(@"{0}\z", AMIKO_FILE_SUFFIX), RegexOptions.Compiled);
 
@@ -46,6 +48,10 @@ namespace AmiKoWindows
         #region Public Fields
         public string PlaceDate { get; set; }
         public string Hash { get; set; }
+
+        public string ActiveFileName { get; set; }
+        public string ActiveFilePath { get; set; }
+        public bool IsPreview = false;
 
         public Contact ActiveContact { get; set; }
         public Account ActiveAccount { get; set; }
@@ -153,22 +159,34 @@ namespace AmiKoWindows
 
         public async Task Save(bool asRewriting)
         {
-            if (this.Hash != null && this.PlaceDate != null && asRewriting)
+            var currentPath = "";
+            if (this.Hash != null && this.PlaceDate != null)
             {
-                var currentPath = GetFilePathByPlaceDate(this.PlaceDate);
-                if (currentPath != null && File.Exists(currentPath))
+                currentPath = GetFilePathByPlaceDate(this.PlaceDate);
+
+                if (asRewriting &&
+                    currentPath != null && File.Exists(currentPath))
                     File.Delete(currentPath);
             }
 
-            this.Hash = Utilities.GenerateUUID(); // always as new here (on save as new and rewriting both)
-            this.PlaceDate = GeneratePlaceDate();
+            var outputPath = "";
+            Log.WriteLine("IsPreview: {0}", IsPreview);
+            Log.WriteLine("currentPath: {0}", currentPath);
+            if (IsPreview && currentPath != null && !currentPath.Equals(string.Empty))
+                outputPath = currentPath;
+            else
+            {
+                this.Hash = Utilities.GenerateUUID(); // always as new here (on save as new and rewriting both)
+                this.PlaceDate = GeneratePlaceDate();
+
+                outputPath = GetFilePathByDateString(Utilities.GetLocalTimeAsString(FILE_NAME_SUFFIX_DATE_FORMAT));
+            }
 
             if (this.Hash == null)
                 return;
 
             await Task.Run(() =>
             {
-                var outputPath = GetFilePathByDateString(Utilities.GetLocalTimeAsString(FILE_NAME_SUFFIX_DATE_FORMAT));
                 try
                 {
                     if (File.Exists(outputPath))
@@ -180,6 +198,9 @@ namespace AmiKoWindows
                         byte[] bytes = new UTF8Encoding(false).GetBytes(json);
                         output.Write(bytes, 0, bytes.Length);
                     }
+                    this.ActiveFileName = AMIKO_FILE_EXTENSION_RGX.Replace(Path.GetFileName(outputPath), "");
+                    this.ActiveFilePath = outputPath;
+                    this.IsPreview = false;
                 }
                 catch (IOException ex)
                 {
@@ -199,12 +220,21 @@ namespace AmiKoWindows
                 string userDir = Path.Combine(_dataDir, ActiveContact.Uid);
                 if (EnforceDir(userDir))
                 {
-                    var path = FindFilePathByName(name);
+                    var path = FindFilePathByNameFor(name, ActiveContact);
                     if (path == null)
+                        return;
+
+                    if (ActiveFilePath != null && !path.Equals(ActiveFilePath))
                         return;
 
                     var item = new TitleItem() { Id = name, Title = name };
                     _Files.Remove(item);
+
+                    if (ActiveFileName != null && ActiveFileName.Equals(name))
+                    {
+                        this.ActiveFileName = null;
+                        this.ActiveFilePath = null;
+                    }
 
                     File.Delete(path);
                 }
@@ -257,12 +287,17 @@ namespace AmiKoWindows
 
         public void LoadFile(string name)
         {
-            var path = FindFilePathByName(name);
+            var path = FindFilePathByNameFor(name, ActiveContact);
             if (path == null)
                 return;
 
             string json = Utilities.Base64Decode(File.ReadAllText(path)) ?? "{}";
-            DeserializeJson(json);
+            DeserializeCurrentData(json);
+
+            // TODO set contact/account (here)
+
+            this.ActiveFileName = name;
+            this.ActiveFilePath = path;
             UpdateMedicationList();
         }
 
@@ -281,8 +316,9 @@ namespace AmiKoWindows
                         var name = Path.GetFileName(path);
                         if (!AMIKO_FILE_EXTENSION_RGX.IsMatch(name))
                             continue;
+                        name = AMIKO_FILE_EXTENSION_RGX.Replace(name, "");
                         var item = new TitleItem() {
-                            Id = name, Title = AMIKO_FILE_EXTENSION_RGX.Replace(name, "")
+                            Id = name, Title = name,
                         };
                         _Files.Add(item);
                     }
@@ -291,23 +327,109 @@ namespace AmiKoWindows
             UpdateFileNameList();
         }
 
-        public string FindFilePathByName(string name)
+        // Loads .amk file in outside of the space of this app. Returns true if the loading succeeds.
+        public bool PreviewFile(string path)
         {
-            var path = GetFilePathByName(name);
             if (!File.Exists(path))
+                return false;
+
+            var name = AMIKO_FILE_EXTENSION_RGX.Replace(Path.GetFileName(path), "");
+
+            // same file exists for active contact
+            var currentPath = FindFilePathByNameAndHashFor(name, Hash, ActiveContact);
+            if (currentPath != null)
+                return false;
+
+            // open original file
+            string rawInput = File.ReadAllText(path);
+            string json = Utilities.Base64Decode(rawInput) ?? "{}";
+
+            var presenter = DeserializeJson(json);
+            if (presenter == null || presenter.patient == null)
+                return false;
+
+            string existingPath = null;
+
+            existingPath = FindFilePathByNameAndHashFor(name, presenter.prescription_hash, presenter.Contact);
+            if (existingPath != null)
+                return false; // exists
+
+            Renew();
+
+            this.Hash = presenter.prescription_hash;
+            this.PlaceDate = presenter.place_date;
+
+            this._Medications = new HashSet<Medication>(presenter.MedicationsList);
+            UpdateMedicationList();
+
+            this.ActiveFileName = String.Format("{0} {1}", name, notSaved);
+            // TODO: use Inbox
+            this.ActiveFilePath = path;
+            this.IsPreview = true;
+
+            if ((GetFilePathByName(name)) == null)
+            {  // this prescription is not for active contact
+                _Files.Clear();
+            }
+            else
+            {  // new prescription for active contact
+
+            }
+
+            this.ActiveContact = presenter.Contact;
+            this.ActiveAccount = presenter.Account;
+
+            var item = new TitleItem() { Id = ActiveFileName, Title = ActiveFileName };
+            _Files.Add(item);
+            UpdateFileNameList();
+
+            return true;
+        }
+
+        public string FindFilePathByNameFor(string name, Contact contact)
+        {
+            var path = GetFilePathByNameFor(name, contact);
+            if (path == null || !File.Exists(path))
                 return null;
+            return path;
+        }
+
+        // strict file finder method with check using `patient_id` and `prescription_hash`
+        public string FindFilePathByNameAndHashFor(string name, string hash, Contact contact)
+        {
+            if (hash == null)
+                return null;
+
+            var path = GetFilePathByNameFor(name, contact);
+            if (path == null || !File.Exists(path))
+                return null;
+
+            string json = Utilities.Base64Decode(File.ReadAllText(path)) ?? "{}";
+            var presenter = DeserializeJson(json);
+            if (presenter == null || presenter.prescription_hash == null ||
+                presenter.Contact == null || presenter.Contact.Uid == null || presenter.Contact.Uid.Equals(string.Empty))
+                return null;
+
+            // check patient_id (a.k.a uid, contact hash)
+            if (!presenter.Contact.Uid.Equals(contact.Uid))
+                return null;
+
+            // check prescription_hash
+            if (!presenter.prescription_hash.Equals(hash))
+                return null;
+
             return path;
         }
 
         #region Private Path Utilities
         // e.g. RZ_2018-06-29T204622 (without ext)
-        private string GetFilePathByName(string name)
+        private string GetFilePathByNameFor(string name, Contact contact)
         {
             string path = null;
-            if (ActiveContact == null)
+            if (contact == null || contact.Uid == null || contact.Uid.Equals(string.Empty))
                 return path;
 
-            string userDir = Path.Combine(_dataDir, ActiveContact.Uid);
+            string userDir = Path.Combine(_dataDir, contact.Uid);
             if (!EnforceDir(userDir))
                 return path;
             else
@@ -316,6 +438,11 @@ namespace AmiKoWindows
                 Log.WriteLine("path: {0}", path);
                 return path;
             }
+        }
+
+        private string GetFilePathByName(string name)
+        {
+            return GetFilePathByNameFor(name, ActiveContact);
         }
 
         private string GetFilePathByDateString(string dateString)
@@ -356,15 +483,20 @@ namespace AmiKoWindows
             return serializer.Serialize(presenter);
         }
 
-        // Restores properties from json file
-        private void DeserializeJson(string json)
+        private PrescriptionJSONPresenter DeserializeJson(string json)
         {
             var serializer = new JavaScriptSerializer();
-            var presenter = serializer.Deserialize<PrescriptionJSONPresenter>(json);
+            return serializer.Deserialize<PrescriptionJSONPresenter>(json);
+        }
 
-            if (ActiveContact == null || presenter.patient == null)
+        // Restores json data into current properties
+        private void DeserializeCurrentData(string json)
+        {
+            var presenter = DeserializeJson(json);
+            if (ActiveContact == null || presenter == null || presenter.patient == null)
                 return;
 
+            // TODO more validations
             if (ActiveContact.Uid.Equals(presenter.patient.patient_id))
             {
                 this.Hash = presenter.prescription_hash;

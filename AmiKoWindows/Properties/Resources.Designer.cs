@@ -752,6 +752,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Ungespeichert.
+        /// </summary>
+        public static string unsaved {
+            get {
+                return ResourceManager.GetString("unsaved", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Aktualisieren.
         /// </summary>
         public static string update {

@@ -27,6 +27,8 @@ namespace AmiKoWindows
 {
     public class Contact : INotifyPropertyChanged
     {
+        public const string TIME_STAMP_DATE_FORMAT = "yyyy-MM-dd'T'HHmmss";
+
         private const int GENDER_FEMALE = 0;
         private const int GENDER_MALE = 1;
 

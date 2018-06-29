@@ -222,6 +222,7 @@ namespace AmiKoWindows
                             return;
                         }
 
+                        contact.TimeStamp = Utilities.GetLocalTimeAsString(Contact.TIME_STAMP_DATE_FORMAT);
                         string[] columnNames = DATABASE_COLUMNS.Where(
                             k => k != KEY_ID && k != KEY_UID).ToArray();
 
@@ -272,6 +273,7 @@ namespace AmiKoWindows
                             return;
                         }
 
+                        contact.TimeStamp = Utilities.GetLocalTimeAsString(Contact.TIME_STAMP_DATE_FORMAT);
                         string[] columnNames = DATABASE_COLUMNS.Where(
                             k => k != KEY_ID).ToArray();
                         var parameters = columnNames.Select(c =>
@@ -322,6 +324,24 @@ namespace AmiKoWindows
             return result;
         }
 
+        public bool ValidateContact(Contact contact)
+        {
+            string[] columnNames = DATABASE_COLUMNS.Where(
+                k => k != KEY_ID && k != KEY_UID).ToArray();
+
+            bool hasError = false;
+            foreach (var item in contact.ToParameters(columnNames))
+            {
+                var columnName = item.Key.Replace("@", "");
+                if (!ValidateField(columnName, item.Value))
+                {
+                    hasError = true;
+                    break;
+                }
+            }
+            return hasError;
+        }
+
         public void UpdateContactList()
         {
             ContactListItems.Clear();
@@ -336,9 +356,13 @@ namespace AmiKoWindows
             return this.Count;
         }
 
-        public async Task<Contact> GetContactById(long id)
+        public async Task<Contact> GetContactById(long? id)
         {
             Contact contact = null;
+
+            if (id == null)
+                return contact;
+
             await Task.Run(() =>
             {
                 if (_db.IsOpen())
@@ -352,6 +376,36 @@ namespace AmiKoWindows
                         //Log.WriteLine("Query: {0}", q);
                         cmd.CommandText = q;
                         cmd.Parameters.AddWithValue("@id", id);
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                                contact = CursorToContact(reader);
+                        }
+                    }
+                }
+            });
+            return contact;
+        }
+
+        public async Task<Contact> GetContactByUid(string uid)
+        {
+            Contact contact = null;
+
+            if (uid == null || uid.Equals(string.Empty))
+                return contact;
+
+            await Task.Run(() =>
+            {
+                if (_db.IsOpen())
+                {
+                    using (SQLiteCommand cmd = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+                        var q = String.Format(
+                            @"SELECT * FROM {0} WHERE {1} = @uid LIMIT 1;",
+                            DATABASE_TABLE, KEY_UID);
+                        cmd.CommandText = q;
+                        cmd.Parameters.AddWithValue("@uid", uid);
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())

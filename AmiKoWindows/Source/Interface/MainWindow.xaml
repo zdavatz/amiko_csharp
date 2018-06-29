@@ -206,7 +206,8 @@
                         <ListBox
                             Name="FileNameList" Style="{StaticResource FileNameListBox}" ItemContainerStyle="{StaticResource FileNameListBoxItem}" ItemsSource="{Binding Path=FileNameListItems}"
                             SelectionChanged="FileName_SelectionChanged" KeyDown="FileName_KeyDown"
-                            AllowDrop="True" PreviewMouseLeftButtonDown="FileName_PreviewMouseLeftButtonDown"
+                            AllowDrop="True"
+                            PreviewMouseLeftButtonDown="FileName_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="FileName_PreviewMouseLeftButtonUp" MouseMove="FileName_MouseMove"
                             DragEnter="FileName_DragEnter" DragLeave="FileName_DragLeave" DragOver="FileName_DragOver" Drop="FileName_Drop">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
@@ -292,6 +293,7 @@
             </Controls:Flyout>
 
             <Controls:Flyout
+                x:Name="AddressBook"
                 Position="Top" Width="700" Height="600" Theme="Adapt" IsOpen="{Binding Path=HasBook}"
                 IsModal="True"
                 AnimateOpacity="True"
@@ -306,6 +308,7 @@
             </Controls:Flyout>
 
             <Controls:Flyout
+                x:Name="ProfileCard"
                 Position="Top" Width="450" Height="580" Theme="Adapt" IsOpen="{Binding Path=HasCard}"
                 IsModal="True"
                 AnimateOpacity="True"

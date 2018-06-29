@@ -54,8 +54,11 @@ namespace AmiKoWindows
         static bool _willNavigate = false;
 
         UIState _uiState;
+
         MainSqlDb _sqlDb;
         FullTextDb _fullTextDb;
+        PatientDb _patientDb;
+
         FachInfo _fachInfo;
         FullTextSearch _fullTextSearch;
         InteractionsCart _interactions;
@@ -67,6 +70,7 @@ namespace AmiKoWindows
         FrameworkElement _manager;
 
         private ContextMenu _searchResultContextMenu = null;
+        private bool _fileNameListItemInDrag = false;
 
         #region Public Fields
         private string _SearchTextBoxWaterMark;
@@ -138,6 +142,10 @@ namespace AmiKoWindows
             // Initialize interactions cart
             _interactions = new InteractionsCart();
             _interactions.LoadFiles();
+
+            // Initialize Patient (In-App Address Book) DB
+            _patientDb = new PatientDb();
+            _patientDb.Init();
 
             // Initialize prescriptions container
             _prescriptions = new PrescriptionsBox();
@@ -379,9 +387,9 @@ namespace AmiKoWindows
                 else
                 {
                     this.SearchResult.DataContext = _sqlDb;
-                    var names = GetElementIn("FileNameList", RightArea) as ListBox;
-                    if (names != null)
-                        names.DataContext = _prescriptions;
+                    var box = GetElementIn("FileNameList", RightArea) as ListBox;
+                    if (box != null)
+                        box.DataContext = _prescriptions;
 
                     var medicationList = GetElementIn("MedicationList", MainArea) as ListBox;
                     if (medicationList != null)
@@ -508,9 +516,9 @@ namespace AmiKoWindows
                 return;
 
             ListBox listBox = sender as ListBox;
-            var item = ItemsControl.ContainerFromElement(listBox, e.OriginalSource as DependencyObject) as ListBoxItem;
-            if (item != null)
-                item.IsSelected = false;
+            var li = ItemsControl.ContainerFromElement(listBox, e.OriginalSource as DependencyObject) as ListBoxItem;
+            if (li != null)
+                li.IsSelected = false;
 
             //e.Handled = true; don't set here
         }
@@ -705,8 +713,8 @@ namespace AmiKoWindows
                 t.Left = (text.Equals(string.Empty)) ? 0 : 2;
                 box.Padding = t;
 
-                var listBoxItem = this.FindVisualAncestor<ListBoxItem>(box);
-                var item = listBoxItem.Content as CommentItem;
+                var li = this.FindVisualAncestor<ListBoxItem>(box);
+                var item = li.Content as CommentItem;
                 if (item != null)
                 {
                     var index = item.Id;
@@ -725,8 +733,8 @@ namespace AmiKoWindows
             Log.WriteLine(sender.GetType().Name);
 
             var button = sender as Button;
-            var listBoxItem = this.FindVisualAncestor<ListBoxItem>(button);
-            var item = listBoxItem.Content as CommentItem;
+            var li = this.FindVisualAncestor<ListBoxItem>(button);
+            var item = li.Content as CommentItem;
             if (item != null)
             {
                 var index = item.Id;
@@ -806,6 +814,7 @@ namespace AmiKoWindows
         {
             Log.WriteLine(sender.GetType().Name);
 
+            e.Handled = false;
             if (e.Key == Key.Back)
             {
                 var dialog = Utilities.MessageDialog(
@@ -833,39 +842,62 @@ namespace AmiKoWindows
                     }
                 }
             }
-            else
-                e.Handled = false;
         }
 
-        // export
-        private void FileName_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        // NOTE:
+        // User must start drag while keeping mouse button down.
+        // See also PreviewMouseLeftButtonDown/Up
+        private void FileName_MouseMove(object sender, MouseEventArgs e)
         {
-            Log.WriteLine(sender.GetType().Name);
-
-            ListBox box = sender as ListBox;
             e.Handled = false;
 
+            if (!_fileNameListItemInDrag)
+                return;
+
+            Log.WriteLine(sender.GetType().Name);
+
+            _fileNameListItemInDrag = false;
+
+            ListBox box = sender as ListBox;
             if (box == null)
                 return;
 
-            FrameworkElement element = e.OriginalSource as FrameworkElement;
-            if (element == null)
+            var element = e.OriginalSource as FrameworkElement;
+            if (element == null || element.DataContext == null)
                 return;
 
-            ListBoxItem li = (ListBoxItem)box.ItemContainerGenerator.ContainerFromItem(element.DataContext);
+            var li = box.ItemContainerGenerator.ContainerFromItem(element.DataContext) as ListBoxItem;
             if (li == null)
                 return;
 
             var item = li.Content as TitleItem;
+            if (item == null)
+                return;
 
             string[] paths = new string[1];
-            var path = _prescriptions.FindFilePathByName(item.Title);
+            var path = _prescriptions.FindFilePathByNameFor(item.Title, ActiveContact);
             if (path != null)
             {
                 paths[0] = path;
                 DragDrop.DoDragDrop(this, new DataObject(DataFormats.FileDrop, paths), DragDropEffects.Copy);
-                e.Handled = true;
             }
+            e.Handled = true;
+        }
+
+        private void FileName_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+            _fileNameListItemInDrag = true;
+
+            e.Handled = false;
+        }
+
+        private void FileName_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+            _fileNameListItemInDrag = false;
+
+            e.Handled = false;
         }
 
         private void FileName_DragEnter(object sender, DragEventArgs e)
@@ -874,13 +906,18 @@ namespace AmiKoWindows
                 e.Effects = DragDropEffects.All;
             else
                 e.Effects = DragDropEffects.None;
-
-            e.Handled = true;
         }
 
         private void FileName_DragOver(object sender, DragEventArgs e)
         {
-            // pass
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effects = DragDropEffects.Copy;
+                e.Handled = true;
+                return;
+            }
+
+            e.Effects = DragDropEffects.None;
             e.Handled = true;
         }
 
@@ -890,21 +927,95 @@ namespace AmiKoWindows
             e.Handled = true;
         }
 
-        // import
-        private void FileName_Drop(object sender, DragEventArgs e)
+        // Handle drop of files from explorer etc. (import)
+        private async void FileName_Drop(object sender, DragEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
 
-            var box = sender as ListBox;
+            if (_fileNameListItemInDrag)
+                return;
+
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                // TODO
-                object data = e.Data.GetData(typeof(string));
-                Log.WriteLine("data: {0}", data);
+                string[] paths = (string [])e.Data.GetData(DataFormats.FileDrop);
+                if (paths.Length < 1)
+                    return;
+
+                // treat only first file (same as macOS)
+                var path = paths[0];
+                Log.WriteLine("path: {0}", path);
+
+                var result = _prescriptions.PreviewFile(path);
+                if (!result)
+                    return;
+
+                // TODO: open existing file (already imported)
+
+                EnableButton("SavePrescriptionButton", false);
+
+                Contact contactInFile = _prescriptions.ActiveContact;
+                if (contactInFile == null || contactInFile.Uid == null || contactInFile.Uid.Equals(string.Empty) ||
+                    !_patientDb.ValidateContact(contactInFile))
+                {   // invalid
+                    _prescriptions.Renew();
+                    return;
+                }
+
+                // TODO more validations here (account, medications)
+
+                this.ActiveContact = contactInFile;
+                this.ActiveAccount = _prescriptions.ActiveAccount;
+
+                // save/update only contact from this .amk here
+                Contact contact = await _patientDb.GetContactByUid(ActiveContact.Uid);
+                if ((contact != null && contact.Uid != null && !contact.Uid.Equals(string.Empty)) &&
+                     contact.Uid.Equals(ActiveContact.Uid))
+                {   // update
+                    await _patientDb.UpdateContact(ActiveContact);
+                    this.ActiveContact = await _patientDb.GetContactByUid(contact.Uid);
+                    await _patientDb.LoadAllContacts();
+                }
+                else
+                {   // save as new
+                    ActiveContact.TimeStamp = Utilities.GetLocalTimeAsString(Contact.TIME_STAMP_DATE_FORMAT);
+                    long? id = await _patientDb.InsertContact(ActiveContact);
+                    if (id != null && id.Value > 0)
+                        ActiveContact.Id = id.Value;
+                }
+                SetActiveFileAsSelected();
+                EnableButton("SavePrescriptionButton", true);
+
+                FillContactFields();
+                FillAccountFields();
+                FillPlaceDate();
+
+                // update current entry in address book
+                var control = AddressBook.Content as AddressBookControl;
+                if (control != null)
+                    control.CurrentEntry = ActiveContact;
+
+                e.Handled = true;
             }
-            e.Handled = true;
+            e.Handled = false;
         }
         #endregion
+
+        private void SetActiveFileAsSelected()
+        {
+            var box = GetElementIn("FileNameList", this.RightArea) as ListBox;
+            if (box != null)
+            {
+                for (var i = 0; i < box.Items.Count; i++)
+                {
+                    var item = box.Items[i] as TitleItem;
+                    if (item != null && item.Title.Equals(_prescriptions.ActiveFileName))
+                    {
+                        box.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
 
         private async void FavoriteCheckBox_Checked(object sender, RoutedEventArgs e)
         {
@@ -1212,9 +1323,7 @@ namespace AmiKoWindows
                 Keyboard.ClearFocus();
                 _prescriptions.LoadFiles();
 
-                var box = GetElementIn("FileNameList", this.RightArea) as ListBox;
-                if (box?.Items.Count > 0)
-                    box.SelectedIndex = 0;
+                SetActiveFileAsSelected();
 
                 FillPlaceDate();
                 EnableButton("SavePrescriptionButton", false);
@@ -1248,10 +1357,12 @@ namespace AmiKoWindows
                 // doesn't renew here (keep current medications)
                 _prescriptions.Hash = Utilities.GenerateUUID();
                 _prescriptions.PlaceDate = null;
+                _prescriptions.ActiveContact = ActiveContact;
+                _prescriptions.LoadFiles();
             }
+            else
+                _prescriptions.ActiveContact = ActiveContact;
 
-            _prescriptions.ActiveContact = ActiveContact;
-            _prescriptions.LoadFiles();
             FillContactFields();
             FillPlaceDate();
 

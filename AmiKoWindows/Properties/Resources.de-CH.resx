@@ -348,6 +348,9 @@
   <data name="title" xml:space="preserve">
     <value>Titel</value>
   </data>
+  <data name="unsaved" xml:space="preserve">
+    <value>ungespeichert</value>
+  </data>
   <data name="update" xml:space="preserve">
     <value>Aktualisieren</value>
   </data>

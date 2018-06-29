@@ -348,6 +348,9 @@
   <data name="title" xml:space="preserve">
     <value>Titre</value>
   </data>
+  <data name="unsaved" xml:space="preserve">
+    <value>non sauvegardé</value>
+  </data>
   <data name="update" xml:space="preserve">
     <value>Misa à jour</value>
   </data>

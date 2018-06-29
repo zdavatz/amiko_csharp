@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -100,12 +101,7 @@ namespace AmiKoWindows
             {
                 // This block is called after InitializeComponent
                 this.DataContext = this;
-                this.ContactList.DataContext = _patientDb;
             };
-
-            // Initialize Patient (In-App Address Book) DB
-            _patientDb = new PatientDb();
-            _patientDb.Init();
 
             InitializeComponent();
 
@@ -120,25 +116,29 @@ namespace AmiKoWindows
         private void Control_Loaded(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(e.ToString());
+
+            _parent = this.Parent as MahApps.Metro.Controls.Flyout;
+            _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
+
+            // maybe we should make shared instance...
+            FieldInfo info = _mainWindow.GetType().GetField("_patientDb", BindingFlags.NonPublic | BindingFlags.Instance);
+            _patientDb = (PatientDb)info.GetValue(_mainWindow);
+
+            this.ContactList.DataContext = _patientDb;
             this.CurrentEntry = new Contact();
         }
 
         private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
         {
-            _parent = this.Parent as MahApps.Metro.Controls.Flyout;
-            _parent.AreAnimationsEnabled = false;
-
             var isVisible = e.NewValue as bool?;
-            if (isVisible != null && isVisible.Value)
+            if (isVisible != null && (bool)isVisible.Value)
             {
-                _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
+                _parent.AreAnimationsEnabled = false; // disable closing animation
                 _patientDb.UpdateContactList();
                 this.RawContactsCount = _patientDb.Count;
 
                 SetSelectedIndex();
             }
-            else
-                _mainWindow = null;
         }
 
         #region Actions on Left Pane
@@ -369,8 +369,7 @@ namespace AmiKoWindows
                     var item = this.ContactList.SelectedItem as Item;
                     if (item != null && item.Id != null)
                     {
-                        long id = item.Id.Value;
-                        Contact contact = await _patientDb.GetContactById(id);
+                        Contact contact = await _patientDb.GetContactById(item.Id.Value);
                         if (contact != null)
                         {
                             this.CurrentEntry = contact;
@@ -487,10 +486,10 @@ namespace AmiKoWindows
             if (CurrentEntry == null)
                 return;
 
-            for (var i = 0; i < this.ContactList.Items.Count; i++)
+            for (var i = 0; i < ContactList.Items.Count; i++)
             {
-                var item = this.ContactList.Items[i] as Item;
-                if (item != null && item.Id == this.CurrentEntry.Id)
+                var item = ContactList.Items[i] as Item;
+                if (item != null && item.Id == CurrentEntry.Id)
                 {
                     this.ContactList.SelectedIndex = i;
                     break;
