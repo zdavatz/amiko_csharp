@@ -233,7 +233,7 @@ Finally, You need to debug the app with `DebugView` or `WinDbg` etc. (Set `/p:Lo
 * [WinDbg](https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/debugger-download-tools)
 
 
-#### Using Visual Studio
+#### Building with Visual Studio Community Edition
 
 ```txt
 1. AmiKoWindows -> Navigate {AmiKoDesitin|CoMedDesitin} -> Properties (Right Click)
@@ -246,12 +246,14 @@ Finally, You need to debug the app with `DebugView` or `WinDbg` etc. (Set `/p:Lo
 5. Rebuild target project (AmiKoDesitin or CoMedDesitin)
 6. (Publish)
 ```
+#### Building with Visual Studio Community Edition via Commandline
 or you can add this to your Path
 ```
 C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\amd64
 ```
 and this will work as well from your Source Directory
 ```
+MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Build /p:Configuration=Debu2
 MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Clean
 MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Build /p:Configuration=Debug
 Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
