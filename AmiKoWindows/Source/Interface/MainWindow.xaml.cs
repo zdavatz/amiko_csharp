@@ -843,24 +843,29 @@ namespace AmiKoWindows
             Log.WriteLine(sender.GetType().Name);
 
             ListBox box = sender as ListBox;
-            if (box != null)
-            {
-                FrameworkElement element = e.OriginalSource as FrameworkElement;
-                if (element != null)
-                {
-                    ListBoxItem li = (ListBoxItem)box.ItemContainerGenerator.ContainerFromItem(element.DataContext);
-                    var item = li.Content as TitleItem;
-
-                    string[] paths = new string[1];
-                    var path = _prescriptions.FindFilePathByName(item.Title);
-                    if (path != null)
-                        paths[0] = path;
-
-                    DragDrop.DoDragDrop(this, new DataObject(DataFormats.FileDrop, paths), DragDropEffects.Copy);
-                    e.Handled = true;
-                }
-            }
             e.Handled = false;
+
+            if (box == null)
+                return;
+
+            FrameworkElement element = e.OriginalSource as FrameworkElement;
+            if (element == null)
+                return;
+
+            ListBoxItem li = (ListBoxItem)box.ItemContainerGenerator.ContainerFromItem(element.DataContext);
+            if (li == null)
+                return;
+
+            var item = li.Content as TitleItem;
+
+            string[] paths = new string[1];
+            var path = _prescriptions.FindFilePathByName(item.Title);
+            if (path != null)
+            {
+                paths[0] = path;
+                DragDrop.DoDragDrop(this, new DataObject(DataFormats.FileDrop, paths), DragDropEffects.Copy);
+                e.Handled = true;
+            }
         }
 
         private void FileName_DragEnter(object sender, DragEventArgs e)
