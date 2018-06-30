@@ -77,10 +77,10 @@ namespace AmiKoWindows
         }
 
         #region Prescription File Manager
-        private HashSet<TitleItem> _Files = new HashSet<TitleItem>();
-        public List<TitleItem> Files
+        private HashSet<FileItem> _Files = new HashSet<FileItem>();
+        public List<FileItem> Files
         {
-            get { return new List<TitleItem>(_Files); }
+            get { return new List<FileItem>(_Files); }
         }
         #endregion
         #endregion
@@ -98,8 +98,8 @@ namespace AmiKoWindows
         }
 
         #region Prescription File Manager
-        private TitleItemsObservableCollection _fileNameListItems = new TitleItemsObservableCollection();
-        public TitleItemsObservableCollection FileNameListItems
+        private FileItemsObservableCollection _fileNameListItems = new FileItemsObservableCollection();
+        public FileItemsObservableCollection FileNameListItems
         {
             get { return _fileNameListItems; }
             private set
@@ -227,14 +227,19 @@ namespace AmiKoWindows
                     if (ActiveFilePath != null && !path.Equals(ActiveFilePath))
                         return;
 
-                    var item = new TitleItem() { Id = name, Title = name };
-                    _Files.Remove(item);
+                    var item = _Files.First(f => {
+                        return (f.Name != null && f.Name.Equals(name) &&
+                                f.Path != null && f.Path.Equals(path));
+                    });
+                    if (item != null)
+                        _Files.Remove(item);
 
                     if (ActiveFileName != null && ActiveFileName.Equals(name))
                     {
                         this.ActiveFileName = null;
                         this.ActiveFilePath = null;
                     }
+                    this.Hash = null;
 
                     File.Delete(path);
                 }
@@ -317,8 +322,11 @@ namespace AmiKoWindows
                         if (!AMIKO_FILE_EXTENSION_RGX.IsMatch(name))
                             continue;
                         name = AMIKO_FILE_EXTENSION_RGX.Replace(name, "");
-                        var item = new TitleItem() {
-                            Id = name, Title = name,
+
+                        var item = new FileItem() {
+                            Name = name,
+                            Hash = ReadHash(path),
+                            Path = path,
                         };
                         _Files.Add(item);
                     }
@@ -348,16 +356,15 @@ namespace AmiKoWindows
             if (presenter == null || presenter.patient == null)
                 return false;
 
-            string existingPath = null;
+            var hash = presenter.prescription_hash;
+            if (hash == null || hash.Equals(string.Empty))
+                return false;
 
-            existingPath = FindFilePathByNameAndHashFor(name, presenter.prescription_hash, presenter.Contact);
+            var existingPath = FindFilePathByNameAndHashFor(name, hash, presenter.Contact);
             if (existingPath != null)
                 return false; // exists
 
             Renew();
-
-            this.Hash = presenter.prescription_hash;
-            this.PlaceDate = presenter.place_date;
 
             this._Medications = new HashSet<Medication>(presenter.MedicationsList);
             UpdateMedicationList();
@@ -379,9 +386,17 @@ namespace AmiKoWindows
             this.ActiveContact = presenter.Contact;
             this.ActiveAccount = presenter.Account;
 
-            var item = new TitleItem() { Id = ActiveFileName, Title = ActiveFileName };
+            var item = new FileItem() {
+                Name = ActiveFileName,
+                Hash = hash,
+                Path = ActiveFilePath,
+            };
+
             _Files.Add(item);
             UpdateFileNameList();
+
+            this.Hash = hash;
+            this.PlaceDate = presenter.place_date;
 
             return true;
         }
@@ -394,34 +409,38 @@ namespace AmiKoWindows
             return path;
         }
 
-        // strict file finder method with check using `patient_id` and `prescription_hash`
+        // strict file finder method with check using `prescription_hash` (hash)
         public string FindFilePathByNameAndHashFor(string name, string hash, Contact contact)
         {
-            if (hash == null)
+            if (hash == null || hash.Equals(string.Empty))
                 return null;
 
             var path = GetFilePathByNameFor(name, contact);
             if (path == null || !File.Exists(path))
                 return null;
 
-            string json = Utilities.Base64Decode(File.ReadAllText(path)) ?? "{}";
-            var presenter = DeserializeJson(json);
-            if (presenter == null || presenter.prescription_hash == null ||
-                presenter.Contact == null || presenter.Contact.Uid == null || presenter.Contact.Uid.Equals(string.Empty))
-                return null;
-
-            // check patient_id (a.k.a uid, contact hash)
-            if (!presenter.Contact.Uid.Equals(contact.Uid))
-                return null;
-
-            // check prescription_hash
-            if (!presenter.prescription_hash.Equals(hash))
+            var hashInFile = ReadHash(path);
+            if (hashInFile == null || !hashInFile.Equals(hash))
                 return null;
 
             return path;
         }
 
-        #region Private Path Utilities
+        #region Private Utilities
+        private string ReadHash(string path)
+        {
+            if (path == null || !File.Exists(path))
+                return null;
+
+            string json = Utilities.Base64Decode(File.ReadAllText(path)) ?? "{}";
+            // get hash only for valid file
+            var presenter = DeserializeJson(json);
+            if (presenter == null || presenter.prescription_hash == null)
+                return null;
+
+            return presenter.prescription_hash;
+        }
+
         // e.g. RZ_2018-06-29T204622 (without ext)
         private string GetFilePathByNameFor(string name, Contact contact)
         {

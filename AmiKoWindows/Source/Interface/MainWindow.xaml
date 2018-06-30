@@ -205,7 +205,7 @@
                     <DataTemplate x:Key="FileListTemplate" DataType="Form">
                         <ListBox
                             Name="FileNameList" Style="{StaticResource FileNameListBox}" ItemContainerStyle="{StaticResource FileNameListBoxItem}" ItemsSource="{Binding Path=FileNameListItems}"
-                            SelectionChanged="FileName_SelectionChanged" KeyDown="FileName_KeyDown"
+                            SelectionChanged="FileName_SelectionChanged" KeyDown="FileName_KeyDown" Loaded="FileNameList_Loaded"
                             AllowDrop="True"
                             PreviewMouseLeftButtonDown="FileName_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="FileName_PreviewMouseLeftButtonUp" MouseMove="FileName_MouseMove"
                             DragEnter="FileName_DragEnter" DragLeave="FileName_DragLeave" DragOver="FileName_DragOver" Drop="FileName_Drop">
@@ -213,11 +213,11 @@
                                 <DataTemplate>
                                     <StackPanel Height="24" Orientation="Horizontal">
                                         <TextBlock
-                                            Text="{Binding Path=Title}" Margin="0" Padding="9,3,18,3" Foreground="{Binding Path=Color}"
+                                            Text="{Binding Path=Name}" Margin="0" Padding="9,3,18,3"
                                             Height="18" VerticalAlignment="Center">
                                             <TextBlock.ContextMenu>
                                                 <ContextMenu Name="ItemContextMenu">
-                                                    <MenuItem Header="{Binding Path=Title}" Focusable="False" IsEnabled="False" />
+                                                    <MenuItem Header="{Binding Path=Name}" Focusable="False" IsEnabled="False" />
                                                     <MenuItem Header="{x:Static p:Resources.delete}" Click="FileNameContextMenuItem_Click" />
                                                 </ContextMenu>
                                             </TextBlock.ContextMenu>

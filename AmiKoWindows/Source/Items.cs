@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 
 namespace AmiKoWindows
@@ -51,9 +52,28 @@ namespace AmiKoWindows
         public string Color { get; set; }
     }
 
+    public class FileItem
+    {
+        public long? Id { get; set; }
+        public string Name { get; set; }
+        public string Hash { get; set; }
+        public string Path { get; set; }
+        public bool IsValid
+        {
+            get
+            {
+                return (Id != null &&
+                    Name != null && !Name.Equals(string.Empty) &&
+                    Hash != null && !Hash.Equals(string.Empty) &&
+                    Path != null && !Path.Equals(string.Empty) &&
+                    File.Exists(Path));
+            }
+        }
+    }
+
     public class CommentItem
     {
-        public int Id { get; set; }
+        public long? Id { get; set; }
         public string Text { get; set; }
         public string Comment { get; set; }
     }
@@ -400,7 +420,7 @@ namespace AmiKoWindows
         }
     }
 
-    // for PrescriptionsBox
+    // for medications in prescription
     public class CommentItemsObservableCollection : ObservableCollection<CommentItem>
     {
         private bool _suppressNotification = false;
@@ -421,9 +441,42 @@ namespace AmiKoWindows
             {
                 Add(new CommentItem()
                 {
-                    Id = list.IndexOf(medication),
+                    Id = (long)list.IndexOf(medication),
                     Text = medication.Package,
                     Comment = medication.Comment,
+                });
+            }
+
+            _suppressNotification = false;
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+    }
+
+    // for prescription file names list
+    public class FileItemsObservableCollection : ObservableCollection<FileItem>
+    {
+        private bool _suppressNotification = false;
+
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (!_suppressNotification)
+                base.OnCollectionChanged(e);
+        }
+
+        public void AddRange(List<FileItem> list)
+        {
+            if (list == null)
+                throw new ArgumentNullException("list");
+
+            _suppressNotification = true;
+            foreach (FileItem item in list)
+            {
+                Add(new FileItem()
+                {
+                    Id = (long)list.IndexOf(item),
+                    Name = item.Name,
+                    Hash = item.Hash,
+                    Path = item.Path,
                 });
             }
 

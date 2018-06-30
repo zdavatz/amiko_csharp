@@ -752,7 +752,7 @@ namespace AmiKoWindows
             ListBox box = sender as ListBox;
             if (box?.Items.Count > 0)
             {
-                TitleItem item = box.SelectedItem as TitleItem;
+                var item = box.SelectedItem as TitleItem;
                 if (item != null && item.Id != null)
                 {
                     if (!_uiState.FullTextQueryEnabled)
@@ -775,15 +775,19 @@ namespace AmiKoWindows
         #endregion
 
         #region FileNameList EventHandlers
+        private void FileNameList_Loaded(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+            SetActiveFileAsSelected();
+        }
+
         private async void FileNameContextMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
-            var item = (sender as MenuItem)?.DataContext as TitleItem;
-            Log.WriteLine("item: {0}", item);
-            if (item != null && !item.Title.Equals(string.Empty))
+            var item = (sender as MenuItem)?.DataContext as FileItem;
+            if (item != null && item.IsValid)
             {
-                var file = item.Title;
-                await _prescriptions.DeleteFile(file);
+                await _prescriptions.DeleteFile(item.Name);
                 _prescriptions.LoadFiles();
 
                 var button = GetElementIn("NewPrescriptionButton", this.MainArea);
@@ -795,13 +799,14 @@ namespace AmiKoWindows
         {
             Log.WriteLine(sender.GetType().Name);
 
-            ListBox box = sender as ListBox;
+            var box = sender as ListBox;
             if (box?.Items.Count > 0)
             {
-                TitleItem item = box.SelectedItem as TitleItem;
-                if (item != null && item.Id != null)
+                var item = box.SelectedItem as FileItem;
+                if (item != null && item.IsValid)
                 {
-                    _prescriptions.LoadFile(item.Title);
+                    _prescriptions.Hash = item.Hash;
+                    _prescriptions.LoadFile(item.Name);
                     EnableButton("SavePrescriptionButton", false);
 
                     FillPlaceDate();
@@ -827,11 +832,11 @@ namespace AmiKoWindows
                     ListBox box = sender as ListBox;
                     if (box?.Items.Count > 0)
                     {
-                        TitleItem item = box.SelectedItem as TitleItem;
-                        if (item != null && item.Id != null)
+                        var item = box.SelectedItem as FileItem;
+                        if (item != null && item.IsValid)
                         {
-                            var file = item.Title;
-                            await _prescriptions.DeleteFile(file);
+                            var name = item.Name;
+                            await _prescriptions.DeleteFile(name);
                             _prescriptions.Renew();
                             _prescriptions.LoadFiles();
                             EnableButton("SavePrescriptionButton", false);
@@ -870,12 +875,12 @@ namespace AmiKoWindows
             if (li == null)
                 return;
 
-            var item = li.Content as TitleItem;
+            var item = li.Content as FileItem;
             if (item == null)
                 return;
 
             string[] paths = new string[1];
-            var path = _prescriptions.FindFilePathByNameFor(item.Title, ActiveContact);
+            var path = _prescriptions.FindFilePathByNameFor(item.Name, ActiveContact);
             if (path != null)
             {
                 paths[0] = path;
@@ -1002,13 +1007,14 @@ namespace AmiKoWindows
 
         private void SetActiveFileAsSelected()
         {
-            var box = GetElementIn("FileNameList", this.RightArea) as ListBox;
+            var box = GetElementIn("FileNameList", RightArea) as ListBox;
             if (box != null)
             {
                 for (var i = 0; i < box.Items.Count; i++)
                 {
-                    var item = box.Items[i] as TitleItem;
-                    if (item != null && item.Title.Equals(_prescriptions.ActiveFileName))
+                    var item = box.Items[i] as FileItem;
+                    if (item != null && item.IsValid &&
+                        item.Name.Equals(_prescriptions.ActiveFileName) && item.Hash.Equals(_prescriptions.Hash))
                     {
                         box.SelectedIndex = i;
                         break;
@@ -1351,12 +1357,20 @@ namespace AmiKoWindows
 
             Log.WriteLine(source.Name);
 
-            if (_prescriptions.ActiveContact != null && ActiveContact != null &&
+            if (ActiveContact == null)
+                return;
+
+            if (_prescriptions.ActiveContact != null &&
                 _prescriptions.ActiveContact.Uid != ActiveContact.Uid) // change of contact (patient)
             {
                 // doesn't renew here (keep current medications)
                 _prescriptions.Hash = Utilities.GenerateUUID();
                 _prescriptions.PlaceDate = null;
+                _prescriptions.ActiveContact = ActiveContact;
+                _prescriptions.LoadFiles();
+            }
+            else if (_prescriptions.ActiveContact == null)
+            {
                 _prescriptions.ActiveContact = ActiveContact;
                 _prescriptions.LoadFiles();
             }

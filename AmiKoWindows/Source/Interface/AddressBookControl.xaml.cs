@@ -360,21 +360,21 @@ namespace AmiKoWindows
         // DoubleClick
         private async void ContactList_MouseDoubleClick(object sender, RoutedEventArgs e)
         {
-            if (object.ReferenceEquals(sender, this.ContactList))
+            if (object.ReferenceEquals(sender, ContactList))
             {
                 if (ContactList.SelectedItem != null)
                 {
                     Log.WriteLine("{0}", ContactList.SelectedItem);
 
-                    var item = this.ContactList.SelectedItem as Item;
+                    var item = ContactList.SelectedItem as Item;
                     if (item != null && item.Id != null)
                     {
                         Contact contact = await _patientDb.GetContactById(item.Id.Value);
                         if (contact != null)
                         {
                             this.CurrentEntry = contact;
-                            if (this._mainWindow != null)
-                                this._mainWindow.ActiveContact = contact;
+                            if (_mainWindow != null)
+                                _mainWindow.ActiveContact = contact;
                         }
                     }
                 }
