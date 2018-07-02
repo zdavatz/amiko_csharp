@@ -1402,14 +1402,20 @@ namespace AmiKoWindows
                 _prescriptions.LoadFiles();
             }
             else if (_prescriptions.ActiveContact == null)
-            {
+            {   // first time
                 _prescriptions.ActiveContact = ActiveContact;
                 _prescriptions.LoadFiles();
             }
             else
                 _prescriptions.ActiveContact = ActiveContact;
 
+            // reset account
+            var card = ProfileCard.Content as ProfileCardControl;
+            this.ActiveAccount = card?.CurrentEntry;
+            _prescriptions.ActiveAccount = this.ActiveAccount;
+
             FillContactFields();
+            FillAccountFields();
             FillPlaceDate();
 
             EnableButton("SendPrescriptionButton", false);
