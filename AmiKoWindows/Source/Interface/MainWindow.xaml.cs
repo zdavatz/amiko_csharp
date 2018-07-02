@@ -445,7 +445,7 @@ namespace AmiKoWindows
             }
         }
 
-        private async void MainWindowLoaded(object sender, RoutedEventArgs e)
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             _statusBarHelper.IsConnectedToInternet();
             await _sqlDb?.Search(_uiState, "");
@@ -468,6 +468,11 @@ namespace AmiKoWindows
 
             this.DataContext = new ViewType("Html");
             SwitchViewContext();
+        }
+
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            Utilities.CleanupInbox();
         }
 
         private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -806,8 +811,8 @@ namespace AmiKoWindows
                 if (item != null && item.IsValid)
                 {
                     _prescriptions.Hash = item.Hash;
-                    _prescriptions.LoadFile(item.Name);
-                    EnableButton("SavePrescriptionButton", false);
+                    _prescriptions.ReadFile(item.Path);
+                    EnableButton("SavePrescriptionButton", _prescriptions.IsPreview);
 
                     FillPlaceDate();
                     e.Handled = true;
@@ -950,7 +955,11 @@ namespace AmiKoWindows
                 var path = paths[0];
                 Log.WriteLine("path: {0}", path);
 
-                var result = _prescriptions.PreviewFile(path);
+                string inboxPath = _prescriptions.ImportFileIntoInbox(path);
+                if (inboxPath == null) // invalid file
+                    return;
+
+                var result = _prescriptions.PreviewFile(inboxPath);
                 if (!result)
                     return;
 

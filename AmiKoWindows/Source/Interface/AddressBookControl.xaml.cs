@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -469,7 +470,12 @@ namespace AmiKoWindows
                     this.RawContactsCount = _patientDb.Count;
                     _patientDb.UpdateContactList();
 
-                    await PrescriptionsBox.DeleteAllPrescriptions(uid);
+                    string[] dirs = new string[]
+                    {
+                        Path.Combine(Utilities.GetInboxPath(), uid),
+                        Path.Combine(Utilities.PrescriptionsPath(), uid)
+                    };
+                    await Utilities.DeleteAll(dirs);
                 }
                 EnableMinusButton(false);
             }

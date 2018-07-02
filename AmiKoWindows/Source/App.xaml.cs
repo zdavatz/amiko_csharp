@@ -1,7 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Windows;
-using System;
 
 namespace AmiKoWindows
 {
@@ -23,6 +24,11 @@ namespace AmiKoWindows
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            base.OnStartup(e);
+
+            this.Properties["InboxPath"] = Utilities.NewInboxPath();
+            Log.WriteLine("InboxPath: {0}", this.Properties["InboxPath"]);
+
             SplashScreen splash = new SplashScreen();
             //splash.Show();
 
@@ -41,6 +47,18 @@ namespace AmiKoWindows
             */
 
             main.Show();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            Utilities.CleanupInbox();
+
+            base.OnExit(e);
+        }
+
+        private void App_SessionEnding(object sender, SessionEndingCancelEventArgs e)
+        {
+            Utilities.CleanupInbox();
         }
     }
 

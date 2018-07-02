@@ -27,6 +27,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -102,6 +103,7 @@ namespace AmiKoWindows
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppCompany(), AppName());
         }
 
+        #region Path Utilities
         public static string SQLiteDBPath()
         {
             return GetDbPath(Constants.AIPS_DB_BASE);
@@ -129,13 +131,6 @@ namespace AmiKoWindows
             return path;
         }
 
-        public static string AccountPictureFilePath()
-        {
-            string path = Path.Combine(
-                AppRoamingDataFolder(), Constants.ACCOUNT_PICTURE_FILE);
-            return path;
-        }
-
         public static string ReportPath()
         {
             string reportPath = "http://pillbox.oddb.org/amiko_report_de.html";
@@ -144,6 +139,110 @@ namespace AmiKoWindows
             return reportPath;
         }
 
+        public static string PrescriptionsPath()
+        {
+            string path = Path.Combine(AppRoamingDataFolder(), "amk");
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            return path;
+        }
+
+        public static string GetInboxPath()
+        {
+            return Application.Current.Properties["InboxPath"] as string;
+        }
+
+        // returns always new (temp) inbox directory
+        public static string NewInboxPath()
+        {
+            string path = GetTempDir("inbox");
+            while (Directory.Exists(path))
+                path = GetTempDir("inbox");
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            return path;
+        }
+
+        public static string AccountPictureFilePath()
+        {
+            string path = Path.Combine(
+                AppRoamingDataFolder(), Constants.ACCOUNT_PICTURE_FILE);
+            return path;
+        }
+        #endregion
+
+        public static void CleanupInbox()
+        {
+            var inbox = GetInboxPath();
+            Log.WriteLine("InboxPath: {0}", inbox);
+            if (inbox != null)
+            {
+                if (Directory.Exists(inbox))
+                {
+                    var info = new DirectoryInfo(inbox);
+                    Directory.Delete(info.FullName, true);
+                }
+            }
+        }
+
+        public async static Task DeleteAll(string[] dirs)
+        {
+            await Task.Run(() =>
+            {
+                foreach (var dir in dirs)
+                {
+                    if (!EnforceDir(dir))
+                        continue;
+
+                    var info = new DirectoryInfo(dir);
+                    foreach (FileInfo file in info.GetFiles())
+                        file.Delete();
+
+                    info.Delete(true);
+                }
+            });
+        }
+
+        public static void SaveImageFileAsPng(Stream input, Stream output)
+        {
+            using (var image = System.Drawing.Image.FromStream(input))
+            using (var bitmap = new Bitmap(image.Width, image.Height))
+            using (var graphics = Graphics.FromImage(bitmap))
+            {
+                graphics.CompositingQuality = CompositingQuality.HighSpeed;
+                graphics.SmoothingMode = SmoothingMode.HighSpeed;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                // save as same width/height
+                graphics.DrawImage(image, new Rectangle(0, 0, image.Width, image.Height));
+                bitmap.Save(output, ImageFormat.Png);
+            }
+        }
+
+        public static bool EnforceDir(string dir)
+        {
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+            return Directory.Exists(dir);
+        }
+
+        public static string Base64Encode(string input)
+        {
+            if (input == null)
+                return null;
+            var bytes = Encoding.UTF8.GetBytes(input);
+            return Convert.ToBase64String(bytes);
+        }
+
+        public static string Base64Decode(string input)
+        {
+            if (input == null)
+                return null;
+            var bytes = Convert.FromBase64String(input);
+            return Encoding.UTF8.GetString(bytes);
+        }
+
+        #region Private Directory Utilities
         private static string GetDbPath(string baseName)
         {
             string dbName = baseName + AppLanguage() + ".db";
@@ -152,6 +251,15 @@ namespace AmiKoWindows
                 dbPath = Path.Combine(AppExecutingFolder(), "Data", dbName);
             return dbPath;
         }
+
+        private static string GetTempDir(string name)
+        {
+            return Path.Combine(
+                Path.GetTempPath(),
+                String.Format("amiko.{0}.{1}.tmp", name, Path.GetRandomFileName())
+            );
+        }
+        #endregion
 
         #region General Functions
         // TitleCase -> snake_case
@@ -295,7 +403,9 @@ namespace AmiKoWindows
             }
             return (result + (result << (len & 31)));
         }
+        #endregion
 
+        #region Time Functions
         // GetUTCTimeAsString("yyyy-MM-dd'THH:mm.ss");
         public static string GetUTCTimeAsString(string formatString)
         {
@@ -316,37 +426,6 @@ namespace AmiKoWindows
             DateTime utcTime = DateTime.Parse(utcString);
             DateTime time = DateTime.SpecifyKind(utcTime, DateTimeKind.Utc);
             return time.ToLocalTime().ToString(formatString);
-        }
-
-        public static void SaveImageFileAsPng(Stream input, Stream output)
-        {
-            using (var image = System.Drawing.Image.FromStream(input))
-            using (var bitmap = new Bitmap(image.Width, image.Height))
-            using (var graphics = Graphics.FromImage(bitmap))
-            {
-                graphics.CompositingQuality = CompositingQuality.HighSpeed;
-                graphics.SmoothingMode = SmoothingMode.HighSpeed;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                // save as same width/height
-                graphics.DrawImage(image, new Rectangle(0, 0, image.Width, image.Height));
-                bitmap.Save(output, ImageFormat.Png);
-            }
-        }
-
-        public static string Base64Encode(string input)
-        {
-            if (input == null)
-                return null;
-            var bytes = Encoding.UTF8.GetBytes(input);
-            return Convert.ToBase64String(bytes);
-        }
-
-        public static string Base64Decode(string input)
-        {
-            if (input == null)
-                return null;
-            var bytes = Convert.FromBase64String(input);
-            return Encoding.UTF8.GetString(bytes);
         }
         #endregion
 
