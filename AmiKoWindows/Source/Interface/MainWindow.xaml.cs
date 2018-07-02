@@ -978,36 +978,36 @@ namespace AmiKoWindows
                 if (path.Contains(inboxDir) || path.Contains(amikoDir))
                     return;
 
-                // invalid file
-                string inboxPath = _prescriptions.ImportFileIntoInbox(path);
-                if (inboxPath == null)
+                // filepath in inbox/amiko (new or existing one if exists)
+                string filepath = _prescriptions.ImportFile(path);
+                if (filepath == null)
                     return;
-                // TODO open imported file (inbox)
 
-                var result = _prescriptions.ReadFileFromInbox(inboxPath);
-
-                // TODO validate medications existence in db
-
-                if (result == PrescriptionsBox.ReadResult.Found)
+                Xceed.Wpf.Toolkit.MessageBox dialog = null;
+                Log.WriteLine("filepath: {0}", filepath);
+                var result = _prescriptions.TakeFile(filepath);
+                Log.WriteLine("result: {0}", result);
+                if (result == PrescriptionsBox.Result.Invalid)
+                {
+                    // TODO message dialog
+                    return;
+                }
+                else if (result == PrescriptionsBox.Result.Found)
                 {
                     this.ActiveContact = _prescriptions.ActiveContact;
                     this.ActiveAccount = _prescriptions.ActiveAccount;
-                    // TODO message dialog
+
+                    var filename = Path.GetFileName(filepath);
+                    dialog = Utilities.MessageDialog(
+                        String.Format(Properties.Resources.msgPrescriptionFileFound, filename), "", "OK");
                 }
-                else if (result == PrescriptionsBox.ReadResult.Ok)
+                else if (result == PrescriptionsBox.Result.Ok)
                 {
-                    // TODO message dialog
-                }
-                else
-                {   // invalid, parseerror, DoesNotExist
-                    // TODO message dialog
-                    Log.WriteLine("inboxPath: {0}", inboxPath);
-                    return;
-                }
+                    // NOTE:
+                    // The timing of validations is little bit late... But
+                    // PrescriptionsBox does not notk _patientDb and _sqlDb :'(
 
-                if (result == PrescriptionsBox.ReadResult.Ok)
-                {   // import contact
-
+                    // import contact
                     Contact contactInFile = _prescriptions.ActiveContact;
                     if (contactInFile == null || contactInFile.Uid == null || contactInFile.Uid.Equals(string.Empty) ||
                         !_patientDb.ValidateContact(contactInFile))
@@ -1017,6 +1017,7 @@ namespace AmiKoWindows
                     }
 
                     // TODO account field validations
+                    // TODO medications
 
                     this.ActiveContact = contactInFile;
                     this.ActiveAccount = _prescriptions.ActiveAccount;
@@ -1052,6 +1053,9 @@ namespace AmiKoWindows
                 var control = AddressBook.Content as AddressBookControl;
                 if (control != null)
                     control.CurrentEntry = ActiveContact;
+
+                if (dialog != null)
+                    dialog.ShowDialog();
 
                 e.Handled = true;
             }

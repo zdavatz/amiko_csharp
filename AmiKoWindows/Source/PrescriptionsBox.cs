@@ -50,9 +50,9 @@ namespace AmiKoWindows
         string _amikoDir;
 
         #region Public Fields
-        public enum ReadResult
+        public enum Result
         {
-            DoesNotExist, Invalid, Found, ParseError, Ok
+            Invalid, Found, Ok
         }
 
         public string PlaceDate { get; set; }
@@ -216,11 +216,13 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                string amkDir = Path.Combine(_amikoDir, ActiveContact.Uid);
-                if (Utilities.EnforceDir(amkDir))
+                string aDir = Path.Combine(_amikoDir, ActiveContact.Uid);
+                string iDir = Path.Combine(_inboxDir, ActiveContact.Uid);
+
+                if (Utilities.EnforceDir(iDir) && Utilities.EnforceDir(iDir))
                 {
-                    var name = AMIKO_FILE_SUFFIX_RGX.Replace(Path.GetFileName(fullpath), "");
                     var path = fullpath;
+                    var name = AMIKO_FILE_SUFFIX_RGX.Replace(Path.GetFileName(fullpath), "");
 
                     if (!path.Contains(_inboxDir))
                         path = FindFilePathByNameFor(name, ActiveContact);
@@ -345,8 +347,41 @@ namespace AmiKoWindows
             UpdateFileNameList();
         }
 
-        // Copies valid file into (temporary) inbox directory
-        public string ImportFileIntoInbox(string path)
+        // Read file. The file must be in inbox or activecontact's directory
+        public void ReadFile(string fullpath)
+        {
+            ReadFileFor(fullpath, ActiveContact);
+        }
+
+        public void ReadFileFor(string fullpath, Contact contact)
+        {
+            var path = fullpath;
+            var name = AMIKO_FILE_SUFFIX_RGX.Replace(Path.GetFileName(path), "");
+
+            if (path.Contains(_inboxDir) && path.Contains(contact.Uid))
+                this.IsPreview = true;
+            else
+            {
+                this.IsPreview = false;
+                path = FindFilePathByNameFor(name, contact);
+            }
+
+            if (path == null)
+                return;
+
+            string json = Utilities.Base64Decode(File.ReadAllText(path)) ?? "{}";
+            DeserializeCurrentData(json, contact.Uid);
+
+            if (path.Contains(_inboxDir))
+                name = String.Format("{0} {1}", name, notSaved);
+
+            this.ActiveFileName = name;
+            this.ActiveFilePath = path;
+            UpdateMedicationList();
+        }
+
+        // Copies file if it it valid. Returns path.
+        public string ImportFile(string path)
         {
             var filename = Path.GetFileName(path);
 
@@ -367,16 +402,28 @@ namespace AmiKoWindows
             if (uid == null || uid.Equals(string.Empty))
                 return null; // invalid content
 
-            var destDir = Path.Combine(_inboxDir, uid);
+            string destDir = null;
+            string destPath = null;
+
+            // amiko
+            destDir = Path.Combine(_amikoDir, uid);
             if (!Utilities.EnforceDir(destDir))
                 return null;
 
-            var destPath = Path.Combine(destDir, filename);
+            destPath = Path.Combine(destDir, filename);
             Log.WriteLine("destPath: {0}", destPath);
-
-            // already exists
             if (File.Exists(destPath))
+                return destPath;
+
+            // inbox
+            destDir = Path.Combine(_inboxDir, uid);
+            if (!Utilities.EnforceDir(destDir))
                 return null;
+
+            destPath = Path.Combine(destDir, filename);
+            Log.WriteLine("destPath: {0}", destPath);
+            if (File.Exists(destPath))
+                return destPath;
 
             File.Copy(path, destPath);
             if (!File.Exists(destPath))
@@ -385,48 +432,21 @@ namespace AmiKoWindows
             return destPath;
         }
 
-        // Read file. The file must be in inbox or activecontact's directory
-        public void ReadFile(string fullpath)
+        // Reads .amk file in inbox/amiko, returns enum result (invalid/found/ok).
+        public Result TakeFile(string path)
         {
-            var path = fullpath;
-            var name = AMIKO_FILE_SUFFIX_RGX.Replace(Path.GetFileName(path), "");
-
-            if (path.Contains(_inboxDir))
-                this.IsPreview = true;
-            else
-            {
-                this.IsPreview = false;
-                path = FindFilePathByNameFor(name, ActiveContact);
-            }
-
-            if (path == null)
-                return;
-
-            string json = Utilities.Base64Decode(File.ReadAllText(path)) ?? "{}";
-            DeserializeCurrentData(json);
-
-            if (path.Contains(_inboxDir))
-                name = String.Format("{0} {1}", name, notSaved);
-
-            this.ActiveFileName = name;
-            this.ActiveFilePath = path;
-            UpdateMedicationList();
-        }
-
-        // Loads .amk file in inbox of the space of this app. Returns true if the loading succeeds.
-        public ReadResult ReadFileFromInbox(string path)
-        {
-            if (!path.Contains(_inboxDir) || !File.Exists(path))
-                return ReadResult.DoesNotExist;
+            if ((!path.Contains(_inboxDir) && !path.Contains(_amikoDir)) || !File.Exists(path))
+                return Result.Invalid;
 
             var name = AMIKO_FILE_SUFFIX_RGX.Replace(Path.GetFileName(path), "");
 
             // same file exists for active contact with check of hash value
             var currentPath = FindFilePathByNameAndHashFor(name, Hash, ActiveContact);
+            Log.WriteLine("currentPath: {0}", currentPath);
             if (currentPath != null)
             {
                 ReadFile(currentPath);
-                return ReadResult.Found;
+                return Result.Found;
             }
 
             // load all fields
@@ -438,24 +458,25 @@ namespace AmiKoWindows
 
                 presenter = DeserializeJson(json);
                 if (presenter == null || presenter.patient == null)
-                    return ReadResult.Invalid;
+                    return Result.Invalid;
 
                 hash = presenter.prescription_hash;
                 if (hash == null || hash.Equals(string.Empty))
-                    return ReadResult.Invalid;
+                    return Result.Invalid;
             }
             catch (Exception ex)
             {
                 Log.WriteLine(ex.Message);
-                return ReadResult.ParseError;
+                return Result.Invalid;
             }
 
-            // save file exists for another contact
+            // same file exists for another contact
             var existingPath = FindFilePathByNameAndHashFor(name, hash, presenter.Contact);
+            Log.WriteLine("existingPath: {0}", existingPath);
             if (existingPath != null)
             {
-                ReadFile(existingPath);
-                return ReadResult.Found;
+                ReadFileFor(existingPath, presenter.Contact);
+                return Result.Found;
             }
 
             Renew();
@@ -488,7 +509,7 @@ namespace AmiKoWindows
             this.Hash = hash;
             this.PlaceDate = presenter.place_date;
 
-            return ReadResult.Ok;
+            return Result.Ok;
         }
 
         #region Public Utility Methods
@@ -640,13 +661,13 @@ namespace AmiKoWindows
         }
 
         // Restores json data into current properties
-        private void DeserializeCurrentData(string json)
+        private void DeserializeCurrentData(string json, string uid)
         {
             var presenter = DeserializeJson(json);
-            if (ActiveContact == null || presenter == null || presenter.patient == null)
+            if (uid == null || presenter == null || presenter.patient == null)
                 return;
 
-            if (ActiveContact.Uid.Equals(presenter.patient.patient_id))
+            if (uid.Equals(presenter.patient.patient_id))
             {
                 this.Hash = presenter.prescription_hash;
                 this.PlaceDate = presenter.place_date;

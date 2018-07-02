@@ -255,6 +255,9 @@
   <data name="msgPrescriptionDeleteConfirmation" xml:space="preserve">
     <value>Voulez-vous vraiment effacer cette ordonnance?</value>
   </data>
+  <data name="msgPrescriptionFileFound" xml:space="preserve">
+    <value>{0} déjà était importé</value>
+  </data>
   <data name="msgPrescriptionSavingContextConfirmation" xml:space="preserve">
     <value>Voulez-vous vraiment écraser l'ordonnance existante ou générer une nouvelle?</value>
   </data>
