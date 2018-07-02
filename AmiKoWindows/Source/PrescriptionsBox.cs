@@ -260,6 +260,11 @@ namespace AmiKoWindows
             if (medication != null)
             {
                 _Medications.Add(medication);
+                if (this.IsPreview)
+                {
+                    this.IsPreview = false;
+                    this.PlaceDate = GeneratePlaceDate();
+                }
                 UpdateMedicationList();
             }
         }
@@ -269,6 +274,11 @@ namespace AmiKoWindows
             if (medication != null)
             {
                 _Medications.Remove(medication);
+                if (this.IsPreview)
+                {
+                    this.IsPreview = false;
+                    this.PlaceDate = GeneratePlaceDate();
+                }
                 UpdateMedicationList();
             }
         }
@@ -294,6 +304,12 @@ namespace AmiKoWindows
 
             if (currentComment.Equals(comment))
                 return false;
+
+            if (this.IsPreview)
+            {
+                this.IsPreview = false;
+                this.PlaceDate = GeneratePlaceDate();
+            }
 
             medication.Comment = comment;
             return true;
