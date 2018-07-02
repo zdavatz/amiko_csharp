@@ -77,6 +77,7 @@ namespace AmiKoWindows
                 account.Zip = _accountPresenter.zip_code;
                 account.Phone = _accountPresenter.phone_number;
                 account.Email = _accountPresenter.email_address;
+                account.Signature = _accountPresenter.signature;
                 return account;
             }
         }

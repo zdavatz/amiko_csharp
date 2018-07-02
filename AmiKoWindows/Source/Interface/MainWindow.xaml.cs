@@ -374,7 +374,7 @@ namespace AmiKoWindows
                     if (accountInfo != null)
                         accountInfo.DataContext = ActiveAccount;
 
-                    LoadAccountPicture();
+                    FillAccountFields();
                     FillPlaceDate();
                     EnableButton("NewPrescriptionButton", true);
 
@@ -812,9 +812,15 @@ namespace AmiKoWindows
                 {
                     _prescriptions.Hash = item.Hash;
                     _prescriptions.ReadFile(item.Path);
-                    EnableButton("SavePrescriptionButton", _prescriptions.IsPreview);
 
+                    ActiveContact = _prescriptions.ActiveContact;
+                    ActiveAccount = _prescriptions.ActiveAccount;
+
+                    FillContactFields();
+                    FillAccountFields();
                     FillPlaceDate();
+
+                    EnableButton("SavePrescriptionButton", _prescriptions.IsPreview);
                     e.Handled = true;
                 }
             }
@@ -1288,6 +1294,17 @@ namespace AmiKoWindows
             Log.WriteLine(source.Name);
             _prescriptions.Renew();
 
+            // reload current entries
+            var book = AddressBook.Content as AddressBookControl;
+            this.ActiveContact = book?.CurrentEntry;
+            _prescriptions.ActiveContact = this.ActiveContact;
+
+            var card = ProfileCard.Content as ProfileCardControl;
+            this.ActiveAccount = card?.CurrentEntry;
+            _prescriptions.ActiveAccount = this.ActiveAccount;
+
+            FillContactFields();
+            FillAccountFields();
             FillPlaceDate();
 
             EnableButton("CheckInteractionButton", false);
@@ -1411,7 +1428,6 @@ namespace AmiKoWindows
             if (Account.IsSet() && ActiveAccount != null)
             {
                 _prescriptions.ActiveAccount = ActiveAccount;
-                LoadAccountPicture();
                 FillAccountFields(); // only for initial loading (at first time)
                 FillPlaceDate();
 
@@ -1445,6 +1461,7 @@ namespace AmiKoWindows
                     block.UpdateLayout();
                 }
             }
+            LoadAccountPicture();
         }
 
         public void FillContactFields()
@@ -1485,8 +1502,23 @@ namespace AmiKoWindows
             try
             {
                 Image image = GetElementIn("AccountPicture", MainArea) as Image;
-                if (image != null && Account.IsSet() && ActiveAccount != null)
-                    Utilities.LoadPictureInto(image, ActiveAccount.PictureFile);
+
+                var signature = ActiveAccount?.Signature;
+                Log.WriteLine("signature (length): {0}", signature.Length);
+                if (signature != null && !signature.Equals(string.Empty))
+                {
+                    byte[] bytes = Convert.FromBase64String(signature);
+                    using (MemoryStream m = new MemoryStream(bytes))
+                    {
+                        image.Source = BitmapFrame.Create(
+                            m, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                    }
+                }
+                else
+                {
+                    if (image != null && Account.IsSet() && ActiveAccount != null)
+                        Utilities.LoadPictureInto(image, ActiveAccount.PictureFile);
+                }
             }
             catch (Exception ex)
             {

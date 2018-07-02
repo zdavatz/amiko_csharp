@@ -307,8 +307,6 @@ namespace AmiKoWindows
             string json = Utilities.Base64Decode(File.ReadAllText(path)) ?? "{}";
             DeserializeCurrentData(json);
 
-            // TODO set contact/account (here)
-
             this.ActiveFileName = name;
             this.ActiveFilePath = path;
             UpdateMedicationList();
@@ -596,17 +594,13 @@ namespace AmiKoWindows
             if (ActiveContact == null || presenter == null || presenter.patient == null)
                 return;
 
-            // TODO more validations
             if (ActiveContact.Uid.Equals(presenter.patient.patient_id))
             {
                 this.Hash = presenter.prescription_hash;
                 this.PlaceDate = presenter.place_date;
 
-                // TODO
-                // How to handle properties are different than *active*
-                // Account and Contact here?
-                //this.ActiveContact = presenter.Contact;
-                //this.ActiveAccount = presenter.Account;
+                this.ActiveAccount = presenter.Account;
+                this.ActiveContact = presenter.Contact;
 
                 this._Medications = new HashSet<Medication>(presenter.MedicationsList);
             }

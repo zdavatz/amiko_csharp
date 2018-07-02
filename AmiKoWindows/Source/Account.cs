@@ -151,9 +151,13 @@ namespace AmiKoWindows
             }
         }
 
+        private string _Signature;
         public string Signature
         {
             get {
+                if (_Signature != null && !_Signature.Equals(string.Empty))
+                    return _Signature;
+
                 string content = "";
                 try
                 {
@@ -163,12 +167,20 @@ namespace AmiKoWindows
 
                     byte[] bytes = File.ReadAllBytes(path);
                     content = Convert.ToBase64String(bytes);
+
+                    this._Signature = content; // update
+                    OnPropertyChanged("Signature");
                 }
                 catch (IOException ex)
                 {
                     Log.WriteLine(ex.Message);
                 }
                 return content;
+            }
+
+            set {
+                this._Signature = value;
+                OnPropertyChanged("Signature");
             }
         }
         #endregion
