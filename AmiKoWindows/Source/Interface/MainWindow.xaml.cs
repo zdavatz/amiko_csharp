@@ -792,7 +792,7 @@ namespace AmiKoWindows
             var item = (sender as MenuItem)?.DataContext as FileItem;
             if (item != null && item.IsValid)
             {
-                await _prescriptions.DeleteFile(item.Name);
+                await _prescriptions.DeleteFile(item.Path);
                 _prescriptions.LoadFiles();
 
                 var button = GetElementIn("NewPrescriptionButton", this.MainArea);
@@ -840,8 +840,7 @@ namespace AmiKoWindows
                         var item = box.SelectedItem as FileItem;
                         if (item != null && item.IsValid)
                         {
-                            var name = item.Name;
-                            await _prescriptions.DeleteFile(name);
+                            await _prescriptions.DeleteFile(item.Path);
                             _prescriptions.Renew();
                             _prescriptions.LoadFiles();
                             EnableButton("SavePrescriptionButton", false);

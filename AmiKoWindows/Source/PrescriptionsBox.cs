@@ -204,7 +204,7 @@ namespace AmiKoWindows
         }
 
         // takes (file) name argument without ext
-        public async Task DeleteFile(string name)
+        public async Task DeleteFile(string fullpath)
         {
             if (ActiveContact == null || ActiveAccount == null)
                 return;
@@ -214,7 +214,12 @@ namespace AmiKoWindows
                 string amkDir = Path.Combine(_amikoDir, ActiveContact.Uid);
                 if (Utilities.EnforceDir(amkDir))
                 {
-                    var path = FindFilePathByNameFor(name, ActiveContact);
+                    var name = AMIKO_FILE_SUFFIX_RGX.Replace(Path.GetFileName(fullpath), "");
+                    var path = fullpath;
+
+                    if (!path.Contains(_inboxDir))
+                        path = FindFilePathByNameFor(name, ActiveContact);
+
                     if (path == null)
                         return;
 
@@ -235,7 +240,8 @@ namespace AmiKoWindows
                     }
                     this.Hash = null;
 
-                    File.Delete(path);
+                    if (File.Exists(path))
+                        File.Delete(path);
                 }
             });
         }
