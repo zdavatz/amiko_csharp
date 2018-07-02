@@ -64,7 +64,8 @@ namespace AmiKoWindows
         {
             get {
                 // has valid properties && file saved?
-                if ((PlaceDate != null && !PlaceDate.Equals(string.Empty)) &&
+                if (!IsPreview &&
+                    (PlaceDate != null && !PlaceDate.Equals(string.Empty)) &&
                     (Hash != null && !Hash.Equals(string.Empty)) && Medications.Count > 0)
                 {
                     var path = GetFilePathByPlaceDate(PlaceDate);
@@ -150,7 +151,7 @@ namespace AmiKoWindows
             {
                 currentPath = GetFilePathByPlaceDate(this.PlaceDate);
 
-                if (asRewriting &&
+                if (asRewriting && !IsPreview &&
                     currentPath != null && File.Exists(currentPath))
                     File.Delete(currentPath);
             }
