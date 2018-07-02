@@ -320,31 +320,6 @@ namespace AmiKoWindows
             return true;
         }
 
-        // Read file. The file must be in inbox or activecontact's directory
-        public void ReadFile(string fullpath)
-        {
-            var path = fullpath;
-            var name = AMIKO_FILE_SUFFIX_RGX.Replace(Path.GetFileName(path), "");
-
-            if (path.Contains(_inboxDir))
-                this.IsPreview = true;
-            else
-                path = FindFilePathByNameFor(name, ActiveContact);
-
-            if (path == null)
-                return;
-
-            string json = Utilities.Base64Decode(File.ReadAllText(path)) ?? "{}";
-            DeserializeCurrentData(json);
-
-            if (path.Contains(_inboxDir))
-                name = String.Format("{0} {1}", name, notSaved);
-
-            this.ActiveFileName = name;
-            this.ActiveFilePath = path;
-            UpdateMedicationList();
-        }
-
         public void LoadFiles()
         {
             _Files.Clear();
@@ -408,6 +383,34 @@ namespace AmiKoWindows
                 return null;
 
             return destPath;
+        }
+
+        // Read file. The file must be in inbox or activecontact's directory
+        public void ReadFile(string fullpath)
+        {
+            var path = fullpath;
+            var name = AMIKO_FILE_SUFFIX_RGX.Replace(Path.GetFileName(path), "");
+
+            if (path.Contains(_inboxDir))
+                this.IsPreview = true;
+            else
+            {
+                this.IsPreview = false;
+                path = FindFilePathByNameFor(name, ActiveContact);
+            }
+
+            if (path == null)
+                return;
+
+            string json = Utilities.Base64Decode(File.ReadAllText(path)) ?? "{}";
+            DeserializeCurrentData(json);
+
+            if (path.Contains(_inboxDir))
+                name = String.Format("{0} {1}", name, notSaved);
+
+            this.ActiveFileName = name;
+            this.ActiveFilePath = path;
+            UpdateMedicationList();
         }
 
         // Loads .amk file in inbox of the space of this app. Returns true if the loading succeeds.
