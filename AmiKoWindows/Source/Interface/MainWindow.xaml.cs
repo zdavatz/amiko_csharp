@@ -960,8 +960,15 @@ namespace AmiKoWindows
                 var path = paths[0];
                 Log.WriteLine("path: {0}", path);
 
+                // disable accidental drop
+                var amikoDir = Utilities.PrescriptionsPath();
+                var inboxDir = Utilities.GetInboxPath();
+                if (path.Contains(inboxDir) || path.Contains(amikoDir))
+                    return;
+
+                // invalid file
                 string inboxPath = _prescriptions.ImportFileIntoInbox(path);
-                if (inboxPath == null) // invalid file
+                if (inboxPath == null)
                     return;
 
                 var result = _prescriptions.PreviewFile(inboxPath);
