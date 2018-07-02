@@ -956,6 +956,9 @@ namespace AmiKoWindows
         {
             Log.WriteLine(sender.GetType().Name);
 
+            EnableButton("SavePrescriptionButton", false);
+            EnableButton("SendPrescriptionButton", false);
+
             if (_fileNameListItemInDrag)
                 return;
 
@@ -979,45 +982,64 @@ namespace AmiKoWindows
                 string inboxPath = _prescriptions.ImportFileIntoInbox(path);
                 if (inboxPath == null)
                     return;
+                // TODO open imported file (inbox)
 
-                var result = _prescriptions.PreviewFile(inboxPath);
-                if (!result)
-                    return;
+                var result = _prescriptions.ReadFileFromInbox(inboxPath);
 
-                // TODO: open existing file (already imported)
+                // TODO validate medications existence in db
 
-                EnableButton("SavePrescriptionButton", false);
-                EnableButton("SendPrescriptionButton", false);
-
-                Contact contactInFile = _prescriptions.ActiveContact;
-                if (contactInFile == null || contactInFile.Uid == null || contactInFile.Uid.Equals(string.Empty) ||
-                    !_patientDb.ValidateContact(contactInFile))
-                {   // invalid
-                    _prescriptions.Renew();
-                    return;
+                if (result == PrescriptionsBox.ReadResult.Found)
+                {
+                    this.ActiveContact = _prescriptions.ActiveContact;
+                    this.ActiveAccount = _prescriptions.ActiveAccount;
+                    // TODO message dialog
                 }
-
-                // TODO more validations here (account, medications)
-
-                this.ActiveContact = contactInFile;
-                this.ActiveAccount = _prescriptions.ActiveAccount;
-
-                // save/update only contact from this .amk here
-                Contact contact = await _patientDb.GetContactByUid(ActiveContact.Uid);
-                if ((contact != null && contact.Uid != null && !contact.Uid.Equals(string.Empty)) &&
-                     contact.Uid.Equals(ActiveContact.Uid))
-                {   // update
-                    await _patientDb.UpdateContact(ActiveContact);
-                    this.ActiveContact = await _patientDb.GetContactByUid(contact.Uid);
-                    await _patientDb.LoadAllContacts();
+                else if (result == PrescriptionsBox.ReadResult.Ok)
+                {
+                    // TODO message dialog
                 }
                 else
-                {   // save as new
-                    ActiveContact.TimeStamp = Utilities.GetLocalTimeAsString(Contact.TIME_STAMP_DATE_FORMAT);
-                    long? id = await _patientDb.InsertContact(ActiveContact);
-                    if (id != null && id.Value > 0)
-                        ActiveContact.Id = id.Value;
+                {   // invalid, parseerror, DoesNotExist
+                    // TODO message dialog
+                    Log.WriteLine("inboxPath: {0}", inboxPath);
+                    return;
                 }
+
+                if (result == PrescriptionsBox.ReadResult.Ok)
+                {   // import contact
+
+                    Contact contactInFile = _prescriptions.ActiveContact;
+                    if (contactInFile == null || contactInFile.Uid == null || contactInFile.Uid.Equals(string.Empty) ||
+                        !_patientDb.ValidateContact(contactInFile))
+                    {   // invalid
+                        _prescriptions.Renew();
+                        return;
+                    }
+
+                    // TODO account field validations
+
+                    this.ActiveContact = contactInFile;
+                    this.ActiveAccount = _prescriptions.ActiveAccount;
+
+                    // save/update only contact from this .amk here
+                    Contact contact = await _patientDb.GetContactByUid(ActiveContact.Uid);
+                    if ((contact != null && contact.Uid != null && !contact.Uid.Equals(string.Empty)) &&
+                         contact.Uid.Equals(ActiveContact.Uid))
+                    {   // update
+                        await _patientDb.UpdateContact(ActiveContact);
+                        this.ActiveContact = await _patientDb.GetContactByUid(contact.Uid);
+                        await _patientDb.LoadAllContacts();
+                    }
+                    else
+                    {   // save as new
+                        ActiveContact.TimeStamp = Utilities.GetLocalTimeAsString(Contact.TIME_STAMP_DATE_FORMAT);
+                        long? id = await _patientDb.InsertContact(ActiveContact);
+                        if (id != null && id.Value > 0)
+                            ActiveContact.Id = id.Value;
+                    }
+                }
+
+                _prescriptions.LoadFiles();
                 SetActiveFileAsSelected();
                 EnableButton("SavePrescriptionButton", true);
                 EnableButton("SendPrescriptionButton", false);

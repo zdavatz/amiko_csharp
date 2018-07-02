@@ -50,6 +50,11 @@ namespace AmiKoWindows
         string _amikoDir;
 
         #region Public Fields
+        public enum ReadResult
+        {
+            DoesNotExist, Invalid, Found, ParseError, Ok
+        }
+
         public string PlaceDate { get; set; }
         public string Hash { get; set; }
 
@@ -163,7 +168,7 @@ namespace AmiKoWindows
                 currentPath != null && !currentPath.Equals(string.Empty))
             {   // preview of file in inbox
                 outputPath = currentPath;
-                
+
                 if (ActiveFilePath != null &&
                     ActiveFilePath.Contains(_inboxDir) && File.Exists(ActiveFilePath))
                     File.Delete(ActiveFilePath);
@@ -406,33 +411,49 @@ namespace AmiKoWindows
         }
 
         // Loads .amk file in inbox of the space of this app. Returns true if the loading succeeds.
-        public bool PreviewFile(string path)
+        public ReadResult ReadFileFromInbox(string path)
         {
-            if (!File.Exists(path))
-                return false;
+            if (!path.Contains(_inboxDir) || !File.Exists(path))
+                return ReadResult.DoesNotExist;
 
             var name = AMIKO_FILE_SUFFIX_RGX.Replace(Path.GetFileName(path), "");
 
             // same file exists for active contact with check of hash value
             var currentPath = FindFilePathByNameAndHashFor(name, Hash, ActiveContact);
             if (currentPath != null)
-                return false;
+            {
+                ReadFile(currentPath);
+                return ReadResult.Found;
+            }
 
-            // open file
-            string rawInput = File.ReadAllText(path);
-            string json = Utilities.Base64Decode(rawInput) ?? "{}";
+            // load all fields
+            PrescriptionJSONPresenter presenter = null;
+            string hash = null;
+            try {
+                string rawInput = File.ReadAllText(path);
+                string json = Utilities.Base64Decode(rawInput) ?? "{}";
 
-            var presenter = DeserializeJson(json);
-            if (presenter == null || presenter.patient == null)
-                return false;
+                presenter = DeserializeJson(json);
+                if (presenter == null || presenter.patient == null)
+                    return ReadResult.Invalid;
 
-            var hash = presenter.prescription_hash;
-            if (hash == null || hash.Equals(string.Empty))
-                return false;
+                hash = presenter.prescription_hash;
+                if (hash == null || hash.Equals(string.Empty))
+                    return ReadResult.Invalid;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine(ex.Message);
+                return ReadResult.ParseError;
+            }
 
+            // save file exists for another contact
             var existingPath = FindFilePathByNameAndHashFor(name, hash, presenter.Contact);
             if (existingPath != null)
-                return false; // exists (another contact)
+            {
+                ReadFile(existingPath);
+                return ReadResult.Found;
+            }
 
             Renew();
 
@@ -464,7 +485,7 @@ namespace AmiKoWindows
             this.Hash = hash;
             this.PlaceDate = presenter.place_date;
 
-            return true;
+            return ReadResult.Ok;
         }
 
         #region Public Utility Methods
