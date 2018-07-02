@@ -253,7 +253,6 @@ C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\a
 ```
 and this will work as well from your Source Directory
 ```
-MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Build /p:Configuration=Debu2
 MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Clean
 MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Build /p:Configuration=Debug
 Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
