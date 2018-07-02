@@ -377,6 +377,7 @@ namespace AmiKoWindows
                     FillAccountFields();
                     FillPlaceDate();
                     EnableButton("NewPrescriptionButton", true);
+                    EnableButton("SendPrescriptionButton", false);
 
                     if (ActiveAccount != null && ActiveContact != null && !_prescriptions.IsActivePrescriptionPersisted)
                         EnableButton("SavePrescriptionButton", true);
@@ -698,7 +699,10 @@ namespace AmiKoWindows
                     }
 
                     if (ActiveContact != null && ActiveAccount != null)
+                    {
                         EnableButton("SavePrescriptionButton", true);
+                        EnableButton("SendPrescriptionButton", false);
+                    }
 
                     e.Handled = true;
                 }
@@ -726,8 +730,10 @@ namespace AmiKoWindows
                     var added = _prescriptions.AddMedicationCommentAtIndex(index, text);
 
                     if (added && ActiveContact != null && ActiveAccount != null)
+                    {
                         EnableButton("SavePrescriptionButton", true);
-
+                        EnableButton("SendPrescriptionButton", false);
+                    }
                     e.Handled = true;
                 }
             }
@@ -745,6 +751,7 @@ namespace AmiKoWindows
                 var index = item.Id;
                 _prescriptions.RemoveMedicationAtIndex(index);
                 EnableButton("SavePrescriptionButton", true);
+                EnableButton("SendPrescriptionButton", false);
             }
         }
 
@@ -821,6 +828,7 @@ namespace AmiKoWindows
                     FillPlaceDate();
 
                     EnableButton("SavePrescriptionButton", _prescriptions.IsPreview);
+                    EnableButton("SendPrescriptionButton", _prescriptions.IsActivePrescriptionPersisted);
                     e.Handled = true;
                 }
             }
@@ -850,6 +858,7 @@ namespace AmiKoWindows
                             _prescriptions.Renew();
                             _prescriptions.LoadFiles();
                             EnableButton("SavePrescriptionButton", false);
+                            EnableButton("SendPrescriptionButton", false);
 
                             FillPlaceDate();
                             e.Handled = true;
@@ -978,6 +987,7 @@ namespace AmiKoWindows
                 // TODO: open existing file (already imported)
 
                 EnableButton("SavePrescriptionButton", false);
+                EnableButton("SendPrescriptionButton", false);
 
                 Contact contactInFile = _prescriptions.ActiveContact;
                 if (contactInFile == null || contactInFile.Uid == null || contactInFile.Uid.Equals(string.Empty) ||
@@ -1010,6 +1020,7 @@ namespace AmiKoWindows
                 }
                 SetActiveFileAsSelected();
                 EnableButton("SavePrescriptionButton", true);
+                EnableButton("SendPrescriptionButton", false);
 
                 FillContactFields();
                 FillAccountFields();
