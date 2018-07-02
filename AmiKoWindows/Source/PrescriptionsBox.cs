@@ -226,10 +226,19 @@ namespace AmiKoWindows
                     if (ActiveFilePath != null && !path.Equals(ActiveFilePath))
                         return;
 
-                    var item = _Files.First(f => {
-                        return (f.Name != null && f.Name.Equals(name) &&
-                                f.Path != null && f.Path.Equals(path));
-                    });
+                    FileItem item = null;
+                    try {
+                        item = _Files.First(f => {
+                            return (f.Name != null && f.Name.Equals(name) &&
+                                    f.Path != null && f.Path.Equals(path));
+                        });
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        // unexpected
+                        Log.WriteLine(ex.Message);
+                    }
+
                     if (item != null)
                         _Files.Remove(item);
 
@@ -306,6 +315,9 @@ namespace AmiKoWindows
 
             string json = Utilities.Base64Decode(File.ReadAllText(path)) ?? "{}";
             DeserializeCurrentData(json);
+
+            if (path.Contains(_inboxDir))
+                name = String.Format("{0} {1}", name, notSaved);
 
             this.ActiveFileName = name;
             this.ActiveFilePath = path;
