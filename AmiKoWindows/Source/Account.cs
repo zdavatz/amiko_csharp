@@ -136,12 +136,12 @@ namespace AmiKoWindows
         #region Virtual Fields
         public string Fullname
         {
-            get { return Utilities.Concat(this.Title, this.GivenName, this.FamilyName); }
+            get { return Utilities.Concat(Title, GivenName, FamilyName); }
         }
 
         public string Place
         {
-            get { return Utilities.Concat(this.Zip, this.City); }
+            get { return Utilities.Concat(Zip, City); }
         }
 
         public string PictureFile

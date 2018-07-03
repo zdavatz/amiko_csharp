@@ -218,10 +218,10 @@ namespace AmiKoWindows
         {
             get {
                 if (Uid == null || Uid.Equals(string.Empty)) { return ""; }
-                var w = this.WeightKg; if (w != null && !w.Equals(string.Empty)) w += "kg";
-                var h = this.HeightCm; if (h != null && !h.Equals(string.Empty)) h += "cm";
-                var g = ""; if (this.IsFemale) g = "F"; else if (this.IsMale) g = "M";
-                return Utilities.Concat(Utilities.ConcatWith("/", w, h), g, this.Birthdate);
+                var w = WeightKg; if (w != null && !w.Equals(string.Empty)) w += "kg";
+                var h = HeightCm; if (h != null && !h.Equals(string.Empty)) h += "cm";
+                var g = ""; if (IsFemale) g = "F"; else if (IsMale) g = "M";
+                return Utilities.Concat(Utilities.ConcatWith("/", w, h), g, Birthdate);
             }
         }
         #endregion
@@ -270,7 +270,7 @@ namespace AmiKoWindows
         {
             // e.g. davatz.zeno.2.6.1942
             string baseString = String.Format(
-                "{0}.{1}.{2}", this.FamilyName, this.GivenName, this.Birthdate).ToLower();
+                "{0}.{1}.{2}", FamilyName, GivenName, Birthdate).ToLower();
             return Utilities.GenerateHash(baseString);
         }
 

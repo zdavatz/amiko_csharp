@@ -111,8 +111,8 @@ namespace AmiKoWindows
             // This method does not clear focus :'(
             Keyboard.ClearFocus();
             // Workaround
-            this.SearchPatientBox.Focus();
-            Keyboard.Focus(this.SearchPatientBox);
+            SearchPatientBox.Focus();
+            Keyboard.Focus(SearchPatientBox);
         }
 
         public async void Select(Contact contact)
@@ -135,7 +135,7 @@ namespace AmiKoWindows
         {
             Log.WriteLine(e.ToString());
 
-            _parent = this.Parent as MahApps.Metro.Controls.Flyout;
+            _parent = Parent as MahApps.Metro.Controls.Flyout;
             _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
 
             // maybe we should make shared instance...
@@ -361,7 +361,7 @@ namespace AmiKoWindows
                 if (e.IsDown && e.Key == Key.Tab)
                     _isItemClick = true;
                 else if (e.IsDown && e.Key == Key.Back)
-                    this.MinusButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    MinusButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             }
             e.Handled = false;
         }
@@ -372,7 +372,7 @@ namespace AmiKoWindows
             Log.WriteLine(sender.GetType().Name);
 
             // Re:set selected list item, `UpdateLayout` is needed.
-            if (this.ContactList.ItemContainerGenerator.Status == System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
+            if (ContactList.ItemContainerGenerator.Status == System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
             {
                 this.ContactList.ItemContainerGenerator.StatusChanged -= ContactList_ItemStatusChanged;
 
@@ -427,7 +427,7 @@ namespace AmiKoWindows
 
                 // clear only error styles on field
                 foreach (string field in contactFields)
-                    this.FeedbackField<TextBox>(this.FindName(field) as TextBox, false);
+                    this.FeedbackField<TextBox>(FindName(field) as TextBox, false);
 
                 Contact contact = await _patientDb.GetContactById(item.Id.Value);
                 if (contact != null)
@@ -451,7 +451,7 @@ namespace AmiKoWindows
             var item = (sender as MenuItem)?.DataContext as Item;
             if (item != null && item.Id != null)
             {
-                this.MinusButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                MinusButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 e.Handled = true;
             }
         }
@@ -461,20 +461,20 @@ namespace AmiKoWindows
         {
             Log.WriteLine(sender.GetType().Name);
 
-            this.ContactList.UnselectAll();
+            ContactList.UnselectAll();
             this.CurrentEntry = new Contact();
 
             ResetFields();
             ResetMessage();
 
-            this.GivenName.Focus();
+            GivenName.Focus();
 
             EnableButton("MinusButton", false);
         }
 
         private async void MinusButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = this.ContactList.SelectedItem as Item;
+            var item = ContactList.SelectedItem as Item;
             if (item == null || item.Id == null)
             {
                 EnableButton("MinusButton", false);
@@ -536,7 +536,7 @@ namespace AmiKoWindows
                 var item = ContactList.Items[i] as Item;
                 if (item != null && item.Id != null && item.Id.Value == CurrentEntry.Id)
                 {
-                    this.ContactList.SelectedIndex = i;
+                    ContactList.SelectedIndex = i;
                     break;
                 }
             }
@@ -548,7 +548,7 @@ namespace AmiKoWindows
             Dictionary<string, string> values = new Dictionary<string, string>();
             foreach (string field in contactFields)
             {
-                var element = this.FindName(field) as FrameworkElement;
+                var element = FindName(field) as FrameworkElement;
                 if (element is TextBox)
                 {
                     var box = element as TextBox;
@@ -572,7 +572,7 @@ namespace AmiKoWindows
         {
             foreach (string field in contactFields)
             {
-                var element = this.FindName(field) as FrameworkElement;
+                var element = FindName(field) as FrameworkElement;
                 if (element is TextBox)
                 {
                     var box = element as TextBox;
@@ -643,7 +643,7 @@ namespace AmiKoWindows
 
             foreach (string field in contactFields)
             {
-                var element = this.FindName(field) as FrameworkElement;
+                var element = FindName(field) as FrameworkElement;
                 var result = ValidateField(element);
                 //Log.WriteLine("field: {0} validateField: {0}", field, result);
                 if (!hasError)
@@ -659,21 +659,21 @@ namespace AmiKoWindows
         {
             if (hasError)
             {
-                this.FeedbackMessage(this.SaveContactFailureMessage, true);
-                this.FeedbackMessage(this.SaveContactSuccessMessage, false);
+                this.FeedbackMessage(SaveContactFailureMessage, true);
+                this.FeedbackMessage(SaveContactSuccessMessage, false);
             }
             else
             {
-                this.FeedbackMessage(this.SaveContactFailureMessage, false);
-                this.FeedbackMessage(this.SaveContactSuccessMessage, true);
+                this.FeedbackMessage(SaveContactFailureMessage, false);
+                this.FeedbackMessage(SaveContactSuccessMessage, true);
             }
         }
 
         private void ResetMessage()
         {
             var needsDisplay = false;
-            this.FeedbackMessage(this.SaveContactFailureMessage, needsDisplay);
-            this.FeedbackMessage(this.SaveContactSuccessMessage, needsDisplay);
+            this.FeedbackMessage(SaveContactFailureMessage, needsDisplay);
+            this.FeedbackMessage(SaveContactSuccessMessage, needsDisplay);
         }
 
         private void EnableButton(string name, bool isEnabled)

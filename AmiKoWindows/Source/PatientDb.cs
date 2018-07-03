@@ -150,8 +150,8 @@ namespace AmiKoWindows
             await _db.OpenDB(dbPath);
             if (_db.IsOpen())
             {
-                await this.LoadAllContacts();
-                Log.WriteLine(">> OK: Opened patient db with {0} items located in {1}", this.Count, dbPath);
+                await LoadAllContacts();
+                Log.WriteLine(">> OK: Opened patient db with {0} items located in {1}", Count, dbPath);
             }
             else
             {
@@ -176,7 +176,7 @@ namespace AmiKoWindows
             else
                 _foundContacts = await FindContactsByText(text);
 
-            return this.Count;
+            return Count;
         }
 
         public Contact InitContact(Dictionary<string, string> values) {
@@ -353,7 +353,7 @@ namespace AmiKoWindows
             _foundContacts.Clear();
             _foundContacts = await GetAllContacts();
 
-            return this.Count;
+            return Count;
         }
 
         public async Task<Contact> GetContactById(long? id)

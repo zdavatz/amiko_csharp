@@ -183,7 +183,7 @@ namespace AmiKoWindows
 
         public void SwitchViewContext()
         {
-            var viewType = this.DataContext as ViewType;
+            var viewType = DataContext as ViewType;
             if (viewType.Mode.Equals("Form"))
             {
                 if (_browser != null)
@@ -208,7 +208,7 @@ namespace AmiKoWindows
         {
             FrameworkElement element = null;
 
-            var viewType = this.DataContext as ViewType;
+            var viewType = DataContext as ViewType;
             if (viewType.Mode.Equals("Form"))
                 element = _manager;
             else
@@ -290,7 +290,7 @@ namespace AmiKoWindows
 
         public void SetDataContext(UIState.State state)
         {
-            if (this.StatusBar.DataContext == null) {
+            if (StatusBar.DataContext == null) {
                 this.StatusBar.DataContext = _statusBarHelper;
             }
 
@@ -422,7 +422,7 @@ namespace AmiKoWindows
 
         public string SearchFieldText()
         {
-            return this.SearchTextBox.Text;
+            return SearchTextBox.Text;
         }
 
         public string SelectedFullTextSearchKey()
@@ -453,13 +453,13 @@ namespace AmiKoWindows
 
             _uiState.SetQuery(UIState.Query.Title);
             this.SearchTextBoxWaterMark = _uiState.SearchTextBoxWaterMark;
-            this.TitleQuerySelectButton.Focus();
+            TitleQuerySelectButton.Focus();
             this.TitleQuerySelectButton.IsChecked = true;
 
             // TODO
             // Fix default MainArea's `ContentTemplate` (via style with triggers) loading issue
-            this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            this.Compendium.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Compendium.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
             if (Account.IsSet())
             {
@@ -695,7 +695,7 @@ namespace AmiKoWindows
                     if (!_uiState.IsPrescriptions)
                     {
                         SetState(UIState.State.Prescriptions);
-                        this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                        Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     }
 
                     if (ActiveContact != null && ActiveAccount != null)
@@ -804,7 +804,7 @@ namespace AmiKoWindows
                 await _prescriptions.DeleteFile(item.Path);
                 _prescriptions.LoadFiles();
 
-                var button = GetElementIn("NewPrescriptionButton", this.MainArea);
+                var button = GetElementIn("NewPrescriptionButton", MainArea);
                 button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             }
         }
@@ -1152,7 +1152,7 @@ namespace AmiKoWindows
             else if (name.Equals("AccountAddress"))
             {
                 ViewType viewType;
-                viewType = this.DataContext as ViewType;
+                viewType = DataContext as ViewType;
                 if (viewType == null)
                     return;
 
@@ -1164,8 +1164,8 @@ namespace AmiKoWindows
                     //
                     // https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/wpf-and-win32-interoperation
                     SetState(UIState.State.Prescriptions);
-                    viewType = this.DataContext as ViewType;
-                    this.Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    viewType = DataContext as ViewType;
+                    Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 }
                 else
                 {
@@ -1224,7 +1224,7 @@ namespace AmiKoWindows
             }
             (sender as ToggleButton).IsChecked = true;
 
-            this.SearchTextBox.Focus();
+            SearchTextBox.Focus();
             UIState.State state = _uiState.GetState();
 
             if (query == UIState.Query.Fulltext)
@@ -1332,7 +1332,7 @@ namespace AmiKoWindows
             Log.WriteLine(source.Name);
 
             ViewType viewType;
-            viewType = this.DataContext as ViewType;
+            viewType = DataContext as ViewType;
             if (viewType == null)
                 return;
 
@@ -1347,7 +1347,7 @@ namespace AmiKoWindows
         {
             Keyboard.ClearFocus();
 
-            var box = GetElementIn("FileNameList", this.RightArea) as ListBox;
+            var box = GetElementIn("FileNameList", RightArea) as ListBox;
             if (box?.Items.Count > 0)
                 box.SelectedIndex = -1;
 
@@ -1361,11 +1361,11 @@ namespace AmiKoWindows
             // reload current entries
             var book = AddressBook.Content as AddressBookControl;
             this.ActiveContact = book?.CurrentEntry;
-            _prescriptions.ActiveContact = this.ActiveContact;
+            _prescriptions.ActiveContact = ActiveContact;
 
             var card = ProfileCard.Content as ProfileCardControl;
             this.ActiveAccount = card?.CurrentEntry;
-            _prescriptions.ActiveAccount = this.ActiveAccount;
+            _prescriptions.ActiveAccount = ActiveAccount;
 
             FillContactFields();
             FillAccountFields();
@@ -1475,7 +1475,7 @@ namespace AmiKoWindows
             // reset account
             var card = ProfileCard.Content as ProfileCardControl;
             this.ActiveAccount = card?.CurrentEntry;
-            _prescriptions.ActiveAccount = this.ActiveAccount;
+            _prescriptions.ActiveAccount = ActiveAccount;
 
             FillContactFields();
             FillAccountFields();
@@ -1507,7 +1507,7 @@ namespace AmiKoWindows
                 FillAccountFields(); // only for initial loading (at first time)
                 FillPlaceDate();
 
-                var button = GetElementIn("OpenProfileCardButton", this.MainArea) as Button;
+                var button = GetElementIn("OpenProfileCardButton", MainArea) as Button;
                 if (button != null)
                     button.Visibility = Visibility.Collapsed;
 
