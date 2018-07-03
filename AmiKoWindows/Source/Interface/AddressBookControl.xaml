@@ -190,9 +190,8 @@
                     <ListBox
                         Name="ContactList" Style="{StaticResource ContactListBox}" ItemContainerStyle="{StaticResource ContactListBoxItem}"
                         ScrollViewer.CanContentScroll="True"
-                        SelectionChanged="ContactItem_SelectionChanged"
                         KeyboardNavigation.DirectionalNavigation="Cycle"
-                        PreviewKeyDown="ContactList_PreviewKeyDown" KeyDown="ContactList_KeyDown" MouseDoubleClick="ContactList_MouseDoubleClick"
+                        SelectionChanged="ContactList_SelectionChanged" PreviewKeyDown="ContactList_PreviewKeyDown" KeyDown="ContactList_KeyDown" MouseDoubleClick="ContactList_MouseDoubleClick"
                         IsSynchronizedWithCurrentItem="True"
                         ItemsSource="{Binding Path=ContactListItems}" Height="430">
                         <ListBox.ItemTemplate>

@@ -330,6 +330,7 @@ namespace AmiKoWindows
             this.SearchPatientBox.Text = "";
         }
 
+        #region Contact ListBox
         private void ContactList_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             // a hack to enable item selection using arrow keys as tab
@@ -401,16 +402,7 @@ namespace AmiKoWindows
                 _parent.IsOpen = false;
         }
 
-        // Preview action
-        private void ContactItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            //Log.WriteLine(sender.GetType().Name);
-
-            _isItemClick = true;
-            EnableButton("MinusButton", true);
-        }
-
-        private async void ContactItem_SelectionChanged(object sender, EventArgs e)
+        private async void ContactList_SelectionChanged(object sender, EventArgs e)
         {
             //Log.WriteLine(sender.GetType().Name);
 
@@ -438,6 +430,16 @@ namespace AmiKoWindows
                     this.CurrentEntry = contact;
             }
         }
+
+        // Preview action
+        private void ContactItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //Log.WriteLine(sender.GetType().Name);
+
+            _isItemClick = true;
+            EnableButton("MinusButton", true);
+        }
+        #endregion
 
         private void PlusButton_Click(object sender, RoutedEventArgs e)
         {
