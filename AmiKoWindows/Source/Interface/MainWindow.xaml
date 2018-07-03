@@ -206,10 +206,10 @@
                     <DataTemplate x:Key="FileListTemplate" DataType="Form">
                         <ListBox
                             Name="FileNameList" Style="{StaticResource FileNameListBox}" ItemContainerStyle="{StaticResource FileNameListBoxItem}" ItemsSource="{Binding Path=FileNameListItems}"
-                            SelectionChanged="FileName_SelectionChanged" KeyDown="FileName_KeyDown" Loaded="FileNameList_Loaded"
+                            SelectionChanged="FileNameList_SelectionChanged" KeyDown="FileNameList_KeyDown" Loaded="FileNameList_Loaded"
                             AllowDrop="True"
-                            PreviewMouseLeftButtonDown="FileName_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="FileName_PreviewMouseLeftButtonUp" MouseMove="FileName_MouseMove"
-                            DragEnter="FileName_DragEnter" DragLeave="FileName_DragLeave" DragOver="FileName_DragOver" Drop="FileName_Drop">
+                            PreviewMouseLeftButtonDown="FileNameList_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="FileNameList_PreviewMouseLeftButtonUp" MouseMove="FileNameList_MouseMove"
+                            DragEnter="FileNameList_DragEnter" DragLeave="FileNameList_DragLeave" DragOver="FileNameList_DragOver" Drop="FileNameList_Drop">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Height="24" Orientation="Horizontal">

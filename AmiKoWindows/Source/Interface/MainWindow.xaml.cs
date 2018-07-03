@@ -70,7 +70,7 @@ namespace AmiKoWindows
         FrameworkElement _manager;
 
         private ContextMenu _searchResultContextMenu = null;
-        private bool _fileNameListItemInDrag = false;
+        private bool _fileNameListInDrag = false;
 
         #region Public Fields
         private string _SearchTextBoxWaterMark;
@@ -790,12 +790,14 @@ namespace AmiKoWindows
         private void FileNameList_Loaded(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
+
             SetActiveFileAsSelected();
         }
 
         private async void FileNameContextMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
+
             var item = (sender as MenuItem)?.DataContext as FileItem;
             if (item != null && item.IsValid)
             {
@@ -807,7 +809,7 @@ namespace AmiKoWindows
             }
         }
 
-        private void FileName_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void FileNameList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
 
@@ -834,9 +836,12 @@ namespace AmiKoWindows
             }
         }
 
-        private async void FileName_KeyDown(object sender, KeyEventArgs e)
+        private async void FileNameList_KeyDown(object sender, KeyEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
+
+            if (_fileNameListInDrag)
+                return;
 
             e.Handled = false;
             if (e.Key == Key.Back)
@@ -871,16 +876,16 @@ namespace AmiKoWindows
         // NOTE:
         // User must start drag while keeping mouse button down.
         // See also PreviewMouseLeftButtonDown/Up
-        private void FileName_MouseMove(object sender, MouseEventArgs e)
+        private void FileNameList_MouseMove(object sender, MouseEventArgs e)
         {
             e.Handled = false;
 
-            if (!_fileNameListItemInDrag)
+            if (!_fileNameListInDrag)
                 return;
 
             Log.WriteLine(sender.GetType().Name);
 
-            _fileNameListItemInDrag = false;
+            _fileNameListInDrag = false;
 
             ListBox box = sender as ListBox;
             if (box == null)
@@ -908,23 +913,23 @@ namespace AmiKoWindows
             e.Handled = true;
         }
 
-        private void FileName_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void FileNameList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
-            _fileNameListItemInDrag = true;
+            _fileNameListInDrag = true;
 
             e.Handled = false;
         }
 
-        private void FileName_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void FileNameList_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
-            _fileNameListItemInDrag = false;
+            _fileNameListInDrag = false;
 
             e.Handled = false;
         }
 
-        private void FileName_DragEnter(object sender, DragEventArgs e)
+        private void FileNameList_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
                 e.Effects = DragDropEffects.All;
@@ -932,7 +937,7 @@ namespace AmiKoWindows
                 e.Effects = DragDropEffects.None;
         }
 
-        private void FileName_DragOver(object sender, DragEventArgs e)
+        private void FileNameList_DragOver(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -945,21 +950,21 @@ namespace AmiKoWindows
             e.Handled = true;
         }
 
-        private void FileName_DragLeave(object sender, DragEventArgs e)
+        private void FileNameList_DragLeave(object sender, DragEventArgs e)
         {
             e.Effects = DragDropEffects.None;
             e.Handled = true;
         }
 
         // Handle drop of files from explorer etc. (import)
-        private async void FileName_Drop(object sender, DragEventArgs e)
+        private async void FileNameList_Drop(object sender, DragEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
 
             EnableButton("SavePrescriptionButton", false);
             EnableButton("SendPrescriptionButton", false);
 
-            if (_fileNameListItemInDrag)
+            if (_fileNameListInDrag)
                 return;
 
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
