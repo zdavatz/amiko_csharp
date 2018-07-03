@@ -56,17 +56,18 @@ namespace AmiKoWindows
         MahApps.Metro.Controls.Flyout _parent;
 
         bool _isItemClick = false;
+        #endregion
 
-        public string ContactsCount { get; set; }
         private long RawContactsCount {
             set {
                 this.ContactsCount = String.Format("({0})", value.ToString());
                 OnPropertyChanged("ContactsCount");
             }
         }
-        #endregion
 
-        #region Public Fields
+        #region Public Accessors
+        public string ContactsCount { get; set; }
+
         private string _SearchTextBoxWaterMark;
         public string SearchTextBoxWaterMark
         {
@@ -114,6 +115,22 @@ namespace AmiKoWindows
             Keyboard.Focus(this.SearchPatientBox);
         }
 
+        public async void Select(Contact contact)
+        {
+            if (_patientDb != null)
+            {
+                this.CurrentEntry = await _patientDb.GetContactById(contact.Id);
+
+                await _patientDb.LoadAllContacts();
+                _patientDb.UpdateContactList();
+
+                this.RawContactsCount = _patientDb.Count;
+            }
+
+            SetCurrentEntryAsSelected();
+            EnableButton("MinusButton", true);
+        }
+
         private void Control_Loaded(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(e.ToString());
@@ -138,7 +155,7 @@ namespace AmiKoWindows
                 _patientDb.UpdateContactList();
                 this.RawContactsCount = _patientDb.Count;
 
-                SetSelectedIndex();
+                SetCurrentEntryAsSelected();
             }
         }
 
@@ -354,7 +371,7 @@ namespace AmiKoWindows
             {
                 this.ContactList.ItemContainerGenerator.StatusChanged -= ContactList_ItemStatusChanged;
 
-                SetSelectedIndex();
+                SetCurrentEntryAsSelected();
             }
         }
 
@@ -390,7 +407,7 @@ namespace AmiKoWindows
             //Log.WriteLine(sender.GetType().Name);
 
             _isItemClick = true;
-            EnableMinusButton(true);
+            EnableButton("MinusButton", true);
         }
 
         private async void ContactItem_SelectionChanged(object sender, EventArgs e)
@@ -434,7 +451,7 @@ namespace AmiKoWindows
 
             this.GivenName.Focus();
 
-            EnableMinusButton(false);
+            EnableButton("MinusButton", false);
         }
 
         private async void MinusButton_Click(object sender, RoutedEventArgs e)
@@ -477,7 +494,7 @@ namespace AmiKoWindows
                     };
                     await Utilities.DeleteAll(dirs);
                 }
-                EnableMinusButton(false);
+                EnableButton("MinusButton", false);
             }
         }
 
@@ -487,15 +504,15 @@ namespace AmiKoWindows
         }
         #endregion
 
-        private void SetSelectedIndex()
+        private void SetCurrentEntryAsSelected()
         {
-            if (CurrentEntry == null)
+            if (CurrentEntry == null || CurrentEntry.Id == null)
                 return;
 
             for (var i = 0; i < ContactList.Items.Count; i++)
             {
                 var item = ContactList.Items[i] as Item;
-                if (item != null && item.Id == CurrentEntry.Id)
+                if (item != null && item.Id != null && item.Id.Value == CurrentEntry.Id)
                 {
                     this.ContactList.SelectedIndex = i;
                     break;
@@ -637,10 +654,14 @@ namespace AmiKoWindows
             this.FeedbackMessage(this.SaveContactSuccessMessage, needsDisplay);
         }
 
-        private void EnableMinusButton(bool isEnabled)
+        private void EnableButton(string name, bool isEnabled)
         {
-            this.MinusButton.IsEnabled = isEnabled;
-            var image = this.MinusButton.Content as FontAwesome.WPF.ImageAwesome;
+            var button = this.FindVisualChildren<Button>().First(b => b.Name.Equals(name)) as Button;
+            if (button != null)
+                button.IsEnabled = isEnabled;
+
+            // icon button
+            var image = button.Content as FontAwesome.WPF.ImageAwesome;
             if (image != null)
                 if (isEnabled)
                     image.Foreground = Brushes.Black;

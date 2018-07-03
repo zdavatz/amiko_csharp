@@ -1034,14 +1034,16 @@ namespace AmiKoWindows
                     else
                     {   // save as new
                         ActiveContact.TimeStamp = Utilities.GetLocalTimeAsString(Contact.TIME_STAMP_DATE_FORMAT);
-                        long? id = await _patientDb.InsertContact(ActiveContact);
-                        if (id != null && id.Value > 0)
-                            ActiveContact.Id = id.Value;
+                        long? newId = await _patientDb.InsertContact(ActiveContact);
+                        if (newId != null && newId.Value > 0)
+                            ActiveContact.Id = newId;
                     }
+
+                    _prescriptions.ActiveContact = ActiveContact;
                 }
 
                 _prescriptions.LoadFiles();
-                SetActiveFileAsSelected();
+
                 EnableButton("SavePrescriptionButton", true);
                 EnableButton("SendPrescriptionButton", false);
 
@@ -1049,10 +1051,18 @@ namespace AmiKoWindows
                 FillAccountFields();
                 FillPlaceDate();
 
-                // update current entry in address book
+                // update current entry and contacts list in addressbook
                 var control = AddressBook.Content as AddressBookControl;
                 if (control != null)
-                    control.CurrentEntry = ActiveContact;
+                    control.Select(ActiveContact);
+
+                // NOTE:
+                // This method call of `SetActiveFileAsSelected` behaves strangely only here.
+                // The assignment to `SelectedIndex` in this method clears
+                // `ActiveContact.Id` value. whyyy? by GC? ... :'(
+                var nowId = ActiveContact.Id;
+                SetActiveFileAsSelected();
+                ActiveContact.Id = nowId;
 
                 if (dialog != null)
                     dialog.ShowDialog();
