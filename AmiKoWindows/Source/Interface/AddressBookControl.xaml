@@ -196,7 +196,14 @@
                         ItemsSource="{Binding Path=ContactListItems}" Height="430">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Text}" Margin="0,0,11,0" Padding="8,5,6,5" FontWeight="Normal" VerticalAlignment="Center" MouseLeftButtonDown="ContactItem_MouseLeftButtonDown" />
+                                <TextBlock Text="{Binding Path=Text}" Margin="0,0,11,0" Padding="8,5,6,5" FontWeight="Normal" VerticalAlignment="Center" MouseLeftButtonDown="ContactItem_MouseLeftButtonDown">
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu Name="ContactItemContextMenu">
+                                            <MenuItem Header="{Binding Path=Text}" Focusable="False" IsEnabled="False" />
+                                            <MenuItem Header="{x:Static p:Resources.delete}" Click="ContactContextMenuItem_Click" />
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>

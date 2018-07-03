@@ -443,6 +443,18 @@ namespace AmiKoWindows
             _isItemClick = true;
             EnableButton("MinusButton", true);
         }
+
+        private void ContactContextMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+
+            var item = (sender as MenuItem)?.DataContext as Item;
+            if (item != null && item.Id != null)
+            {
+                this.MinusButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                e.Handled = true;
+            }
+        }
         #endregion
 
         private void PlusButton_Click(object sender, RoutedEventArgs e)
