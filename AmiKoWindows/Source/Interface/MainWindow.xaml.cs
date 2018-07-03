@@ -1609,7 +1609,10 @@ namespace AmiKoWindows
         {
             Button button = GetElementIn(name, MainArea) as Button;
             if (button != null)
+            {
                 button.IsEnabled = isEnabled;
+                button.Cursor = isEnabled ? Cursors.Hand : Cursors.No;
+            }
         }
     }
 

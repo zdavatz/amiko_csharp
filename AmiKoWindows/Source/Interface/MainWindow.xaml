@@ -158,27 +158,89 @@
                                         <ColumnDefinition Width="1*" MinWidth="100" />
                                         <ColumnDefinition Width="3*" MinWidth="300" />
                                     </Grid.ColumnDefinitions>
-                                    <Button
-                                        Name="NewPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
-                                        Grid.Column="0" Margin="0,3,5,1" HorizontalAlignment="Left" Click="NewPrescriptionButton_Click" IsEnabled="False">
-                                        <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.newPrescription}" />
-                                    </Button>
+                                    <Grid Margin="0,3,5,1">
+                                        <Button
+                                            Name="NewPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
+                                            Grid.Column="0" Margin="0" HorizontalAlignment="Left" Click="NewPrescriptionButton_Click" IsEnabled="False" Cursor="Hand">
+                                            <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.newPrescription}"
+                                                Cursor="{Binding ElementName=NewPrescriptionButton, Path=Cursor}" />
+                                        </Button>
+                                        <Rectangle Opacity="0" Fill="Transparent">
+                                            <Rectangle.Style>
+                                                <Style TargetType="Rectangle">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ElementName=NewPrescriptionButton, Path=IsEnabled}" Value="False">
+                                                            <Setter Property="Cursor" Value="No" />
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Rectangle.Style>
+                                        </Rectangle>
+                                    </Grid>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <Button
-                                            Name="CheckInteractionButton" Style="{StaticResource NoHighlightedButton}"
-                                            Margin="0,3,6,1" HorizontalAlignment="Right" Click="CheckInteractionButton_Click" IsEnabled="False">
-                                            <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.checkInteractions}" />
-                                        </Button>
-                                        <Button
-                                            Name="SavePrescriptionButton" Style="{StaticResource NoHighlightedButton}"
-                                            Margin="6,3,3,1" HorizontalAlignment="Right" Click="SavePrescriptionButton_Click" IsEnabled="False">
-                                            <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.save}" />
-                                        </Button>
-                                        <Button
-                                            Name="SendPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
-                                            Margin="6,3,0,1" HorizontalAlignment="Right" Click="SendPrescriptionButton_Click" IsEnabled="False">
-                                            <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.send}" />
-                                        </Button>
+                                        <Grid Margin="0,3,6,1">
+                                            <Button
+                                                Name="CheckInteractionButton" Style="{StaticResource NoHighlightedButton}"
+                                                Margin="0" HorizontalAlignment="Right" Click="CheckInteractionButton_Click" IsEnabled="False" Cursor="Hand">
+                                                <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.checkInteractions}"
+                                                  Cursor="{Binding ElementName=CheckInteractionButton, Path=Cursor}" />
+                                            </Button>
+                                            <Rectangle Opacity="0" Fill="Transparent">
+                                                <Rectangle.Style>
+                                                    <Style TargetType="Rectangle">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ElementName=CheckInteractionButton, Path=IsEnabled}" Value="False">
+                                                                <Setter Property="Cursor" Value="No" />
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Rectangle.Style>
+                                            </Rectangle>
+                                        </Grid>
+                                        <Grid Margin="6,3,3,1">
+                                          <Button
+                                              Name="SavePrescriptionButton" Style="{StaticResource NoHighlightedButton}"
+                                              Margin="0" HorizontalAlignment="Right" Click="SavePrescriptionButton_Click" IsEnabled="False" Cursor="Hand">
+                                              <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.save}" />
+                                          </Button>
+                                          <Rectangle Opacity="0" Fill="Transparent">
+                                              <Rectangle.Style>
+                                                  <Style TargetType="Rectangle">
+                                                      <Setter Property="Visibility" Value="Collapsed" />
+                                                      <Style.Triggers>
+                                                          <DataTrigger Binding="{Binding ElementName=SavePrescriptionButton, Path=IsEnabled}" Value="False">
+                                                              <Setter Property="Cursor" Value="No" />
+                                                              <Setter Property="Visibility" Value="Visible" />
+                                                          </DataTrigger>
+                                                      </Style.Triggers>
+                                                  </Style>
+                                              </Rectangle.Style>
+                                          </Rectangle>
+                                        </Grid>
+                                        <Grid Margin="6,3,0,1">
+                                            <Button
+                                                Name="SendPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
+                                                Margin="0" HorizontalAlignment="Right" Click="SendPrescriptionButton_Click" IsEnabled="False" Cursor="Hand">
+                                                <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.send}" />
+                                            </Button>
+                                            <Rectangle Opacity="0" Fill="Transparent">
+                                                <Rectangle.Style>
+                                                    <Style TargetType="Rectangle">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ElementName=SendPrescriptionButton, Path=IsEnabled}" Value="False">
+                                                                <Setter Property="Cursor" Value="No" />
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Rectangle.Style>
+                                            </Rectangle>
+                                        </Grid>
                                     </StackPanel>
                                 </Grid>
                             </Grid>
@@ -209,13 +271,14 @@
                             SelectionChanged="FileNameList_SelectionChanged" KeyDown="FileNameList_KeyDown" Loaded="FileNameList_Loaded"
                             AllowDrop="True"
                             PreviewMouseLeftButtonDown="FileNameList_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="FileNameList_PreviewMouseLeftButtonUp" MouseMove="FileNameList_MouseMove"
-                            DragEnter="FileNameList_DragEnter" DragLeave="FileNameList_DragLeave" DragOver="FileNameList_DragOver" Drop="FileNameList_Drop">
+                            DragEnter="FileNameList_DragEnter" DragLeave="FileNameList_DragLeave" DragOver="FileNameList_DragOver" Drop="FileNameList_Drop"
+                            Cursor="Arrow">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Height="24" Orientation="Horizontal">
                                         <TextBlock
                                             Text="{Binding Path=Name}" Margin="0" Padding="9,3,18,3"
-                                            Height="18" VerticalAlignment="Center">
+                                            Height="18" VerticalAlignment="Center" Cursor="Hand">
                                             <TextBlock.ContextMenu>
                                                 <ContextMenu Name="ItemContextMenu">
                                                     <MenuItem Header="{Binding Path=Name}" Focusable="False" IsEnabled="False" />
@@ -378,7 +441,7 @@
 
                     <DockPanel Grid.Column="0" LastChildFill="True">
                         <DockPanel DockPanel.Dock="Top" Height="50" Background="White">
-                            <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchTextBox}" Cursor="Hand"
+                            <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchTextBox}"
                                      TextChanged="SearchBox_TextChanged" PreviewMouseDown="OnSearchTextBox_PreviewMouseDown"
                                      Controls:TextBoxHelper.Watermark="{Binding Path=SearchTextBoxWaterMark, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                      Margin="6,3,6,0">

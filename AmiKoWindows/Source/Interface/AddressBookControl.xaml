@@ -193,10 +193,10 @@
                         KeyboardNavigation.DirectionalNavigation="Cycle"
                         SelectionChanged="ContactList_SelectionChanged" PreviewKeyDown="ContactList_PreviewKeyDown" KeyDown="ContactList_KeyDown" MouseDoubleClick="ContactList_MouseDoubleClick"
                         IsSynchronizedWithCurrentItem="True"
-                        ItemsSource="{Binding Path=ContactListItems}" Height="430">
+                        ItemsSource="{Binding Path=ContactListItems}" Height="430" Cursor="Arrow">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Text}" Margin="0,0,11,0" Padding="8,5,6,5" FontWeight="Normal" VerticalAlignment="Center" MouseLeftButtonDown="ContactItem_MouseLeftButtonDown">
+                                <TextBlock Text="{Binding Path=Text}" Margin="0,0,11,0" Padding="8,5,6,5" FontWeight="Normal" VerticalAlignment="Center" MouseLeftButtonDown="ContactItem_MouseLeftButtonDown" Cursor="Hand">
                                     <TextBlock.ContextMenu>
                                         <ContextMenu Name="ContactItemContextMenu">
                                             <MenuItem Header="{Binding Path=Text}" Focusable="False" IsEnabled="False" />
@@ -211,33 +211,78 @@
                 <!-- Address Book: Actions -->
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Orientation="Horizontal">
-                        <Button
-                            Name="PlusButton" Style="{StaticResource IconButton}"
-                            Margin="0,0,1,0" Height="31" Width="28" HorizontalAlignment="Center" Click="PlusButton_Click" IsEnabled="True"
-                            Cursor="Hand">
-                            <fa:ImageAwesome Name="Plus" Icon="Plus" Visibility="Visible" Foreground="Black"
-                                VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
-                        </Button>
-                        <Button
-                            Name="MinusButton" Style="{StaticResource IconButton}"
-                            Margin="1,0,0,0" Height="31" Width="28" HorizontalAlignment="Center" Click="MinusButton_Click" IsEnabled="False"
-                            Cursor="Hand">
-                            <fa:ImageAwesome Name="Minus" Icon="Minus" Visibility="Visible" Foreground="LightGray"
-                                VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
-                        </Button>
+                        <Grid Margin="0,0,1,0">
+                            <Button
+                                Name="PlusButton" Style="{StaticResource IconButton}"
+                                Margin="0" Height="31" Width="28" HorizontalAlignment="Center" Click="PlusButton_Click" IsEnabled="True"
+                                Cursor="Hand">
+                                <fa:ImageAwesome Name="Plus" Icon="Plus" Visibility="Visible" Foreground="Black"
+                                    VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
+                            </Button>
+                            <Rectangle Opacity="0" Fill="Transparent">
+                                <Rectangle.Style>
+                                    <Style TargetType="Rectangle">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=PlusButton, Path=IsEnabled}" Value="False">
+                                                <Setter Property="Cursor" Value="No" />
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Rectangle.Style>
+                            </Rectangle>
+                        </Grid>
+                        <Grid Margin="1,0,0,0">
+                            <Button
+                                Name="MinusButton" Style="{StaticResource IconButton}"
+                                Margin="0" Height="31" Width="28" HorizontalAlignment="Center" Click="MinusButton_Click" IsEnabled="False"
+                                Cursor="Hand">
+                                <fa:ImageAwesome Name="Minus" Icon="Minus" Visibility="Visible" Foreground="LightGray"
+                                    VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
+                            </Button>
+                            <Rectangle Opacity="0" Fill="Transparent">
+                                <Rectangle.Style>
+                                    <Style TargetType="Rectangle">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=MinusButton, Path=IsEnabled}" Value="False">
+                                                <Setter Property="Cursor" Value="No" />
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Rectangle.Style>
+                            </Rectangle>
+                        </Grid>
                         <TextBlock Height="Auto" Width="120" Margin="12,-3,6,0" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Label FontSize="12" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.addressBook}" />
                             <LineBreak />
                             <Label FontSize="12" Name="AddressBookName" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.appTitle}" />
                             <TextBlock FontSize="12" Name="ContactsCountText" Margin="0,-3,0,0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=ContactsCount}" />
                         </TextBlock>
-                        <Button
-                            Name="SwitchBookButton" Style="{StaticResource NoBorderedButton}"
-                            Margin="9,1,5,3" Width="Auto" Click="SwitchBookButton_Click" IsEnabled="False"
-                            Cursor="Hand">
-                            <fa:ImageAwesome Name="AddressBook" Icon="AddressBook" Visibility="Visible" Foreground="LightGray"
-                                VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
-                        </Button>
+                        <Grid Margin="9,1,5,3">
+                            <Button
+                                Name="SwitchBookButton" Style="{StaticResource NoBorderedButton}"
+                                Margin="0" Width="Auto" Click="SwitchBookButton_Click" IsEnabled="False"
+                                Cursor="Hand">
+                                <fa:ImageAwesome Name="AddressBook" Icon="AddressBook" Visibility="Visible" Foreground="LightGray"
+                                    VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
+                            </Button>
+                            <Rectangle Opacity="0" Fill="Transparent">
+                                <Rectangle.Style>
+                                    <Style TargetType="Rectangle">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=SwitchButton, Path=IsEnabled}" Value="False">
+                                                <Setter Property="Cursor" Value="No" />
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Rectangle.Style>
+                            </Rectangle>
+                        </Grid>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>

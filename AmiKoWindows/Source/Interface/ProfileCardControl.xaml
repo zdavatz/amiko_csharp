@@ -114,11 +114,26 @@
                             <fa:ImageAwesome Name="User" Icon="UserCircle" Visibility="Visible" Foreground="Black"
                                 VerticalAlignment="Center" Margin="0" Height="19" Width="19" />
                         </Button>
-                        <Button Name="DeletePictureButton" Style="{StaticResource WhiteIconButton}"
-                            Margin="0,0,16,0" HorizontalAlignment="Right" Cursor="Hand" Click="DeletePictureButton_Click">
-                            <fa:ImageAwesome Name="Times" Icon="Times" Visibility="Visible" Foreground="Black"
-                                VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
-                        </Button>
+                        <Grid Margin="0,0,16,0">
+                            <Button Name="DeletePictureButton" Style="{StaticResource WhiteIconButton}"
+                                Margin="0" HorizontalAlignment="Right" Cursor="Hand" Click="DeletePictureButton_Click">
+                                <fa:ImageAwesome Name="Times" Icon="Times" Visibility="Visible" Foreground="Black"
+                                    VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
+                            </Button>
+                            <Rectangle Opacity="0" Fill="Transparent">
+                                <Rectangle.Style>
+                                    <Style TargetType="Rectangle">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=DeletePictureButton, Path=IsEnabled}" Value="False">
+                                                <Setter Property="Cursor" Value="No" />
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Rectangle.Style>
+                            </Rectangle>
+                        </Grid>
                     </StackPanel>
                     <Border BorderThickness="1" BorderBrush="LightGray" Background="{StaticResource PaleGray}" Width="Auto" Height="80" CornerRadius="1" Margin="7,3,16,6" Padding="0,6,0,6">
                         <Image Name="Picture" Height="70" />
