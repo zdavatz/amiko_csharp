@@ -495,7 +495,7 @@ namespace AmiKoWindows
                     return;
 
                 if (_mainWindow != null && _mainWindow.ActiveContact != null &&
-                    _mainWindow.ActiveContact.Id == contact.Id)
+                    contact.Uid.Equals(_mainWindow.ActiveContact.Uid))
                 {
                     _mainWindow.ActiveContact = null;
                     _mainWindow.FillContactFields();

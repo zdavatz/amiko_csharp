@@ -1447,24 +1447,30 @@ namespace AmiKoWindows
             Log.WriteLine(source.Name);
 
             if (ActiveContact == null)
-                return;
-
-            if (_prescriptions.ActiveContact != null &&
-                _prescriptions.ActiveContact.Uid != ActiveContact.Uid) // change of contact (patient)
             {
-                // doesn't renew here (keep current medications)
-                _prescriptions.Hash = Utilities.GenerateUUID();
-                _prescriptions.PlaceDate = null;
-                _prescriptions.ActiveContact = ActiveContact;
-                _prescriptions.LoadFiles();
-            }
-            else if (_prescriptions.ActiveContact == null)
-            {   // first time
-                _prescriptions.ActiveContact = ActiveContact;
+                _prescriptions.ActiveContact = null;
+                _prescriptions.Renew();
                 _prescriptions.LoadFiles();
             }
             else
-                _prescriptions.ActiveContact = ActiveContact;
+            {
+                if (_prescriptions.ActiveContact != null &&
+                    _prescriptions.ActiveContact.Uid != ActiveContact.Uid) // change of contact (patient)
+                {
+                    // doesn't renew here (keep current medications)
+                    _prescriptions.Hash = Utilities.GenerateUUID();
+                    _prescriptions.PlaceDate = null;
+                    _prescriptions.ActiveContact = ActiveContact;
+                    _prescriptions.LoadFiles();
+                }
+                else if (_prescriptions.ActiveContact == null)
+                {   // first time
+                    _prescriptions.ActiveContact = ActiveContact;
+                    _prescriptions.LoadFiles();
+                }
+                else
+                    _prescriptions.ActiveContact = ActiveContact;
+            }
 
             // reset account
             var card = ProfileCard.Content as ProfileCardControl;
