@@ -356,9 +356,13 @@ namespace AmiKoWindows
 
         private void ContactList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (object.ReferenceEquals(sender, ContactList) && e.IsDown && e.Key == Key.Tab)
-                _isItemClick = true;
-
+            if (object.ReferenceEquals(sender, ContactList))
+            {
+                if (e.IsDown && e.Key == Key.Tab)
+                    _isItemClick = true;
+                else if (e.IsDown && e.Key == Key.Back)
+                    this.MinusButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            }
             e.Handled = false;
         }
 
@@ -458,6 +462,14 @@ namespace AmiKoWindows
 
         private async void MinusButton_Click(object sender, RoutedEventArgs e)
         {
+            var item = this.ContactList.SelectedItem as Item;
+            if (item == null || item.Id == null)
+            {
+                EnableButton("MinusButton", false);
+                e.Handled = true;
+                return;
+            }
+
             //Log.WriteLine(sender.GetType().Name);
             var dialog = Utilities.MessageDialog(
                 Properties.Resources.msgContactDeleteConfirmation, "", "OKCancel");
@@ -466,36 +478,32 @@ namespace AmiKoWindows
 
             if (result == MessageBoxResult.OK)
             {
-                var item = this.ContactList.SelectedItem as Item;
-                if (item != null && item.Id != null)
+                Contact contact = await _patientDb.GetContactById(item.Id.Value);
+                if (contact == null)
+                    return;
+
+                if (_mainWindow != null && _mainWindow.ActiveContact != null &&
+                    _mainWindow.ActiveContact.Id == contact.Id)
                 {
-                    Contact contact = await _patientDb.GetContactById(item.Id.Value);
-                    if (contact == null)
-                        return;
-
-                    if (_mainWindow != null && _mainWindow.ActiveContact != null &&
-                        _mainWindow.ActiveContact.Id == contact.Id)
-                    {
-                        _mainWindow.ActiveContact = null;
-                        _mainWindow.FillContactFields();
-                    }
-
-                    var uid = contact.Uid;
-                    ResetFields();
-                    this.CurrentEntry = new Contact();
-
-                    await _patientDb.DeleteContact(contact.Id.Value);
-                    await _patientDb.LoadAllContacts();
-                    this.RawContactsCount = _patientDb.Count;
-                    _patientDb.UpdateContactList();
-
-                    string[] dirs = new string[]
-                    {
-                        Path.Combine(Utilities.GetInboxPath(), uid),
-                        Path.Combine(Utilities.PrescriptionsPath(), uid)
-                    };
-                    await Utilities.DeleteAll(dirs);
+                    _mainWindow.ActiveContact = null;
+                    _mainWindow.FillContactFields();
                 }
+
+                var uid = contact.Uid;
+                ResetFields();
+                this.CurrentEntry = new Contact();
+
+                await _patientDb.DeleteContact(contact.Id.Value);
+                await _patientDb.LoadAllContacts();
+                this.RawContactsCount = _patientDb.Count;
+                _patientDb.UpdateContactList();
+
+                string[] dirs = new string[]
+                {
+                    Path.Combine(Utilities.GetInboxPath(), uid),
+                    Path.Combine(Utilities.PrescriptionsPath(), uid)
+                };
+                await Utilities.DeleteAll(dirs);
                 EnableButton("MinusButton", false);
             }
         }
