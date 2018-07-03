@@ -840,11 +840,17 @@ namespace AmiKoWindows
         {
             Log.WriteLine(sender.GetType().Name);
 
+            e.Handled = false;
+
             if (_fileNameListInDrag)
                 return;
 
-            e.Handled = false;
-            if (e.Key == Key.Back)
+            var box = GetElementIn("FileNameList", RightArea) as ListBox;
+            if (box == null || !object.ReferenceEquals(sender, box))
+                return;
+
+
+            if (e.IsDown && e.Key == Key.Back)
             {
                 var dialog = Utilities.MessageDialog(
                     Properties.Resources.msgPrescriptionDeleteConfirmation, "", "OKCancel");
@@ -853,8 +859,7 @@ namespace AmiKoWindows
                 var result = dialog.MessageBoxResult;
                 if (result == MessageBoxResult.OK)
                 {
-                    ListBox box = sender as ListBox;
-                    if (box?.Items.Count > 0)
+                    if (box.Items.Count > 0)
                     {
                         var item = box.SelectedItem as FileItem;
                         if (item != null && item.IsValid)
