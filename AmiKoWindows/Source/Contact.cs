@@ -217,6 +217,7 @@ namespace AmiKoWindows
         public string PersonalInfo
         {
             get {
+                if (Uid == null || Uid.Equals(string.Empty)) { return ""; }
                 var w = this.WeightKg; if (w != null && !w.Equals(string.Empty)) w += "kg";
                 var h = this.HeightCm; if (h != null && !h.Equals(string.Empty)) h += "cm";
                 var g = ""; if (this.IsFemale) g = "F"; else if (this.IsMale) g = "M";
