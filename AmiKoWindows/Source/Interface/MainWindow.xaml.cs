@@ -18,20 +18,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Interop;
 using System.Windows.Input;
 using System.Windows.Navigation;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.Win32;
 
 using MahApps.Metro.Controls;
@@ -162,80 +164,64 @@ namespace AmiKoWindows
             SetBrowserEmulationMode();
         }
 
-        // Returns an element in main area after datatemplate is switched by trigger
-        private FrameworkElement GetElementIn(string elementName, ContentControl area)
+        #region WndProc Support
+        protected override void OnSourceInitialized(EventArgs e)
         {
-            if (area == null || !(area is ContentControl))
-                return null;
+            base.OnSourceInitialized(e);
 
-            FrameworkElement element = null;
-            int n = VisualTreeHelper.GetChildrenCount(area);
-            if (n == 1)
+            HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
+            source.AddHook(WndProc);
+        }
+
+        // Gets .amk file path via WndProc Message from DoubleClick  etc.
+        // See also App.xaml.cs.
+        //
+        // * https://web.archive.org/web/20091019124817/http://www.steverands.com/2009/03/19/custom-wndproc-wpf-apps/
+        // * https://boycook.wordpress.com/2008/07/29/c-win32-messaging-with-sendmessage-and-wm_copydata/
+        protected IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wparam, IntPtr lparam, ref bool handled)
+        {
+            if (msg == App.AMIKO_MSG)
             {
-                ContentPresenter presenter = VisualTreeHelper.GetChild(area, 0) as ContentPresenter;
-                // Presenter's template is not applied yet, whyyyy :'(
-                // https://stackoverflow.com/a/15467687
-                presenter.ApplyTemplate();
-                element = presenter.ContentTemplate.FindName(elementName, presenter) as FrameworkElement;
+                Log.WriteLine("AMIKO_MSG: {0}", App.AMIKO_MSG);
+                try {
+
+                    var dat = Marshal.PtrToStructure(lparam, typeof(App.AMIKO_DAT));
+                    if (dat != null && dat is App.AMIKO_DAT)
+                        OpenFile(((App.AMIKO_DAT)dat).msg);
+                }
+                catch (Exception ex)
+                {
+                    Log.WriteLine(ex.Message);
+                }
             }
-            return element;
+            return IntPtr.Zero;
+        }
+        #endregion
+
+        #region Public Methods
+        // This is a public endpoint for the booting of application with file (path)
+        public void OpenFile(string path)
+        {
+            Log.WriteLine("path: {0}", path);
+            if (path == null || path.Equals(string.Empty) || !File.Exists(path))
+                return;
+
+            Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            ImportFile(path);
         }
 
-        public void SwitchViewContext()
+        public void BringToFront()
         {
-            var viewType = DataContext as ViewType;
-            if (viewType.Mode.Equals("Form"))
+            if (this.WindowState == WindowState.Minimized || this.Visibility == Visibility.Hidden)
             {
-                if (_browser != null)
-                {
-                    _browser.RaiseEvent(new RoutedEventArgs(FrameworkElement.UnloadedEvent));
-                    _browser = null;
-                }
-                if (_manager == null)
-                    _manager = GetElementIn("Manager", MainArea);
-            } else { // Html
-                if (_manager != null)
-                {
-                    _manager.RaiseEvent(new RoutedEventArgs(FrameworkElement.UnloadedEvent));
-                    _manager = null;
-                }
-                if (_browser == null)
-                    _browser = GetElementIn("Browser", MainArea);
+                this.WindowState = WindowState.Normal;
+                this.Show();
             }
-        }
 
-        public FrameworkElement GetView()
-        {
-            FrameworkElement element = null;
-
-            var viewType = DataContext as ViewType;
-            if (viewType.Mode.Equals("Form"))
-                element = _manager;
-            else
-                element = _browser;
-
-            return element;
-        }
-
-        public async void SetState(string state)
-        {
-            // TODO: Fix Search result items after state changed with query Volltext -> Volltext
-            if (_uiState.GetState() == UIState.State.Favorites)
-                _fullTextDb.ClearFoundEntries();
-
-            if (state.Equals("Compendium"))
-                SetState(UIState.State.Compendium);
-            else if (state.Equals("Favorites"))
-                SetState(UIState.State.Favorites);
-            else if (state.Equals("Interactions"))
-                SetState(UIState.State.Interactions);
-            else if (state.Equals("Prescriptions"))
-                SetState(UIState.State.Prescriptions);
-
-            if (_uiState.FullTextQueryEnabled)
-                if (state.Equals("Farovites"))
-                    await _fullTextDb.RetrieveFavorites();
-                _fullTextDb.UpdateSearchResults(_uiState);
+            this.Topmost = true;
+            this.Activate();
+            this.Topmost = false;
+            this.Focus();
         }
 
         public void SetState(UIState.State state)
@@ -288,7 +274,152 @@ namespace AmiKoWindows
             }
         }
 
-        public void SetDataContext(UIState.State state)
+        // Injects javascript into the current browser
+        public void InjectJS(string jsCode)
+        {
+            var browser = GetView() as WebBrowser;
+            if (browser != null)
+                browser.InvokeScript("execScript", new Object[] { jsCode, "JavaScript" });
+        }
+
+        public string SelectedFullTextSearchKey()
+        {
+            int idx = _selectedFullTextSearchKey.IndexOf("("); // Remove parentheses
+            return _selectedFullTextSearchKey.Substring(0, idx).Trim();
+        }
+
+        #region Fill Utilities
+        public void FillAccountFields()
+        {
+            TextBlock block = null;
+            var fields = new string[] {"Fullname", "Address", "Place", "Phone", "Email"};
+            foreach (var f in fields)
+            {
+                var key = String.Format("Account{0}", f);
+                block = GetElementIn(key, MainArea) as TextBlock;
+                if (block != null)
+                {
+                    if (ActiveAccount != null)
+                        block.Text = (string)ActiveAccount.GetType().GetProperty(f).GetValue(ActiveAccount, null);
+                    else
+                        block.Text = "";
+                    block.UpdateLayout();
+                }
+            }
+            LoadAccountPicture();
+        }
+
+        public void FillContactFields()
+        {
+            TextBlock block = null;
+            var fields = new string[] {"Fullname", "Address", "Place", "PersonalInfo", "Phone", "Email"};
+            foreach (var f in fields)
+            {
+                var key = String.Format("Contact{0}", f);
+                block = GetElementIn(key, MainArea) as TextBlock;
+                if (block != null)
+                {
+                    if (ActiveContact != null)
+                        block.Text = (string)ActiveContact[f];
+                    else
+                        block.Text = "";
+                    block.UpdateLayout();
+                }
+            }
+        }
+
+        public void FillPlaceDate()
+        {
+            var block = GetElementIn("PlaceDate", MainArea) as TextBlock;
+            if (block != null)
+            {
+                if (ActiveContact != null && ActiveAccount != null)
+                    block.Text = _prescriptions.PlaceDate;
+                else 
+                    block.Text = "";
+                block.UpdateLayout();
+            }
+        }
+        #endregion
+        #endregion
+
+        // Returns an element in main area after datatemplate is switched by trigger
+        private FrameworkElement GetElementIn(string elementName, ContentControl area)
+        {
+            if (area == null || !(area is ContentControl))
+                return null;
+
+            FrameworkElement element = null;
+            int n = VisualTreeHelper.GetChildrenCount(area);
+            if (n == 1)
+            {
+                ContentPresenter presenter = VisualTreeHelper.GetChild(area, 0) as ContentPresenter;
+                // Presenter's template is not applied yet, whyyyy :'(
+                // https://stackoverflow.com/a/15467687
+                presenter.ApplyTemplate();
+                element = presenter.ContentTemplate.FindName(elementName, presenter) as FrameworkElement;
+            }
+            return element;
+        }
+
+        private void SwitchViewContext()
+        {
+            var viewType = DataContext as ViewType;
+            if (viewType.Mode.Equals("Form"))
+            {
+                if (_browser != null)
+                {
+                    _browser.RaiseEvent(new RoutedEventArgs(FrameworkElement.UnloadedEvent));
+                    _browser = null;
+                }
+                if (_manager == null)
+                    _manager = GetElementIn("Manager", MainArea);
+            } else { // Html
+                if (_manager != null)
+                {
+                    _manager.RaiseEvent(new RoutedEventArgs(FrameworkElement.UnloadedEvent));
+                    _manager = null;
+                }
+                if (_browser == null)
+                    _browser = GetElementIn("Browser", MainArea);
+            }
+        }
+
+        private FrameworkElement GetView()
+        {
+            FrameworkElement element = null;
+
+            var viewType = DataContext as ViewType;
+            if (viewType.Mode.Equals("Form"))
+                element = _manager;
+            else
+                element = _browser;
+
+            return element;
+        }
+
+        private async void SetState(string state)
+        {
+            // TODO: Fix Search result items after state changed with query Volltext -> Volltext
+            if (_uiState.GetState() == UIState.State.Favorites)
+                _fullTextDb.ClearFoundEntries();
+
+            if (state.Equals("Compendium"))
+                SetState(UIState.State.Compendium);
+            else if (state.Equals("Favorites"))
+                SetState(UIState.State.Favorites);
+            else if (state.Equals("Interactions"))
+                SetState(UIState.State.Interactions);
+            else if (state.Equals("Prescriptions"))
+                SetState(UIState.State.Prescriptions);
+
+            if (_uiState.FullTextQueryEnabled)
+                if (state.Equals("Farovites"))
+                    await _fullTextDb.RetrieveFavorites();
+                _fullTextDb.UpdateSearchResults(_uiState);
+        }
+
+        private void SetDataContext(UIState.State state)
         {
             if (StatusBar.DataContext == null) {
                 this.StatusBar.DataContext = _statusBarHelper;
@@ -405,7 +536,7 @@ namespace AmiKoWindows
             }
         }
 
-        public void SetFullTextSearchDataContext()
+        private void SetFullTextSearchDataContext()
         {
             this.SearchResult.DataContext = _fullTextDb;
             var box = GetElementIn("SectionTitleList", RightArea) as ListBox;
@@ -420,16 +551,9 @@ namespace AmiKoWindows
             }
         }
 
-        public string SearchFieldText()
+        private string SearchFieldText()
         {
             return SearchTextBox.Text;
-        }
-
-        public string SelectedFullTextSearchKey()
-        {
-            // Remove parentheses
-            int idx = _selectedFullTextSearchKey.IndexOf("(");
-            return _selectedFullTextSearchKey.Substring(0, idx).Trim();
         }
 
         private void SetSpinnerEnabled(bool enabled)
@@ -962,7 +1086,7 @@ namespace AmiKoWindows
         }
 
         // Handle drop of files from explorer etc. (import)
-        private async void FileNameList_Drop(object sender, DragEventArgs e)
+        private void FileNameList_Drop(object sender, DragEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
 
@@ -982,106 +1106,111 @@ namespace AmiKoWindows
                 var path = paths[0];
                 Log.WriteLine("path: {0}", path);
 
-                // disable accidental drop
-                var amikoDir = Utilities.PrescriptionsPath();
-                var inboxDir = Utilities.GetInboxPath();
-                if (path.Contains(inboxDir) || path.Contains(amikoDir))
-                    return;
-
-                // filepath in inbox/amiko (new or existing one if exists)
-                string filepath = _prescriptions.ImportFile(path);
-                if (filepath == null)
-                    return;
-
-                Xceed.Wpf.Toolkit.MessageBox dialog = null;
-                Log.WriteLine("filepath: {0}", filepath);
-                var result = _prescriptions.TakeFile(filepath);
-                Log.WriteLine("result: {0}", result);
-                if (result == PrescriptionsBox.Result.Invalid)
-                {
-                    // TODO message dialog
-                    return;
-                }
-                else if (result == PrescriptionsBox.Result.Found)
-                {
-                    this.ActiveContact = _prescriptions.ActiveContact;
-                    this.ActiveAccount = _prescriptions.ActiveAccount;
-
-                    var filename = Path.GetFileName(filepath);
-                    dialog = Utilities.MessageDialog(
-                        String.Format(Properties.Resources.msgPrescriptionFileFound, filename), "", "OK");
-                }
-                else if (result == PrescriptionsBox.Result.Ok)
-                {
-                    // NOTE:
-                    // The timing of validations is little bit late... But
-                    // PrescriptionsBox does not notk _patientDb and _sqlDb :'(
-
-                    // import contact
-                    Contact contactInFile = _prescriptions.ActiveContact;
-                    if (contactInFile == null || contactInFile.Uid == null || contactInFile.Uid.Equals(string.Empty) ||
-                        !_patientDb.ValidateContact(contactInFile))
-                    {   // invalid
-                        _prescriptions.Renew();
-                        return;
-                    }
-
-                    // TODO account field validations
-                    // TODO medications
-
-                    this.ActiveContact = contactInFile;
-                    this.ActiveAccount = _prescriptions.ActiveAccount;
-
-                    // save/update only contact from this .amk here
-                    Contact contact = await _patientDb.GetContactByUid(ActiveContact.Uid);
-                    if ((contact != null && contact.Uid != null && !contact.Uid.Equals(string.Empty)) &&
-                         contact.Uid.Equals(ActiveContact.Uid))
-                    {   // update
-                        await _patientDb.UpdateContact(ActiveContact);
-                        this.ActiveContact = await _patientDb.GetContactByUid(contact.Uid);
-                        await _patientDb.LoadAllContacts();
-                    }
-                    else
-                    {   // save as new
-                        ActiveContact.TimeStamp = Utilities.GetLocalTimeAsString(Contact.TIME_STAMP_DATE_FORMAT);
-                        long? newId = await _patientDb.InsertContact(ActiveContact);
-                        if (newId != null && newId.Value > 0)
-                            ActiveContact.Id = newId;
-                    }
-
-                    _prescriptions.ActiveContact = ActiveContact;
-                }
-
-                _prescriptions.LoadFiles();
-
-                EnableButton("SavePrescriptionButton", true);
-                EnableButton("SendPrescriptionButton", false);
-
-                FillContactFields();
-                FillAccountFields();
-                FillPlaceDate();
-
-                // update current entry and contacts list in addressbook
-                var control = AddressBook.Content as AddressBookControl;
-                if (control != null)
-                    control.Select(ActiveContact);
-
-                // NOTE:
-                // This method call of `SetActiveFileAsSelected` behaves strangely only here.
-                // The assignment to `SelectedIndex` in this method clears
-                // `ActiveContact.Id` value. whyyy? by GC? ... :'(
-                var nowId = ActiveContact.Id;
-                SetActiveFileAsSelected();
-                ActiveContact.Id = nowId;
-
-                if (dialog != null)
-                    dialog.ShowDialog();
+                ImportFile(path);
 
                 e.Handled = true;
             }
             e.Handled = false;
         }
         #endregion
+
+        private async void ImportFile(string path)
+        {
+            // disable accidental drop
+            var amikoDir = Utilities.PrescriptionsPath();
+            var inboxDir = Utilities.GetInboxPath();
+            if (path.Contains(inboxDir) || path.Contains(amikoDir))
+                return;
+
+            // filepath in inbox/amiko (new or existing one if exists)
+            string filepath = _prescriptions.ImportFile(path);
+            if (filepath == null)
+                return;
+
+            Xceed.Wpf.Toolkit.MessageBox dialog = null;
+            Log.WriteLine("filepath: {0}", filepath);
+            var result = _prescriptions.TakeFile(filepath);
+            Log.WriteLine("result: {0}", result);
+            if (result == PrescriptionsBox.Result.Invalid)
+            {
+                // TODO message dialog
+                return;
+            }
+            else if (result == PrescriptionsBox.Result.Found)
+            {
+                this.ActiveContact = _prescriptions.ActiveContact;
+                this.ActiveAccount = _prescriptions.ActiveAccount;
+
+                var filename = Path.GetFileName(filepath);
+                dialog = Utilities.MessageDialog(
+                    String.Format(Properties.Resources.msgPrescriptionFileFound, filename), "", "OK");
+            }
+            else if (result == PrescriptionsBox.Result.Ok)
+            {
+                // NOTE:
+                // The timing of validations is little bit late... But
+                // PrescriptionsBox does not notk _patientDb and _sqlDb :'(
+
+                // import contact
+                Contact contactInFile = _prescriptions.ActiveContact;
+                if (contactInFile == null || contactInFile.Uid == null || contactInFile.Uid.Equals(string.Empty) ||
+                    !_patientDb.ValidateContact(contactInFile))
+                {   // invalid
+                    _prescriptions.Renew();
+                    return;
+                }
+
+                // TODO account field validations
+                // TODO medications
+
+                this.ActiveContact = contactInFile;
+                this.ActiveAccount = _prescriptions.ActiveAccount;
+
+                // save/update only contact from this .amk here
+                Contact contact = await _patientDb.GetContactByUid(ActiveContact.Uid);
+                if ((contact != null && contact.Uid != null && !contact.Uid.Equals(string.Empty)) &&
+                     contact.Uid.Equals(ActiveContact.Uid))
+                {   // update
+                    await _patientDb.UpdateContact(ActiveContact);
+                    this.ActiveContact = await _patientDb.GetContactByUid(contact.Uid);
+                    await _patientDb.LoadAllContacts();
+                }
+                else
+                {   // save as new
+                    ActiveContact.TimeStamp = Utilities.GetLocalTimeAsString(Contact.TIME_STAMP_DATE_FORMAT);
+                    long? newId = await _patientDb.InsertContact(ActiveContact);
+                    if (newId != null && newId.Value > 0)
+                        ActiveContact.Id = newId;
+                }
+
+                _prescriptions.ActiveContact = ActiveContact;
+            }
+
+            _prescriptions.LoadFiles();
+
+            EnableButton("SavePrescriptionButton", true);
+            EnableButton("SendPrescriptionButton", false);
+
+            FillContactFields();
+            FillAccountFields();
+            FillPlaceDate();
+
+            // update current entry and contacts list in addressbook
+            var control = AddressBook.Content as AddressBookControl;
+            if (control != null)
+                control.Select(ActiveContact);
+
+            // NOTE:
+            // This method call of `SetActiveFileAsSelected` behaves strangely only here.
+            // The assignment to `SelectedIndex` in this method clears
+            // `ActiveContact.Id` value. whyyy? by GC? ... :'(
+            var nowId = ActiveContact.Id;
+            SetActiveFileAsSelected();
+            ActiveContact.Id = nowId;
+
+            if (dialog != null)
+                dialog.ShowDialog();
+        }
 
         private void SetActiveFileAsSelected()
         {
@@ -1268,14 +1397,6 @@ namespace AmiKoWindows
             {
                 key.SetValue(appName, (UInt32)value, RegistryValueKind.DWord);
             }
-        }
-
-        // Injects javascript into the current browser
-        public void InjectJS(string jsCode)
-        {
-            var browser = GetView() as WebBrowser;
-            if (browser != null)
-                browser.InvokeScript("execScript", new Object[] { jsCode, "JavaScript" });
         }
 
         private void WebBrowser_Loaded(object sender, EventArgs e)
@@ -1519,60 +1640,6 @@ namespace AmiKoWindows
             e.Handled = true;
         }
 
-        #region Fill Methods
-        public void FillAccountFields()
-        {
-            TextBlock block = null;
-            var fields = new string[] {"Fullname", "Address", "Place", "Phone", "Email"};
-            foreach (var f in fields)
-            {
-                var key = String.Format("Account{0}", f);
-                block = GetElementIn(key, MainArea) as TextBlock;
-                if (block != null)
-                {
-                    if (ActiveAccount != null)
-                        block.Text = (string)ActiveAccount.GetType().GetProperty(f).GetValue(ActiveAccount, null);
-                    else
-                        block.Text = "";
-                    block.UpdateLayout();
-                }
-            }
-            LoadAccountPicture();
-        }
-
-        public void FillContactFields()
-        {
-            TextBlock block = null;
-            var fields = new string[] {"Fullname", "Address", "Place", "PersonalInfo", "Phone", "Email"};
-            foreach (var f in fields)
-            {
-                var key = String.Format("Contact{0}", f);
-                block = GetElementIn(key, MainArea) as TextBlock;
-                if (block != null)
-                {
-                    if (ActiveContact != null)
-                        block.Text = (string)ActiveContact[f];
-                    else 
-                        block.Text = "";
-                    block.UpdateLayout();
-                }
-            }
-        }
-
-        public void FillPlaceDate()
-        {
-            var block = GetElementIn("PlaceDate", MainArea) as TextBlock;
-            if (block != null)
-            {
-                if (ActiveContact != null && ActiveAccount != null)
-                    block.Text = _prescriptions.PlaceDate;
-                else 
-                    block.Text = "";
-                block.UpdateLayout();
-            }
-        }
-        #endregion
-
         private void LoadAccountPicture()
         {
             try
@@ -1598,7 +1665,7 @@ namespace AmiKoWindows
             }
             catch (Exception ex)
             {
-                if (ex is IOException || ex is NotSupportedException)
+                if (ex is IOException || ex is NotSupportedException || ex is NullReferenceException)
                     Log.WriteLine(ex.Message);
                 else
                     throw ex;
