@@ -12,10 +12,9 @@ namespace AmiKoWindows
     /// </summary>
     public partial class App : Application
     {
-        private const string MUTEX_NAME = "AmiKo Windows Mutex";
-        private const string HANDLE_NAME = "AmiKo Windows Event Handle";
+        private const string MUTEX_NAME = "793237F8-5898-453C-8C17-839E3D9203BD";
+        private const string HANDLE_KEY = "AB5E39E5-56B0-4863-99FB-61DE3C05D478";
 
-        public static readonly int CASTM_WIN = 0xFFF;
         public static readonly int AMIKO_MSG = 0x4A;
 
         private EventWaitHandle _handle;
@@ -32,8 +31,8 @@ namespace AmiKoWindows
             public string msg;
         }
 
-        [DllImport("user32.dll")]
-        private static extern int RegisterWindowMessage(string message);
+        [DllImport("User32.dll")]
+        public static extern Int32 FindWindow(String lpClassName, String lpWindowName);
 
         [DllImport("user32.dll")]
         private static extern bool PostMessage(
@@ -56,7 +55,7 @@ namespace AmiKoWindows
 
             bool isOwned;
             this._mutex = new Mutex(true, MUTEX_NAME, out isOwned);
-            this._handle = new EventWaitHandle(false, EventResetMode.AutoReset, HANDLE_NAME);
+            this._handle = new EventWaitHandle(false, EventResetMode.AutoReset, HANDLE_KEY);
 
             GC.KeepAlive(_mutex);
 
@@ -94,6 +93,8 @@ namespace AmiKoWindows
                     {
                         while (_handle.WaitOne())
                         {
+                            if (Current == null)
+                                break;
                             // get back minimized/hidden window
                             Current.Dispatcher.BeginInvoke(
                                 (Action)(() => ((MainWindow)Current.MainWindow).BringToFront()));
@@ -120,8 +121,10 @@ namespace AmiKoWindows
                 dat.len = len + 1;
                 dat.msg = path;
 
-                Log.WriteLine("AMIKO_MSG: {0}", AMIKO_MSG);
-                SendMessage((IntPtr)CASTM_WIN, AMIKO_MSG, IntPtr.Zero, ref dat);
+                var title = Utilities.AppName();
+                Log.WriteLine("title: {0}", title);
+                var hwnd = FindWindow(null, title);
+                SendMessage((IntPtr)hwnd, AMIKO_MSG, IntPtr.Zero, ref dat);
             }
 
             Application.Current.Shutdown();

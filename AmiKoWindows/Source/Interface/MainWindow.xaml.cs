@@ -184,7 +184,6 @@ namespace AmiKoWindows
             {
                 Log.WriteLine("AMIKO_MSG: {0}", App.AMIKO_MSG);
                 try {
-
                     var dat = Marshal.PtrToStructure(lparam, typeof(App.AMIKO_DAT));
                     if (dat != null && dat is App.AMIKO_DAT)
                         OpenFile(((App.AMIKO_DAT)dat).msg);
@@ -218,10 +217,11 @@ namespace AmiKoWindows
                 this.Show();
             }
 
-            this.Topmost = true;
             this.Activate();
+            this.Topmost = true;
             this.Topmost = false;
             this.Focus();
+            Keyboard.ClearFocus();
         }
 
         public void SetState(UIState.State state)
@@ -598,6 +598,7 @@ namespace AmiKoWindows
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             Utilities.CleanupInbox();
+            Application.Current.Shutdown();
         }
 
         private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
