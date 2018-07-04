@@ -381,7 +381,7 @@ namespace AmiKoWindows
         }
 
         // Copies file if it it valid. Returns path.
-        public string ImportFile(string path)
+        public string CopyFile(string path)
         {
             var filename = Path.GetFileName(path);
 
@@ -433,7 +433,7 @@ namespace AmiKoWindows
         }
 
         // Reads .amk file in inbox/amiko, returns enum result (invalid/found/ok).
-        public Result TakeFile(string path)
+        public Result ImportFile(string path)
         {
             if ((!path.Contains(_inboxDir) && !path.Contains(_amikoDir)) || !File.Exists(path))
                 return Result.Invalid;
@@ -452,6 +452,7 @@ namespace AmiKoWindows
             // load all fields
             PrescriptionJSONPresenter presenter = null;
             string hash = null;
+            string placeDate = null;
             try {
                 string rawInput = File.ReadAllText(path);
                 string json = Utilities.Base64Decode(rawInput) ?? "{}";
@@ -462,6 +463,10 @@ namespace AmiKoWindows
 
                 hash = presenter.prescription_hash;
                 if (hash == null || hash.Equals(string.Empty))
+                    return Result.Invalid;
+
+                placeDate = presenter.place_date;
+                if (placeDate == null || placeDate.Equals(string.Empty))
                     return Result.Invalid;
             }
             catch (Exception ex)
@@ -479,36 +484,21 @@ namespace AmiKoWindows
                 return Result.Found;
             }
 
-            Renew();
-
             this._Medications = new HashSet<Medication>(presenter.MedicationsList);
             UpdateMedicationList();
 
             this.ActiveFileName = String.Format("{0} {1}", name, notSaved);
-
             this.ActiveFilePath = path;
-            this.IsPreview = true;
 
-            if ((GetFilePathByName(name)) == null)
-            {  // this prescription is not for active contact
-                _Files.Clear();
-            }
+            this.IsPreview = true;
 
             this.ActiveContact = presenter.Contact;
             this.ActiveAccount = presenter.Account;
 
-            var item = new FileItem() {
-                Name = ActiveFileName,
-                Hash = hash,
-                Path = ActiveFilePath,
-            };
-
-            _Files.Add(item);
-            UpdateFileNameList();
-
             this.Hash = hash;
-            this.PlaceDate = presenter.place_date;
+            this.PlaceDate = placeDate;
 
+            LoadFiles();
             return Result.Ok;
         }
 

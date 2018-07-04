@@ -1124,14 +1124,14 @@ namespace AmiKoWindows
                 return;
 
             // filepath in inbox/amiko (new or existing one if exists)
-            string filepath = _prescriptions.ImportFile(path);
+            string filepath = _prescriptions.CopyFile(path);
+            Log.WriteLine("filepath: {0}", filepath);
             if (filepath == null)
                 return;
 
             Xceed.Wpf.Toolkit.MessageBox dialog = null;
-            Log.WriteLine("filepath: {0}", filepath);
-            var result = _prescriptions.TakeFile(filepath);
-            Log.WriteLine("result: {0}", result);
+
+            var result = _prescriptions.ImportFile(filepath);
             if (result == PrescriptionsBox.Result.Invalid)
             {
                 // TODO message dialog
@@ -1150,9 +1150,10 @@ namespace AmiKoWindows
             {
                 // NOTE:
                 // The timing of validations is little bit late... But
-                // PrescriptionsBox does not notk _patientDb and _sqlDb :'(
+                // PrescriptionsBox does not know _patientDb and _sqlDb. Tuhs
+                // let's do here :'(
 
-                // import contact
+                // validate contact
                 Contact contactInFile = _prescriptions.ActiveContact;
                 if (contactInFile == null || contactInFile.Uid == null || contactInFile.Uid.Equals(string.Empty) ||
                     !_patientDb.ValidateContact(contactInFile))
@@ -1160,34 +1161,32 @@ namespace AmiKoWindows
                     _prescriptions.Renew();
                     return;
                 }
-
-                // TODO account field validations
-                // TODO medications
-
-                this.ActiveContact = contactInFile;
-                this.ActiveAccount = _prescriptions.ActiveAccount;
-
-                // save/update only contact from this .amk here
-                Contact contact = await _patientDb.GetContactByUid(ActiveContact.Uid);
+                // save/update contact from this .amk here. assume contact in .amk file as always new.
+                // (same as iOS and macOS version)
+                Contact contact = await _patientDb.GetContactByUid(contactInFile.Uid);
                 if ((contact != null && contact.Uid != null && !contact.Uid.Equals(string.Empty)) &&
-                     contact.Uid.Equals(ActiveContact.Uid))
+                     ActiveContact != null && contact.Uid.Equals(ActiveContact.Uid))
                 {   // update
-                    await _patientDb.UpdateContact(ActiveContact);
-                    this.ActiveContact = await _patientDb.GetContactByUid(contact.Uid);
+                    await _patientDb.UpdateContact(contactInFile);
                     await _patientDb.LoadAllContacts();
+                    contact = await _patientDb.GetContactByUid(contactInFile.Uid);
                 }
                 else
                 {   // save as new
-                    ActiveContact.TimeStamp = Utilities.GetLocalTimeAsString(Contact.TIME_STAMP_DATE_FORMAT);
-                    long? newId = await _patientDb.InsertContact(ActiveContact);
+                    contactInFile.TimeStamp = Utilities.GetLocalTimeAsString(Contact.TIME_STAMP_DATE_FORMAT);
+                    long? newId = await _patientDb.InsertContact(contactInFile);
                     if (newId != null && newId.Value > 0)
-                        ActiveContact.Id = newId;
+                        contactInFile.Id = newId;
+                    contact = contactInFile;
                 }
-
+                this.ActiveContact = contact;
                 _prescriptions.ActiveContact = ActiveContact;
-            }
 
-            _prescriptions.LoadFiles();
+                // TODO validate account
+                this.ActiveAccount = _prescriptions.ActiveAccount;
+
+                // TODO validate medications
+            }
 
             EnableButton("SavePrescriptionButton", true);
             EnableButton("SendPrescriptionButton", false);
