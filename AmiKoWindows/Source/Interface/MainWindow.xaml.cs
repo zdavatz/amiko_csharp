@@ -1584,13 +1584,11 @@ namespace AmiKoWindows
                     _prescriptions.ActiveContact = ActiveContact;
                     _prescriptions.LoadFiles();
                 }
-                else if (_prescriptions.ActiveContact == null)
-                {   // first time
+                else
+                {   // initial set or same contact (but user may update properties...)
                     _prescriptions.ActiveContact = ActiveContact;
                     _prescriptions.LoadFiles();
                 }
-                else
-                    _prescriptions.ActiveContact = ActiveContact;
             }
 
             // reset account
