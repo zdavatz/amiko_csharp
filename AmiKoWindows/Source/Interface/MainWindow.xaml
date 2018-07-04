@@ -112,40 +112,39 @@
                                 <ListBox
                                     Name="MedicationList" Style="{StaticResource MedicationListBox}" ItemContainerStyle="{StaticResource MedicationListBoxItem}"
                                     KeyboardNavigation.DirectionalNavigation="Cycle"
-                                    VerticalAlignment="Top"
-                                    ItemsSource="{Binding Path=MedicationListItems}" Height="430">
+                                    ItemsSource="{Binding Path=MedicationListItems}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <Grid VerticalAlignment="Top">
-                                              <Grid.RowDefinitions>
-                                                  <RowDefinition Height="32" />
-                                                  <RowDefinition Height="Auto" MinHeight="32" />
-                                              </Grid.RowDefinitions>
-                                              <Grid Grid.Row="0" VerticalAlignment="Top">
-                                                  <Grid.ColumnDefinitions>
-                                                      <ColumnDefinition />
-                                                      <ColumnDefinition Width="80" />
-                                                  </Grid.ColumnDefinitions>
-                                                  <StackPanel Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left">
-                                                      <TextBlock Text="{Binding Path=Text}"
-                                                          Margin="0,0,7,0" Padding="8,6,4,0" Width="Auto" FontWeight="Normal" VerticalAlignment="Bottom" HorizontalAlignment="Left" Focusable="False" />
-                                                  </StackPanel>
-                                                  <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right">
-                                                      <Button
-                                                          Name="DeleteMedicationButton" Style="{StaticResource WhiteIconButton}"
-                                                          Margin="0,0,0,0" Height="28" Width="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="DeleteMedicationButton_Click"
-                                                          Cursor="Hand">
-                                                          <fa:ImageAwesome Name="Backspace" Icon="Trash" Visibility="Visible" Foreground="LightGray"
-                                                              VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
-                                                      </Button>
-                                                  </StackPanel>
-                                              </Grid>
-                                              <Grid Grid.Row="1" VerticalAlignment="Top">
-                                                  <TextBox x:Name="MedicationCommentTextBox" Style="{StaticResource MedicationCommentTextBox}" Text="{Binding Path=Comment}"
-                                                      TextWrapping="Wrap" AcceptsReturn="True" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                                      TextChanged="MedicationCommentTextBox_TextChanged"
-                                                      Controls:TextBoxHelper.Watermark="{x:Static p:Resources.comment}" />
-                                              </Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="32" />
+                                                    <RowDefinition Height="Auto" MinHeight="32" />
+                                                </Grid.RowDefinitions>
+                                                <Grid Grid.Row="0" VerticalAlignment="Top">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition />
+                                                        <ColumnDefinition Width="80" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                                        <TextBlock Text="{Binding Path=Text}"
+                                                            Margin="0,0,7,0" Padding="8,6,4,0" Width="Auto" FontWeight="Normal" VerticalAlignment="Bottom" HorizontalAlignment="Left" Focusable="False" />
+                                                    </StackPanel>
+                                                    <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right">
+                                                        <Button
+                                                            Name="DeleteMedicationButton" Style="{StaticResource WhiteIconButton}"
+                                                            Margin="0,0,0,0" Height="28" Width="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="DeleteMedicationButton_Click"
+                                                            Cursor="Hand">
+                                                            <fa:ImageAwesome Name="Backspace" Icon="Trash" Visibility="Visible" Foreground="LightGray"
+                                                                VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
+                                                        </Button>
+                                                    </StackPanel>
+                                                </Grid>
+                                                <Grid Grid.Row="1" VerticalAlignment="Top">
+                                                    <TextBox x:Name="MedicationCommentTextBox" Style="{StaticResource MedicationCommentTextBox}" Text="{Binding Path=Comment}"
+                                                        TextWrapping="Wrap" AcceptsReturn="True" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                                        TextChanged="MedicationCommentTextBox_TextChanged"
+                                                        Controls:TextBoxHelper.Watermark="{x:Static p:Resources.comment}" />
+                                                </Grid>
                                             </Grid>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
