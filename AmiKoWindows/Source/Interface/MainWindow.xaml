@@ -164,19 +164,6 @@
                                             <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.newPrescription}"
                                                 Cursor="{Binding ElementName=NewPrescriptionButton, Path=Cursor}" />
                                         </Button>
-                                        <Rectangle Opacity="0" Fill="Transparent">
-                                            <Rectangle.Style>
-                                                <Style TargetType="Rectangle">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=NewPrescriptionButton, Path=IsEnabled}" Value="False">
-                                                            <Setter Property="Cursor" Value="No" />
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Rectangle.Style>
-                                        </Rectangle>
                                     </Grid>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                         <Grid Margin="0,3,6,1">
@@ -186,19 +173,6 @@
                                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.checkInteractions}"
                                                   Cursor="{Binding ElementName=CheckInteractionButton, Path=Cursor}" />
                                             </Button>
-                                            <Rectangle Opacity="0" Fill="Transparent">
-                                                <Rectangle.Style>
-                                                    <Style TargetType="Rectangle">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding ElementName=CheckInteractionButton, Path=IsEnabled}" Value="False">
-                                                                <Setter Property="Cursor" Value="No" />
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Rectangle.Style>
-                                            </Rectangle>
                                         </Grid>
                                         <Grid Margin="6,3,3,1">
                                           <Button
@@ -206,19 +180,6 @@
                                               Margin="0" HorizontalAlignment="Right" Click="SavePrescriptionButton_Click" IsEnabled="False" Cursor="Hand">
                                               <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.save}" />
                                           </Button>
-                                          <Rectangle Opacity="0" Fill="Transparent">
-                                              <Rectangle.Style>
-                                                  <Style TargetType="Rectangle">
-                                                      <Setter Property="Visibility" Value="Collapsed" />
-                                                      <Style.Triggers>
-                                                          <DataTrigger Binding="{Binding ElementName=SavePrescriptionButton, Path=IsEnabled}" Value="False">
-                                                              <Setter Property="Cursor" Value="No" />
-                                                              <Setter Property="Visibility" Value="Visible" />
-                                                          </DataTrigger>
-                                                      </Style.Triggers>
-                                                  </Style>
-                                              </Rectangle.Style>
-                                          </Rectangle>
                                         </Grid>
                                         <Grid Margin="6,3,0,1">
                                             <Button
@@ -235,19 +196,6 @@
                                                     </ContextMenu>
                                                 </Button.ContextMenu>
                                             </Button>
-                                            <Rectangle Opacity="0" Fill="Transparent">
-                                                <Rectangle.Style>
-                                                    <Style TargetType="Rectangle">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding ElementName=SendPrescriptionButton, Path=IsEnabled}" Value="False">
-                                                                <Setter Property="Cursor" Value="No" />
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Rectangle.Style>
-                                            </Rectangle>
                                         </Grid>
                                     </StackPanel>
                                 </Grid>

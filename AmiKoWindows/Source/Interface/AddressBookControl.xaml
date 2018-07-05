@@ -219,19 +219,6 @@
                                 <fa:ImageAwesome Name="Plus" Icon="Plus" Visibility="Visible" Foreground="Black"
                                     VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                             </Button>
-                            <Rectangle Opacity="0" Fill="Transparent">
-                                <Rectangle.Style>
-                                    <Style TargetType="Rectangle">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=PlusButton, Path=IsEnabled}" Value="False">
-                                                <Setter Property="Cursor" Value="No" />
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Rectangle.Style>
-                            </Rectangle>
                         </Grid>
                         <Grid Margin="1,0,0,0">
                             <Button
@@ -241,19 +228,6 @@
                                 <fa:ImageAwesome Name="Minus" Icon="Minus" Visibility="Visible" Foreground="LightGray"
                                     VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                             </Button>
-                            <Rectangle Opacity="0" Fill="Transparent">
-                                <Rectangle.Style>
-                                    <Style TargetType="Rectangle">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=MinusButton, Path=IsEnabled}" Value="False">
-                                                <Setter Property="Cursor" Value="No" />
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Rectangle.Style>
-                            </Rectangle>
                         </Grid>
                         <TextBlock Height="Auto" Width="120" Margin="12,-3,6,0" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Label FontSize="12" Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.addressBook}" />
@@ -269,19 +243,6 @@
                                 <fa:ImageAwesome Name="AddressBook" Icon="AddressBook" Visibility="Visible" Foreground="LightGray"
                                     VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                             </Button>
-                            <Rectangle Opacity="0" Fill="Transparent">
-                                <Rectangle.Style>
-                                    <Style TargetType="Rectangle">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=SwitchButton, Path=IsEnabled}" Value="False">
-                                                <Setter Property="Cursor" Value="No" />
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Rectangle.Style>
-                            </Rectangle>
                         </Grid>
                     </StackPanel>
                 </StackPanel>
