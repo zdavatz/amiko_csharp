@@ -1109,11 +1109,10 @@ namespace AmiKoWindows
         {
             Log.WriteLine(sender.GetType().Name);
 
-            EnableButton("SavePrescriptionButton", false);
-            EnableButton("SendPrescriptionButton", false);
-
             if (_fileNameListInDrag)
                 return;
+
+            EnableButton("SavePrescriptionButton", false);
 
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -1599,8 +1598,39 @@ namespace AmiKoWindows
             if (e.ChangedButton == MouseButton.Left)
             {
                 Log.WriteLine(source.Name);
+
+                if (_prescriptions.ActiveFileName != null)
+                {
+                    var button = sender as Button;
+                    var menu = button?.ContextMenu;
+                    Log.WriteLine("menu: {0}", menu);
+                    if (menu != null && menu.Items.Count > 0)
+                    {
+                        var item = menu.Items[0] as MenuItem;
+                        Log.WriteLine("item: {0}", item);
+                        if (item != null)
+                            item.Header = _prescriptions.ActiveFileName;
+                    }
+                }
+
                 ToggleContextMenu(sender as FrameworkElement);
             }
+        }
+
+        private void SendPrescriptionContextMenu_Opening(object sender, ContextMenuEventArgs e)
+        {
+            var button = GetElementIn("SendPrescriptionButton", MainArea) as Button;
+            var menu = button?.ContextMenu;
+            Log.WriteLine("menu: {0}", menu);
+            if (menu != null && menu.Items.Count > 0)
+            {
+                var item = menu.Items[0] as MenuItem;
+                Log.WriteLine("item: {0}", item);
+                if (item != null)
+                    item.Header = "Hoi";
+            }
+
+            e.Handled = true;
         }
 
         private void SendPrescriptionContextMenu_Closing(object sender, ContextMenuEventArgs e)
@@ -1616,8 +1646,18 @@ namespace AmiKoWindows
             _contextMenu = null;
             if (_prescriptions.ActiveFilePath != null)
             {
+                // NOTE: no attachment :'(
+                string title = Utilities.GetMailSubject(
+                    ActiveContact.Fullname, ActiveContact.Birthdate, ActiveAccount.Fullname
+                );
+                string text = "\n(Drag und Drop .amk Rezept Hier)\n\n";
+                string body = text + Utilities.GetMailBody();
+                string mail = String.Format(
+                    @"mailto:{0}?subject={1}&body={2}",
+                    ActiveContact.Email, title, body
+                );
+                Process.Start(Uri.EscapeUriString(mail));
                 e.Handled = true;
-                // TODO
             }
         }
 
@@ -1671,8 +1711,11 @@ namespace AmiKoWindows
             if (_outbox.Count > 0)
             {
                 var file = _outbox[0] as StorageFile;
-                req.Data.Properties.Title = Properties.Resources.appTitle;
+                req.Data.Properties.Title = Utilities.GetMailSubject(
+                    ActiveContact.Fullname, ActiveContact.Birthdate, ActiveAccount.Fullname
+                );
                 req.Data.Properties.Description = Path.GetFileName(file.Path);
+                req.Data.SetText(Utilities.GetMailBody());
                 req.Data.SetStorageItems(_outbox);
             }
         }

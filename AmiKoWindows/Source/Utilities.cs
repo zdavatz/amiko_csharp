@@ -103,6 +103,20 @@ namespace AmiKoWindows
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppCompany(), AppName());
         }
 
+        #region Mail Utilities
+        public static string GetMailSubject(string contactName, string birthDate, string accountName)
+        {
+            return String.Format("Rezept: {0}, {1} von {2}", contactName, birthDate, accountName);
+        }
+
+        public static string GetMailBody()
+        {
+            return "Open with\n\n" +
+                "iOS: https://itunes.apple.com/ch/app/generika/id520038123?mt=8\n" +
+                "Android: https://play.google.com/store/apps/details?id=org.oddb.generika\n";
+        }
+        #endregion
+
         #region Path Utilities
         public static string SQLiteDBPath()
         {
