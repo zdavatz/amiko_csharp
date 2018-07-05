@@ -1509,6 +1509,7 @@ namespace AmiKoWindows
 
             var card = ProfileCard.Content as ProfileCardControl;
             this.ActiveAccount = card?.CurrentEntry;
+            this.ActiveAccount.Signature = null; // reset
             _prescriptions.ActiveAccount = ActiveAccount;
 
             FillContactFields();
@@ -1597,21 +1598,11 @@ namespace AmiKoWindows
                 _prescriptions.LoadFiles();
             }
             else
-            {
-                if (_prescriptions.ActiveContact != null &&
-                    _prescriptions.ActiveContact.Uid != ActiveContact.Uid) // change of contact (patient)
-                {
-                    // doesn't renew here (keep current medications)
-                    _prescriptions.Hash = Utilities.GenerateUUID();
-                    _prescriptions.PlaceDate = null;
-                    _prescriptions.ActiveContact = ActiveContact;
-                    _prescriptions.LoadFiles();
-                }
-                else
-                {   // initial set or same contact (but user may update properties...)
-                    _prescriptions.ActiveContact = ActiveContact;
-                    _prescriptions.LoadFiles();
-                }
+            {  // doesn't renew here (keep current medications)
+                _prescriptions.Hash = Utilities.GenerateUUID();
+                _prescriptions.PlaceDate = null;
+                _prescriptions.ActiveContact = ActiveContact;
+                _prescriptions.LoadFiles();
             }
 
             // reset account
@@ -1645,8 +1636,11 @@ namespace AmiKoWindows
 
             if (Account.IsSet() && ActiveAccount != null)
             {
-                _prescriptions.ActiveAccount = ActiveAccount;
-                FillAccountFields(); // only for initial loading (at first time)
+                if (_prescriptions.ActiveFileName == null)
+                {
+                    _prescriptions.ActiveAccount = ActiveAccount;
+                    FillAccountFields();
+                }
                 FillPlaceDate();
 
                 var button = GetElementIn("OpenProfileCardButton", MainArea) as Button;

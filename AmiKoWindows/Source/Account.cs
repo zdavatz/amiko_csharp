@@ -167,9 +167,6 @@ namespace AmiKoWindows
 
                     byte[] bytes = File.ReadAllBytes(path);
                     content = Convert.ToBase64String(bytes);
-
-                    this._Signature = content; // update
-                    OnPropertyChanged("Signature");
                 }
                 catch (IOException ex)
                 {
