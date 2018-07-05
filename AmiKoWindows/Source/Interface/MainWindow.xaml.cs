@@ -237,8 +237,6 @@ namespace AmiKoWindows
             }
 
             this.Activate();
-            this.Topmost = true;
-            this.Topmost = false;
             this.Focus();
             Keyboard.ClearFocus();
         }
