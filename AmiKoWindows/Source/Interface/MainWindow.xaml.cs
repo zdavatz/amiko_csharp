@@ -928,15 +928,37 @@ namespace AmiKoWindows
         {
             Log.WriteLine(sender.GetType().Name);
 
+            if (_fileNameListInDrag)
+                return;
+
             var item = (sender as MenuItem)?.DataContext as FileItem;
+            bool result = await DeleteFileItem(item);
+            if (result)
+                e.Handled = true;
+        }
+
+        private async Task<bool> DeleteFileItem(FileItem item)
+        {
             if (item != null && item.IsValid)
             {
-                await _prescriptions.DeleteFile(item.Path);
-                _prescriptions.LoadFiles();
+                var dialog = Utilities.MessageDialog(
+                    Properties.Resources.msgPrescriptionDeleteConfirmation, "", "OKCancel");
+                dialog.ShowDialog();
 
-                var button = GetElementIn("NewPrescriptionButton", MainArea);
-                button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                var result = dialog.MessageBoxResult;
+                if (result == MessageBoxResult.OK)
+                {
+                    await _prescriptions.DeleteFile(item.Path);
+                    _prescriptions.Renew();
+                    _prescriptions.LoadFiles();
+                    EnableButton("SavePrescriptionButton", false);
+                    EnableButton("SendPrescriptionButton", false);
+
+                    FillPlaceDate();
+                    return true;
+                }
             }
+            return false;
         }
 
         private void FileNameList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -979,32 +1001,12 @@ namespace AmiKoWindows
             if (box == null || !object.ReferenceEquals(sender, box))
                 return;
 
-
-            if (e.IsDown && e.Key == Key.Back)
+            if (e.IsDown && e.Key == Key.Back && box.Items.Count > 0)
             {
-                var dialog = Utilities.MessageDialog(
-                    Properties.Resources.msgPrescriptionDeleteConfirmation, "", "OKCancel");
-                dialog.ShowDialog();
-
-                var result = dialog.MessageBoxResult;
-                if (result == MessageBoxResult.OK)
-                {
-                    if (box.Items.Count > 0)
-                    {
-                        var item = box.SelectedItem as FileItem;
-                        if (item != null && item.IsValid)
-                        {
-                            await _prescriptions.DeleteFile(item.Path);
-                            _prescriptions.Renew();
-                            _prescriptions.LoadFiles();
-                            EnableButton("SavePrescriptionButton", false);
-                            EnableButton("SendPrescriptionButton", false);
-
-                            FillPlaceDate();
-                            e.Handled = true;
-                        }
-                    }
-                }
+                var item = box.SelectedItem as FileItem;
+                bool result = await DeleteFileItem(item);
+                if (result)
+                    e.Handled = true;
             }
         }
 
