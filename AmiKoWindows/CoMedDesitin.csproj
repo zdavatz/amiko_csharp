@@ -28,29 +28,6 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>true</UpdateEnabled>
-    <UpdateMode>Background</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>false</MapFileExtensions>
-    <UpdateUrl>http://localhost/AmiKo Desitin/</UpdateUrl>
-    <SupportUrl>http://ywesee.com/amiko</SupportUrl>
-    <TargetCulture>fr-CH</TargetCulture>
-    <PublisherName>ywesee GmbH</PublisherName>
-    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
-    <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>5</ApplicationRevision>
-    <ApplicationVersion>1.0.6.0</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <CreateDesktopShortcut>true</CreateDesktopShortcut>
-    <PublishWizardCompleted>true</PublishWizardCompleted>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' Or '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -342,8 +319,8 @@
     <Resource Include="Resources\js\main_callbacks.js" />
     <Resource Include="Resources\js\interaction_callbacks.js" />
     <!-- image -->
-    <Resource Include="Resources\img\amiko_icon.ico" />
-    <Resource Include="Resources\img\desitin_icon.ico" />
+    <Content Include="Resources\img\amiko_icon.ico" />
+    <Content Include="Resources\img\desitin_icon.ico" />
     <Resource Include="Resources\img\trash_icon_2.png" />
     <Resource Include="Resources\img\menu_button.png" />
     <Resource Include="Resources\img\28-star-gy.png" />
@@ -375,6 +352,14 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <FileAssociation Include=".amk">
+      <Visible>False</Visible>
+      <Description>CoMed Prescription File</Description>
+      <Progid>CoMed</Progid>
+      <DefaultIcon>Resources\img\desitin_icon.ico</DefaultIcon>
+    </FileAssociation>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
