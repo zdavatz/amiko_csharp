@@ -1134,6 +1134,10 @@ namespace AmiKoWindows
             if (filepath == null)
                 return;
 
+            var book = AddressBook.Content as AddressBookControl;
+            if (book == null)
+                return;
+
             Xceed.Wpf.Toolkit.MessageBox dialog = null;
 
             var result = await _prescriptions.ImportFile(filepath);
@@ -1157,11 +1161,9 @@ namespace AmiKoWindows
                 // The timing of validations is little bit late... But
                 // PrescriptionsBox does not know _patientDb and _sqlDb. Tuhs let's do here :'(
 
-                // validate contact
                 Contact contactInFile = _prescriptions.ActiveContact;
-                if (contactInFile == null || contactInFile.Uid == null || contactInFile.Uid.Equals(string.Empty) ||
-                    !_patientDb.ValidateContact(contactInFile))
-                {   // invalid
+                if (contactInFile == null || contactInFile.Uid == null || contactInFile.Uid.Equals(string.Empty))
+                {
                     _prescriptions.Renew();
                     return;
                 }
@@ -1169,10 +1171,21 @@ namespace AmiKoWindows
                 string uid = contactInFile.Uid;
 
                 // NOTE:
-                // macOS and iOS Version has still old Uid Source.
+                // macOS and iOS Version has still old Uid Source and invalid
+                // format of some fields.
                 string validUid = contactInFile.GenerateUid();
                 if (!validUid.Equals(uid))
+                {
                     uid = validUid;
+                    contactInFile.Birthdate = book.FormatBirthDate(contactInFile.Birthdate);
+                }
+
+                // validate contact
+                if (!_patientDb.ValidateContact(contactInFile))
+                {
+                    _prescriptions.Renew();
+                    return;
+                }
 
                 // save/update contact from this .amk here. assume contact in .amk file as always new.
                 // (same as iOS and macOS version)
@@ -1208,9 +1221,7 @@ namespace AmiKoWindows
             FillPlaceDate();
 
             // update current entry and contacts list in addressbook
-            var control = AddressBook.Content as AddressBookControl;
-            if (control != null)
-                control.Select(ActiveContact);
+            book.Select(ActiveContact);
 
             // NOTE:
             // This method call of `SetActiveFileAsSelected` behaves strangely only here.

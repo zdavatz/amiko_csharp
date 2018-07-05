@@ -131,6 +131,15 @@ namespace AmiKoWindows
             EnableButton("MinusButton", true);
         }
 
+        public string FormatBirthDate(string text)
+        {
+            // Input Support e.g. 08.06.2018 -> 8.6.2018
+            string result = text;
+            result = PatientDb.BIRTHDATE_NONDEVIDER_RGX.Replace(result, ".");
+            result = PatientDb.BIRTHDATE_ZEROPADDED_RGX.Replace(result, "$1");
+            return result;
+        }
+
         private void Control_Loaded(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(e.ToString());
@@ -239,15 +248,6 @@ namespace AmiKoWindows
         {
             var box = sender as TextBox;
             ValidateField(box);
-        }
-
-        private string FormatBirthDate(string text)
-        {
-            // Input Support e.g. 08.06.2018 -> 8.6.2018
-            string result = text;
-            result = PatientDb.BIRTHDATE_NONDEVIDER_RGX.Replace(result, ".");
-            result = PatientDb.BIRTHDATE_ZEROPADDED_RGX.Replace(result, "$1");
-            return result;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
