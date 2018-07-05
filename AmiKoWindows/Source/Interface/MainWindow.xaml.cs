@@ -73,6 +73,7 @@ namespace AmiKoWindows
 
         private ContextMenu _searchResultContextMenu = null;
         private bool _fileNameListInDrag = false;
+        private bool _hasFile = false;
 
         #region Public Fields
         private string _SearchTextBoxWaterMark;
@@ -205,8 +206,13 @@ namespace AmiKoWindows
             if (path == null || path.Equals(string.Empty) || !File.Exists(path))
                 return;
 
+            this.DataContext = new ViewType("Form");
+            SwitchViewContext();
+
             Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
             ImportFile(path);
+            this._hasFile = true;
         }
 
         public void BringToFront()
@@ -580,19 +586,18 @@ namespace AmiKoWindows
             TitleQuerySelectButton.Focus();
             this.TitleQuerySelectButton.IsChecked = true;
 
-            // TODO
-            // Fix default MainArea's `ContentTemplate` (via style with triggers) loading issue
-            Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            Compendium.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-
             if (Account.IsSet())
             {
                 this.ActiveAccount = Properties.Settings.Default.Account;
                 _prescriptions.ActiveAccount = ActiveAccount;
             }
 
-            this.DataContext = new ViewType("Html");
-            SwitchViewContext();
+            Log.WriteLine("_hasFile: {0}", _hasFile);
+            if (!_hasFile)
+            {
+                this.DataContext = new ViewType("Html");
+                SwitchViewContext();
+            }
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
