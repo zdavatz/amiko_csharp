@@ -258,6 +258,12 @@
   <data name="msgPrescriptionFileFound" xml:space="preserve">
     <value>{0} wurde bereits importiert.</value>
   </data>
+  <data name="msgPrescriptionImportFailure" xml:space="preserve">
+    <value>Das Rezept wurde nicht importiert.</value>
+  </data>
+  <data name="msgPrescriptionImportSuccess" xml:space="preserve">
+    <value>{0} wurde erfolgreich importiert.</value>
+  </data>
   <data name="msgPrescriptionSavingContextConfirmation" xml:space="preserve">
     <value>Wollen Sie dieses Rezept überschreiben oder ein neues Rezept erstellen?</value>
   </data>

@@ -484,6 +484,24 @@ namespace AmiKoWindows.Properties {
         /// <summary>
         ///   Looks up a localized string similar to ...
         /// </summary>
+        public static string msgPrescriptionImportFailure {
+            get {
+                return ResourceManager.GetString("msgPrescriptionImportFailure", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
+        public static string msgPrescriptionImportSuccess {
+            get {
+                return ResourceManager.GetString("msgPrescriptionImportSuccess", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
         public static string msgPrescriptionSavingContextConfirmation {
             get {
                 return ResourceManager.GetString("msgPrescriptionSavingContextConfirmation", resourceCulture);

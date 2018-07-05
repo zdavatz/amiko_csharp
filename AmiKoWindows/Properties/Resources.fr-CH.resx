@@ -256,7 +256,13 @@
     <value>Voulez-vous vraiment effacer cette ordonnance?</value>
   </data>
   <data name="msgPrescriptionFileFound" xml:space="preserve">
-    <value>{0} déjà était importé</value>
+    <value>{0} déjà était importé.</value>
+  </data>
+  <data name="msgPrescriptionImportFailure" xml:space="preserve">
+    <value>La recette n'a pas été importée.</value>
+  </data>
+  <data name="msgPrescriptionImportSuccess" xml:space="preserve">
+    <value>{0} a été importée avec succès.</value>
   </data>
   <data name="msgPrescriptionSavingContextConfirmation" xml:space="preserve">
     <value>Voulez-vous vraiment écraser l'ordonnance existante ou générer une nouvelle?</value>

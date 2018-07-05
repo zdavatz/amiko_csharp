@@ -1139,11 +1139,14 @@ namespace AmiKoWindows
                 return;
 
             Xceed.Wpf.Toolkit.MessageBox dialog = null;
+            var filename = Path.GetFileName(filepath);
 
             var result = await _prescriptions.ImportFile(filepath);
             if (result == PrescriptionsBox.Result.Invalid)
             {
-                // TODO message dialog
+                dialog = Utilities.MessageDialog(
+                    Properties.Resources.msgPrescriptionImportFailure, "", "OK");
+                dialog.ShowDialog();
                 return;
             }
             else if (result == PrescriptionsBox.Result.Found)
@@ -1151,7 +1154,6 @@ namespace AmiKoWindows
                 this.ActiveContact = _prescriptions.ActiveContact;
                 this.ActiveAccount = _prescriptions.ActiveAccount;
 
-                var filename = Path.GetFileName(filepath);
                 dialog = Utilities.MessageDialog(
                     String.Format(Properties.Resources.msgPrescriptionFileFound, filename), "", "OK");
             }
@@ -1211,6 +1213,9 @@ namespace AmiKoWindows
                 this.ActiveAccount = _prescriptions.ActiveAccount;
 
                 // TODO validate medications
+
+                dialog = Utilities.MessageDialog(
+                    String.Format(Properties.Resources.msgPrescriptionImportSuccess, filename), "", "OK");
             }
 
             EnableButton("SavePrescriptionButton", true);
