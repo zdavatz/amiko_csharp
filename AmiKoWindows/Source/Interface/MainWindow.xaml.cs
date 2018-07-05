@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -34,7 +35,10 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
 using System.Windows.Input;
 using System.Windows.Navigation;
+
 using Microsoft.Win32;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
 
 using MahApps.Metro.Controls;
 
@@ -52,6 +56,8 @@ namespace AmiKoWindows
             public Network Network { get; set; }
             public MainSqlDb MainSqlDb { get; set; }
         }
+
+        private DataTransferManager _dataTransferManager;
 
         static bool _willNavigate = false;
 
@@ -74,6 +80,11 @@ namespace AmiKoWindows
         private ContextMenu _searchResultContextMenu = null;
         private bool _fileNameListInDrag = false;
         private bool _hasFile = false;
+
+        // For DataTransferManager
+        private IDataTransferManagerInterOp _interop = null;
+        private IntPtr _handle;
+        private List<IStorageItem>_outbox = new List<IStorageItem>();
 
         #region Public Fields
         private string _SearchTextBoxWaterMark;
@@ -163,6 +174,8 @@ namespace AmiKoWindows
 
             // Set browser emulation mode. Thx Microsoft for these stupid hacks!!
             SetBrowserEmulationMode();
+
+            PrepareDataTransferManager();
         }
 
         #region WndProc Support
@@ -341,7 +354,7 @@ namespace AmiKoWindows
             {
                 if (ActiveContact != null && ActiveAccount != null)
                     block.Text = _prescriptions.PlaceDate;
-                else 
+                else
                     block.Text = "";
                 block.UpdateLayout();
             }
@@ -602,7 +615,7 @@ namespace AmiKoWindows
 
         private void MainWindow_Closed(object sender, EventArgs e)
         {
-            Utilities.CleanupInbox();
+            Utilities.CleanupBoxes();
             Application.Current.Shutdown();
         }
 
@@ -1579,7 +1592,7 @@ namespace AmiKoWindows
             e.Handled = true;
         }
 
-        private void SendPrescriptionButton_Click(object sender, RoutedEventArgs e)
+        private async void SendPrescriptionButton_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
@@ -1587,7 +1600,54 @@ namespace AmiKoWindows
 
             Log.WriteLine(source.Name);
 
-            e.Handled = true;
+            if (_prescriptions.ActiveFilePath != null)
+            {
+                PrepareDataTransferManager();
+
+                // outbox (tmp)
+                var filepath = _prescriptions.PickFile(_prescriptions.ActiveFilePath);
+                Log.WriteLine("filepath: {0}", filepath);
+
+                this._outbox = new List<IStorageItem>();
+                StorageFile file = await StorageFile.GetFileFromPathAsync(filepath);
+                _outbox.Add(file);
+
+                _interop.ShowShareUIForWindow(_handle);
+            }
+        }
+
+        // https://msdn.microsoft.com/en-us/library/windows/desktop/jj542488(v=vs.85).aspx
+        // https://github.com/arunjeetsingh/Build2015/blob/master/Win32ShareSourceSamples/WpfShareSource/MainWindow.xaml.cs
+        private void PrepareDataTransferManager()
+        {
+            if (_dataTransferManager == null)
+            {
+                var factory = WindowsRuntimeMarshal.GetActivationFactory(typeof(DataTransferManager));
+                this._interop = (IDataTransferManagerInterOp)factory;
+
+                Guid guid = new Guid("a5caee9b-8708-49d1-8d36-67d25a8da00c");
+                this._handle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
+                DataTransferManager m = null;
+                this._interop.GetForWindow(_handle, guid, out m);
+                if (m != null)
+                {
+                    m.DataRequested += OnDataRequested;
+                    this._dataTransferManager = m;
+                }
+            }
+        }
+
+        private void OnDataRequested(DataTransferManager sender, DataRequestedEventArgs e)
+        {
+            DataRequest req = e.Request;
+
+            if (_outbox.Count > 0)
+            {
+                var file = _outbox[0] as StorageFile;
+                req.Data.Properties.Title = Properties.Resources.appTitle;
+                req.Data.Properties.Description = Path.GetFileName(file.Path);
+                req.Data.SetStorageItems(_outbox);
+            }
         }
 
         private void AddressBookControl_ClosingFinished(object sender, RoutedEventArgs e)
@@ -1736,5 +1796,16 @@ namespace AmiKoWindows
                     browser.NavigateToString(" "); // set empty document
             }
         }
+    }
+
+	[ComImport, Guid("3A3DCD6C-3EAB-43DC-BCDE-45671CE800C8")]
+	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+	public interface IDataTransferManagerInterOp
+	{
+		[PreserveSig]
+		uint GetForWindow([In] IntPtr appWindow, [In] ref Guid riid, [Out] out DataTransferManager pDataTransferManager);
+
+		[PreserveSig]
+		uint ShowShareUIForWindow(IntPtr appWindow);
     }
 }

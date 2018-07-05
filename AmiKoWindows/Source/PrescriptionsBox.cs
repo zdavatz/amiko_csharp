@@ -47,8 +47,9 @@ namespace AmiKoWindows
         private static readonly Regex AMIKO_FILE_SUFFIX_RGX = new Regex(
             String.Format(@"{0}\z", AMIKO_FILE_SUFFIX), RegexOptions.Compiled);
 
-        string _inboxDir;
         string _amikoDir;
+        string _inboxDir;
+        string _outboxDir;
 
         #region Public Fields
         public enum Result
@@ -124,8 +125,9 @@ namespace AmiKoWindows
 
         public PrescriptionsBox()
         {
-            _inboxDir = Utilities.GetInboxPath();
             _amikoDir = Utilities.PrescriptionsPath();
+            _inboxDir = Utilities.GetInboxPath();
+            _outboxDir = Utilities.GetOutboxPath();
             Utilities.EnforceDir(_amikoDir);
         }
 
@@ -430,6 +432,22 @@ namespace AmiKoWindows
                 return destPath;
 
             File.Copy(path, destPath);
+            if (!File.Exists(destPath))
+                return null;
+
+            return destPath;
+        }
+
+        // Copies file into sharable space (outbox)
+        public string PickFile(string path)
+        {
+            var filename = Path.GetFileName(path);
+            var destPath = Path.Combine(_outboxDir, filename);
+
+            // always overwrite (if previous file exists)
+            FileInfo info = new FileInfo(path);
+            info.CopyTo(destPath, true);
+
             if (!File.Exists(destPath))
                 return null;
 

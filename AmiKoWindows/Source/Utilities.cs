@@ -152,12 +152,21 @@ namespace AmiKoWindows
             return Application.Current.Properties["InboxPath"] as string;
         }
 
-        // returns always new (temp) inbox directory
-        public static string NewInboxPath()
+        public static string GetOutboxPath()
         {
-            string path = GetTempDir("inbox");
+            return Application.Current.Properties["OutboxPath"] as string;
+        }
+
+        // Peturns always new (temp) directory named inbox or outbox
+        // (called in boot sequence)
+        public static string NewBoxPath(string typeName)
+        {
+            if (typeName == null || (!typeName.Equals("inbox") && !typeName.Equals("outbox")))
+                return null;
+
+            string path = GetTempDir(typeName);
             while (Directory.Exists(path))
-                path = GetTempDir("inbox");
+                path = GetTempDir(typeName);
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -172,16 +181,19 @@ namespace AmiKoWindows
         }
         #endregion
 
-        public static void CleanupInbox()
+        public static void CleanupBoxes()
         {
-            var inbox = GetInboxPath();
-            Log.WriteLine("InboxPath: {0}", inbox);
-            if (inbox != null)
+            string[] boxes = new string[] { GetInboxPath(), GetOutboxPath() };
+            foreach (string box in boxes)
             {
-                if (Directory.Exists(inbox))
+                Log.WriteLine("box: {0}", box);
+                if (box != null)
                 {
-                    var info = new DirectoryInfo(inbox);
-                    Directory.Delete(info.FullName, true);
+                    if (Directory.Exists(box))
+                    {
+                        var info = new DirectoryInfo(box);
+                        Directory.Delete(info.FullName, true);
+                    }
                 }
             }
         }

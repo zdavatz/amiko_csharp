@@ -63,9 +63,12 @@ namespace AmiKoWindows
             {
                 base.OnStartup(e);
 
-                // temporary inbox
-                this.Properties["InboxPath"] = Utilities.NewInboxPath();
+                // temporary inbox/outbox
+                this.Properties["InboxPath"] = Utilities.NewBoxPath("inbox");
                 Log.WriteLine("InboxPath: {0}", this.Properties["InboxPath"]);
+
+                this.Properties["OutboxPath"] = Utilities.NewBoxPath("outbox");
+                Log.WriteLine("OutboxPath: {0}", this.Properties["OutboxPath"]);
 
                 SplashScreen splash = new SplashScreen();
                 //splash.Show();
@@ -132,14 +135,14 @@ namespace AmiKoWindows
 
         protected override void OnExit(ExitEventArgs e)
         {
-            Utilities.CleanupInbox();
+            Utilities.CleanupBoxes();
 
             base.OnExit(e);
         }
 
         private void App_SessionEnding(object sender, SessionEndingCancelEventArgs e)
         {
-            Utilities.CleanupInbox();
+            Utilities.CleanupBoxes();
         }
     }
 
