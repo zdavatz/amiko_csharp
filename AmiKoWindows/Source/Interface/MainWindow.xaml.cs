@@ -222,10 +222,10 @@ namespace AmiKoWindows
             this.DataContext = new ViewType("Form");
             SwitchViewContext();
 
-            Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-
-            ImportFile(path);
             this._hasFile = true;
+
+            Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            ImportFile(path);
         }
 
         public void BringToFront()
