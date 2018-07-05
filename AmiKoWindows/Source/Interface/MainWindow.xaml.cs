@@ -1136,7 +1136,7 @@ namespace AmiKoWindows
 
             Xceed.Wpf.Toolkit.MessageBox dialog = null;
 
-            var result = _prescriptions.ImportFile(filepath);
+            var result = await _prescriptions.ImportFile(filepath);
             if (result == PrescriptionsBox.Result.Invalid)
             {
                 // TODO message dialog
@@ -1155,8 +1155,7 @@ namespace AmiKoWindows
             {
                 // NOTE:
                 // The timing of validations is little bit late... But
-                // PrescriptionsBox does not know _patientDb and _sqlDb. Tuhs
-                // let's do here :'(
+                // PrescriptionsBox does not know _patientDb and _sqlDb. Tuhs let's do here :'(
 
                 // validate contact
                 Contact contactInFile = _prescriptions.ActiveContact;
@@ -1166,15 +1165,23 @@ namespace AmiKoWindows
                     _prescriptions.Renew();
                     return;
                 }
+
+                string uid = contactInFile.Uid;
+
+                // NOTE:
+                // macOS and iOS Version has still old Uid Source.
+                string validUid = contactInFile.GenerateUid();
+                if (!validUid.Equals(uid))
+                    uid = validUid;
+
                 // save/update contact from this .amk here. assume contact in .amk file as always new.
                 // (same as iOS and macOS version)
-                Contact contact = await _patientDb.GetContactByUid(contactInFile.Uid);
-                if ((contact != null && contact.Uid != null && !contact.Uid.Equals(string.Empty)) &&
-                     ActiveContact != null && contact.Uid.Equals(ActiveContact.Uid))
+                Contact contact = await _patientDb.GetContactByUid(uid);
+                if (contact != null)
                 {   // update
                     await _patientDb.UpdateContact(contactInFile);
                     await _patientDb.LoadAllContacts();
-                    contact = await _patientDb.GetContactByUid(contactInFile.Uid);
+                    contact = await _patientDb.GetContactByUid(uid);
                 }
                 else
                 {   // save as new

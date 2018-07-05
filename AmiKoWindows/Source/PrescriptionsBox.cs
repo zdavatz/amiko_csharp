@@ -40,6 +40,7 @@ namespace AmiKoWindows
         const string AMIKO_FILE_PLACE_DATE_FORMAT = "dd.MM.yyyy (HH:mm:ss)";
 
         private static readonly string notSaved = String.Format("({0})", Properties.Resources.unsaved);
+        private static readonly bool autoSavingMode = true;
 
         private static readonly Regex AMIKO_FILE_PREFIX_RGX = new Regex(
             String.Format(@"\A{0}", AMIKO_FILE_PREFIX), RegexOptions.Compiled);
@@ -164,14 +165,16 @@ namespace AmiKoWindows
             var outputPath = "";
             Log.WriteLine("IsPreview: {0}", IsPreview);
 
-            if (IsPreview &&
-                currentPath != null && !currentPath.Equals(string.Empty))
+            if (IsPreview)
             {   // preview of file in inbox
-                outputPath = currentPath;
+                if (currentPath != null && !currentPath.Equals(string.Empty))
+                {
+                    outputPath = currentPath;
 
-                if (ActiveFilePath != null &&
-                    ActiveFilePath.Contains(_inboxDir) && File.Exists(ActiveFilePath))
-                    File.Delete(ActiveFilePath);
+                    if (ActiveFilePath != null &&
+                        ActiveFilePath.Contains(_inboxDir) && File.Exists(ActiveFilePath))
+                        File.Delete(ActiveFilePath);
+                }
             }
             else
             {
@@ -398,6 +401,7 @@ namespace AmiKoWindows
             if (!name.Equals(dt.ToString(AMIKO_FILE_CREATED_AT_FORMAT)))
                 return null;
 
+            // uid is in file (it may wrong one from iOS and macOS)
             string uid = ReadUid(path);
             if (uid == null || uid.Equals(string.Empty))
                 return null; // invalid content
@@ -432,8 +436,9 @@ namespace AmiKoWindows
             return destPath;
         }
 
-        // Reads .amk file in inbox/amiko, returns enum result (invalid/found/ok).
-        public Result ImportFile(string path)
+        // Import new .amk file in inbox, or read existing file from amiko. It
+        // depends to save or not to `autoSavingMode`. Returns enum result ("Invalid"/"Found"/"ok").
+        public async Task<Result> ImportFile(string path)
         {
             if ((!path.Contains(_inboxDir) && !path.Contains(_amikoDir)) || !File.Exists(path))
                 return Result.Invalid;
@@ -446,10 +451,11 @@ namespace AmiKoWindows
             if (currentPath != null)
             {
                 ReadFile(currentPath);
+                LoadFiles();
                 return Result.Found;
             }
 
-            // load all fields
+            // load all fields from the file
             PrescriptionJSONPresenter presenter = null;
             string hash = null;
             string placeDate = null;
@@ -481,22 +487,29 @@ namespace AmiKoWindows
             if (existingPath != null)
             {
                 ReadFileFor(existingPath, presenter.Contact);
+                LoadFiles();
                 return Result.Found;
             }
 
             this._Medications = new HashSet<Medication>(presenter.MedicationsList);
             UpdateMedicationList();
 
-            this.ActiveFileName = String.Format("{0} {1}", name, notSaved);
-            this.ActiveFilePath = path;
+            if (!autoSavingMode)
+                name = String.Format("{0} {1}", name, notSaved);
 
-            this.IsPreview = true;
+            this.ActiveFileName = name;
+            this.ActiveFilePath = path;
 
             this.ActiveContact = presenter.Contact;
             this.ActiveAccount = presenter.Account;
 
             this.Hash = hash;
             this.PlaceDate = placeDate;
+
+            this.IsPreview = true;
+
+            if (autoSavingMode)
+                await Save(false);
 
             LoadFiles();
             return Result.Ok;
