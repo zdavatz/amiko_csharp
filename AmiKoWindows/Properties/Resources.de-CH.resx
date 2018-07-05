@@ -231,6 +231,9 @@
   <data name="interactions" xml:space="preserve">
     <value>Interaktionen</value>
   </data>
+  <data name="mail" xml:space="preserve">
+    <value>Mail</value>
+  </data>
   <data name="makeCsv" xml:space="preserve">
     <value>CSV erstellen</value>
   </data>
@@ -350,6 +353,9 @@
   </data>
   <data name="settings" xml:space="preserve">
     <value>Einstellungen</value>
+  </data>
+  <data name="share" xml:space="preserve">
+    <value>Teilen</value>
   </data>
   <data name="subscribe" xml:space="preserve">
     <value>Abonnieren</value>

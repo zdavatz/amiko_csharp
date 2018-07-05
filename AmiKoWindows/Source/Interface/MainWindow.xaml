@@ -223,8 +223,17 @@
                                         <Grid Margin="6,3,0,1">
                                             <Button
                                                 Name="SendPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
-                                                Margin="0" HorizontalAlignment="Right" Click="SendPrescriptionButton_Click" IsEnabled="False" Cursor="Hand">
+                                                Margin="0" HorizontalAlignment="Right"
+                                                PreviewMouseLeftButtonDown="SendPrescriptionButton_PreviewMouseLeftButtonDown"
+                                                ContextMenuClosing="SendPrescriptionContextMenu_Closing"
+                                                IsEnabled="False" Cursor="Hand">
                                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.send}" />
+                                                <Button.ContextMenu>
+                                                    <ContextMenu Name="SendPrescriptionContextMenu">
+                                                        <MenuItem Header="{x:Static p:Resources.mail}" Click="SendPrescriptionContextMenuMail_Click" IsEnabled="False" />
+                                                        <MenuItem Header="{x:Static p:Resources.share}" Click="SendPrescriptionContextMenuShare_Click" />
+                                                    </ContextMenu>
+                                                </Button.ContextMenu>
                                             </Button>
                                             <Rectangle Opacity="0" Fill="Transparent">
                                                 <Rectangle.Style>

@@ -77,7 +77,7 @@ namespace AmiKoWindows
         FrameworkElement _browser;
         FrameworkElement _manager;
 
-        private ContextMenu _searchResultContextMenu = null;
+        private ContextMenu _contextMenu = null;
         private bool _fileNameListInDrag = false;
         private bool _hasFile = false;
 
@@ -775,22 +775,22 @@ namespace AmiKoWindows
         }
 
         // Makes it same behavior as context menu on macOS Version
-        private void ToggleContextMenu(TextBlock block)
+        private void ToggleContextMenu(FrameworkElement block)
         {
             var menu = block?.ContextMenu;
             if (menu != null)
             {
                 // check other menu is open or not
-                if (_searchResultContextMenu == null || !_searchResultContextMenu.IsOpen)
+                if (_contextMenu == null || !_contextMenu.IsOpen)
                 {
                     menu.PlacementTarget = block;
                     menu.IsOpen = true;
-                    _searchResultContextMenu = menu;
+                    _contextMenu = menu;
                 }
-                else if (_searchResultContextMenu.IsOpen)
+                else if (_contextMenu.IsOpen)
                 {   // don't open
-                    _searchResultContextMenu.IsOpen = false;
-                    _searchResultContextMenu = null;
+                    _contextMenu.IsOpen = false;
+                    _contextMenu = null;
                     menu.IsOpen = false;
                 }
             }
@@ -809,7 +809,7 @@ namespace AmiKoWindows
                 // Search result of title query on Interactions tab, it seems
                 // that macOS and Windows version have different child items.
                 if (_uiState.GetQueryTypeAsName().Equals("title") && !_uiState.IsInteractions)
-                    ToggleContextMenu(sender as TextBlock);
+                    ToggleContextMenu(sender as FrameworkElement);
 
                 e.Handled = true;
             }
@@ -817,7 +817,7 @@ namespace AmiKoWindows
 
         private void SearchChildItemContextMenu_Closing(object sender, ContextMenuEventArgs e)
         {
-            _searchResultContextMenu = null;
+            _contextMenu = null;
             e.Handled = true;
         }
 
@@ -825,7 +825,7 @@ namespace AmiKoWindows
         {
             Log.WriteLine(sender.GetType().Name);
 
-            _searchResultContextMenu = null;
+            _contextMenu = null;
             ChildItem item = (sender as MenuItem)?.DataContext as ChildItem;
             if (item != null && item.Ean != null && !item.Ean.Equals(string.Empty))
             {
@@ -1592,14 +1592,42 @@ namespace AmiKoWindows
             e.Handled = true;
         }
 
-        private async void SendPrescriptionButton_Click(object sender, RoutedEventArgs e)
+        private void SendPrescriptionButton_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
                 return;
 
-            Log.WriteLine(source.Name);
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                Log.WriteLine(source.Name);
+                ToggleContextMenu(sender as FrameworkElement);
+            }
+        }
 
+        private void SendPrescriptionContextMenu_Closing(object sender, ContextMenuEventArgs e)
+        {
+            _contextMenu = null;
+            e.Handled = true;
+        }
+
+        private void SendPrescriptionContextMenuMail_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+
+            _contextMenu = null;
+            if (_prescriptions.ActiveFilePath != null)
+            {
+                e.Handled = true;
+                // TODO
+            }
+        }
+
+        private async void SendPrescriptionContextMenuShare_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+
+            _contextMenu = null;
             if (_prescriptions.ActiveFilePath != null)
             {
                 PrepareDataTransferManager();
@@ -1614,6 +1642,7 @@ namespace AmiKoWindows
 
                 _interop.ShowShareUIForWindow(_handle);
             }
+            e.Handled = true;
         }
 
         // https://msdn.microsoft.com/en-us/library/windows/desktop/jj542488(v=vs.85).aspx
