@@ -851,6 +851,7 @@ namespace AmiKoWindows
                     }
 
                     EnableButton("CheckInteractionButton", true);
+                    EnableButton("PrintPrescriptionButton", false);
                     e.Handled = true;
                 }
             }
@@ -880,6 +881,7 @@ namespace AmiKoWindows
                     {
                         EnableButton("SavePrescriptionButton", true);
                         EnableButton("SendPrescriptionButton", false);
+                        EnableButton("PrintPrescriptionButton", false);
                     }
                     e.Handled = true;
                 }
@@ -902,6 +904,7 @@ namespace AmiKoWindows
             }
 
             EnableButton("CheckInteractionButton", _prescriptions.Medications.Count > 0);
+            EnableButton("PrintPrescriptionButton", false);
         }
 
         #region SectionTitleList EventHandlers
@@ -1005,8 +1008,10 @@ namespace AmiKoWindows
 
                     EnableButton("CheckInteractionButton", _prescriptions.Medications.Count > 0);
                     EnableButton("SavePrescriptionButton", (_prescriptions.HasChange || _prescriptions.IsPreview));
-                    EnableButton("SendPrescriptionButton",
-                        (!_prescriptions.HasChange && _prescriptions.IsActivePrescriptionPersisted));
+
+                    var saved = (!_prescriptions.HasChange && _prescriptions.IsActivePrescriptionPersisted);
+                    EnableButton("SendPrescriptionButton", saved);
+                    EnableButton("PrintPrescriptionButton", saved);
                     e.Handled = true;
                 }
             }
@@ -1748,6 +1753,11 @@ namespace AmiKoWindows
             }
         }
 
+        private void PrintPrescriptionButton_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+        }
+
         private void AddressBookControl_ClosingFinished(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as MahApps.Metro.Controls.Flyout;
@@ -1779,18 +1789,21 @@ namespace AmiKoWindows
             FillAccountFields();
             FillPlaceDate();
 
-            EnableButton("SendPrescriptionButton", false);
-
             var hasMedications = (_prescriptions.Medications.Count > 0);
             EnableButton("CheckInteractionButton", hasMedications);
-            if (ActiveAccount != null && ActiveContact != null && hasMedications)
-                EnableButton("SavePrescriptionButton", true);
-            else
-            {
-                _prescriptions.HasChange = false;
-                EnableButton("SavePrescriptionButton", false);
-            }
 
+            EnableButton("SendPrescriptionButton", false);
+            if (ActiveAccount != null && ActiveContact != null)
+            {
+                if (hasMedications)
+                    EnableButton("SavePrescriptionButton", true);
+                else
+                {
+                    _prescriptions.HasChange = false;
+                    EnableButton("SavePrescriptionButton", false);
+                }
+                EnableButton("PrintPrescriptionButton", false);
+            }
 
             // Re:enable animations for next time
             source.AreAnimationsEnabled = true;
@@ -1860,11 +1873,21 @@ namespace AmiKoWindows
 
         private void EnableButton(string name, bool isEnabled)
         {
-            Button button = GetElementIn(name, MainArea) as Button;
-            if (button != null)
+            Log.WriteLine("name: {0}, isEnabled: {1}", name, isEnabled);
+            if (name != null && name.Equals("PrintPrescriptionButton"))
             {
-                button.IsEnabled = isEnabled;
-                button.Cursor = isEnabled ? Cursors.Hand : Cursors.No;
+                this.PrintPrescriptionButton.IsEnabled = isEnabled;
+                this.PrintPrescriptionButton.Cursor = isEnabled ? Cursors.Hand : Cursors.No;
+                this.Print.Foreground = isEnabled ? Brushes.Gray : Brushes.LightGray;
+            }
+            else
+            {
+                Button button = GetElementIn(name, MainArea) as Button;
+                if (button != null)
+                {
+                    button.IsEnabled = isEnabled;
+                    button.Cursor = isEnabled ? Cursors.Hand : Cursors.No;
+                }
             }
         }
     }

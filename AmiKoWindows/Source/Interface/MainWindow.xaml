@@ -135,10 +135,10 @@
                                                     <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right">
                                                         <Button
                                                             Name="DeleteMedicationButton" Style="{StaticResource WhiteIconButton}"
-                                                            Margin="0,0,0,0" Height="28" Width="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="DeleteMedicationButton_Click"
+                                                            Margin="0,0,1,0" Height="28" Width="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="DeleteMedicationButton_Click"
                                                             Cursor="Hand">
-                                                            <fa:ImageAwesome Name="Backspace" Icon="Trash" Visibility="Visible" Foreground="LightGray"
-                                                                VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
+                                                            <fa:ImageAwesome Name="Backspace" Icon="Trash" Visibility="Visible" Foreground="DarkGray"
+                                                                VerticalAlignment="Center" Margin="0" Height="14" Width="14" />
                                                         </Button>
                                                     </StackPanel>
                                                 </Grid>
@@ -359,36 +359,43 @@
     <Grid x:Name="MainGrid" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Border Margin="0,0,0,29" Padding="0" Background="White" BorderBrush="LightGray">
             <DockPanel LastChildFill="True">
-                <Border DockPanel.Dock="Top" Background="White" BorderBrush="LightGray" BorderThickness="1,1,1,1">
-                    <ToolBar ToolBarTray.IsLocked="True">
-                        <ToggleButton Name="Compendium" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="6,6,0,6">
-                            <StackPanel Orientation="Horizontal">
-                                <Image Width="16" Source="/Resources/img/aips32x32_dark.png" />
-                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.compendium}" />
-                            </StackPanel>
-                        </ToggleButton>
-                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                        <ToggleButton Name="Favorites" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
-                            <StackPanel Orientation="Horizontal">
-                                <Image Width="16" Source="/Resources/img/favorites32x32_dark.png" />
-                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.favorites}" />
-                            </StackPanel>
-                        </ToggleButton>
-                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                        <ToggleButton Name="Interactions" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
-                            <StackPanel Orientation="Horizontal">
-                                <Image Width="16" Source="/Resources/img/interactions32x32_dark.png" />
-                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.interactions}" />
-                            </StackPanel>
-                        </ToggleButton>
-                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                        <ToggleButton Name="Prescriptions" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
-                            <StackPanel Orientation="Horizontal">
-                                <Image Width="16" Source="/Resources/img/prescriptions64x64.png" />
-                                <Label VerticalAlignment="Center" Content="{x:Static p:Resources.prescriptions}" />
-                            </StackPanel>
-                        </ToggleButton>
-                    </ToolBar>
+                <Border DockPanel.Dock="Top" Background="White" BorderBrush="LightGray" BorderThickness="1,1,1,1" HorizontalAlignment="Stretch">
+                    <Grid>
+                        <ToolBar ToolBarTray.IsLocked="True" HorizontalAlignment="Left">
+                            <ToggleButton Name="Compendium" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="6,6,0,6">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="16" Source="/Resources/img/aips32x32_dark.png" />
+                                    <Label VerticalAlignment="Center" Content="{x:Static p:Resources.compendium}" />
+                                </StackPanel>
+                            </ToggleButton>
+                            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                            <ToggleButton Name="Favorites" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="16" Source="/Resources/img/favorites32x32_dark.png" />
+                                    <Label VerticalAlignment="Center" Content="{x:Static p:Resources.favorites}" />
+                                </StackPanel>
+                            </ToggleButton>
+                            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                            <ToggleButton Name="Interactions" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="16" Source="/Resources/img/interactions32x32_dark.png" />
+                                    <Label VerticalAlignment="Center" Content="{x:Static p:Resources.interactions}" />
+                                </StackPanel>
+                            </ToggleButton>
+                            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                            <ToggleButton Name="Prescriptions" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="0,6,0,6">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Width="16" Source="/Resources/img/prescriptions64x64.png" />
+                                    <Label VerticalAlignment="Center" Content="{x:Static p:Resources.prescriptions}" />
+                                </StackPanel>
+                            </ToggleButton>
+                        </ToolBar>
+                        <Button Name="PrintPrescriptionButton" HorizontalAlignment="Right" Style="{StaticResource PrintIconButton}"
+                            Click="PrintPrescriptionButton_Click" IsEnabled="False">
+                            <fa:ImageAwesome Name="Print" Icon="Print" Visibility="Visible" Foreground="LightGray"
+                                VerticalAlignment="Center" Margin="0" Height="18" Width="18" />
+                        </Button>
+                    </Grid>
                 </Border>
 
                 <Grid VerticalAlignment="Stretch">
