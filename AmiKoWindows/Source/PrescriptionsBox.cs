@@ -63,6 +63,7 @@ namespace AmiKoWindows
         public string ActiveFileName { get; set; }
         public string ActiveFilePath { get; set; }
         public bool IsPreview = false;
+        public bool HasChange = false;
 
         public Contact ActiveContact { get; set; }
         public Account ActiveAccount { get; set; }
@@ -205,6 +206,7 @@ namespace AmiKoWindows
                     this.ActiveFileName = AMIKO_FILE_SUFFIX_RGX.Replace(Path.GetFileName(outputPath), "");
                     this.ActiveFilePath = outputPath;
                     this.IsPreview = false;
+                    this.HasChange = false;
                 }
                 catch (IOException ex)
                 {
@@ -277,6 +279,7 @@ namespace AmiKoWindows
                     this.IsPreview = false;
                     this.PlaceDate = GeneratePlaceDate();
                 }
+                this.HasChange = true;
                 UpdateMedicationList();
             }
         }
@@ -291,6 +294,7 @@ namespace AmiKoWindows
                     this.IsPreview = false;
                     this.PlaceDate = GeneratePlaceDate();
                 }
+                this.HasChange = true;
                 UpdateMedicationList();
             }
         }
@@ -323,6 +327,7 @@ namespace AmiKoWindows
                 this.PlaceDate = GeneratePlaceDate();
             }
 
+            this.HasChange = true;
             medication.Comment = comment;
             return true;
         }

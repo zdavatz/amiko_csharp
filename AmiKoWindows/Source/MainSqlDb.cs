@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SQLite;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -581,6 +582,45 @@ namespace AmiKoWindows
             });
 
             return medTitles;
+        }
+
+        public async Task<List<Article>> FindArticlesByEans(string[] eancodes)
+        {
+            List<Article> articles = new List<Article>();
+
+            await Task.Run(() =>
+            {
+                if (_db.IsOpen())
+                {
+                    using (SQLiteCommand com = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+
+                        string[] codes = new List<string>(eancodes).Where(c => !c.Equals("")).Distinct().ToArray();
+                        string conditions = String.Join(" OR ", eancodes.Select((c, i) => {
+                            return String.Format("({0} LIKE @t{1})", KEY_PACKAGES, i);
+                        }));
+                        var q = String.Format(
+                            @"SELECT * FROM {0} WHERE {1} ORDER BY {2} ASC;", DATABASE_TABLE, conditions, KEY_PACKAGES);
+                        Log.WriteLine("Query: {0}", q);
+                        com.CommandText = q;
+
+                        for (var i = 0; i < eancodes.Length; i++)
+                        {
+                            com.Parameters.AddWithValue(String.Format("@t{0}", i),
+                                String.Format("%{0}%", eancodes[i]));
+                        }
+
+                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        {
+                            while (reader.Read())
+                                articles.Add(CursorToShortArticle(reader));
+                        }
+                    }
+                }
+            });
+            Log.WriteLine("articles.Length: {0}", articles.Count);
+            return articles;
         }
         #endregion
 

@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -527,8 +528,11 @@ namespace AmiKoWindows
                     EnableButton("NewPrescriptionButton", true);
                     EnableButton("SendPrescriptionButton", false);
 
-                    if (ActiveAccount != null && ActiveContact != null && !_prescriptions.IsActivePrescriptionPersisted)
+                    if (ActiveAccount != null && ActiveContact != null &&
+                        (_prescriptions.HasChange || !_prescriptions.IsActivePrescriptionPersisted))
                         EnableButton("SavePrescriptionButton", true);
+
+                    EnableButton("CheckInteractionButton", (_prescriptions.Medications.Count > 0));
                 }
 
                 if (_uiState.FullTextQueryEnabled)
@@ -845,6 +849,7 @@ namespace AmiKoWindows
                         EnableButton("SendPrescriptionButton", false);
                     }
 
+                    EnableButton("CheckInteractionButton", true);
                     e.Handled = true;
                 }
             }
@@ -891,9 +896,11 @@ namespace AmiKoWindows
             {
                 var index = item.Id;
                 _prescriptions.RemoveMedicationAtIndex(index);
-                EnableButton("SavePrescriptionButton", true);
+                EnableButton("SavePrescriptionButton", (_prescriptions.Medications.Count > 0));
                 EnableButton("SendPrescriptionButton", false);
             }
+
+            EnableButton("CheckInteractionButton", _prescriptions.Medications.Count > 0);
         }
 
         #region SectionTitleList EventHandlers
@@ -962,6 +969,7 @@ namespace AmiKoWindows
                     await _prescriptions.DeleteFile(item.Path);
                     _prescriptions.Renew();
                     _prescriptions.LoadFiles();
+                    EnableButton("CheckInteractionButton", false);
                     EnableButton("SavePrescriptionButton", false);
                     EnableButton("SendPrescriptionButton", false);
 
@@ -983,7 +991,9 @@ namespace AmiKoWindows
                 if (item != null && item.IsValid)
                 {
                     _prescriptions.Hash = item.Hash;
-                    _prescriptions.ReadFile(item.Path);
+
+                    if (!_prescriptions.HasChange)
+                        _prescriptions.ReadFile(item.Path);
 
                     ActiveContact = _prescriptions.ActiveContact;
                     ActiveAccount = _prescriptions.ActiveAccount;
@@ -992,8 +1002,10 @@ namespace AmiKoWindows
                     FillAccountFields();
                     FillPlaceDate();
 
-                    EnableButton("SavePrescriptionButton", _prescriptions.IsPreview);
-                    EnableButton("SendPrescriptionButton", _prescriptions.IsActivePrescriptionPersisted);
+                    EnableButton("CheckInteractionButton", _prescriptions.Medications.Count > 0);
+                    EnableButton("SavePrescriptionButton", (_prescriptions.HasChange || _prescriptions.IsPreview));
+                    EnableButton("SendPrescriptionButton",
+                        (!_prescriptions.HasChange && _prescriptions.IsActivePrescriptionPersisted));
                     e.Handled = true;
                 }
             }
@@ -1125,7 +1137,6 @@ namespace AmiKoWindows
                 Log.WriteLine("path: {0}", path);
 
                 ImportFile(path);
-
                 e.Handled = true;
             }
             e.Handled = false;
@@ -1230,6 +1241,7 @@ namespace AmiKoWindows
                     String.Format(Properties.Resources.msgPrescriptionImportSuccess, filename), "", "OK");
             }
 
+            EnableButton("CheckInteractionButton", _prescriptions.Medications.Count > 0);
             EnableButton("SavePrescriptionButton", true);
             EnableButton("SendPrescriptionButton", false);
 
@@ -1539,13 +1551,28 @@ namespace AmiKoWindows
             e.Handled = true;
         }
 
-        private void CheckInteractionButton_Click(object sender, RoutedEventArgs e)
+        private async void CheckInteractionButton_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
                 return;
 
             Log.WriteLine(source.Name);
+
+            if (_prescriptions.Medications == null && _prescriptions.Medications.Count > 0)
+                return;
+
+            _interactions.RemoveAllArticles();
+            string[] eancodes = _prescriptions.Medications.Select(m => m.Eancode).ToArray();
+            List<Article> articles = await _sqlDb.FindArticlesByEans(eancodes);
+            foreach (var a in articles)
+            {
+                if (a?.Id != null)
+                    _interactions.AddArticle(a);
+            }
+            _interactions.ShowBasket();
+
+            Interactions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             e.Handled = true;
         }
 
@@ -1753,10 +1780,13 @@ namespace AmiKoWindows
 
             EnableButton("SendPrescriptionButton", false);
 
-            if (ActiveAccount != null && ActiveContact != null && _prescriptions.Medications.Count > 0)
+            var hasMedications = (_prescriptions.Medications.Count > 0);
+            EnableButton("CheckInteractionButton", hasMedications);
+            if (ActiveAccount != null && ActiveContact != null && hasMedications)
                 EnableButton("SavePrescriptionButton", true);
             else
                 EnableButton("SavePrescriptionButton", false);
+
 
             // Re:enable animations for next time
             source.AreAnimationsEnabled = true;
