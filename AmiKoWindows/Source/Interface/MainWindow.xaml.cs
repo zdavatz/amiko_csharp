@@ -1785,7 +1785,10 @@ namespace AmiKoWindows
             if (ActiveAccount != null && ActiveContact != null && hasMedications)
                 EnableButton("SavePrescriptionButton", true);
             else
+            {
+                _prescriptions.HasChange = false;
                 EnableButton("SavePrescriptionButton", false);
+            }
 
 
             // Re:enable animations for next time
