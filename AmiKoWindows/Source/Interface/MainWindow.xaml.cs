@@ -612,6 +612,7 @@ namespace AmiKoWindows
             {
                 this.DataContext = new ViewType("Html");
                 SwitchViewContext();
+                Compendium.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             }
         }
 
