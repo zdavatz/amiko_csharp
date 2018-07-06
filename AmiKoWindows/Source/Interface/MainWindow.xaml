@@ -357,7 +357,7 @@
     </Controls:MetroWindow.LeftWindowCommands>
 
     <Grid x:Name="MainGrid" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        <Border Margin="0,0,0,33" Padding="0" Background="White" BorderBrush="LightGray">
+        <Border Margin="0,0,0,29" Padding="0" Background="White" BorderBrush="LightGray">
             <DockPanel LastChildFill="True">
                 <Border DockPanel.Dock="Top" Background="White" BorderBrush="LightGray" BorderThickness="1,1,1,1">
                     <ToolBar ToolBarTray.IsLocked="True">
@@ -540,7 +540,7 @@
                            HorizontalAlignment="Left"></TextBlock>
             </StatusBarItem>
             <fa:ImageAwesome DockPanel.Dock="Right" x:Name="Spinner" Icon="StarOutline" Foreground="Yellow" Visibility="Visible" Spin="False"
-                VerticalAlignment="Center" Margin="8,0,0,0" Height="16" Width="16" SpinDuration="2" />
+                VerticalAlignment="Center" Margin="6,1,0,0" Height="14" Width="14" SpinDuration="2" />
         </StatusBar>
     </Grid>
 </Controls:MetroWindow>
