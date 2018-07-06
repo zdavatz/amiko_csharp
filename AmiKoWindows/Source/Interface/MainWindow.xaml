@@ -50,7 +50,10 @@
 
                     <!-- Prescriptions -->
                     <DataTemplate x:Key="FormTemplate" DataType="Form">
-                        <Grid x:Name="Manager">
+                        <Grid x:Name="Manager"
+                            Panel.ZIndex="900"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition />
@@ -353,8 +356,8 @@
         </Controls:WindowCommands>
     </Controls:MetroWindow.LeftWindowCommands>
 
-    <Grid x:Name="MainGrid">
-        <Border Margin="0,0,0,28" Padding="0" Background="White" BorderBrush="LightGray" VerticalAlignment="Stretch">
+    <Grid x:Name="MainGrid" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <Border Margin="0,0,0,33" Padding="0" Background="White" BorderBrush="LightGray">
             <DockPanel LastChildFill="True">
                 <Border DockPanel.Dock="Top" Background="White" BorderBrush="LightGray" BorderThickness="1,1,1,1">
                     <ToolBar ToolBarTray.IsLocked="True">
@@ -388,7 +391,7 @@
                     </ToolBar>
                 </Border>
 
-                <Grid VerticalAlignment="Top">
+                <Grid VerticalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*" MinWidth="200" />
                         <ColumnDefinition Width="Auto" />
@@ -437,10 +440,13 @@
                             </TextBlock>
                         </ToggleButton>
 
-                        <ListBox x:Name="SearchResult"
-                                 Style="{StaticResource SearchListBox}" ItemContainerStyle="{StaticResource SearchListBoxItem}"
-                                 ItemsSource="{Binding Path=SearchResultItems}" SelectionChanged="OnSearchItem_Selection"
-                                 Margin="6,6,6,0" Padding="0,7,0,0" IsTabStop="False">
+                        <ListBox
+                            x:Name="SearchResult"
+                            Style="{StaticResource SearchListBox}" ItemContainerStyle="{StaticResource SearchListBoxItem}"
+                            ItemsSource="{Binding Path=SearchResultItems}" SelectionChanged="OnSearchItem_Selection"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Margin="6,6,6,0" Padding="0,7,0,0" IsTabStop="False">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
@@ -481,7 +487,10 @@
 
                     <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="1" Width="3" IsTabStop="False" />
 
-                    <ContentControl x:Name="MainArea" Grid.Column="2" IsTabStop="False">
+                    <ContentControl x:Name="MainArea" Grid.Column="2"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        IsTabStop="False">
                         <ContentControl.Style>
                             <Style TargetType="{x:Type ContentControl}">
                                 <Setter Property="ContentTemplate" Value="{StaticResource HtmlTemplate}" />
@@ -499,7 +508,10 @@
 
                     <GridSplitter HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="3" Width="3" IsTabStop="False" />
 
-                    <ContentControl x:Name="RightArea" Grid.Column="4" IsTabStop="False">
+                    <ContentControl x:Name="RightArea" Grid.Column="4"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        IsTabStop="False">
                         <ContentControl.Style>
                             <Style TargetType="{x:Type ContentControl}">
                                 <Setter Property="ContentTemplate" Value="{StaticResource TitleListTemplate}" />
@@ -519,8 +531,8 @@
             </DockPanel>
         </Border>
 
-        <StatusBar x:Name="StatusBar" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Height="28">
-            <StatusBarItem DockPanel.Dock="Left" Margin="0,0,0,0" Width="Auto">
+        <StatusBar x:Name="StatusBar" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Height="28" Padding="0,0,0,5">
+            <StatusBarItem DockPanel.Dock="Left" Margin="7,0,0,0" Width="Auto">
                 <TextBlock Text="{Binding Path=NetworkStatusText}" Foreground="White"></TextBlock>
             </StatusBarItem>
             <StatusBarItem DockPanel.Dock="Left" Margin="0,0,0,0" Width="Auto">
