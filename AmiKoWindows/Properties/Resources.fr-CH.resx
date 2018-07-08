@@ -234,6 +234,12 @@
   <data name="interactions" xml:space="preserve">
     <value>Interactions</value>
   </data>
+  <data name="mailSubject" xml:space="preserve">
+    <value>Recette {0}, {1} par {2}</value>
+  </data>
+  <data name="mailBody" xml:space="preserve">
+    <value>Ouvrir avec:\n\n{0}</value>
+  </data>
   <data name="makeCsv" xml:space="preserve">
     <value>créer CSV</value>
   </data>

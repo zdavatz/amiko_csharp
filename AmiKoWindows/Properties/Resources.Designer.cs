@@ -410,6 +410,24 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
+        public static string mailSubject {
+            get {
+                return ResourceManager.GetString("mailSubject", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ...
+        /// </summary>
+        public static string mailBody {
+            get {
+                return ResourceManager.GetString("mailBody", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to CSV erstellen.
         /// </summary>
         public static string makeCsv {

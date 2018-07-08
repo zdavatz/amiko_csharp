@@ -106,14 +106,17 @@ namespace AmiKoWindows
         #region Mail Utilities
         public static string GetMailSubject(string contactName, string birthDate, string accountName)
         {
-            return String.Format("Rezept: {0}, {1} von {2}", contactName, birthDate, accountName);
+            return String.Format(
+                    Properties.Resources.mailSubject, contactName, birthDate, accountName);
         }
 
         public static string GetMailBody()
         {
-            return "Open with\n\n" +
+            return String.Format(
+                Properties.Resources.mailBody,
+                "\n\n" +
                 "iOS: https://itunes.apple.com/ch/app/generika/id520038123?mt=8\n" +
-                "Android: https://play.google.com/store/apps/details?id=org.oddb.generika\n";
+                "Android: https://play.google.com/store/apps/details?id=org.oddb.generika\n");
         }
         #endregion
 
