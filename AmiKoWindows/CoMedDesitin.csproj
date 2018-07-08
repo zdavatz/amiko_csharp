@@ -171,11 +171,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Source\Interface\MainWindow.xaml">
+    <Page Include="Source\Interface\AddressBookControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Source\Interface\AddressBookControl.xaml">
+    <Page Include="Source\Interface\MedicationLabel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Source\Interface\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -238,15 +242,17 @@
     <Compile Include="Source\Utilities.cs" />
     <Compile Include="Source\ViewType.cs" />
     <!-- Interface -->
-    <Compile Include="Source\Interface\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Source\Interface\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Source\Interface\AddressBookControl.xaml.cs">
       <DependentUpon>AddressBookControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Source\Interface\MedicationLabel.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Source\Interface\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Source\Interface\Prescription.xaml.cs">
       <DependentUpon>Precsription.xaml</DependentUpon>

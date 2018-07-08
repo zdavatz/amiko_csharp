@@ -888,6 +888,26 @@ namespace AmiKoWindows
             }
         }
 
+        private void PrintMedicationLabelButton_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+
+            var button = sender as Button;
+            var li = this.FindVisualAncestor<ListBoxItem>(button);
+            var item = li.Content as CommentItem;
+            if (item != null && item.Id != null)
+            {
+                var medication = _prescriptions.Medications[(int)item.Id.Value];
+                var label = new MedicationLabel(_prescriptions.PlaceDate)
+                {
+                    ActiveContact = ActiveContact,
+                    ActiveAccount = ActiveAccount,
+                    Medication = medication
+                };
+                Printer.PrintMedicationLabel(label);
+            }
+        }
+
         private void DeleteMedicationButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
@@ -1764,7 +1784,7 @@ namespace AmiKoWindows
                 Medications = _prescriptions.Medications,
                 PageNumber = 1
             };
-            Printer.printPrescription(prescription);
+            Printer.PrintPrescription(prescription);
             e.Handled = true;
         }
 
@@ -1888,7 +1908,7 @@ namespace AmiKoWindows
             {
                 this.PrintPrescriptionButton.IsEnabled = isEnabled;
                 this.PrintPrescriptionButton.Cursor = isEnabled ? Cursors.Hand : Cursors.No;
-                this.Print.Foreground = isEnabled ? Brushes.Gray : Brushes.LightGray;
+                this.PrintPrescription.Foreground = isEnabled ? Brushes.Gray : Brushes.LightGray;
             }
             else
             {

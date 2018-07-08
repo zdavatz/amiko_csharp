@@ -144,6 +144,9 @@
   <data name="birthdatePlaceholder" xml:space="preserve">
     <value>DD.MM.AAAA</value>
   </data>
+  <data name="born" xml:space="preserve">
+    <value>né</value>
+  </data>
   <data name="butAtccode" xml:space="preserve">
     <value>Principe Actif / Code ATC</value>
   </data>

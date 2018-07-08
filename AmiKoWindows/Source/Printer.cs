@@ -40,8 +40,7 @@ namespace AmiKoWindows
         public const double INCH = 96;
         public const double DIP = 37.8;
 
-        // TODO Refactor
-        public static void printPrescription(Prescription prescription)
+        public static void PrintPrescription(Prescription prescription)
         {
             var dialog = new PrintDialog();
             dialog.PageRangeSelection = PageRangeSelection.AllPages;
@@ -204,10 +203,59 @@ namespace AmiKoWindows
 
             var paginator = new Paginator<Prescription>(pages);
             paginator.PageSize = new Size(printableWidth, printableHeight);
-            PrintPages(paginator);
+            PrintPages(paginator, Size.Empty);
         }
 
-        private static void PrintPages<T>(Paginator<T> paginator) where T: Page
+        public static void PrintMedicationLabel(MedicationLabel medicationLabel)
+        {
+            var dialog = new PrintDialog();
+            dialog.PageRangeSelection = PageRangeSelection.AllPages;
+            dialog.UserPageRangeEnabled = false;
+
+            var pageSize = new PageMediaSize(3.5 * INCH, 1.41 * INCH);
+            dialog.PrintTicket.PageMediaSize = pageSize;
+
+            PrintTicket ticket = dialog.PrintTicket;
+            Double printableWidth = ticket.PageMediaSize.Width.Value;
+            Double printableHeight = ticket.PageMediaSize.Height.Value;
+
+            Log.WriteLine("{0} dip", printableWidth);
+            Log.WriteLine("{0} dip", printableHeight);
+
+            // 1cm = 37.8dip
+            Log.WriteLine("{0} cm", printableWidth / DIP);
+            Log.WriteLine("{0} cm", printableHeight / DIP);
+
+            medicationLabel.Layout();
+
+            // scale
+            double xMargin = 0;
+            double yMargin = 0;
+            Double xScale = ((printableWidth - xMargin * 2) / printableWidth);
+            Double yScale = ((printableHeight - yMargin * 2) / printableHeight);
+
+            var matrix =  new MatrixTransform(xScale, 0, 0, yScale, xMargin, yMargin);
+            medicationLabel.RenderTransform = matrix;
+            medicationLabel.LayoutTransform = matrix;
+
+            List<MedicationLabel> pages = new List<MedicationLabel>();
+
+            var w = (printableWidth - (medicationLabel.lMargin + medicationLabel.rMargin));
+            var h = (printableHeight - (medicationLabel.tMargin + medicationLabel.bMargin));
+            Log.WriteLine("ListBox (max) Width: {0}", w);
+            Log.WriteLine("ListBox (max) Height: {0}", h);
+
+            pages.Add(medicationLabel);
+            Log.WriteLine("pages.Count: {0}", pages.Count);
+
+            var paginator = new Paginator<MedicationLabel>(pages);
+            paginator.PageSize = new Size(printableWidth, printableHeight);
+
+            var viewerSize = new Size(336 + 45, 135 + 120);
+            PrintPages(paginator, viewerSize);
+        }
+
+        private static void PrintPages<T>(Paginator<T> paginator, Size viewerSize) where T: Page
         {
             string filename = Path.GetTempFileName();
             try
@@ -229,11 +277,14 @@ namespace AmiKoWindows
                         Document = document.GetFixedDocumentSequence()
                     };
 
-                    // 100% in view
-                    //viewer.FitToWidth();
-                    //viewer.FitToHeight();
-
                     Window window = new Window();
+
+                    if (!viewerSize.IsEmpty)
+                    {
+                        window.Width = viewerSize.Width;
+                        window.Height = viewerSize.Height;
+                    }
+
                     window.Content = viewer;
 
                     // actual size viewer window
@@ -303,9 +354,11 @@ namespace AmiKoWindows
             T page = _pages[0];
             _pages.RemoveAt(0);
             page.Measure(_size);
-            page.Arrange(new Rect());
+            page.Arrange(new Rect(_size));
             // It seems that we can't pass `Page` itself ... :'(
-            return new DocumentPage(page.Content as Visual);
+            var dp = new DocumentPage(page.Content as Visual, _size, new Rect(_size), new Rect(_size));
+            Log.WriteLine("Size: {0}", dp.Size);
+            return dp;
         }
     }
 }

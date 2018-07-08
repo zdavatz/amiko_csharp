@@ -135,15 +135,5 @@ namespace AmiKoWindows
                     throw ex;
             }
         }
-
-        private void Control_Loaded(object sender, RoutedEventArgs e)
-        {
-            Log.WriteLine(e.ToString());
-        }
-
-        private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
-        {
-            Log.WriteLine(e.ToString());
-        }
     }
 }

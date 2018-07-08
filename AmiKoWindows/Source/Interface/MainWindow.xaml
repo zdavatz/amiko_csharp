@@ -132,12 +132,19 @@
                                                         <TextBlock Text="{Binding Path=Text}"
                                                             Margin="0,0,7,0" Padding="8,6,4,0" Width="Auto" FontWeight="Normal" VerticalAlignment="Bottom" HorizontalAlignment="Left" Focusable="False" />
                                                     </StackPanel>
-                                                    <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right">
+                                                    <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Horizontal">
+                                                        <Button
+                                                            Name="PrintMedicationLabelButton" Style="{StaticResource WhiteIconButton}"
+                                                            Margin="0,0,1,0" Height="28" Width="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="PrintMedicationLabelButton_Click"
+                                                            Cursor="Hand">
+                                                            <fa:ImageAwesome Name="PrintMedicationLabel" Icon="Print" Visibility="Visible" Foreground="DarkGray"
+                                                                VerticalAlignment="Center" Margin="0" Height="14" Width="14" />
+                                                        </Button>
                                                         <Button
                                                             Name="DeleteMedicationButton" Style="{StaticResource WhiteIconButton}"
                                                             Margin="0,0,1,0" Height="28" Width="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="DeleteMedicationButton_Click"
                                                             Cursor="Hand">
-                                                            <fa:ImageAwesome Name="Backspace" Icon="Trash" Visibility="Visible" Foreground="DarkGray"
+                                                            <fa:ImageAwesome Name="DeleteMedication" Icon="Trash" Visibility="Visible" Foreground="DarkGray"
                                                                 VerticalAlignment="Center" Margin="0" Height="14" Width="14" />
                                                         </Button>
                                                     </StackPanel>
@@ -392,7 +399,7 @@
                         </ToolBar>
                         <Button Name="PrintPrescriptionButton" HorizontalAlignment="Right" Style="{StaticResource PrintIconButton}"
                             Click="PrintPrescriptionButton_Click" IsEnabled="False">
-                            <fa:ImageAwesome Name="Print" Icon="Print" Visibility="Visible" Foreground="LightGray"
+                            <fa:ImageAwesome Name="PrintPrescription" Icon="Print" Visibility="Visible" Foreground="LightGray"
                                 VerticalAlignment="Center" Margin="0" Height="18" Width="18" />
                         </Button>
                     </Grid>

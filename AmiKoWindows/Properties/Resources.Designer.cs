@@ -140,6 +140,15 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Geburtstag.
+        /// </summary>
+        public static string born {
+            get {
+                return ResourceManager.GetString("born", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Wirkstoff / ATC Code.
         /// </summary>
         public static string butAtccode {
