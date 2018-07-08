@@ -297,6 +297,9 @@
   <data name="packs" xml:space="preserve">
     <value>présentation</value>
   </data>
+  <data name="page" xml:space="preserve">
+    <value>Page {0} sur {1}</value>
+  </data>
   <data name="patientManagement" xml:space="preserve">
     <value>Gestion des patients</value>
   </data>

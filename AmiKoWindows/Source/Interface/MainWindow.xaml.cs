@@ -1756,6 +1756,16 @@ namespace AmiKoWindows
         private void PrintPrescriptionButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
+
+            var prescription = new Prescription(_prescriptions.ActiveFileName, _prescriptions.PlaceDate)
+            {
+                ActiveContact = ActiveContact,
+                ActiveAccount = ActiveAccount,
+                Medications = _prescriptions.Medications,
+                PageNumber = 1
+            };
+            Printer.printPrescription(prescription);
+            e.Handled = true;
         }
 
         private void AddressBookControl_ClosingFinished(object sender, RoutedEventArgs e)

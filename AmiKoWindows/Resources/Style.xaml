@@ -534,16 +534,51 @@
 
     <!-- Extended.Wpf.Toolkit -->
     <Style TargetType="{x:Type toolkit:MessageBox}">
-       <Setter Property="Background" Value="White" />
-       <Setter Property="BorderBrush" Value="White" />
-       <Setter Property="CaptionForeground" Value="Black" />
-       <Setter Property="WindowBorderBrush" Value="Gray" />
-       <Setter Property="WindowBackground" Value="White" />
-       <Setter Property="WindowOpacity" Value="1" />
-       <Setter Property="Foreground" Value="Gray" />
-       <Setter Property="YesButtonStyle" Value="{StaticResource NoHighlightedButton}" />
-       <Setter Property="NoButtonStyle" Value="{StaticResource NoHighlightedButton}" />
-       <Setter Property="OkButtonStyle" Value="{StaticResource NoHighlightedButton}" />
-       <Setter Property="CancelButtonStyle" Value="{StaticResource NoHighlightedButton}" />
+         <Setter Property="Background" Value="White" />
+         <Setter Property="BorderBrush" Value="White" />
+         <Setter Property="CaptionForeground" Value="Black" />
+         <Setter Property="WindowBorderBrush" Value="Gray" />
+         <Setter Property="WindowBackground" Value="White" />
+         <Setter Property="WindowOpacity" Value="1" />
+         <Setter Property="Foreground" Value="Gray" />
+         <Setter Property="YesButtonStyle" Value="{StaticResource NoHighlightedButton}" />
+         <Setter Property="NoButtonStyle" Value="{StaticResource NoHighlightedButton}" />
+         <Setter Property="OkButtonStyle" Value="{StaticResource NoHighlightedButton}" />
+         <Setter Property="CancelButtonStyle" Value="{StaticResource NoHighlightedButton}" />
+    </Style>
+
+    <!-- Print -->
+    <Style x:Key="PrintText" TargetType="{x:Type TextBlock}">
+         <Setter Property="FontSize" Value="14" />
+         <Setter Property="FontWeight" Value="Normal" />
+         <Setter Property="Margin" Value="0" />
+         <Setter Property="Padding" Value="0,1,0,1" />
+         <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="PrintMedicationListBox" TargetType="{x:Type ListBox}">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style x:Key="PrintMedicationListBoxItem" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Margin" Value="2,6,0,6" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <ContentPresenter />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 </ResourceDictionary>
