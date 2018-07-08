@@ -410,15 +410,6 @@ namespace AmiKoWindows.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Mail.
-        /// </summary>
-        public static string mail {
-            get {
-                return ResourceManager.GetString("mail", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to CSV erstellen.
         /// </summary>
         public static string makeCsv {
@@ -784,15 +775,6 @@ namespace AmiKoWindows.Properties {
         public static string settings {
             get {
                 return ResourceManager.GetString("settings", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Teilen.
-        /// </summary>
-        public static string share {
-            get {
-                return ResourceManager.GetString("share", resourceCulture);
             }
         }
 

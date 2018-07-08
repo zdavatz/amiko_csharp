@@ -1642,7 +1642,7 @@ namespace AmiKoWindows
             e.Handled = true;
         }
 
-        private void SendPrescriptionButton_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private async void SendPrescriptionButton_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
@@ -1652,88 +1652,21 @@ namespace AmiKoWindows
             {
                 Log.WriteLine(source.Name);
 
-                if (_prescriptions.ActiveFileName != null)
+                if (_prescriptions.ActiveFilePath != null)
                 {
-                    var button = sender as Button;
-                    var menu = button?.ContextMenu;
-                    Log.WriteLine("menu: {0}", menu);
-                    if (menu != null && menu.Items.Count > 0)
-                    {
-                        var item = menu.Items[0] as MenuItem;
-                        Log.WriteLine("item: {0}", item);
-                        if (item != null)
-                            item.Header = _prescriptions.ActiveFileName;
-                    }
+                    PrepareDataTransferManager();
+
+                    // outbox (tmp)
+                    var filepath = _prescriptions.PickFile(_prescriptions.ActiveFilePath);
+                    Log.WriteLine("filepath: {0}", filepath);
+
+                    this._outbox = new List<IStorageItem>();
+                    StorageFile file = await StorageFile.GetFileFromPathAsync(filepath);
+                    _outbox.Add(file);
+
+                    _interop.ShowShareUIForWindow(_handle);
                 }
-
-                ToggleContextMenu(sender as FrameworkElement);
             }
-        }
-
-        private void SendPrescriptionContextMenu_Opening(object sender, ContextMenuEventArgs e)
-        {
-            var button = GetElementIn("SendPrescriptionButton", MainArea) as Button;
-            var menu = button?.ContextMenu;
-            Log.WriteLine("menu: {0}", menu);
-            if (menu != null && menu.Items.Count > 0)
-            {
-                var item = menu.Items[0] as MenuItem;
-                Log.WriteLine("item: {0}", item);
-                if (item != null)
-                    item.Header = "Hoi";
-            }
-
-            e.Handled = true;
-        }
-
-        private void SendPrescriptionContextMenu_Closing(object sender, ContextMenuEventArgs e)
-        {
-            _contextMenu = null;
-            e.Handled = true;
-        }
-
-        private void SendPrescriptionContextMenuMail_Click(object sender, RoutedEventArgs e)
-        {
-            Log.WriteLine(sender.GetType().Name);
-
-            _contextMenu = null;
-            if (_prescriptions.ActiveFilePath != null)
-            {
-                // NOTE: no attachment :'(
-                string title = Utilities.GetMailSubject(
-                    ActiveContact.Fullname, ActiveContact.Birthdate, ActiveAccount.Fullname
-                );
-                string text = "\n(Drag und Drop .amk Rezept Hier)\n\n";
-                string body = text + Utilities.GetMailBody();
-                string mail = String.Format(
-                    @"mailto:{0}?subject={1}&body={2}",
-                    ActiveContact.Email, title, body
-                );
-                Process.Start(Uri.EscapeUriString(mail));
-                e.Handled = true;
-            }
-        }
-
-        private async void SendPrescriptionContextMenuShare_Click(object sender, RoutedEventArgs e)
-        {
-            Log.WriteLine(sender.GetType().Name);
-
-            _contextMenu = null;
-            if (_prescriptions.ActiveFilePath != null)
-            {
-                PrepareDataTransferManager();
-
-                // outbox (tmp)
-                var filepath = _prescriptions.PickFile(_prescriptions.ActiveFilePath);
-                Log.WriteLine("filepath: {0}", filepath);
-
-                this._outbox = new List<IStorageItem>();
-                StorageFile file = await StorageFile.GetFileFromPathAsync(filepath);
-                _outbox.Add(file);
-
-                _interop.ShowShareUIForWindow(_handle);
-            }
-            e.Handled = true;
         }
 
         // https://msdn.microsoft.com/en-us/library/windows/desktop/jj542488(v=vs.85).aspx

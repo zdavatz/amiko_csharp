@@ -196,17 +196,8 @@
                                                 Name="SendPrescriptionButton" Style="{StaticResource NoHighlightedButton}"
                                                 Margin="0" HorizontalAlignment="Right"
                                                 PreviewMouseLeftButtonDown="SendPrescriptionButton_PreviewMouseLeftButtonDown"
-                                                ContextMenuOpening="SendPrescriptionContextMenu_Opening"
-                                                ContextMenuClosing="SendPrescriptionContextMenu_Closing"
                                                 IsEnabled="False" Cursor="Hand">
                                                 <Label Margin="0" Padding="0" VerticalAlignment="Center" Content="{x:Static p:Resources.send}" />
-                                                <Button.ContextMenu>
-                                                    <ContextMenu Name="SendPrescriptionContextMenu">
-                                                        <MenuItem Header="" IsEnabled="False" />
-                                                        <MenuItem Header="{x:Static p:Resources.mail}" Click="SendPrescriptionContextMenuMail_Click" />
-                                                        <MenuItem Header="{x:Static p:Resources.share}" Click="SendPrescriptionContextMenuShare_Click" />
-                                                    </ContextMenu>
-                                                </Button.ContextMenu>
                                             </Button>
                                         </Grid>
                                     </StackPanel>
