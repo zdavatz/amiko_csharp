@@ -71,7 +71,7 @@ namespace AmiKoWindows
         FachInfo _fachInfo;
         FullTextSearch _fullTextSearch;
         InteractionsCart _interactions;
-        PrescriptionsBox _prescriptions;
+        PrescriptionsTray _prescriptions;
         StatusBarHelper _statusBarHelper;
         string _selectedFullTextSearchKey;
 
@@ -163,7 +163,7 @@ namespace AmiKoWindows
             _patientDb.Init();
 
             // Initialize prescriptions container
-            _prescriptions = new PrescriptionsBox();
+            _prescriptions = new PrescriptionsTray();
             _prescriptions.LoadFiles();
 
             _statusBarHelper = new StatusBarHelper();
@@ -1191,14 +1191,14 @@ namespace AmiKoWindows
             var filename = Path.GetFileName(filepath);
 
             var result = await _prescriptions.ImportFile(filepath);
-            if (result == PrescriptionsBox.Result.Invalid)
+            if (result == PrescriptionsTray.Result.Invalid)
             {
                 dialog = Utilities.MessageDialog(
                     Properties.Resources.msgPrescriptionImportFailure, "", "OK");
                 dialog.ShowDialog();
                 return;
             }
-            else if (result == PrescriptionsBox.Result.Found)
+            else if (result == PrescriptionsTray.Result.Found)
             {
                 this.ActiveContact = _prescriptions.ActiveContact;
                 this.ActiveAccount = _prescriptions.ActiveAccount;
@@ -1206,11 +1206,11 @@ namespace AmiKoWindows
                 dialog = Utilities.MessageDialog(
                     String.Format(Properties.Resources.msgPrescriptionFileFound, filename), "", "OK");
             }
-            else if (result == PrescriptionsBox.Result.Ok)
+            else if (result == PrescriptionsTray.Result.Ok)
             {
                 // NOTE:
                 // The timing of validations is little bit late... But
-                // PrescriptionsBox does not know _patientDb and _sqlDb. Tuhs let's do here :'(
+                // PrescriptionsTray does not know _patientDb and _sqlDb. Tuhs let's do here :'(
 
                 Contact contactInFile = _prescriptions.ActiveContact;
                 if (contactInFile == null || contactInFile.Uid == null || contactInFile.Uid.Equals(string.Empty))

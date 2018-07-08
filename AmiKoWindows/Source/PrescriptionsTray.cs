@@ -32,7 +32,7 @@ using System.Windows;
 namespace AmiKoWindows
 {
     // Prescription Manager Object which knows active (opened) prescription.
-    class PrescriptionsBox
+    class PrescriptionsTray
     {
         const string AMIKO_FILE_PREFIX = "RZ_";
         const string AMIKO_FILE_SUFFIX = ".amk";
@@ -124,7 +124,7 @@ namespace AmiKoWindows
         #endregion
         #endregion
 
-        public PrescriptionsBox()
+        public PrescriptionsTray()
         {
             _amikoDir = Utilities.PrescriptionsPath();
             _inboxDir = Utilities.GetInboxPath();
