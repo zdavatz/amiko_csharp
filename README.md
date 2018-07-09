@@ -270,6 +270,7 @@ PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1
 
 * [Compile and build in Visual Studio](https://docs.microsoft.com/en-us/visualstudio/ide/compiling-and-building-in-visual-studio)
 
+
 ### Release
 
 #### Using MakeAppx
@@ -289,7 +290,9 @@ TODO
 * [Package a UWP app with Visual Studio](https://docs.microsoft.com/en-us/windows/uwp/packaging/packaging-uwp-apps)
 
 
-### Clean up
+### Clean
+
+To clean built cache data or resources etc.
 
 ```powershell
 PS C:\Users\... > taskkill /im 'AmiKo Desitin.exe' /f
@@ -301,10 +304,10 @@ PS C:\Users\... > MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Clean
 
 #### User Settings
 
-```bash
+```powershell
 # Just delete these directories (or delete `user.config` in there)
-$ rm -fr /mnt/c/Users/<USER>/AppData/Local/ywesee/AmiKo_Desitin.exe*
-$ rm -fr /mnt/c/Users/<USER>/AppData/Local/ywesee/CoMed_Desitin.exe*
+PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Local\ywesee\AmiKo Desitin.exe*' -f -fo
+PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Local\ywesee\CoMed Desitin.exe*' -f -fo
 ```
 
 #### Application Resources
@@ -314,10 +317,28 @@ $ rm -fr /mnt/c/Users/<USER>/AppData/Local/ywesee/CoMed_Desitin.exe*
 * Interaction Basket
 * Doctor(Operator) Profile Photo
 
-```bash
+```powershell
 # e.g. Profile Photo
-$ rm /mnt/c/Users/<USER>/AppData/Roaming/ywesee/AmiKo\ Desitin/*.png
-$ rm /mnt/c/Users/<USER>/AppData/Roaming/ywesee/CoMed\ Desitin/*.png
+PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Roaming\ywesee\AmiKo Desitin\*.png' -f -fo
+PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Roaming\ywesee\CoMed Desitin\*.png' -f -fo
+```
+
+#### Contacts and Prescriptions
+
+To reset *AddressBook* entries and *Prescriptions* files (`.amk` files).
+
+```powershell
+# AmiKoDesitin
+PS C:\Users\... > taskkill /im 'AmiKo Desitin.exe' /f
+PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Local\Temp\amiko*' -r -fo
+PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Roaming\ywesee\Amiko Desitin\amk\*' -r -fo
+PS C:\Users\... > rm .\AmiKoWindows\bin\Debug\AmiKo\* -r -fo
+
+# CoMedDesitin
+PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
+PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Local\Temp\comed*' -r -fo
+PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Roaming\ywesee\CoMed Desitin\amk\*' -r -fo
+PS C:\Users\... > rm .\AmiKoWindows\bin\Debug\CoMed\* -r -fo
 ```
 
 
@@ -325,7 +346,7 @@ $ rm /mnt/c/Users/<USER>/AppData/Roaming/ywesee/CoMed\ Desitin/*.png
 
 See projects in `AmiKoWindows.Tests`. Tests are written in NUnit.
 
-```
+```powershell
 PS C:\Users\... > taskkill /im 'MSBuild.exe' /f
 
 # AmiKoDesitin

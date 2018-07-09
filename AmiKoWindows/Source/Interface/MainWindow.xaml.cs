@@ -618,7 +618,6 @@ namespace AmiKoWindows
 
         private void MainWindow_Closed(object sender, EventArgs e)
         {
-            Utilities.CleanupBoxes();
             Application.Current.Shutdown();
         }
 
@@ -1183,10 +1182,6 @@ namespace AmiKoWindows
             if (filepath == null)
                 return;
 
-            var book = AddressBook.Content as AddressBookControl;
-            if (book == null)
-                return;
-
             Xceed.Wpf.Toolkit.MessageBox dialog = null;
             var filename = Path.GetFileName(filepath);
 
@@ -1222,13 +1217,14 @@ namespace AmiKoWindows
                 string uid = contactInFile.Uid;
 
                 // NOTE:
-                // macOS and iOS Version has still old Uid Source and invalid
-                // format of some fields.
+                // Uid (in file) may wrong one from iOS and macOS (they have old
+                // implementation)
+                contactInFile.Birthdate = AddressBookControl.FormatBirthdate(contactInFile.Birthdate);
                 string validUid = contactInFile.GenerateUid();
                 if (!validUid.Equals(uid))
                 {
                     uid = validUid;
-                    contactInFile.Birthdate = book.FormatBirthDate(contactInFile.Birthdate);
+                    contactInFile.Uid = validUid;
                 }
 
                 // validate contact
@@ -1238,23 +1234,27 @@ namespace AmiKoWindows
                     return;
                 }
 
-                // save/update contact from this .amk here. assume contact in .amk file as always new.
-                // (same as iOS and macOS version)
                 Contact contact = await _patientDb.GetContactByUid(uid);
-                if (contact != null)
-                {   // update
-                    await _patientDb.UpdateContact(contactInFile);
-                    await _patientDb.LoadAllContacts();
-                    contact = await _patientDb.GetContactByUid(uid);
+                if (PrescriptionsTray.AutoSavingMode)
+                {
+                    // save/update contact from this .amk here. assume contact in .amk file as always new.
+                    // (same as iOS and macOS version)
+                    if (contact != null)
+                    {   // update
+                        await _patientDb.UpdateContact(contactInFile);
+                        await _patientDb.LoadAllContacts();
+                        contact = await _patientDb.GetContactByUid(uid);
+                    }
+                    else
+                    {   // save as new
+                        contactInFile.TimeStamp = Utilities.GetLocalTimeAsString(Contact.TIME_STAMP_DATE_FORMAT);
+                        long? newId = await _patientDb.InsertContact(contactInFile);
+                        if (newId != null && newId.Value > 0)
+                            contactInFile.Id = newId;
+                        contact = contactInFile;
+                    }
                 }
-                else
-                {   // save as new
-                    contactInFile.TimeStamp = Utilities.GetLocalTimeAsString(Contact.TIME_STAMP_DATE_FORMAT);
-                    long? newId = await _patientDb.InsertContact(contactInFile);
-                    if (newId != null && newId.Value > 0)
-                        contactInFile.Id = newId;
-                    contact = contactInFile;
-                }
+
                 this.ActiveContact = contact;
                 _prescriptions.ActiveContact = ActiveContact;
 
@@ -1276,7 +1276,9 @@ namespace AmiKoWindows
             FillPlaceDate();
 
             // update current entry and contacts list in addressbook
-            book.Select(ActiveContact);
+            var book = AddressBook.Content as AddressBookControl;
+            if (book != null)
+                book.Select(ActiveContact);
 
             // NOTE:
             // This method call of `SetActiveFileAsSelected` behaves strangely only here.
@@ -1737,6 +1739,7 @@ namespace AmiKoWindows
             }
             else
             {  // doesn't renew here (keep current medications)
+                Log.WriteLine("ActiveContact.Uid: {0}", ActiveContact.Uid);
                 _prescriptions.Hash = Utilities.GenerateUUID();
                 _prescriptions.PlaceDate = null;
                 _prescriptions.ActiveContact = ActiveContact;

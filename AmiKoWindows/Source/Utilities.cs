@@ -283,9 +283,13 @@ namespace AmiKoWindows
 
         private static string GetTempDir(string name)
         {
+            var prefix = "amiko";
+            if (AppLanguage().Equals("fr"))
+                prefix = "comed";
+
             return Path.Combine(
                 Path.GetTempPath(),
-                String.Format("amiko.{0}.{1}.tmp", name, Path.GetRandomFileName())
+                String.Format("{0}.{1}.{2}.tmp", prefix, name, Path.GetRandomFileName())
             );
         }
         #endregion

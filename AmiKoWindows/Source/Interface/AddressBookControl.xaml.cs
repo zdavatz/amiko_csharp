@@ -97,6 +97,15 @@ namespace AmiKoWindows
         }
         #endregion
 
+        public static string FormatBirthdate(string text)
+        {
+            // Input Support e.g. 08.06.2018 -> 8.6.2018
+            string result = text;
+            result = PatientDb.BIRTHDATE_NONDEVIDER_RGX.Replace(result, ".");
+            result = PatientDb.BIRTHDATE_ZEROPADDED_RGX.Replace(result, "$1");
+            return result;
+        }
+
         public AddressBookControl()
         {
             this.Initialized += delegate
@@ -117,7 +126,7 @@ namespace AmiKoWindows
 
         public async void Select(Contact contact)
         {
-            if (_patientDb != null)
+            if (_patientDb != null && contact != null)
             {
                 this.CurrentEntry = await _patientDb.GetContactById(contact.Id);
 
@@ -129,15 +138,6 @@ namespace AmiKoWindows
 
             SetCurrentEntryAsSelected();
             EnableButton("MinusButton", true);
-        }
-
-        public string FormatBirthDate(string text)
-        {
-            // Input Support e.g. 08.06.2018 -> 8.6.2018
-            string result = text;
-            result = PatientDb.BIRTHDATE_NONDEVIDER_RGX.Replace(result, ".");
-            result = PatientDb.BIRTHDATE_ZEROPADDED_RGX.Replace(result, "$1");
-            return result;
         }
 
         private void Control_Loaded(object sender, RoutedEventArgs e)
@@ -209,7 +209,7 @@ namespace AmiKoWindows
         {
             var box = sender as TextBox;
             if (box != null && !box.Text.Equals(string.Empty))
-                box.Text = FormatBirthDate(box.Text);
+                box.Text = AddressBookControl.FormatBirthdate(box.Text);
 
             ValidateField(box);
         }
@@ -272,7 +272,7 @@ namespace AmiKoWindows
                 {
                     string val = v.Value;
                     if (v.Key.Equals("Birthdate"))
-                        val = FormatBirthDate(val);
+                        val = AddressBookControl.FormatBirthdate(val);
 
                     contact[v.Key] = val;
                 }

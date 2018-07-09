@@ -39,8 +39,9 @@ namespace AmiKoWindows
         const string AMIKO_FILE_CREATED_AT_FORMAT = "yyyy-MM-dd'T'HHmmss";
         const string AMIKO_FILE_PLACE_DATE_FORMAT = "dd.MM.yyyy (HH:mm:ss)";
 
+        public static readonly bool AutoSavingMode = true;
+
         private static readonly string notSaved = String.Format("({0})", Properties.Resources.unsaved);
-        private static readonly bool autoSavingMode = true;
 
         private static readonly Regex AMIKO_FILE_PREFIX_RGX = new Regex(
             String.Format(@"\A{0}", AMIKO_FILE_PREFIX), RegexOptions.Compiled);
@@ -197,6 +198,7 @@ namespace AmiKoWindows
                     if (File.Exists(outputPath))
                         File.Delete(outputPath);
 
+                    // save json with current active values
                     string json = Utilities.Base64Encode(SerializeCurrentData()) ?? "";
                     using (var output = File.Create(outputPath))
                     {
@@ -408,7 +410,7 @@ namespace AmiKoWindows
             if (!name.Equals(dt.ToString(AMIKO_FILE_CREATED_AT_FORMAT)))
                 return null;
 
-            // uid is in file (it may wrong one from iOS and macOS)
+            // uid is in file
             string uid = ReadUid(path);
             if (uid == null || uid.Equals(string.Empty))
                 return null; // invalid content
@@ -482,6 +484,7 @@ namespace AmiKoWindows
             PrescriptionJSONPresenter presenter = null;
             string hash = null;
             string placeDate = null;
+            Contact contact = null;
             try {
                 string rawInput = File.ReadAllText(path);
                 string json = Utilities.Base64Decode(rawInput) ?? "{}";
@@ -497,6 +500,12 @@ namespace AmiKoWindows
                 placeDate = presenter.place_date;
                 if (placeDate == null || placeDate.Equals(string.Empty))
                     return Result.Invalid;
+
+                // NOTE:
+                // Uid (in file) may wrong one from iOS and macOS (they have old
+                // implementation)
+                contact = presenter.Contact;
+                contact.Uid = FixedUidOf(contact);
             }
             catch (Exception ex)
             {
@@ -505,11 +514,11 @@ namespace AmiKoWindows
             }
 
             // same file exists for another contact
-            var existingPath = FindFilePathByNameAndHashFor(name, hash, presenter.Contact);
+            var existingPath = FindFilePathByNameAndHashFor(name, hash, contact);
             Log.WriteLine("existingPath: {0}", existingPath);
             if (existingPath != null)
             {
-                ReadFileFor(existingPath, presenter.Contact);
+                ReadFileFor(existingPath, contact);
                 LoadFiles();
                 return Result.Found;
             }
@@ -517,13 +526,13 @@ namespace AmiKoWindows
             this._Medications = new HashSet<Medication>(presenter.MedicationsList);
             UpdateMedicationList();
 
-            if (!autoSavingMode)
+            if (!AutoSavingMode)
                 name = String.Format("{0} {1}", name, notSaved);
 
             this.ActiveFileName = name;
             this.ActiveFilePath = path;
 
-            this.ActiveContact = presenter.Contact;
+            this.ActiveContact = contact;
             this.ActiveAccount = presenter.Account;
 
             this.Hash = hash;
@@ -531,7 +540,7 @@ namespace AmiKoWindows
 
             this.IsPreview = true;
 
-            if (autoSavingMode)
+            if (AutoSavingMode)
                 await Save(false);
 
             LoadFiles();
@@ -601,7 +610,11 @@ namespace AmiKoWindows
             if (presenter == null || presenter.Contact == null)
                 return null;
 
-            return presenter.Contact.Uid;
+            // NOTE:
+            // Uid (in file) may wrong one from iOS and macOS (they have old
+            // implementation)
+            Contact contact = presenter.Contact;
+            return FixedUidOf(contact);
         }
 
         private string ReadHash(string path)
@@ -616,6 +629,23 @@ namespace AmiKoWindows
                 return null;
 
             return presenter.prescription_hash;
+        }
+
+        private string FixedUidOf(Contact contact)
+        {
+            if (contact == null)
+                return null;
+
+            var uid = contact.Uid;
+            Log.WriteLine("uid: {0}", uid);
+
+            contact.Birthdate = AddressBookControl.FormatBirthdate(contact.Birthdate);
+            var validUid = contact.GenerateUid();
+            if (uid == null || uid.Equals(string.Empty) || !validUid.Equals(uid))
+                uid = validUid;
+
+            Log.WriteLine("uid: {0}", uid);
+            return uid;
         }
 
         #region Private File Path Utility Methods (_amikoDir)
@@ -693,16 +723,19 @@ namespace AmiKoWindows
             if (uid == null || presenter == null || presenter.patient == null)
                 return;
 
-            if (uid.Equals(presenter.patient.patient_id))
-            {
-                this.Hash = presenter.prescription_hash;
-                this.PlaceDate = presenter.place_date;
+            // NOTE:
+            // Uid (in file) may wrong one from iOS and macOS (they have old
+            // implementation)
+            Contact contact = presenter.Contact;
+            contact.Uid = FixedUidOf(contact);
 
-                this.ActiveAccount = presenter.Account;
-                this.ActiveContact = presenter.Contact;
+            this.Hash = presenter.prescription_hash;
+            this.PlaceDate = presenter.place_date;
 
-                this._Medications = new HashSet<Medication>(presenter.MedicationsList);
-            }
+            this.ActiveAccount = presenter.Account;
+            this.ActiveContact = contact;
+
+            this._Medications = new HashSet<Medication>(presenter.MedicationsList);
         }
 
         private string GeneratePlaceDate()
