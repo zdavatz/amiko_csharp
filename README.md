@@ -246,17 +246,24 @@ Finally, You need to debug the app with `DebugView` or `WinDbg` etc. (Set `/p:Lo
 5. Rebuild target project (AmiKoDesitin or CoMedDesitin)
 6. (Publish)
 ```
+
 #### Building with Visual Studio Community Edition via Commandline
+
 or you can add this to your Path
+
 ```
 C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\amd64
 ```
+
 and this will work as well from your Source Directory
+
 ```
-MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Clean
-MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Build /p:Configuration=Debug
-Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
-PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "AmiKo"
+PS C:\Users\... > MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Clean
+PS C:\Users\... > MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Build /p:Configuration=Debug
+PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
+
+# or just do
+PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "AmiKo"
 ```
 
 ##### Reference
