@@ -34,5 +34,6 @@ namespace AmiKoWindows
 
         // General names
         public const string PaleGray = "#f2f2f2";
+        public const string ModestBlack = "#888888";
     }
 }

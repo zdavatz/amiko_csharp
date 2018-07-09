@@ -22,6 +22,9 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace AmiKoWindows
 {
@@ -224,6 +227,14 @@ namespace AmiKoWindows
                 return Utilities.Concat(Utilities.ConcatWith("/", w, h), g, Birthdate);
             }
         }
+
+        public bool HasName
+        {
+            get {
+                var name = Fullname;
+                return (name != null && !name.Equals(string.Empty));
+            }
+        }
         #endregion
 
         #region Setter/Getter Utilities
@@ -254,11 +265,34 @@ namespace AmiKoWindows
         }
         #endregion
 
+        // manually clone
+        public Contact Clone()
+        {
+            var contact = new Contact();
+            contact._Id = Id;
+            contact._TimeStamp = TimeStamp;
+            contact._GivenName = GivenName;
+            contact._FamilyName = FamilyName;
+            contact._Birthdate = Birthdate;
+            contact._Gender = RawGender;
+            contact._WeightKg = RawWeightKg;
+            contact._HeightCm = RawHeightCm;
+            contact._Zip = Zip;
+            contact._City = City;
+            contact._Country = Country;
+            contact._Address = Address;
+            contact._Phone = Phone;
+            contact._Email = Email;
+
+            contact._Uid = contact.GenerateUid();
+            return contact;
+        }
+
         // ## NOTE
         //
         // Check also the early implementation on macOS/iOS Version (til, AmiKo macOS v3.4.4, AmiKo iOS v2.8.143):
-		// Its rely on the value of __current__ NSString's `hash`. Thus We need to keep this hashed value by its algorithm for consistency.
-		//
+        // Its rely on the value of __current__ NSString's `hash`. Thus We need to keep this hashed value by its algorithm for consistency.
+        //
         // * https://github.com/zdavatz/amiko-osx/blob/a4892277bde48e358c9e3042b14bf8b6cddd22c4/MLPatient.m#L70
         // * https://github.com/zdavatz/AmiKo-iOS/blob/d1ad38727931bb3b079bfff85d1d93dbcc8de567/AmiKoDesitin/MLPatient.m#L50
         //

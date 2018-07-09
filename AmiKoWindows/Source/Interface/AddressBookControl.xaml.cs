@@ -27,6 +27,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+
+using Microsoft.VisualBasic.FileIO;
 using MahApps.Metro.Controls;
 
 namespace AmiKoWindows
@@ -56,6 +58,10 @@ namespace AmiKoWindows
         MahApps.Metro.Controls.Flyout _parent;
 
         bool _isItemClick = false;
+
+        bool _openCsvFile = false;
+        string _csvFilepath = null;
+        List<Contact> _contacts = new List<Contact>(); // cached
         #endregion
 
         private long RawContactsCount {
@@ -250,9 +256,18 @@ namespace AmiKoWindows
             ValidateField(box);
         }
 
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        private async void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
+            if (_openCsvFile)
+            {
+                this._openCsvFile = false;
+                this._contacts = new List<Contact>();
+                this.CsvFileBar.Visibility = Visibility.Collapsed;
+                await _patientDb.LoadAllContacts();
+                _patientDb.UpdateContactList();
+            }
+
             if (_parent != null)
                 _parent.IsOpen = false;
         }
@@ -307,6 +322,14 @@ namespace AmiKoWindows
                 this.CurrentEntry = contact;
                 _patientDb.UpdateContactList();
 
+                if (_openCsvFile)
+                {
+                    this._openCsvFile = false;
+                    this.CsvFileBar.Visibility = Visibility.Collapsed;
+                    EnableButton("PlusButton", true);
+                    EnableButton("MinusButton", true);
+                }
+
                 // See ContactList_ItemStatusChanged
                 this.ContactList.ItemContainerGenerator.StatusChanged += ContactList_ItemStatusChanged;
             }
@@ -320,9 +343,16 @@ namespace AmiKoWindows
             var box = sender as TextBox;
             string text = box.Text;
 
-            await _patientDb.Search(text);
+            Log.WriteLine("_openCsvFile: {0}", _openCsvFile);
+            if (_openCsvFile)
+            {
+                var clone = _contacts.Select(c => c.Clone()).ToList();
+                await _patientDb.Search(text, clone);
+            }
+            else
+                await _patientDb.Search(text);
+
             this.RawContactsCount = _patientDb.Count;
-            _patientDb.UpdateContactList();
         }
 
         private void SearchPatientBox_PreviewMouseDown(object sender, RoutedEventArgs e)
@@ -338,7 +368,7 @@ namespace AmiKoWindows
             {
                 if ((e.Key == Key.Down) || e.Key == Key.Up)
                 {
-                    _isItemClick = true;
+                    this._isItemClick = true;
                     // it works same as `sendkeys(\t)`
                     if (Keyboard.PrimaryDevice != null && Keyboard.PrimaryDevice.ActiveSource != null)
                     {
@@ -359,7 +389,7 @@ namespace AmiKoWindows
             if (object.ReferenceEquals(sender, ContactList))
             {
                 if (e.IsDown && e.Key == Key.Tab)
-                    _isItemClick = true;
+                    this._isItemClick = true;
                 else if (e.IsDown && e.Key == Key.Back)
                     MinusButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             }
@@ -383,6 +413,13 @@ namespace AmiKoWindows
         // DoubleClick
         private async void ContactList_MouseDoubleClick(object sender, RoutedEventArgs e)
         {
+            if (_openCsvFile)
+            {
+                this._openCsvFile = false;
+                this._contacts = new List<Contact>();
+                return;
+            }
+
             if (object.ReferenceEquals(sender, ContactList))
             {
                 if (ContactList.SelectedItem != null)
@@ -408,7 +445,7 @@ namespace AmiKoWindows
 
         private async void ContactList_SelectionChanged(object sender, EventArgs e)
         {
-            //Log.WriteLine(sender.GetType().Name);
+            Log.WriteLine(sender.GetType().Name);
 
             // fix scroll position
             ContactList.ScrollIntoView(ContactList.SelectedItem);
@@ -418,7 +455,7 @@ namespace AmiKoWindows
             // to `IsSelected` in `SaveButton_Click`
             if (!_isItemClick)
                 return;
-            _isItemClick = false;
+            this._isItemClick = false;
 
             var item = ContactList.SelectedItem as Item;
             if (item != null && item.Id != null)
@@ -440,8 +477,8 @@ namespace AmiKoWindows
         {
             //Log.WriteLine(sender.GetType().Name);
 
-            _isItemClick = true;
-            EnableButton("MinusButton", true);
+            this._isItemClick = true;
+            EnableButton("MinusButton", !_openCsvFile);
         }
 
         private void ContactContextMenuItem_Click(object sender, RoutedEventArgs e)
@@ -520,11 +557,178 @@ namespace AmiKoWindows
             }
         }
 
-        private void SwitchBookButton_Click(object sender, RoutedEventArgs e)
+        private async void SwitchBookButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
+
+            if (_openCsvFile)
+            {
+                await _patientDb.LoadAllContacts();
+                _patientDb.UpdateContactList();
+                _openCsvFile = false;
+                this.CsvFileBar.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                string filepath = null;
+                if (_csvFilepath != null)
+                    filepath = _csvFilepath;
+                else
+                {
+                    var dialog = new System.Windows.Forms.OpenFileDialog();
+                    dialog.Filter = String.Format(
+                        "{0} | {1}", "CSV File (*.csv)", "*.csv");
+                    dialog.DefaultExt = ".csv";
+                    var result = dialog.ShowDialog();
+                    switch (result)
+                    {
+                        case System.Windows.Forms.DialogResult.OK:
+                            var file = dialog.FileName;
+                            var name = Path.GetFileName(file);
+                            var tmpPath = Path.Combine(Utilities.GetInboxPath(), name);
+                            if (File.Exists(tmpPath))
+                                File.Delete(tmpPath);
+
+                            File.Copy(file, tmpPath);
+
+                            if (File.Exists(tmpPath))
+                                filepath = tmpPath;
+                            break;
+                        case System.Windows.Forms.DialogResult.Cancel:
+                        default:
+                            break;
+                    }
+                }
+
+                if (filepath != null)
+                {
+                    Log.WriteLine("filepath: {0}", filepath);
+
+                    ResetFields();
+                    this.CurrentEntry = new Contact();
+                    this._csvFilepath = filepath;
+                    ImportContacts();
+                    Log.WriteLine("_contacts (cache): {0}", _contacts.Count);
+                    EnableButton("PlusButton", false);
+                    EnableButton("MinusButton", false);
+                }
+            }
+        }
+
+        private async void DeleteCsvFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+
+            await _patientDb.LoadAllContacts();
+            _patientDb.UpdateContactList();
+            this._openCsvFile = false;
+            this._contacts = new List<Contact>();
+            this._csvFilepath = null;
+            this.CsvFileBar.Visibility = Visibility.Collapsed;
         }
         #endregion
+
+        private void ImportContacts()
+        {
+            var filepath = this._csvFilepath;
+            if (filepath == null || !File.Exists(filepath))
+                return;
+
+            var contacts = new List<Contact>();
+            if (_contacts.Count > 0) // cached
+            {
+                Log.WriteLine("cached");
+                contacts = _contacts;
+            }
+            else
+            {
+                Log.WriteLine("loaded");
+                using (TextFieldParser parser = new TextFieldParser(filepath))
+                {
+                    parser.TextFieldType = FieldType.Delimited;
+                    parser.SetDelimiters(",");
+
+                    var i = 0;
+                    Dictionary<string, int> keys = new Dictionary<string, int>();
+                    while (!parser.EndOfData)
+                    {
+                        string[] fields = parser.ReadFields();
+                        // Log.WriteLine("Fields (Length): {0}", fields.Length);
+                        if (fields.Length < 60) // default keys count 61
+                            return;
+                        if (i < 1)
+                        {
+                            var j = 0;
+                            // exported csv from `https://outlook.live.com/people`
+                            // (peoples app)
+                            // First Name,Middle Name,Last Name,Title,Suffix,Nickname,Given Yomi,Surname Yomi,E-mail Address,E-mail 2 Address,E-mail 3 Address,Home Phone,Home Phone 2,Business Phone,Business Phone 2,Mobile Phone,Car Phone,Other Phone,Primary Phone,Pager,Business Fax,Home Fax,Other Fax,Company Main Phone,Callback,Radio Phone,Telex,TTY/TDD Phone,IMAddress,Job Title,Department,Company,Office Location,Manager's Name,Assistant's Name,Assistant's Phone,Company Yomi,Business Street,Business City,Business State,Business Postal Code,Business Country/Region,Home Street,Home City,Home State,Home Postal Code,Home Country/Region,Other Street,Other City,Other State,Other Postal Code,Other Country/Region,Personal Web Page,Spouse,Schools,Hobby,Location,Web Page,Birthday,Anniversary,Notes
+                            foreach (var text in fields)
+                            {
+                                if (text.Equals("First Name"))
+                                    keys.Add("GivenName", j);
+                                else if (text.Equals("Middle Name"))
+                                    keys.Add("_MiddleName", j);
+                                else if (text.Equals("Last Name"))
+                                    keys.Add("FamilyName", j);
+                                else if (text.Equals("Home Street"))
+                                    keys.Add("Address", j);
+                                else if (text.Equals("Home City"))
+                                    keys.Add("City", j);
+                                else if (text.Equals("Home Postal Code"))
+                                    keys.Add("Zip", j);
+                                else if (text.Equals("Home Country/Region"))
+                                    keys.Add("Country", j);
+                                else if (text.Equals("Home Phone") || text.Equals("E-Mail Address"))
+                                    keys.Add("Phone", j);
+                                else if (text.Equals("Primary Phone"))
+                                    keys.Add("Email", j);
+                                else if (text.Equals("Birthday"))
+                                    keys.Add("Birthdate", j);
+                                j++;
+                            }
+                            i++;
+                            continue;
+                        }
+
+                        var contact = new Contact();
+                        if (keys.ContainsKey("GivenName"))
+                            contact.GivenName = fields[keys["GivenName"]];
+                        if (keys.ContainsKey("FamilyName"))
+                            contact.FamilyName = fields[keys["FamilyName"]];
+                        if (keys.ContainsKey("Address"))
+                            contact.Address = fields[keys["Address"]];
+                        if (keys.ContainsKey("City"))
+                            contact.City = fields[keys["City"]];
+                        if (keys.ContainsKey("Zip"))
+                            contact.Zip = fields[keys["Zip"]];
+                        if (keys.ContainsKey("Country"))
+                            contact.Zip = fields[keys["Country"]];
+                        if (keys.ContainsKey("Phone"))
+                            contact.Zip = fields[keys["Phone"]];
+                        if (keys.ContainsKey("Email"))
+                            contact.Email = fields[keys["Email"]];
+                        if (keys.ContainsKey("Birthdate"))
+                            contact.Birthdate = fields[keys["Birthdate"]];
+
+                        if (contact.HasName)
+                            contact.Id = i;
+                            contacts.Add(contact);
+                        i++;
+                    }
+                }
+            }
+            Log.WriteLine("contacts: {0}", contacts.Count);
+            this._contacts = contacts;
+
+            this._openCsvFile = true;
+            this.CsvFileName.Text = Path.GetFileName(filepath);
+            this.CsvFileBar.Visibility = Visibility.Visible;
+
+            this.RawContactsCount = _contacts.Count;
+
+            var clone = _contacts.Select(c => c.Clone()).ToList();
+            _patientDb.UpdateContactList(clone);
+        }
 
         private void SetCurrentEntryAsSelected()
         {

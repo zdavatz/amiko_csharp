@@ -91,6 +91,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ReachFramework" />
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System.Runtime" />
     <Reference Include="System.Runtime.InteropServices.WindowsRuntime" />
     <Reference Include="System.Runtime.WindowsRuntime" />

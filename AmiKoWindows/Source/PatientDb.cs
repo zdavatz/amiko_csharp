@@ -100,6 +100,8 @@ namespace AmiKoWindows
         #region Private Fields
         private DatabaseHelper _db;
         private List<Contact> _foundContacts = new List<Contact>();
+
+        private bool _onMemory = false; // csv or db
         #endregion
 
         public long Count {
@@ -167,6 +169,24 @@ namespace AmiKoWindows
                 _db.CloseDB();
         }
 
+        public async Task<long> Search(string text, List<Contact> contacts)
+        {
+            _foundContacts.Clear();
+
+            Log.WriteLine("_onMemory: {0}", _onMemory);
+            if (_onMemory)
+            {
+                if (text == null || text.Equals(string.Empty))
+                    _foundContacts = contacts;
+                else
+                    _foundContacts = await FindContactsByText(text, contacts);
+            }
+
+            UpdateContactList(_foundContacts);
+
+            return Count;
+        }
+
         public async Task<long> Search(string text)
         {
             _foundContacts.Clear();
@@ -175,6 +195,8 @@ namespace AmiKoWindows
                 _foundContacts = await GetAllContacts();
             else
                 _foundContacts = await FindContactsByText(text);
+
+            UpdateContactList();
 
             return Count;
         }
@@ -303,7 +325,7 @@ namespace AmiKoWindows
             bool result = false;
             await Task.Run(() =>
             {
-                if (_db.IsOpen())
+                if (!_onMemory && _db.IsOpen())
                 {
                     using (SQLiteCommand cmd = _db.Command())
                     {
@@ -344,12 +366,22 @@ namespace AmiKoWindows
 
         public void UpdateContactList()
         {
+            _onMemory = false;
             ContactListItems.Clear();
             ContactListItems.AddRange(_foundContacts);
         }
 
+        public void UpdateContactList(List<Contact> contacts)
+        {
+            _onMemory = true;
+            _foundContacts = contacts;
+            ContactListItems.Clear();
+            ContactListItems.AddRange(contacts);
+        }
+
         public async Task<long> LoadAllContacts()
         {
+            _onMemory = false;
             _foundContacts.Clear();
             _foundContacts = await GetAllContacts();
 
@@ -365,7 +397,20 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                if (_db.IsOpen())
+                if (_onMemory && _foundContacts != null)
+                {
+                    try {
+                        contact = _foundContacts.Where(c => {
+                            return (c.Id == id);
+                        }).Single();
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        // not found
+                        Log.WriteLine(ex.Message);
+                    }
+                }
+                else if (_db.IsOpen())
                 {
                     using (SQLiteCommand cmd = _db.Command())
                     {
@@ -396,7 +441,20 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                if (_db.IsOpen())
+                if (_onMemory && _foundContacts != null)
+                {
+                    try {
+                        contact = _foundContacts.Where(c => {
+                            return (c.Uid != null && c.Uid.Equals(uid));
+                        }).Single();
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        // not found
+                        Log.WriteLine(ex.Message);
+                    }
+                }
+                else if (_db.IsOpen())
                 {
                     using (SQLiteCommand cmd = _db.Command())
                     {
@@ -422,6 +480,8 @@ namespace AmiKoWindows
             List<Contact> contacts = new List<Contact>();
             await Task.Run(() =>
             {
+                if (_onMemory && _foundContacts != null)
+                    contacts = _foundContacts;
                 if (_db.IsOpen())
                 {
                     using (SQLiteCommand cmd = _db.Command())
@@ -439,6 +499,41 @@ namespace AmiKoWindows
                     }
                 }
             });
+            return contacts;
+        }
+
+        public async Task<List<Contact>> FindContactsByText(string text, List<Contact> targets)
+        {
+            List<Contact> contacts = new List<Contact>();
+            await Task.Run(() =>
+            {
+                if (targets != null)
+                {
+                    try {
+                        if (text == null || text.Equals(string.Empty))
+                            contacts = targets;
+                        else
+                        {
+                            var t = text.ToLower();
+                            Log.WriteLine("t: {0}", t);
+                            contacts = targets.Where(c => {
+                                Log.WriteLine("c.GivenName.ToLower(): {0}", c.GivenName.ToLower());
+                                return (c != null &&
+                                    ((c.GivenName != null && c.GivenName.ToLower().Contains(t)) ||
+                                     (c.FamilyName != null && c.FamilyName.ToLower().Contains(t)) ||
+                                     (c.City != null && c.City.ToLower().Contains(t)) ||
+                                     (c.Zip != null && c.Zip.ToLower().Contains(t)))
+                                );
+                            }).ToList();
+                        }
+                    }
+                    catch (InvalidOperationException ex)
+                    {   // not found
+                        Log.WriteLine(ex.Message);
+                    }
+                }
+            });
+            Log.WriteLine("contacts.Length (csv): {0}", contacts.Count);
             return contacts;
         }
 
@@ -474,7 +569,7 @@ namespace AmiKoWindows
                     }
                 }
             });
-            Log.WriteLine("contacts.Length: {0}", contacts.Count);
+            Log.WriteLine("contacts.Length (db): {0}", contacts.Count);
             return contacts;
         }
 
@@ -553,7 +648,7 @@ namespace AmiKoWindows
         {
             long result = -1;
 
-            if (_db.IsOpen())
+            if (!_onMemory && _db.IsOpen())
             {
                 using (SQLiteCommand cmd = _db.Command())
                 {

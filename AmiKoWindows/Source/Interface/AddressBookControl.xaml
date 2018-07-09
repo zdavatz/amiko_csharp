@@ -187,26 +187,45 @@
                    Controls:TextBoxHelper.Watermark="{x:Static p:Resources.searchPatient}"></TextBox>
                 <!-- Address Book: ListBox -->
                 <Border Margin="0,21,0,16" Background="White" Padding="0" VerticalAlignment="Stretch" BorderThickness="0">
-                    <ListBox
-                        Name="ContactList" Style="{StaticResource ContactListBox}" ItemContainerStyle="{StaticResource ContactListBoxItem}"
-                        ScrollViewer.CanContentScroll="True"
-                        KeyboardNavigation.DirectionalNavigation="Cycle"
-                        SelectionChanged="ContactList_SelectionChanged" PreviewKeyDown="ContactList_PreviewKeyDown" KeyDown="ContactList_KeyDown" MouseDoubleClick="ContactList_MouseDoubleClick"
-                        IsSynchronizedWithCurrentItem="True"
-                        ItemsSource="{Binding Path=ContactListItems}" Height="430" Cursor="Arrow">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=Text}" Margin="0,0,11,0" Padding="8,5,6,5" FontWeight="Normal" VerticalAlignment="Center" MouseLeftButtonDown="ContactItem_MouseLeftButtonDown" Cursor="Hand">
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu Name="ContactItemContextMenu">
-                                            <MenuItem Header="{Binding Path=Text}" Focusable="False" IsEnabled="False" />
-                                            <MenuItem Header="{x:Static p:Resources.delete}" Click="ContactContextMenuItem_Click" />
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="28" />
+                        </Grid.RowDefinitions>
+                        <ListBox
+                            Grid.Row="0"
+                            Name="ContactList" Style="{StaticResource ContactListBox}" ItemContainerStyle="{StaticResource ContactListBoxItem}"
+                            VerticalAlignment="Stretch"
+                            ScrollViewer.CanContentScroll="True"
+                            KeyboardNavigation.DirectionalNavigation="Cycle"
+                            SelectionChanged="ContactList_SelectionChanged" PreviewKeyDown="ContactList_PreviewKeyDown" KeyDown="ContactList_KeyDown" MouseDoubleClick="ContactList_MouseDoubleClick"
+                            IsSynchronizedWithCurrentItem="True"
+                            ItemsSource="{Binding Path=ContactListItems}" MinHeight="404" Cursor="Arrow">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=Text}" Margin="0,0,11,0" Padding="8,5,6,5" FontWeight="Normal" VerticalAlignment="Center" MouseLeftButtonDown="ContactItem_MouseLeftButtonDown" Cursor="Hand">
+                                        <TextBlock.ContextMenu>
+                                            <ContextMenu Name="ContactItemContextMenu">
+                                                <MenuItem Header="{Binding Path=Text}" Focusable="False" IsEnabled="False" />
+                                                <MenuItem Header="{x:Static p:Resources.delete}" Click="ContactContextMenuItem_Click" />
+                                            </ContextMenu>
+                                        </TextBlock.ContextMenu>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <Border Name="CsvFileBar" Grid.Row="1" Margin="0" Height="28" Background="{StaticResource ModestBlack}" Padding="0" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" BorderThickness="1" Visibility="Collapsed">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Name="CsvFileName" Padding="8,0,6,2" Foreground="White" Width="205" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                <Button Name="DeleteCsvFileButton" Style="{StaticResource SnackBarButton}"
+                                    HorizontalAlignment="Right" Margin="0,2,9,2" Padding="0"
+                                    Cursor="Hand" Height="22" Width="22" Click="DeleteCsvFileButton_Click">
+                                    <fa:ImageAwesome Name="Wipe" Icon="Times" Visibility="Visible" Foreground="White"
+                                        VerticalAlignment="Center" Margin="0" Height="13" Width="13" />
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
                 </Border>
                 <!-- Address Book: Actions -->
                 <StackPanel Orientation="Horizontal">
@@ -237,10 +256,9 @@
                         </TextBlock>
                         <Grid Margin="9,1,5,3">
                             <Button
-                                Name="SwitchBookButton" Style="{StaticResource NoBorderedButton}"
-                                Margin="0" Width="Auto" Click="SwitchBookButton_Click" IsEnabled="False"
-                                Cursor="Hand">
-                                <fa:ImageAwesome Name="AddressBook" Icon="AddressBook" Visibility="Visible" Foreground="LightGray"
+                                Name="SwitchBookButton" Style="{StaticResource IconButton}"
+                                Margin="0" Width="Auto" Click="SwitchBookButton_Click" Cursor="Hand">
+                                <fa:ImageAwesome Name="AddressBook" Icon="AddressBook" Visibility="Visible" Foreground="Black"
                                     VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                             </Button>
                         </Grid>
