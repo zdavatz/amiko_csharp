@@ -515,9 +515,7 @@ namespace AmiKoWindows
                         else
                         {
                             var t = text.ToLower();
-                            Log.WriteLine("t: {0}", t);
                             contacts = targets.Where(c => {
-                                Log.WriteLine("c.GivenName.ToLower(): {0}", c.GivenName.ToLower());
                                 return (c != null &&
                                     ((c.GivenName != null && c.GivenName.ToLower().Contains(t)) ||
                                      (c.FamilyName != null && c.FamilyName.ToLower().Contains(t)) ||
