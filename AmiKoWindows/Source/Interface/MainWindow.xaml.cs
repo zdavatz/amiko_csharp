@@ -652,6 +652,13 @@ namespace AmiKoWindows
                 double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
                 _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numResults, elapsedTime));
             }
+            else
+            {
+                if (!_uiState.FullTextQueryEnabled)
+                    _fullTextDb.UpdateSearchResults(_uiState);
+                else
+                    _sqlDb.UpdateSearchResults(_uiState);
+            }
         }
 
         // Listens to click events in search box
@@ -1490,28 +1497,30 @@ namespace AmiKoWindows
             (sender as ToggleButton).IsChecked = true;
 
             SearchTextBox.Focus();
-            UIState.State state = _uiState.GetState();
+            this.SearchTextBoxWaterMark = _uiState.SearchTextBoxWaterMark;
 
+            UIState.State state = _uiState.GetState();
+            Log.WriteLine("state: {0}", state);
+            Log.WriteLine("query: {0}", query);
+
+            _uiState.SetQuery(query);
             if (query == UIState.Query.Fulltext)
             {
-                _uiState.SetQuery(UIState.Query.Fulltext);
-                this.SearchTextBoxWaterMark = _uiState.SearchTextBoxWaterMark;
-
                 // only change data context (keep state)
                 SetDataContext(state);
+                SetFullTextSearchDataContext();
 
+                _fullTextDb.ClearFoundEntries();
                 if (state == UIState.State.Favorites) {
                     await _fullTextDb.RetrieveFavorites();
-                } else {
-                    _fullTextDb.ClearFoundEntries();
                 }
                 _fullTextDb.UpdateSearchResults(_uiState);
             }
             else
             {
-                _uiState.SetQuery(query);
-                this.SearchTextBoxWaterMark = _uiState.SearchTextBoxWaterMark;
                 SetState(state);
+
+                _sqlDb.UpdateSearchResults(_uiState);
             }
         }
 
