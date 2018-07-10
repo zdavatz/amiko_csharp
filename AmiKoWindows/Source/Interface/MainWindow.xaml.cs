@@ -1630,6 +1630,11 @@ namespace AmiKoWindows
 
             if (doSave)
             {
+                // reset account (use always primary account)
+                var card = ProfileCard.Content as ProfileCardControl;
+                this.ActiveAccount = card?.CurrentEntry;
+                _prescriptions.ActiveAccount = ActiveAccount;
+
                 await _prescriptions.Save(asRewriting);
 
                 Keyboard.ClearFocus();
