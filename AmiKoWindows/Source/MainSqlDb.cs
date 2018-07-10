@@ -167,6 +167,7 @@ namespace AmiKoWindows
 
         public async Task<long> Search(UIState state, string query)
         {
+            Log.WriteLine("query: {0}", query);
             _foundArticles.Clear();
 
             string type = state.GetQueryTypeAsName();

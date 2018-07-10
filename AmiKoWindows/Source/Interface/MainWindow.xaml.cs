@@ -73,7 +73,9 @@ namespace AmiKoWindows
         InteractionsCart _interactions;
         PrescriptionsTray _prescriptions;
         StatusBarHelper _statusBarHelper;
+
         string _selectedFullTextSearchKey;
+        bool _search = false; // lock
 
         FrameworkElement _browser;
         FrameworkElement _manager;
@@ -245,7 +247,7 @@ namespace AmiKoWindows
             Keyboard.ClearFocus();
         }
 
-        public async void SetState(UIState.State state)
+        public void SetState(UIState.State state)
         {
             _uiState.SetState(state);
 
@@ -288,18 +290,6 @@ namespace AmiKoWindows
                     button.Visibility = Visibility.Visible;
 
                 _prescriptions.LoadFiles();
-            }
-
-            if (!_uiState.FullTextQueryEnabled)
-                _sqlDb.UpdateSearchResults(_uiState);
-            else
-            {
-                if (state != UIState.State.Favorites)
-                    _fullTextDb.ClearFoundEntries();
-                else
-                    await _fullTextDb.RetrieveFavorites();
-
-                _fullTextDb.UpdateSearchResults(_uiState);
             }
         }
 
@@ -635,11 +625,13 @@ namespace AmiKoWindows
 
         private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            Log.WriteLine(sender.GetType().Name);
             var textBox = sender as TextBox;
             // Change Window Title.
             string text = textBox.Text;
             if (text.Length > 0)
             {
+                this._search = true;
                 // Change the data context of the status bar
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
@@ -651,28 +643,44 @@ namespace AmiKoWindows
                 sw.Stop();
                 double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
                 _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numResults, elapsedTime));
+                await Task.Delay(1200);
+                this._search = false;
             }
             else
+                ResetSearchInDelay(1200);
+        }
+
+        private async void ResetSearchInDelay(int delay = -1)
+        {
+            if (delay > 1)
+                await Task.Delay(delay);
+
+            var text = this.SearchFieldText();
+            Log.WriteLine("text: {0}", text);
+            if (!_search && (text == null || text.Equals(string.Empty)))
             {
-                if (!_uiState.FullTextQueryEnabled)
-                    _fullTextDb.UpdateSearchResults(_uiState);
+                // Change the data context of the status bar
+                Stopwatch sw = new Stopwatch();
+
+                long numResults = 0;
+                if (_uiState.FullTextQueryEnabled)
+                    numResults = await _fullTextDb?.Search(_uiState, "");
                 else
-                    _sqlDb.UpdateSearchResults(_uiState);
+                    numResults = await _sqlDb?.Search(_uiState, "");
+
+                sw.Stop();
+                double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
+                _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numResults, elapsedTime));
             }
         }
 
         // Listens to click events in search box
-        private async void OnSearchTextBox_PreviewMouseDown(object sender, RoutedEventArgs e)
+        private void OnSearchTextBox_PreviewMouseDown(object sender, RoutedEventArgs e)
         {
+            Log.WriteLine(sender.GetType().Name);
+
             this.SearchTextBox.Text = "";
-            // Change the data context of the status bar
-            Stopwatch sw = new Stopwatch();
-            long numResults = 0;
-            if (!_uiState.FullTextQueryEnabled)
-                numResults = await _sqlDb?.Search(_uiState, "");
-            sw.Stop();
-            double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
-            _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numResults, elapsedTime));
+            ResetSearchInDelay(700);
         }
 
         /**
@@ -1454,7 +1462,7 @@ namespace AmiKoWindows
         }
 
         // Tab
-        private void StateButton_Click(object sender, RoutedEventArgs e)
+        private async void StateButton_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
@@ -1470,6 +1478,19 @@ namespace AmiKoWindows
                 SetState(UIState.State.Interactions);
             else if (state.Equals("Prescriptions"))
                 SetState(UIState.State.Prescriptions);
+
+            var text = SearchFieldText();
+            if (_uiState.FullTextQueryEnabled)
+            {
+                if (!state.Equals("Favorites"))
+                    _fullTextDb.ClearFoundEntries();
+                else
+                    await _fullTextDb.RetrieveFavorites();
+
+                await _fullTextDb?.Search(_uiState, text);
+            }
+            else
+                await _sqlDb?.Search(_uiState, text);
         }
 
         private async void QuerySelectButton_Click(object sender, RoutedEventArgs e)
@@ -1514,14 +1535,11 @@ namespace AmiKoWindows
                 if (state == UIState.State.Favorites) {
                     await _fullTextDb.RetrieveFavorites();
                 }
-                _fullTextDb.UpdateSearchResults(_uiState);
             }
             else
-            {
                 SetState(state);
 
-                _sqlDb.UpdateSearchResults(_uiState);
-            }
+            ResetSearchInDelay();
         }
 
         private void SetBrowserEmulationMode()
