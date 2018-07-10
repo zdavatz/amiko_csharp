@@ -87,6 +87,9 @@ namespace AmiKoWindows
         private IntPtr _handle;
         private List<IStorageItem>_outbox = new List<IStorageItem>();
 
+        // current (selected section)
+        private string _currentSection = null;
+
         #region Public Fields
         private string _SearchTextBoxWaterMark;
         public string SearchTextBoxWaterMark
@@ -936,8 +939,15 @@ namespace AmiKoWindows
         }
 
         #region SectionTitleList EventHandlers
+        private void SectionTitleList_Loaded(object sender, RoutedEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+
+            SetActiveSectionAsSelected();
+        }
+
         // Event handler called when the user selects a section title, injects javascript into Browser window
-        private void SectionTitle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SectionTitleList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
 
@@ -947,6 +957,7 @@ namespace AmiKoWindows
                 var item = box.SelectedItem as TitleItem;
                 if (item != null && item.Id != null)
                 {
+                    _currentSection = item.Id;
                     if (!_uiState.FullTextQueryEnabled)
                     {
                         // Inject javascript to move to anchor
@@ -1318,6 +1329,26 @@ namespace AmiKoWindows
                     var item = box.Items[i] as FileItem;
                     if (item != null && item.IsValid &&
                         item.Name.Equals(_prescriptions.ActiveFileName) && item.Hash.Equals(_prescriptions.Hash))
+                    {
+                        box.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void SetActiveSectionAsSelected()
+        {
+            var box = GetElementIn("SectionTitleList", RightArea) as ListBox;
+            if (box != null)
+            {
+                if (_currentSection == null)
+                    return;
+
+                for (var i = 0; i < box.Items.Count; i++)
+                {
+                    var item = box.Items[i] as TitleItem;
+                    if (item != null && _currentSection.Equals(item.Id))
                     {
                         box.SelectedIndex = i;
                         break;

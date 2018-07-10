@@ -211,7 +211,9 @@
                         <ListBox
                             x:Name="SectionTitleList" Style="{StaticResource SectionTitleListBox}"
                             KeyboardNavigation.DirectionalNavigation="Cycle" ItemsSource="{Binding Path=SectionTitleListItems}"
-                            Margin="0,0,0,0" Padding="0,16,0,16" SelectionChanged="SectionTitle_SelectionChanged">
+                            Margin="0,0,0,0" Padding="0,16,0,16"
+                            Loaded="SectionTitleList_Loaded"
+                            SelectionChanged="SectionTitleList_SelectionChanged">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Height="24">
