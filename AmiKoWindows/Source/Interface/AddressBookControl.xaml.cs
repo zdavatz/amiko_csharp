@@ -105,6 +105,9 @@ namespace AmiKoWindows
 
         public static string FormatBirthdate(string text)
         {
+            if (text == null || text.Equals(string.Empty))
+                return text;
+
             // Input Support e.g. 08.06.2018 -> 8.6.2018
             string result = text;
             result = PatientDb.BIRTHDATE_NONDEVIDER_RGX.Replace(result, ".");
@@ -668,26 +671,31 @@ namespace AmiKoWindows
                             //
                             // ## Header
                             //
+                            // Default (no change by user) Headers
+                            //
+                            // (from outlook.live.com)
                             // First Name,Middle Name,Last Name,Title,Suffix,Nickname,Given Yomi,Surname Yomi,E-mail Address,E-mail 2 Address,E-mail 3 Address,Home Phone,Home Phone 2,Business Phone,Business Phone 2,Mobile Phone,Car Phone,Other Phone,Primary Phone,Pager,Business Fax,Home Fax,Other Fax,Company Main Phone,Callback,Radio Phone,Telex,TTY/TDD Phone,IMAddress,Job Title,Department,Company,Office Location,Manager's Name,Assistant's Name,Assistant's Phone,Company Yomi,Business Street,Business City,Business State,Business Postal Code,Business Country/Region,Home Street,Home City,Home State,Home Postal Code,Home Country/Region,Other Street,Other City,Other State,Other Postal Code,Other Country/Region,Personal Web Page,Spouse,Schools,Hobby,Location,Web Page,Birthday,Anniversary,Notes
+                            //
+                            // (from google.com)
+                            // First Name,Middle Name,Last Name,Title,Suffix,Initials,Web Page,Gender,Birthday,Anniversary,Location,Language,Internet Free Busy,Notes,E-mail Address,E-mail 2 Address,E-mail 3 Address,Primary Phone,Home Phone,Home Phone 2,Mobile Phone,Pager,Home Fax,Home Address,Home Street,Home Street 2,Home Street 3,Home Address PO Box,Home City,Home State,Home Postal Code,Home Country,Spouse,Children,Manager's Name,Assistant's Name,Referred By,Company Main Phone,Business Phone,Business Phone 2,Business Fax,Assistant's Phone,Company,Job Title,Department,Office Location,Organizational ID Number,Profession,Account,Business Address,Business Street,Business Street 2,Business Street 3,Business Address PO Box,Business City,Business State,Business Postal Code,Business Country,Other Phone,Other Fax,Other Address,Other Street,Other Street 2,Other Street 3,Other Address PO Box,Other City,Other State,Other Postal Code,Other Country,Callback,Car Phone,ISDN,Radio Phone,TTY/TDD Phone,Telex,User 1,User 2,User 3,User 4,Keywords,Mileage,Hobby,Billing Information,Directory Server,Sensitivity,Priority,Private,Categorie
                             foreach (var text in fields)
                             {
-                                if (text.Equals("First Name"))
+                                // first match priority
+                                if (!keys.ContainsKey("GivenName") && (text.Equals("First Name") || text.Equals("Middle Name")))
                                     keys.Add("GivenName", j);
-                                else if (text.Equals("Middle Name"))
-                                    keys.Add("_MiddleName", j);
                                 else if (text.Equals("Last Name"))
                                     keys.Add("FamilyName", j);
-                                else if (text.Equals("Home Street"))
+                                else if (!keys.ContainsKey("Address") && (text.Equals("Home Address") || text.Equals("Home Street")))
                                     keys.Add("Address", j);
-                                else if (text.Equals("Home City"))
+                                else if (!keys.ContainsKey("City") && (text.Equals("Home City") || text.Equals("Home State")))
                                     keys.Add("City", j);
                                 else if (text.Equals("Home Postal Code"))
                                     keys.Add("Zip", j);
-                                else if (text.Equals("Home Country/Region"))
+                                else if (!keys.ContainsKey("Country") && (text.Equals("Home Country/Region") || text.Equals("Home Country")))
                                     keys.Add("Country", j);
-                                else if (text.Equals("Home Phone") || text.Equals("E-Mail Address"))
+                                else if (!keys.ContainsKey("Phone") && (text.Equals("Home Phone") || text.Equals("Mobile Phone")))
                                     keys.Add("Phone", j);
-                                else if (text.Equals("Primary Phone"))
+                                else if (!keys.ContainsKey("Email") && (text.Equals("E-mail Address") || text.Equals("E-mail 2 Address") || text.Equals("E-mail 3 Address")))
                                     keys.Add("Email", j);
                                 else if (text.Equals("Birthday"))
                                     keys.Add("Birthdate", j);
@@ -715,7 +723,7 @@ namespace AmiKoWindows
                         if (keys.ContainsKey("Email"))
                             contact.Email = fields[keys["Email"]];
                         if (keys.ContainsKey("Birthdate"))
-                            contact.Birthdate = fields[keys["Birthdate"]];
+                            contact.Birthdate = AddressBookControl.FormatBirthdate(fields[keys["Birthdate"]]);
 
                         if (contact.HasName)
                         {
