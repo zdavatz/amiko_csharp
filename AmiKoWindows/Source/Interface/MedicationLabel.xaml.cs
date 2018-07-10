@@ -95,8 +95,9 @@ namespace AmiKoWindows
         {
             SetTitle();
 
-            this.ContactInfo.Text = String.Format(
-                "{0}, {1} {2}", ActiveContact.Fullname, Properties.Resources.born, ActiveContact.Birthdate);
+            if (ActiveContact != null)
+                this.ContactInfo.Text = String.Format(
+                    "{0}, {1} {2}", ActiveContact.Fullname, Properties.Resources.born, ActiveContact.Birthdate);
 
             Log.WriteLine("Package: {0}", Medication.Package);
             if (Medication == null || Medication.Package == null || Medication.Package.Equals(string.Empty))
@@ -128,9 +129,17 @@ namespace AmiKoWindows
 
         private void SetTitle()
         {
+            var title = "";
+
             var fullname = ActiveAccount?.Fullname;
             if (fullname != null)
-                this.LabelTitle.Text = String.Format("{0} - {1}", fullname, this.LabelTitle.Text);
+                title = fullname;
+
+            var defaultText = LabelTitle.Text;
+            if (defaultText != null && !defaultText.Equals(string.Empty))
+                title = String.Format("{0} - {1}", title, this.LabelTitle.Text);
+
+            this.LabelTitle.Text = title;
         }
     }
 }
