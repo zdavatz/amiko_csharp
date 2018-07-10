@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Permissions;
 using System.Runtime.InteropServices;
+using System.Security.Permissions;
 using System.Threading.Tasks;
 
 namespace AmiKoWindows
@@ -75,6 +75,7 @@ namespace AmiKoWindows
                     if (a != null)
                     {
                         _mainWindow.SetState(UIState.State.Compendium);
+                        _mainWindow.BringFachinfoIntoView();
                         ShowFull(a, _mainWindow.SelectedFullTextSearchKey());
                         await Task.Delay(100);
                         if (anchor != null && anchor != "?")
@@ -107,7 +108,6 @@ namespace AmiKoWindows
 
             string headStr = "<!DOCTYPE html><head>"
                 + "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>"
-                // + "<link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Roboto&subset=latin,latin-ext'>"
                 + _jsStr
                 + _cssStr
                 + "</head>";

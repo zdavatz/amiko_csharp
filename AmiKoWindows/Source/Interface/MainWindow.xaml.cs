@@ -297,7 +297,11 @@ namespace AmiKoWindows
         {
             var browser = GetView() as WebBrowser;
             if (browser != null)
+            {
+                Log.WriteLine("browser.DataContext: {0}", browser.DataContext);
+                Log.WriteLine("jsCode: {0}", jsCode);
                 browser.InvokeScript("execScript", new Object[] { jsCode, "JavaScript" });
+            }
         }
 
         public string SelectedFullTextSearchKey()
@@ -306,6 +310,23 @@ namespace AmiKoWindows
             return _selectedFullTextSearchKey.Substring(0, idx).Trim();
         }
 
+        // For Fulltext Search. This keeps search results by fulltext query, but
+        // enables show fachinfo document in browser.
+        public void BringFachinfoIntoView()
+        {
+            this.SearchResult.DataContext = _fullTextDb;
+            var box = GetElementIn("SectionTitleList", RightArea) as ListBox;
+            if (box != null)
+                box.DataContext = _fullTextSearch;
+
+            // set only document body as fachinfo
+            var browser = GetView() as WebBrowser;
+            if (browser != null)
+            {
+                browser.DataContext = _fachInfo;
+                browser.ObjectForScripting = _fachInfo;
+            }
+        }
         #region Fill Utilities
         public void FillAccountFields()
         {
@@ -448,7 +469,8 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Html");
                 SwitchViewContext();
 
-                if (_uiState.FullTextQueryEnabled)
+                var text = SearchFieldText();
+                if (_uiState.FullTextQueryEnabled && (text == null || text.Equals(string.Empty)))
                     SetFullTextSearchDataContext();
                 else
                 {
@@ -946,6 +968,13 @@ namespace AmiKoWindows
                     }
                     else
                     {
+                        // Back to fulltext search result
+                        var browser = GetView() as WebBrowser;
+                        if (browser != null)
+                        {
+                            browser.DataContext = _fullTextSearch;
+                            browser.ObjectForScripting = _fachInfo;
+                        }
                         // Set filter
                         _fullTextSearch.Filter = item.Id;
                         // Update result table
