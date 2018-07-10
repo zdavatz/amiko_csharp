@@ -155,8 +155,8 @@
                     </StackPanel>
                 </Grid>
                 <Grid Grid.Row="1" Margin="0">
-                    <TextBlock Name="SaveContactFailureMessage" FontSize="12" Width="Auto" Height="42" Margin="11,3,0,0" Padding="0" Text="{x:Static p:Resources.msgContactSaveFailure}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="Red" Visibility="Hidden"></TextBlock>
-                    <TextBlock Name="SaveContactSuccessMessage" FontSize="12" Width="Auto" Height="42" Margin="11,3,0,0" Padding="0" Text="{x:Static p:Resources.msgContactSaveSuccess}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Visibility="Hidden"></TextBlock>
+                    <TextBlock Name="SaveContactFailureMessage" FontSize="12" Width="Auto" Height="42" Margin="11,3,0,0" Padding="0" Text="{x:Static p:Resources.msgContactSaveFailure}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="Red" Visibility="Collapsed"></TextBlock>
+                    <TextBlock Name="SaveContactSuccessMessage" FontSize="12" Width="Auto" Height="42" Margin="11,3,0,0" Padding="0" Text="{x:Static p:Resources.msgContactSaveSuccess}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Visibility="Collapsed"></TextBlock>
                 </Grid>
                 <!-- Patient Info: Actions -->
                 <Grid Grid.Row="2" Margin="0" Height="Auto" VerticalAlignment="Bottom">
@@ -203,7 +203,7 @@
                             ItemsSource="{Binding Path=ContactListItems}" MinHeight="404" MaxHeight="404" Cursor="Arrow">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Path=Text}" Margin="0,0,11,0" Padding="8,5,6,5" FontWeight="Normal" VerticalAlignment="Center" MouseLeftButtonDown="ContactItem_MouseLeftButtonDown" Cursor="Hand">
+                                    <TextBlock Text="{Binding Path=Text}" Margin="0,0,11,0" Padding="8,5,6,5" FontWeight="Normal" VerticalAlignment="Center" MouseLeftButtonDown="ContactItem_MouseLeftButtonDown" MouseRightButtonDown="ContactItem_MouseRightButtonDown" Cursor="Hand">
                                         <TextBlock.ContextMenu>
                                             <ContextMenu Name="ContactItemContextMenu">
                                                 <MenuItem Header="{Binding Path=Text}" Focusable="False" IsEnabled="False" />

@@ -122,7 +122,7 @@ namespace AmiKoWindows
                     return;
 
                 if (!needsDisplay)
-                    block.Visibility = Visibility.Hidden;
+                    block.Visibility = Visibility.Collapsed;
                 else
                     block.Visibility = Visibility.Visible;
             }

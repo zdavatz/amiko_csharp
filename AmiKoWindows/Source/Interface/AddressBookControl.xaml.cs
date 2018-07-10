@@ -278,6 +278,8 @@ namespace AmiKoWindows
 
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            Log.WriteLine(sender.GetType().Name);
+
             bool result = ValidateFields();
             Contact contact = null;
             if (result)
@@ -367,6 +369,8 @@ namespace AmiKoWindows
         #region Contact ListBox
         private void ContactList_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            e.Handled = false;
+
             // a hack to enable item selection using arrow keys as tab
             if (object.ReferenceEquals(sender, ContactList) && e.IsDown)
             {
@@ -385,19 +389,20 @@ namespace AmiKoWindows
                     }
                 }
             }
-            e.Handled = false;
         }
 
         private void ContactList_KeyDown(object sender, KeyEventArgs e)
         {
+            e.Handled = false;
+
+
             if (object.ReferenceEquals(sender, ContactList))
             {
                 if (e.IsDown && e.Key == Key.Tab)
                     this._isItemClick = true;
-                else if (e.IsDown && e.Key == Key.Back)
+                else if (e.IsDown && e.Key == Key.Back && !_openCsvFile)
                     MinusButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             }
-            e.Handled = false;
         }
 
         // ItemContainerGenerator
@@ -479,15 +484,40 @@ namespace AmiKoWindows
         // Preview action
         private void ContactItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //Log.WriteLine(sender.GetType().Name);
+            Log.WriteLine(sender.GetType().Name);
 
             this._isItemClick = true;
             EnableButton("MinusButton", !_openCsvFile);
         }
 
+        private void ContactItem_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Log.WriteLine(sender.GetType().Name);
+
+            var menu = (sender as FrameworkElement)?.ContextMenu;
+            if (menu != null)
+            {
+                if (_openCsvFile)
+                {
+                    menu.IsEnabled = false;
+                    menu.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    menu.IsEnabled = true;
+                    menu.Visibility = Visibility.Visible;
+                }
+            }
+
+            e.Handled = _openCsvFile;
+        }
+
         private void ContactContextMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
+
+            if (_openCsvFile)
+                return;
 
             var item = (sender as MenuItem)?.DataContext as Item;
             if (item != null && item.Id != null)
@@ -502,6 +532,9 @@ namespace AmiKoWindows
         {
             Log.WriteLine(sender.GetType().Name);
 
+            if (_openCsvFile)
+                return;
+
             ContactList.UnselectAll();
             this.CurrentEntry = new Contact();
 
@@ -515,6 +548,11 @@ namespace AmiKoWindows
 
         private async void MinusButton_Click(object sender, RoutedEventArgs e)
         {
+            Log.WriteLine(sender.GetType().Name);
+
+            if (_openCsvFile)
+                return;
+
             var item = ContactList.SelectedItem as Item;
             if (item == null || item.Id == null)
             {
@@ -866,7 +904,7 @@ namespace AmiKoWindows
             {
                 var element = FindName(field) as FrameworkElement;
                 var result = ValidateField(element);
-                //Log.WriteLine("field: {0} validateField: {0}", field, result);
+                Log.WriteLine("field: {0} validateField: {1}", field, result);
                 if (!hasError)
                     hasError = !result;
             }
