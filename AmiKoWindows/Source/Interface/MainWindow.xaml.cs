@@ -242,14 +242,13 @@ namespace AmiKoWindows
             Keyboard.ClearFocus();
         }
 
-        public void SetState(UIState.State state)
+        public async void SetState(UIState.State state)
         {
             _uiState.SetState(state);
 
             if (state == UIState.State.Compendium)
             {
                 SetDataContext(state);
-                _sqlDb.UpdateSearchResults(_uiState);
                 this.Favorites.IsChecked = false;
                 this.Interactions.IsChecked = false;
                 this.Prescriptions.IsChecked = false;
@@ -258,7 +257,6 @@ namespace AmiKoWindows
             else if (state == UIState.State.Favorites)
             {
                 SetDataContext(state);
-                _sqlDb.UpdateSearchResults(_uiState);
                 this.Compendium.IsChecked = false;
                 this.Interactions.IsChecked = false;
                 this.Prescriptions.IsChecked = false;
@@ -267,7 +265,6 @@ namespace AmiKoWindows
             else if (state == UIState.State.Interactions)
             {
                 SetDataContext(state);
-                _sqlDb.UpdateSearchResults(_uiState);
                 this.Compendium.IsChecked = false;
                 this.Favorites.IsChecked = false;
                 this.Prescriptions.IsChecked = false;
@@ -278,7 +275,6 @@ namespace AmiKoWindows
             else if (state == UIState.State.Prescriptions)
             {
                 SetDataContext(state);
-                _sqlDb.UpdateSearchResults(_uiState);
                 this.Compendium.IsChecked = false;
                 this.Favorites.IsChecked = false;
                 this.Interactions.IsChecked = false;
@@ -289,6 +285,18 @@ namespace AmiKoWindows
                     button.Visibility = Visibility.Visible;
 
                 _prescriptions.LoadFiles();
+            }
+
+            if (!_uiState.FullTextQueryEnabled)
+                _sqlDb.UpdateSearchResults(_uiState);
+            else
+            {
+                if (state != UIState.State.Favorites)
+                    _fullTextDb.ClearFoundEntries();
+                else
+                    await _fullTextDb.RetrieveFavorites();
+
+                _fullTextDb.UpdateSearchResults(_uiState);
             }
         }
 
@@ -435,27 +443,6 @@ namespace AmiKoWindows
                 element = _browser;
 
             return element;
-        }
-
-        private async void SetState(string state)
-        {
-            // TODO: Fix Search result items after state changed with query Volltext -> Volltext
-            if (_uiState.GetState() == UIState.State.Favorites)
-                _fullTextDb.ClearFoundEntries();
-
-            if (state.Equals("Compendium"))
-                SetState(UIState.State.Compendium);
-            else if (state.Equals("Favorites"))
-                SetState(UIState.State.Favorites);
-            else if (state.Equals("Interactions"))
-                SetState(UIState.State.Interactions);
-            else if (state.Equals("Prescriptions"))
-                SetState(UIState.State.Prescriptions);
-
-            if (_uiState.FullTextQueryEnabled)
-                if (state.Equals("Farovites"))
-                    await _fullTextDb.RetrieveFavorites();
-                _fullTextDb.UpdateSearchResults(_uiState);
         }
 
         private void SetDataContext(UIState.State state)
@@ -1435,7 +1422,16 @@ namespace AmiKoWindows
             if (source == null)
                 return;
 
-            SetState(source.Name);
+            var state = source.Name;
+
+            if (state.Equals("Compendium"))
+                SetState(UIState.State.Compendium);
+            else if (state.Equals("Favorites"))
+                SetState(UIState.State.Favorites);
+            else if (state.Equals("Interactions"))
+                SetState(UIState.State.Interactions);
+            else if (state.Equals("Prescriptions"))
+                SetState(UIState.State.Prescriptions);
         }
 
         private async void QuerySelectButton_Click(object sender, RoutedEventArgs e)
