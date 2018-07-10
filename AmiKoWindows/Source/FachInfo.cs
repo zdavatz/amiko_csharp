@@ -74,7 +74,6 @@ namespace AmiKoWindows
                     Article a = await _sqlDb.GetArticleWithRegnr(ean);
                     if (a != null)
                     {
-                        _mainWindow.SetState(UIState.State.Compendium);
                         _mainWindow.BringFachinfoIntoView();
                         ShowFull(a, _mainWindow.SelectedFullTextSearchKey());
                         await Task.Delay(100);
