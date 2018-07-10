@@ -308,9 +308,11 @@ namespace AmiKoWindows
                             cmd.Parameters.AddWithValue(item.Key, item.Value);
 
                         int rows = cmd.ExecuteNonQuery();
+                        //Log.WriteLine("rows: {0}", rows);
                         if (rows == 1)
                         {
                             long insertedId = GetLastInsertId();
+                            //Log.WriteLine("insertedId: {0}", insertedId);
                             if (insertedId > 0)
                                 id = insertedId;
                         }
@@ -646,7 +648,7 @@ namespace AmiKoWindows
         {
             long result = -1;
 
-            if (!_onMemory && _db.IsOpen())
+            if (_db.IsOpen())
             {
                 using (SQLiteCommand cmd = _db.Command())
                 {

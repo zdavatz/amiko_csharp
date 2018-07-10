@@ -267,7 +267,7 @@ namespace AmiKoWindows
             {
                 this._openCsvFile = false;
                 this._contacts = new List<Contact>();
-                this.CsvFileBar.Visibility = Visibility.Collapsed;
+                EnableFileBar(false);
                 await _patientDb.LoadAllContacts();
                 _patientDb.UpdateContactList();
             }
@@ -331,7 +331,7 @@ namespace AmiKoWindows
                 if (_openCsvFile)
                 {
                     this._openCsvFile = false;
-                    this.CsvFileBar.Visibility = Visibility.Collapsed;
+                    EnableFileBar(false);
                     EnableButton("PlusButton", true);
                     EnableButton("MinusButton", true);
                 }
@@ -608,7 +608,8 @@ namespace AmiKoWindows
                 await _patientDb.LoadAllContacts();
                 _patientDb.UpdateContactList();
                 _openCsvFile = false;
-                this.CsvFileBar.Visibility = Visibility.Collapsed;
+                EnableFileBar(false);
+                EnableButton("PlusButton", true);
             }
             else
             {
@@ -655,6 +656,7 @@ namespace AmiKoWindows
                     EnableButton("MinusButton", false);
                 }
             }
+            this.RawContactsCount = _patientDb.Count;
         }
 
         private async void DeleteCsvFileButton_Click(object sender, RoutedEventArgs e)
@@ -666,7 +668,8 @@ namespace AmiKoWindows
             this._openCsvFile = false;
             this._contacts = new List<Contact>();
             this._csvFilepath = null;
-            this.CsvFileBar.Visibility = Visibility.Collapsed;
+            EnableFileBar(false);
+            EnableButton("PlusButton", true);
         }
         #endregion
 
@@ -777,9 +780,7 @@ namespace AmiKoWindows
 
             this._openCsvFile = true;
             this.CsvFileName.Text = Path.GetFileName(filepath);
-            this.CsvFileBar.Visibility = Visibility.Visible;
-
-            this.RawContactsCount = _contacts.Count;
+            EnableFileBar(true);
 
             var clone = _contacts.Select(c => c.Clone()).ToList();
             _patientDb.UpdateContactList(clone);
@@ -916,6 +917,7 @@ namespace AmiKoWindows
 
         private void ShowMessage(bool hasError)
         {
+            Log.WriteLine("hasError: {0}", hasError);
             if (hasError)
             {
                 this.FeedbackMessage(SaveContactFailureMessage, true);
@@ -930,9 +932,17 @@ namespace AmiKoWindows
 
         private void ResetMessage()
         {
+            Log.WriteLine("");
             var needsDisplay = false;
             this.FeedbackMessage(SaveContactFailureMessage, needsDisplay);
             this.FeedbackMessage(SaveContactSuccessMessage, needsDisplay);
+        }
+
+        private void EnableFileBar(bool isVisible)
+        {
+            this.CsvFileBar.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+            this.ContactList.Height = isVisible ? 404 : 432; // ugly, but auto re-sizing is not working ... :'(
+            this.ContactList.UpdateLayout();
         }
 
         private void EnableButton(string name, bool isEnabled)

@@ -180,30 +180,31 @@
             </Grid>
         </Grid>
         <Border Margin="0" Width="265" Background="{StaticResource PaleGray}" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1,0,0,0" DockPanel.Dock="Right">
-            <StackPanel Height="Auto" Margin="16,19,16,16">
+            <StackPanel Height="Auto" Margin="16,19,16,16" VerticalAlignment="Stretch">
                 <!-- Address Book: Search TextBox -->
                 <TextBox Name="SearchPatientBox" Width="Auto" Height="21" Background="White" BorderBrush="DarkGray"
                    TextChanged="SearchPatientBox_TextChanged" PreviewMouseDown="SearchPatientBox_PreviewMouseDown"
                    Controls:TextBoxHelper.Watermark="{x:Static p:Resources.searchPatient}"></TextBox>
                 <!-- Address Book: ListBox -->
                 <Border Margin="0,21,0,16" Background="White" Padding="0" VerticalAlignment="Stretch" BorderThickness="0">
-                    <Grid>
+                    <Grid VerticalAlignment="Stretch">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="28" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <ListBox
                             Grid.Row="0"
+                            Height="432"
                             Name="ContactList" Style="{StaticResource ContactListBox}" ItemContainerStyle="{StaticResource ContactListBoxItem}"
                             VerticalAlignment="Stretch"
                             ScrollViewer.CanContentScroll="True"
                             KeyboardNavigation.DirectionalNavigation="Cycle"
                             SelectionChanged="ContactList_SelectionChanged" PreviewKeyDown="ContactList_PreviewKeyDown" KeyDown="ContactList_KeyDown" MouseDoubleClick="ContactList_MouseDoubleClick"
                             IsSynchronizedWithCurrentItem="True"
-                            ItemsSource="{Binding Path=ContactListItems}" MinHeight="404" MaxHeight="404" Cursor="Arrow">
+                            ItemsSource="{Binding Path=ContactListItems}" Cursor="Arrow">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Path=Text}" Margin="0,0,11,0" Padding="8,5,6,5" FontWeight="Normal" VerticalAlignment="Center" MouseLeftButtonDown="ContactItem_MouseLeftButtonDown" MouseRightButtonDown="ContactItem_MouseRightButtonDown" Cursor="Hand">
+                                    <TextBlock Text="{Binding Path=Text}" Margin="0,0,11,0" Padding="8,6,6,6" FontWeight="Normal" VerticalAlignment="Center" MouseLeftButtonDown="ContactItem_MouseLeftButtonDown" MouseRightButtonDown="ContactItem_MouseRightButtonDown" Cursor="Hand">
                                         <TextBlock.ContextMenu>
                                             <ContextMenu Name="ContactItemContextMenu">
                                                 <MenuItem Header="{Binding Path=Text}" Focusable="False" IsEnabled="False" />
