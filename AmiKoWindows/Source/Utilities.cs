@@ -133,7 +133,12 @@ namespace AmiKoWindows
 
         public static string PatientDBPath()
         {
-            return GetDbPath(Constants.PATIENT_DB_BASE);
+            // put in roaming directory
+            string dbName = String.Format("{0}{1}.db",
+                Constants.PATIENT_DB_BASE, AppLanguage());
+            string dbPath = Path.Combine(AppRoamingDataFolder(), dbName);
+            Log.WriteLine("dbPath: {0}", dbPath);
+            return dbPath;
         }
 
         public static string InteractionsPath()
