@@ -223,7 +223,8 @@ namespace AmiKoWindows
         private void FemaleButton_Checked(object sender, RoutedEventArgs e)
         {
             //Log.WriteLine("Source: {0}", e.Source);
-            this.CurrentEntry.IsFemale = true;
+            if (CurrentEntry != null)
+                this.CurrentEntry.IsFemale = true;
         }
 
         private void MaleButton_Checked(object sender, RoutedEventArgs e)
@@ -659,8 +660,14 @@ namespace AmiKoWindows
                         if (i < 1)
                         {
                             var j = 0;
-                            // exported csv from `https://outlook.live.com/people`
-                            // (peoples app)
+                            // NOTE:
+                            // exported csv from (as Outlook format CSV)
+                            //
+                            // * https://outlook.live.com/people
+                            // * https://contacts.google.com
+                            //
+                            // ## Header
+                            //
                             // First Name,Middle Name,Last Name,Title,Suffix,Nickname,Given Yomi,Surname Yomi,E-mail Address,E-mail 2 Address,E-mail 3 Address,Home Phone,Home Phone 2,Business Phone,Business Phone 2,Mobile Phone,Car Phone,Other Phone,Primary Phone,Pager,Business Fax,Home Fax,Other Fax,Company Main Phone,Callback,Radio Phone,Telex,TTY/TDD Phone,IMAddress,Job Title,Department,Company,Office Location,Manager's Name,Assistant's Name,Assistant's Phone,Company Yomi,Business Street,Business City,Business State,Business Postal Code,Business Country/Region,Home Street,Home City,Home State,Home Postal Code,Home Country/Region,Other Street,Other City,Other State,Other Postal Code,Other Country/Region,Personal Web Page,Spouse,Schools,Hobby,Location,Web Page,Birthday,Anniversary,Notes
                             foreach (var text in fields)
                             {
@@ -711,8 +718,10 @@ namespace AmiKoWindows
                             contact.Birthdate = fields[keys["Birthdate"]];
 
                         if (contact.HasName)
+                        {
                             contact.Id = i;
                             contacts.Add(contact);
+                        }
                         i++;
                     }
                 }
