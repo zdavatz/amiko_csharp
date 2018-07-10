@@ -9,7 +9,7 @@
         ResizeMode="NoResize" WindowStyle="None" BorderThickness="1" Topmost="True"
         WindowStartupLocation="CenterScreen"
         RenderOptions.ClearTypeHint="Enabled"
-        Title="SplashScreen" Height="1024" Width="1280">
+        Title="SplashScreen" Height="384" Width="512">
     <Grid>
         <DockPanel>
             <Image Width="1000" DockPanel.Dock="Top" Source="/Resources/img/desitin_splash.png" />

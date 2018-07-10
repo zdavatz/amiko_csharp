@@ -70,11 +70,11 @@ namespace AmiKoWindows
                 this.Properties["OutboxPath"] = Utilities.NewBoxPath("outbox");
                 Log.WriteLine("OutboxPath: {0}", this.Properties["OutboxPath"]);
 
-#if DEBUG
-#else
+//#if DEBUG
+//#else
                 SplashScreen splash = new SplashScreen();
                 splash.Show();
-#endif
+//#endif
 
 #if AMIKO
                 Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("de-CH");
@@ -85,11 +85,11 @@ namespace AmiKoWindows
                 var main = new MainWindow();
                 this.MainWindow = main;
 
-#if DEBUG
-#else
+//#if DEBUG
+//#else
                 Thread.Sleep(1000);
                 splash.Close();
-#endif
+//#endif
 
                 main.Show();
 
