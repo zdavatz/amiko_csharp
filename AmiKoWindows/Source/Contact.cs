@@ -231,7 +231,7 @@ namespace AmiKoWindows
         public bool HasName
         {
             get {
-                var name = Fullname;
+                var name = Fullname.Replace(" ", "");
                 return (name != null && !name.Equals(string.Empty));
             }
         }
