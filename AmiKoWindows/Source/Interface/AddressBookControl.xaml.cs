@@ -717,9 +717,9 @@ namespace AmiKoWindows
                         if (keys.ContainsKey("Zip"))
                             contact.Zip = fields[keys["Zip"]];
                         if (keys.ContainsKey("Country"))
-                            contact.Zip = fields[keys["Country"]];
+                            contact.Country = fields[keys["Country"]];
                         if (keys.ContainsKey("Phone"))
-                            contact.Zip = fields[keys["Phone"]];
+                            contact.Phone = fields[keys["Phone"]];
                         if (keys.ContainsKey("Email"))
                             contact.Email = fields[keys["Email"]];
                         if (keys.ContainsKey("Birthdate"))
