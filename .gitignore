@@ -1,5 +1,7 @@
 .vs/
 .suo
+
+.vimrc
 *.csproj.user
 *.startup.json
 
