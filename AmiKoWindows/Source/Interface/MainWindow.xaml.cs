@@ -655,7 +655,7 @@ namespace AmiKoWindows
                 this._search = false;
             }
             else
-                ResetSearchInDelay(-1);
+                ResetSearchInDelay(600);
         }
 
         private async void ResetSearchInDelay(int delay = -1)
