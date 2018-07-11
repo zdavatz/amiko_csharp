@@ -657,16 +657,17 @@ namespace AmiKoWindows
 
             var text = this.SearchFieldText();
             Log.WriteLine("text: {0}", text);
-            if (!_search && (text == null || text.Equals(string.Empty)))
+            Log.WriteLine("search: {0}", _search);
+            if (!_search)
             {
                 // Change the data context of the status bar
                 Stopwatch sw = new Stopwatch();
 
                 long numResults = 0;
                 if (_uiState.FullTextQueryEnabled)
-                    numResults = await _fullTextDb?.Search(_uiState, "");
+                    numResults = await _fullTextDb?.Search(_uiState, text);
                 else
-                    numResults = await _sqlDb?.Search(_uiState, "");
+                    numResults = await _sqlDb?.Search(_uiState, text);
 
                 sw.Stop();
                 double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
@@ -1493,7 +1494,7 @@ namespace AmiKoWindows
                 await _sqlDb?.Search(_uiState, text);
         }
 
-        private async void QuerySelectButton_Click(object sender, RoutedEventArgs e)
+        private void QuerySelectButton_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
@@ -1530,11 +1531,6 @@ namespace AmiKoWindows
                 // only change data context (keep state)
                 SetDataContext(state);
                 SetFullTextSearchDataContext();
-
-                _fullTextDb.ClearFoundEntries();
-                if (state == UIState.State.Favorites) {
-                    await _fullTextDb.RetrieveFavorites();
-                }
             }
             else
                 SetState(state);

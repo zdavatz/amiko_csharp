@@ -234,7 +234,7 @@ namespace AmiKoWindows
                     }
                 }
             }
-            else if (type.Equals("atc"))
+            else if (type.Equals("atccode"))
             {
                 foreach (Article article in list)
                 {

@@ -122,9 +122,9 @@ namespace AmiKoWindows
             else if (name.Equals("ingredient"))
                 return Query.Ingredient;
             else if (name.Equals("application"))
-                return Query.Regnr;
+                return Query.Application;
             else if (name.Equals("eancode"))
-                return Query.Fulltext;
+                return Query.EanCode;
             else if (name.Equals("fulltext"))
                 return Query.Fulltext;
             return Query.Title;
@@ -182,7 +182,7 @@ namespace AmiKoWindows
             else if (_query == Query.Author)
                 return "author";
             else if (_query == Query.AtcCode)
-                return "atc";
+                return "atccode";
             else if (_query == Query.Regnr)
                 return "regnr";
             else if (_query == Query.Ingredient)
