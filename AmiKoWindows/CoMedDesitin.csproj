@@ -345,7 +345,9 @@
     <Resource Include="Resources\img\aips32x32_dark.png" />
     <Resource Include="Resources\img\aips32x32_gray.png" />
     <Resource Include="Resources\img\amiko_icon.png" />
+    <Resource Include="Resources\img\amiko_icon.targetsize-44_altform-unplated.png" />
     <Resource Include="Resources\img\desitin_icon.png" />
+    <Resource Include="Resources\img\desitin_icon.targetsize-44_altform-unplated.png" />
     <Resource Include="Resources\img\desitin_splash.png" />
     <Resource Include="Resources\img\favorites32x32_dark.png" />
     <Resource Include="Resources\img\favorites32x32_gray.png" />

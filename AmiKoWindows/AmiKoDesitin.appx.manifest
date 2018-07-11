@@ -4,7 +4,7 @@
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
   <Identity Name="yweseeGmbH.AmiKo"
-    Version="1.0.6.0"
+    Version="1.0.7.0"
     ProcessorArchitecture="x64"
     Publisher="CN=3F71A827-F362-4FF2-A406-EA63C19EA85B" />
     <!--Publisher="CN=ywesee GmbH, O=ywesee GmbH, L=Zürich, C=CH" />-->
@@ -28,8 +28,8 @@
       <uap:VisualElements
        BackgroundColor="#464646"
        DisplayName="AmiKo Desitin"
-       Square150x150Logo="Resources\img\logo\desitin_logo.150x150.png"
-       Square44x44Logo="Resources\img\logo\desitin_logo.44x44.png"
+       Square150x150Logo="Resources\img\logo\desitin_logo.png"
+       Square44x44Logo="Resources\img\logo\desitin_logo.png"
        Description="No.1 Arzneimittelkompendium Schweiz" />
     </Application>
     <!-- Add extensions here!-->
