@@ -635,11 +635,15 @@ namespace AmiKoWindows
                 // Change the data context of the status bar
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
+                SetSpinnerEnabled(true);
+
                 long numResults = 0;
                 if (_uiState.FullTextQueryEnabled)
                     numResults = await _fullTextDb?.Search(_uiState, text);
                 else
                     numResults = await _sqlDb?.Search(_uiState, text);
+
+                SetSpinnerEnabled(false);
                 sw.Stop();
                 double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
                 _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numResults, elapsedTime));
@@ -665,6 +669,8 @@ namespace AmiKoWindows
                 // Change the data context of the status bar
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
+                SetSpinnerEnabled(true);
+
                 long numResults = 0;
                 Log.WriteLine("FullTextQueryEnabled: {0}", _uiState.FullTextQueryEnabled);
                 if (_uiState.FullTextQueryEnabled)
@@ -681,6 +687,7 @@ namespace AmiKoWindows
                 else
                     numResults = await _sqlDb?.Search(_uiState, text);
 
+                SetSpinnerEnabled(false);
                 sw.Stop();
                 double elapsedTime = sw.ElapsedMilliseconds / 1000.0;
                 _statusBarHelper.UpdateDatabaseSearchText(new Tuple<long, double>(numResults, elapsedTime));
