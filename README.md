@@ -216,11 +216,11 @@ PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
 There is also a script to build and invoke the application.
 
 ```powershell
-# AmiKoDesitin
+# AmiKoDesitin (Debug is default)
 PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "AmiKo"
 
 # CoMedDesitin
-PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "CoMed"
+PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "CoMed" "Debug"
 ```
 
 Finally, You need to debug the app with `DebugView` or `WinDbg` etc. (Set `/p:Log=Trace` for Trace)
@@ -273,21 +273,34 @@ PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1
 
 ### Release
 
-#### Using MakeAppx
+#### Using Desktop App Converter (Desktop Bridge)
 
-TODO
+Download `Desktop App Converter` from Microsoft Store. And then use
+`MakeRelease.ps1` script with your signing certificate and key. (In PowerShell run as Administrator)
+
+Before making release build, check `AmiKoWindows/{AmiKoDesitin.appx.manifest,CoMedDesitin.appx.manifest}`
+and `MakeRelease.ps1` (Version, appId, Publisher etc.)
+
+```powershell
+# As Administrator
+
+# AmiKoDesitin
+PS C:\Users\... > PowerShell.exe -File .\MakeRelease.ps1 "AmiKo" "Debug"
+PS C:\Users\... > PowerShell.exe -File .\MakeRelease.ps1 "AmiKo" "Release"
+
+# CoMedDesitin
+PS C:\Users\... > PowerShell.exe -File .\MakeRelease.ps1 "CoMed" "Debug"
+PS C:\Users\... > PowerShell.exe -File .\MakeRelease.ps1 "CoMed" "Release"
+```
+
+**Appx** will be generated in
+`AmiKoWindows/bin/{Debug,Release}/Output/{AmiKo,CoMed}`.
 
 ##### Reference
 
-* [Create an app package with the MakeAppx.exe tool](https://docs.microsoft.com/en-us/windows/uwp/packaging/create-app-package-with-makeappx-tool)
-
-#### Using Visual Studio
-
-TODO
-
-##### Reference
-
-* [Package a UWP app with Visual Studio](https://docs.microsoft.com/en-us/windows/uwp/packaging/packaging-uwp-apps)
+* https://aka.ms/converter
+* https://docs.microsoft.com/en-us/windows/uwp/porting/desktop-to-uwp-prepare
+* https://docs.microsoft.com/en-us/windows/uwp/porting/desktop-to-uwp-run-desktop-app-converter
 
 
 ### Clean
