@@ -92,5 +92,5 @@ DesktopAppConverter.exe `
   -MakeAppx -sign -Verbose -Verify
 
 if ($configuration -eq "Debug") {
-  Add-AppxPackage -Register "${outputDir}\${application}\PackageFiles\AppxManifest.xml"
+  Add-AppxPackage -Register "${outputDir}\${appId}\PackageFiles\AppxManifest.xml"
 }
