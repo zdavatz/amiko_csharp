@@ -647,11 +647,13 @@ namespace AmiKoWindows
                 this._search = false;
             }
             else
-                ResetSearchInDelay(1200);
+                ResetSearchInDelay(-1);
         }
 
         private async void ResetSearchInDelay(int delay = -1)
         {
+            Log.WriteLine("delay: {0}", delay);
+
             if (delay > 1)
                 await Task.Delay(delay);
 
@@ -662,10 +664,20 @@ namespace AmiKoWindows
             {
                 // Change the data context of the status bar
                 Stopwatch sw = new Stopwatch();
-
+                sw.Start();
                 long numResults = 0;
+                Log.WriteLine("FullTextQueryEnabled: {0}", _uiState.FullTextQueryEnabled);
                 if (_uiState.FullTextQueryEnabled)
-                    numResults = await _fullTextDb?.Search(_uiState, text);
+                {
+                    var state = _uiState.GetState();
+                    _fullTextDb.ClearFoundEntries();
+                    if (state == UIState.State.Favorites)
+                    {
+                        await _fullTextDb.RetrieveFavorites();
+                        _fullTextDb.UpdateSearchResults(_uiState);
+                    }
+                    numResults = _fullTextDb.GetCount();
+                }
                 else
                     numResults = await _sqlDb?.Search(_uiState, text);
 
@@ -1463,12 +1475,13 @@ namespace AmiKoWindows
         }
 
         // Tab
-        private async void StateButton_Click(object sender, RoutedEventArgs e)
+        private void StateButton_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
             if (source == null)
                 return;
 
+            Log.WriteLine(source.GetType().Name);
             var state = source.Name;
 
             if (state.Equals("Compendium"))
@@ -1480,18 +1493,7 @@ namespace AmiKoWindows
             else if (state.Equals("Prescriptions"))
                 SetState(UIState.State.Prescriptions);
 
-            var text = SearchFieldText();
-            if (_uiState.FullTextQueryEnabled)
-            {
-                if (!state.Equals("Favorites"))
-                    _fullTextDb.ClearFoundEntries();
-                else
-                    await _fullTextDb.RetrieveFavorites();
-
-                await _fullTextDb?.Search(_uiState, text);
-            }
-            else
-                await _sqlDb?.Search(_uiState, text);
+            ResetSearchInDelay(-1);
         }
 
         private void QuerySelectButton_Click(object sender, RoutedEventArgs e)
@@ -1535,7 +1537,7 @@ namespace AmiKoWindows
             else
                 SetState(state);
 
-            ResetSearchInDelay();
+            ResetSearchInDelay(-1);
         }
 
         private void SetBrowserEmulationMode()

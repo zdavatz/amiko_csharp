@@ -111,6 +111,11 @@ namespace AmiKoWindows
             SearchResultItems.AddRange(state, _foundEntries);
         }
 
+        public int GetCount()
+        {
+            return _foundEntries.Count;
+        }
+
         public void ClearFoundEntries()
         {
             _foundEntries.Clear();
