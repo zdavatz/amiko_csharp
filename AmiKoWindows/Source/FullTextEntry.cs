@@ -31,6 +31,8 @@ namespace AmiKoWindows
 
         public string GetKeywordPlus()
         {
+            if (RegChaptersDict == null)
+                return null;
             return Keyword + " (" + RegChaptersDict.Count + ")";
         }
 

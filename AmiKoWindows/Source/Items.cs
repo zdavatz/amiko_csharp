@@ -339,10 +339,13 @@ namespace AmiKoWindows
                 {
                     if (uiState.FullTextQueryEnabled)
                     {
+                        var text = entry.GetKeywordPlus();
+                        if (text == null || text.Equals(string.Empty))
+                            continue;
                         Add(new Item()
                         {
                             Hash = entry.Hash,
-                            Text = entry.GetKeywordPlus(),
+                            Text = text,
                             IsFavorite = entry.IsFavorite
                         });
                     }
