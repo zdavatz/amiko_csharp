@@ -278,8 +278,12 @@ PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1
 Download `Desktop App Converter` from Microsoft Store. And then use
 `MakeRelease.ps1` script with your signing certificate and key. (In PowerShell run as Administrator)
 
-Before making release build, check `AmiKoWindows/{AmiKoDesitin.appx.manifest,CoMedDesitin.appx.manifest}`
-and `MakeRelease.ps1` (Version, appId, Publisher etc.)
+Before making release build, check build configuration and version etc. in
+following files.
+
+* `AmiKoWindows/{AmiKoDesitin.appx.manifest,CoMedDesitin.appx.manifest}`
+* `AmiKoWindows/Properties/AssemblyInfo.cs`
+* `MakeRelease.ps1`
 
 ```powershell
 # As Administrator
