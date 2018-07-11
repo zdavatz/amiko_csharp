@@ -42,7 +42,7 @@ $appName = "${application} Desitin"
 $description = "${application} Desitin"
 $publisherId = "3F71A827-F362-4FF2-A406-EA63C19EA85B"
 $publisherName = "ywesee GmbH"
-
+$arch = "x64"
 #####
 
 
@@ -51,6 +51,8 @@ Write-Host "Output: ${outputDir}"
 if (!(Test-Path -Path $outputDir)) {
     New-Item -ItemType directory -Path $outputDir
 }
+
+rm "${currentDir}\AmiKoWindows\obj\${arch}\${configuration}" -r -fo
 
 PowerShell.exe -ExecutionPolicy Bypass `
   -File "${currentDir}\BuildAndRun.ps1" "${application}" "${configuration}"
