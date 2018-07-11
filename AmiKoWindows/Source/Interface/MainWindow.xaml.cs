@@ -637,6 +637,10 @@ namespace AmiKoWindows
                 sw.Start();
                 SetSpinnerEnabled(true);
 
+                // NOTE:
+                // It seems that only Fulltext search does not have filtering
+                // functionality on Farovites Tab. It works same on Compendium
+                // Tab.
                 long numResults = 0;
                 if (_uiState.FullTextQueryEnabled)
                     numResults = await _fullTextDb?.Search(_uiState, text);
@@ -677,7 +681,7 @@ namespace AmiKoWindows
                 {
                     var state = _uiState.GetState();
                     _fullTextDb.ClearFoundEntries();
-                    if (state == UIState.State.Favorites)
+                    if (state == UIState.State.Favorites && (text == null || text.Equals(string.Empty)))
                     {
                         await _fullTextDb.RetrieveFavorites();
                         _fullTextDb.UpdateSearchResults(_uiState);
