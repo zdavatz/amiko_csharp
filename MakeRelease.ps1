@@ -91,6 +91,7 @@ DesktopAppConverter.exe `
   -PackageDisplayName "${appName}" `
   -Destination "${outputDir}" `
   -Publisher "CN=${publisherId}" `
+  -PackageArch "$arch" `
   -PackagePublisherDisplayName "${publisherName}" `
   -Version "${version}" `
   -MakeAppx -sign -Verbose -Verify
