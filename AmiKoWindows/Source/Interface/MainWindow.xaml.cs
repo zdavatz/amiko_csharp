@@ -894,7 +894,8 @@ namespace AmiKoWindows
                         Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     }
 
-                    if (ActiveContact != null && ActiveAccount != null)
+                    if (ActiveContact != null &&
+                        (ActiveAccount != null && ActiveAccount.Fullname != null && ActiveAccount.Fullname.Length > 0))
                     {
                         EnableButton("SavePrescriptionButton", true);
                         EnableButton("SendPrescriptionButton", false);
@@ -927,7 +928,8 @@ namespace AmiKoWindows
                     var index = item.Id;
                     var added = _prescriptions.AddMedicationCommentAtIndex(index, text);
 
-                    if (added && ActiveContact != null && ActiveAccount != null)
+                    if (added && ActiveContact != null &&
+                        (ActiveAccount != null && ActiveAccount.Fullname != null && ActiveAccount.Fullname.Length > 0))
                     {
                         EnableButton("SavePrescriptionButton", true);
                         EnableButton("SendPrescriptionButton", false);
