@@ -289,12 +289,12 @@ following files.
 # As Administrator
 
 # AmiKoDesitin
-PS C:\Users\... > PowerShell.exe -File .\MakeRelease.ps1 "AmiKo" "Debug"
-PS C:\Users\... > PowerShell.exe -File .\MakeRelease.ps1 "AmiKo" "Release"
+PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1 "AmiKo" "Debug"
+PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1 "AmiKo" "Release"
 
 # CoMedDesitin
-PS C:\Users\... > PowerShell.exe -File .\MakeRelease.ps1 "CoMed" "Debug"
-PS C:\Users\... > PowerShell.exe -File .\MakeRelease.ps1 "CoMed" "Release"
+PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1 "CoMed" "Debug"
+PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1 "CoMed" "Release"
 ```
 
 **Appx** will be generated in
