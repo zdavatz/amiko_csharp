@@ -52,7 +52,11 @@ if (!(Test-Path -Path $outputDir)) {
     New-Item -ItemType directory -Path $outputDir
 }
 
-rm "${currentDir}\AmiKoWindows\obj\${arch}\${configuration}" -r -fo
+$objDir = "${currentDir}\AmiKoWindows\obj\${arch}\${configuration}"
+if (!(Test-Path -Path $objDir)) {
+    New-Item -ItemType directory -Path $objDir
+}
+rm "${objDir}" -r -fo
 
 PowerShell.exe -ExecutionPolicy Bypass `
   -File "${currentDir}\BuildAndRun.ps1" "${application}" "${configuration}"
