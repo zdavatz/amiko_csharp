@@ -300,11 +300,43 @@ PS C:\Users\... > PowerShell.exe -File .\MakeRelease.ps1 "CoMed" "Release"
 **Appx** will be generated in
 `AmiKoWindows/bin/{Debug,Release}/Output/{AmiKo,CoMed}`.
 
+But you need to re-package for various images or logo files.
+
+##### Bundle Assets for Windows 10
+
+1. Copy all Assets in `AmiKoWindows/Assets/` to `AmiKoWindows/bin/Release/Output/yweseeGmbH.AmiKo/PackageFiles/Assets/` (Overwrite)
+2. Create pri files
+3. Re-Package using `MakeAppx.exe`
+
+```powershell
+# e.g. AmiKoDesitin
+
+# Change directory into **PackageFiles**
+PS C:\Users\... > cd AmiKoWindows/bin/Release/Output/yweseeGmbH.AmiKo/PackageFiles
+
+PS C:\Users\... > rm .\Assets -r -fo
+PS C:\Users\... > cp ..\..\..\..\..\Assets .
+
+# MakePri.exe
+PS C:\Users\... > 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.17134.0\x64\makepri.exe' createconfig /cf priconfig.xml /dq de-CH
+
+PS C:\Users\... > 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.17134.0\x64\makepri.exe' new \
+  /pr C:\Users\<user>\path\to\amiko_csharp\AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\PackageFiles\ \
+  /cf C:\Users\<user>\path\to\amiko_csharp\AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\PackageFiles\priconfigxml
+
+# MakeAppx.exe
+PS C:\Users\... > 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.17134.0\x64\makeappx.exe' pack /d .\ /p "AmiKo Desitin"
+```
+
+Then use new appx located: 
+`AmiKoWindows/bin/Release/Output/yweseeGmbH.AmiKo/PackageFiles/AmiKo\ Desitin.appx`
+
 ##### Reference
 
 * https://aka.ms/converter
 * https://docs.microsoft.com/en-us/windows/uwp/porting/desktop-to-uwp-prepare
 * https://docs.microsoft.com/en-us/windows/uwp/porting/desktop-to-uwp-run-desktop-app-converter
+* https://docs.microsoft.com/en-us/windows/uwp/app-resources/makepri-exe-command-options
 
 
 ### Clean
