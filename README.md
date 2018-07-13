@@ -23,6 +23,9 @@ Another version for the macOS is also available. See [AmiKo-OSX](https://github.
 * All legally registered drugs of Switzerland
 * `15'913` Drug-Drug Interactions
 * Full-Text-Search (FTS) with Keyword highlighting
+* Patient Management (outlook format CSV integration)
+* Prescriptions (with comment, import/export support)
+* Documents Printing
 
 Search by:
 
