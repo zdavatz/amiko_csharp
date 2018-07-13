@@ -131,6 +131,7 @@ namespace AmiKoWindows.Tests
             contact.RawWeightKg = 45.9f;
             contact.RawHeightCm = 168.3f;
             contact.Birthdate = "13.6.1993";
+            contact.Uid = contact.GenerateUid();
             Assert.AreEqual("45.9kg/168.3cm F 13.6.1993", contact.PersonalInfo);
 
             contact = new Contact();
@@ -138,6 +139,7 @@ namespace AmiKoWindows.Tests
             contact.RawWeightKg = 70.3f;
             contact.RawHeightCm = 186.7f;
             contact.Birthdate = "30.11.1990";
+            contact.Uid = contact.GenerateUid();
             Assert.AreEqual("70.3kg/186.7cm M 30.11.1990", contact.PersonalInfo);
 
             // F default, without decimal points
@@ -145,11 +147,13 @@ namespace AmiKoWindows.Tests
             contact.RawWeightKg = 60.0f;
             contact.RawHeightCm = 170.0f;
             contact.Birthdate = "1.1.1970";
+            contact.Uid = contact.GenerateUid();
             Assert.AreEqual("60kg/170cm F 1.1.1970", contact.PersonalInfo);
 
             // without size properties
             contact = new Contact();
             contact.Birthdate = "1.1.1970";
+            contact.Uid = contact.GenerateUid();
             Assert.AreEqual("F 1.1.1970", contact.PersonalInfo);
 
             // without weight
@@ -157,6 +161,7 @@ namespace AmiKoWindows.Tests
             contact.IsMale = true;
             contact.RawHeightCm = 191.0f;
             contact.Birthdate = "3.6.2000";
+            contact.Uid = contact.GenerateUid();
             Assert.AreEqual("191cm M 3.6.2000", contact.PersonalInfo);
 
             // without height
@@ -164,6 +169,7 @@ namespace AmiKoWindows.Tests
             contact.IsFemale = true;
             contact.RawWeightKg = 58.3f;
             contact.Birthdate = "22.2.2002";
+            contact.Uid = contact.GenerateUid();
             Assert.AreEqual("58.3kg F 22.2.2002", contact.PersonalInfo);
         }
     }
