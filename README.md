@@ -304,9 +304,13 @@ But you need to re-package for various images or logo files.
 
 ##### Bundle Assets for Windows 10
 
-1. Copy all Assets in `AmiKoWindows/Assets/` to `AmiKoWindows/bin/Release/Output/yweseeGmbH.AmiKo/PackageFiles/Assets/` (Overwrite)
-2. Create pri files
-3. Re-Package using `MakeAppx.exe`
+`MakeRelease.ps1` script does also this step. If you want manually do it again. you can follow these instructions:
+
+0. Make sure `'C:\Program Files (x86)\Windows Kits\10\bin\10.0.17134.0\x64\{makepri,makeappx}.exe'` exist (Version `10.0.17134`, and set also **PATH**, as you need)
+1. Go to `AmiKoWindows/bin/Release/Output/yweseeGmbH.AmiKo/PackageFiles`
+2. Copy all Assets in `AmiKoWindows/Assets/` to `AmiKoWindows/bin/Release/Output/yweseeGmbH.AmiKo/PackageFiles/Assets/` (Overwrite)
+3. Create pri files
+4. Re-Package using `MakeAppx.exe`
 
 ```powershell
 # e.g. AmiKoDesitin
@@ -318,18 +322,19 @@ PS C:\Users\... > rm .\Assets -r -fo
 PS C:\Users\... > cp ..\..\..\..\..\Assets .
 
 # MakePri.exe
-PS C:\Users\... > 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.17134.0\x64\makepri.exe' createconfig /cf priconfig.xml /dq de-CH
+PS C:\Users\... > 'makepri.exe' createconfig /cf priconfig.xml /dq de-CH
 
-PS C:\Users\... > 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.17134.0\x64\makepri.exe' new \
+PS C:\Users\... > 'makepri.exe' new \
   /pr C:\Users\<user>\path\to\amiko_csharp\AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\PackageFiles\ \
-  /cf C:\Users\<user>\path\to\amiko_csharp\AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\PackageFiles\priconfigxml
+  /cf C:\Users\<user>\path\to\amiko_csharp\AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\PackageFiles\priconfig.xml
 
 # MakeAppx.exe
-PS C:\Users\... > 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.17134.0\x64\makeappx.exe' pack /d .\ /p "AmiKo Desitin"
-```
+PS C:\Users\... > 'makeappx.exe' pack /d .\ /p "AmiKo Desitin"
 
-Then use new appx located: 
-`AmiKoWindows/bin/Release/Output/yweseeGmbH.AmiKo/PackageFiles/AmiKo\ Desitin.appx`
+# Replace appx
+PS C:\Users\... > Move-Item -Path "AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\PackageFiles\AmiKo Desitin.appx" `
+      -Destination "AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\yweseeGmbH.AmiKo.appx" -Force
+```
 
 ##### Reference
 
