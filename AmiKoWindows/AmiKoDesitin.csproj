@@ -89,6 +89,9 @@
   <PropertyGroup>
     <ApplicationManifest>Properties\App.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ReachFramework" />
     <Reference Include="Microsoft.VisualBasic" />
