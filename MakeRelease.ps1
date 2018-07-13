@@ -45,7 +45,7 @@ $version = "1.0.7.0"
 $appId = "yweseeGmbH.${application}"
 $appName = "${application} Desitin"
 $description = "${application} Desitin"
-$publisherId = "3F71A827-F362-4FF2-A406-EA63C19EA85B"
+$publisherId = "CN=ywesee GmbH, C=CH"
 $publisherName = "ywesee GmbH"
 $arch = "x64"
 
@@ -128,7 +128,7 @@ DesktopAppConverter.exe `
   -PackageName "${appId}" `
   -PackageDisplayName "${appName}" `
   -Destination "${outputDir}" `
-  -Publisher "CN=${publisherId}" `
+  -Publisher "${publisherId}" `
   -PackageArch "$arch" `
   -PackagePublisherDisplayName "${publisherName}" `
   -Version "${version}" `

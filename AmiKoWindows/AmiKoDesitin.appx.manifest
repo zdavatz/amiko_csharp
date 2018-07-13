@@ -6,8 +6,7 @@
   <Identity Name="yweseeGmbH.AmiKo"
     Version="1.0.7.0"
     ProcessorArchitecture="x64"
-    Publisher="CN=3F71A827-F362-4FF2-A406-EA63C19EA85B" />
-    <!--Publisher="CN=ywesee GmbH, O=ywesee GmbH, L=Zürich, C=CH" />-->
+    Publisher="CN=ywesee GmbH, C=CH" />
     <Properties>
     <DisplayName>AmiKo Desitin</DisplayName>
     <PublisherDisplayName>ywesee GmbH</PublisherDisplayName>
