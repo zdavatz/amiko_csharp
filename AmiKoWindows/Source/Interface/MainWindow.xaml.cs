@@ -1002,7 +1002,9 @@ namespace AmiKoWindows
                     if (!_uiState.FullTextQueryEnabled)
                     {
                         // Inject javascript to move to anchor
-                        string jsCode = "document.getElementById('" + item.Id + "').scrollIntoView(true);";
+                        string jsCode = "" +
+                        "var elem = document.getElementById('" + item.Id + "');" +
+                        "if (elem != null && typeof elem != 'undefined') { elem.scrollIntoView(true); }";
                         InjectJS(jsCode);
                     }
                     else
