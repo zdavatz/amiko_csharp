@@ -37,21 +37,23 @@ All data can be updated on daily basis.
 
 ### Requirements
 
-* Git
 * NuGet `>= 4.6.2`
 * MSBuild `>= 14.0`
 * .NET Core SDK (`2.1.105`)
 * .NET Core Runtime (`2.0.7`)
-* .NET Framework (`4.6.1`)
-* Windows 8.1 SDK (available from [archive](
-  https://developer.microsoft.com/en-us/windows/downloads/sdk-archive))
+* .NET Framework (`4.6.2`)
 
 Or just setup *Visual Studio* `>= 2015`
 
-And for tests.
+And for testing.
 
 * NUnit (`>= 3.10.1`)
 * NUnit Console (`>= 3.8.0`)
+
+For release.
+
+* Windows Kit 10 (`10.0.17134.0`)
+* Desktop App Converter
 
 ### Setup
 
@@ -346,7 +348,7 @@ PS C:\Users\... > Move-Item -Path "AmiKoWindows\bin\Release\Output\yweseeGmbH.Am
 
 ### Clean
 
-To clean built cache data or resources etc.
+To clean built cache data or resources etc. (for debug, .exe)
 
 ```powershell
 PS C:\Users\... > taskkill /im 'AmiKo Desitin.exe' /f
@@ -372,7 +374,7 @@ PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Local\ywesee\CoMed Desitin.exe*' -
 * Doctor(Operator) Profile Photo
 
 ```powershell
-# e.g. Profile Photo
+# e.g. Profile Photo (for debug, .exe)
 PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Roaming\ywesee\AmiKo Desitin\*.png' -f -fo
 PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Roaming\ywesee\CoMed Desitin\*.png' -f -fo
 ```
@@ -382,13 +384,13 @@ PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Roaming\ywesee\CoMed Desitin\*.png
 To reset *AddressBook* entries and *Prescriptions* files (`.amk` files).
 
 ```powershell
-# AmiKoDesitin
+# AmiKoDesitin (for debug, .exe)
 PS C:\Users\... > taskkill /im 'AmiKo Desitin.exe' /f
 PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Local\Temp\amiko*' -r -fo
 PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Roaming\ywesee\Amiko Desitin\amk\*' -r -fo
 PS C:\Users\... > rm .\AmiKoWindows\bin\Debug\AmiKo\* -r -fo
 
-# CoMedDesitin
+# CoMedDesitin (for debug, .exe)
 PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
 PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Local\Temp\comed*' -r -fo
 PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Roaming\ywesee\CoMed Desitin\amk\*' -r -fo
