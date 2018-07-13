@@ -704,7 +704,6 @@ namespace AmiKoWindows
             Log.WriteLine(sender.GetType().Name);
 
             this.SearchTextBox.Text = "";
-            ResetSearchInDelay(700);
         }
 
         /**
