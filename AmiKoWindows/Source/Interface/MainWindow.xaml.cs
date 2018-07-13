@@ -1775,25 +1775,32 @@ namespace AmiKoWindows
         // https://github.com/arunjeetsingh/Build2015/blob/master/Win32ShareSourceSamples/WpfShareSource/MainWindow.xaml.cs
         private void PrepareDataTransferManager()
         {
-            if (_dataTransferManager == null)
-            {
-                var factory = WindowsRuntimeMarshal.GetActivationFactory(typeof(DataTransferManager));
-                this._interop = (IDataTransferManagerInterOp)factory;
+            Log.WriteLine("_dataTransferManager: {0}", _dataTransferManager);
+            // NOTE:
+            // It seems that we have to create DataTransferManager instance
+            // every share.
+            if (_dataTransferManager != null)
+                _dataTransferManager = null;
 
-                Guid guid = new Guid("a5caee9b-8708-49d1-8d36-67d25a8da00c");
-                this._handle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
-                DataTransferManager m = null;
-                this._interop.GetForWindow(_handle, guid, out m);
-                if (m != null)
-                {
-                    m.DataRequested += OnDataRequested;
-                    this._dataTransferManager = m;
-                }
+            var factory = WindowsRuntimeMarshal.GetActivationFactory(typeof(DataTransferManager));
+            this._interop = (IDataTransferManagerInterOp)factory;
+
+            Guid guid = new Guid("a5caee9b-8708-49d1-8d36-67d25a8da00c");
+            this._handle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
+            DataTransferManager m = null;
+            this._interop.GetForWindow(_handle, guid, out m);
+            Log.WriteLine("m: {0}", m);
+            if (m != null)
+            {
+                m.DataRequested += OnDataRequested;
+                this._dataTransferManager = m;
             }
         }
 
         private void OnDataRequested(DataTransferManager sender, DataRequestedEventArgs e)
         {
+            Log.WriteLine(sender.GetType().Name);
+
             DataRequest req = e.Request;
 
             if (_outbox.Count > 0)
