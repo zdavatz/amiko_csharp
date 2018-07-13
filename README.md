@@ -13,6 +13,10 @@ Applications are available in the Microsoft store now!
 
 Another version for the macOS is also available. See [AmiKo-OSX](https://github.com/zdavatz/amiko-osx).
 
+## Screenshots
+
+<img src="/img/screenshot-1-20180713.png?raw=true" alt="Compendium" width="430px"> <img src="/img/screenshot-2-20180713.png?raw=true" alt="Interactions" width="430px"> <img src="/img/screenshot-3-20180713.png?raw=true" alt="Addressbook" width="430px"> <img src="/img/screenshot-4-20180713.png?raw=true" alt="Prescription" width="430px">
+
 
 ## Features
 
