@@ -6,7 +6,8 @@
   <Identity Name="yweseeGmbH.CoMedDesitin"
     Version="1.0.7.0"
     ProcessorArchitecture="x64"
-    Publisher="CN=ywesee GmbH, C=CH" />
+    Publisher="CN=3F71A827-F362-4FF2-A406-EA63C19EA85B"
+    PublisherDisplayName="ywesee GmbH" />
     <Properties>
     <DisplayName>CoMed Desitin</DisplayName>
     <PublisherDisplayName>ywesee GmbH</PublisherDisplayName>

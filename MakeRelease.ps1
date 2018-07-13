@@ -45,7 +45,7 @@ $version = "1.0.7.0"
 $appId = "yweseeGmbH.${application}"
 $appName = "${application} Desitin"
 $description = "${application} Desitin"
-$publisherId = "CN=ywesee GmbH, C=CH"
+$publisherId = "CN=3F71A827-F362-4FF2-A406-EA63C19EA85B"
 $publisherName = "ywesee GmbH"
 $arch = "x64"
 
