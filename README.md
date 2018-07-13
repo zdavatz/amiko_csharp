@@ -200,36 +200,36 @@ Build with `MSBuild` on PowerShell (You need to set *PATH* for `MSBuild.exe`):
 
 ```powershell
 # AmiKoDesitin
-PS C:\Users\... > MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Clean
-PS C:\Users\... > MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Build /p:Configuration=Debug
+PS C:\Users\...> MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Clean
+PS C:\Users\...> MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Build /p:Configuration=Debug
 
 # CoMedDesitin
-PS C:\Users\... > MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Clean
-PS C:\Users\... > MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Build /p:Configuration=Debug
+PS C:\Users\...> MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Clean
+PS C:\Users\...> MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Build /p:Configuration=Debug
 ```
 
 And then, you can start or kill `{AmiKo|CoMed}Desitin.exe` in `bin` directory like this:
 
 ```powershell
 # AmiKoDesitin
-PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
-PS C:\Users\... > Get-Process 'AmiKo Desitin' | Stop-Process
-PS C:\Users\... > taskkill /im 'AmiKo Desitin.exe' /f
+PS C:\Users\...> Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
+PS C:\Users\...> Get-Process 'AmiKo Desitin' | Stop-Process
+PS C:\Users\...> taskkill /im 'AmiKo Desitin.exe' /f
 
 # CoMedDesitin
-PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\CoMed Desitin.exe'
-PS C:\Users\... > Get-Process 'CoMed Desitin' | Stop-Process
-PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
+PS C:\Users\...> Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\CoMed Desitin.exe'
+PS C:\Users\...> Get-Process 'CoMed Desitin' | Stop-Process
+PS C:\Users\...> taskkill /im 'CoMed Desitin.exe' /f
 ```
 
 There is also a script to build and invoke the application.
 
 ```powershell
 # AmiKoDesitin (Debug is default)
-PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "AmiKo"
+PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "AmiKo"
 
 # CoMedDesitin
-PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "CoMed" "Debug"
+PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "CoMed" "Debug"
 ```
 
 Finally, You need to debug the app with `DebugView` or `WinDbg` etc. (Set `/p:Log=Trace` for Trace)
@@ -267,12 +267,12 @@ C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\a
 and this will work as well from your Source Directory
 
 ```
-PS C:\Users\... > MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Clean
-PS C:\Users\... > MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Build /p:Configuration=Debug
-PS C:\Users\... > Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
+PS C:\Users\...> MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Clean
+PS C:\Users\...> MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Build /p:Configuration=Debug
+PS C:\Users\...> Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe'
 
 # or just do
-PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "AmiKo"
+PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "AmiKo"
 ```
 
 ##### Reference
@@ -298,12 +298,12 @@ following files.
 # As Administrator
 
 # AmiKoDesitin
-PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1 "AmiKo" "Debug"
-PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1 "AmiKo" "Release"
+PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1 "AmiKo" "Debug"
+PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1 "AmiKo" "Release"
 
 # CoMedDesitin
-PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1 "CoMed" "Debug"
-PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1 "CoMed" "Release"
+PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1 "CoMed" "Debug"
+PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1 "CoMed" "Release"
 ```
 
 **Appx** will be generated in
@@ -323,24 +323,24 @@ PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1
 # e.g. AmiKoDesitin
 
 # Change directory into **PackageFiles**
-PS C:\Users\... > cd AmiKoWindows/bin/Release/Output/yweseeGmbH.AmiKo/PackageFiles
+PS C:\Users\...> cd AmiKoWindows/bin/Release/Output/yweseeGmbH.AmiKo/PackageFiles
 
-PS C:\Users\... > rm .\Assets -r -fo
-PS C:\Users\... > cp ..\..\..\..\..\Assets .
+PS C:\Users\...> rm .\Assets -r -fo
+PS C:\Users\...> cp ..\..\..\..\..\Assets .
 
 # MakePri.exe
-PS C:\Users\... > 'makepri.exe' createconfig /cf priconfig.xml /dq de-CH
+PS C:\Users\...> 'makepri.exe' createconfig /cf priconfig.xml /dq de-CH
 
 # It seems that it needs absolute path...
-PS C:\Users\... > 'makepri.exe' new \
+PS C:\Users\...> 'makepri.exe' new \
   /pr C:\Users\<user>\path\to\amiko_csharp\AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\PackageFiles\ \
   /cf C:\Users\<user>\path\to\amiko_csharp\AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\PackageFiles\priconfig.xml
 
 # MakeAppx.exe
-PS C:\Users\... > 'makeappx.exe' pack /d .\ /p "AmiKo Desitin"
+PS C:\Users\...> 'makeappx.exe' pack /d .\ /p "AmiKo Desitin"
 
 # Replace appx
-PS C:\Users\... > Move-Item -Path "AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\PackageFiles\AmiKo Desitin.appx" `
+PS C:\Users\...> Move-Item -Path "AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\PackageFiles\AmiKo Desitin.appx" `
       -Destination "AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\yweseeGmbH.AmiKo.appx" -Force
 ```
 
@@ -357,19 +357,19 @@ PS C:\Users\... > Move-Item -Path "AmiKoWindows\bin\Release\Output\yweseeGmbH.Am
 To clean built cache data or resources etc. (for debug, .exe)
 
 ```powershell
-PS C:\Users\... > taskkill /im 'AmiKo Desitin.exe' /f
-PS C:\Users\... > MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Clean
+PS C:\Users\...> taskkill /im 'AmiKo Desitin.exe' /f
+PS C:\Users\...> MSBuild.exe .\AmiKoWindows\AmiKoDesitin.csproj /t:Clean
 
-PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
-PS C:\Users\... > MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Clean
+PS C:\Users\...> taskkill /im 'CoMed Desitin.exe' /f
+PS C:\Users\...> MSBuild.exe .\AmiKoWindows\CoMedDesitin.csproj /t:Clean
 ```
 
 #### User Settings
 
 ```powershell
 # Just delete these directories (or delete `user.config` in there)
-PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Local\ywesee\AmiKo Desitin.exe*' -f -fo
-PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Local\ywesee\CoMed Desitin.exe*' -f -fo
+PS C:\Users\...> rm 'C:\Users\<USER>\AppData\Local\ywesee\AmiKo Desitin.exe*' -f -fo
+PS C:\Users\...> rm 'C:\Users\<USER>\AppData\Local\ywesee\CoMed Desitin.exe*' -f -fo
 ```
 
 #### Application Resources
@@ -381,8 +381,8 @@ PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Local\ywesee\CoMed Desitin.exe*' -
 
 ```powershell
 # e.g. Profile Photo (for debug, .exe)
-PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Roaming\ywesee\AmiKo Desitin\*.png' -f -fo
-PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Roaming\ywesee\CoMed Desitin\*.png' -f -fo
+PS C:\Users\...> rm 'C:\Users\<USER>\AppData\Roaming\ywesee\AmiKo Desitin\*.png' -f -fo
+PS C:\Users\...> rm 'C:\Users\<USER>\AppData\Roaming\ywesee\CoMed Desitin\*.png' -f -fo
 ```
 
 #### Contacts and Prescriptions
@@ -391,16 +391,16 @@ To reset *AddressBook* entries and *Prescriptions* files (`.amk` files).
 
 ```powershell
 # AmiKoDesitin (for debug, .exe)
-PS C:\Users\... > taskkill /im 'AmiKo Desitin.exe' /f
-PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Local\Temp\amiko*' -r -fo
-PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Roaming\ywesee\Amiko Desitin\amk\*' -r -fo
-PS C:\Users\... > rm .\AmiKoWindows\bin\Debug\AmiKo\* -r -fo
+PS C:\Users\...> taskkill /im 'AmiKo Desitin.exe' /f
+PS C:\Users\...> rm 'C:\Users\<USER>\AppData\Local\Temp\amiko*' -r -fo
+PS C:\Users\...> rm 'C:\Users\<USER>\AppData\Roaming\ywesee\Amiko Desitin\amk\*' -r -fo
+PS C:\Users\...> rm .\AmiKoWindows\bin\Debug\AmiKo\* -r -fo
 
 # CoMedDesitin (for debug, .exe)
-PS C:\Users\... > taskkill /im 'CoMed Desitin.exe' /f
-PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Local\Temp\comed*' -r -fo
-PS C:\Users\... > rm 'C:\Users\<USER>\AppData\Roaming\ywesee\CoMed Desitin\amk\*' -r -fo
-PS C:\Users\... > rm .\AmiKoWindows\bin\Debug\CoMed\* -r -fo
+PS C:\Users\...> taskkill /im 'CoMed Desitin.exe' /f
+PS C:\Users\...> rm 'C:\Users\<USER>\AppData\Local\Temp\comed*' -r -fo
+PS C:\Users\...> rm 'C:\Users\<USER>\AppData\Roaming\ywesee\CoMed Desitin\amk\*' -r -fo
+PS C:\Users\...> rm .\AmiKoWindows\bin\Debug\CoMed\* -r -fo
 ```
 
 
@@ -409,27 +409,27 @@ PS C:\Users\... > rm .\AmiKoWindows\bin\Debug\CoMed\* -r -fo
 See projects in `AmiKoWindows.Tests`. Tests are written in NUnit.
 
 ```powershell
-PS C:\Users\... > taskkill /im 'MSBuild.exe' /f
+PS C:\Users\...> taskkill /im 'MSBuild.exe' /f
 
 # AmiKoDesitin
-PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\AmiKoDesitin.Test.csproj /t:Clean
-PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\AmiKoDesitin.Test.csproj /t:Build /p:Configuration=Debug /p:Platform=x64
-PS C:\Users\... > .\Package\NUnit.ConseleRunner.3.8.0\tools\nunit3-console.exe .\AmiKoWindows.Tests\bin\Debug\AmiKo\AmiKoDesitin.Test.dll --output TestOutput.log
+PS C:\Users\...> MSBuild.exe .\AmiKoWindows.Tests\AmiKoDesitin.Test.csproj /t:Clean
+PS C:\Users\...> MSBuild.exe .\AmiKoWindows.Tests\AmiKoDesitin.Test.csproj /t:Build /p:Configuration=Debug /p:Platform=x64
+PS C:\Users\...> .\Package\NUnit.ConseleRunner.3.8.0\tools\nunit3-console.exe .\AmiKoWindows.Tests\bin\Debug\AmiKo\AmiKoDesitin.Test.dll --output TestOutput.log
 
 # CoMedDesitin
-PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\CoMedDesitin.Test.csproj /t:Clean
-PS C:\Users\... > MSBuild.exe .\AmiKoWindows.Tests\CoMedDesitin.Test.csproj /t:Build /p:Configuration=Debug /p:Platform=x64
-PS C:\Users\... > .\Package\NUnit.ConsoleRunner.3.8.0\tools\nunit3-console.exe .\AmiKoWindows.Tests\bin\Debug\CoMed\CoMedDesitin.Test.dll --output TestOutput.log
+PS C:\Users\...> MSBuild.exe .\AmiKoWindows.Tests\CoMedDesitin.Test.csproj /t:Clean
+PS C:\Users\...> MSBuild.exe .\AmiKoWindows.Tests\CoMedDesitin.Test.csproj /t:Build /p:Configuration=Debug /p:Platform=x64
+PS C:\Users\...> .\Package\NUnit.ConsoleRunner.3.8.0\tools\nunit3-console.exe .\AmiKoWindows.Tests\bin\Debug\CoMed\CoMedDesitin.Test.dll --output TestOutput.log
 ```
 
 Or you can just execute tests using `RunTest.ps1` like this.
 
 ```powershell
 # AmiKoDesitin
-PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\RunTest.ps1 "AmiKo"
+PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\RunTest.ps1 "AmiKo"
 
 # CoMedDesitin
-PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\RunTest.ps1 "CoMed"
+PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\RunTest.ps1 "CoMed"
 ```
 
 ##### Reference
