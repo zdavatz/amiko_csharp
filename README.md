@@ -309,8 +309,6 @@ PS C:\Users\... > PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1
 **Appx** will be generated in
 `AmiKoWindows/bin/{Debug,Release}/Output/{AmiKo,CoMed}`.
 
-But you need to re-package for various images or logo files.
-
 ##### Bundle Assets for Windows 10
 
 `MakeRelease.ps1` script does also this step. If you want manually do it again. you can follow these instructions:
@@ -333,6 +331,7 @@ PS C:\Users\... > cp ..\..\..\..\..\Assets .
 # MakePri.exe
 PS C:\Users\... > 'makepri.exe' createconfig /cf priconfig.xml /dq de-CH
 
+# It seems that it needs absolute path...
 PS C:\Users\... > 'makepri.exe' new \
   /pr C:\Users\<user>\path\to\amiko_csharp\AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\PackageFiles\ \
   /cf C:\Users\<user>\path\to\amiko_csharp\AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\PackageFiles\priconfig.xml
