@@ -134,6 +134,13 @@ DesktopAppConverter.exe `
   -Version "${version}" `
   -MakeAppx -sign -Verbose -Verify
 
+if ($lastexitcode -ne 0) {
+  Write-Host
+  Write-Host ">> ERROR"
+  Write-Host
+  exit 0
+}
+
 if ($configuration -eq "Debug") {
   Write-Host
   Write-Host ">> DONE"

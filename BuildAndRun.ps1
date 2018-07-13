@@ -48,10 +48,11 @@ MSBuild.exe .\AmiKoWindows\"${application}"Desitin.csproj /t:Build `
 
 if ($lastexitcode -ne 0) {
   Write-Host "Build faild with status: $lastexitcode"
-  exit
+  exit 1
 }
 
 # Run the application
 Write-Host ""
 Write-Host "Application '${application} Desitin.exe' is starting..." -NoNewLine
 Start-Process ".\AmiKoWindows\bin\${configuration}\${application}\${application} Desitin.exe"
+exit 0
