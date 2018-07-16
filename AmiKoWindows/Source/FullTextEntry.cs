@@ -39,6 +39,9 @@ namespace AmiKoWindows
         public string GetRegnrs()
         {
             string regsStr = "";
+            if (RegChaptersDict == null)
+                return regsStr;
+
             foreach (var k in RegChaptersDict.Keys)
             {
                 regsStr += k + ",";
@@ -48,14 +51,20 @@ namespace AmiKoWindows
 
         public List<string> GetRegnrsAsList()
         {
-            return new List<string>(RegChaptersDict.Keys);
+            var dict = RegChaptersDict;
+            if (dict == null)
+                return new List<string>();
+
+            return new List<string>(dict.Keys);
         }
 
         public HashSet<string> GetChapters(string regnr)
         {
-            if (RegChaptersDict.ContainsKey(regnr))
-                return RegChaptersDict[regnr];
-            return null;
+            var dict = RegChaptersDict;
+            if (dict == null || !dict.ContainsKey(regnr))
+                return null;
+
+            return dict[regnr];
         }
     }
 }

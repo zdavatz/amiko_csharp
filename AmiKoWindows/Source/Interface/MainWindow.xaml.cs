@@ -449,15 +449,16 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Html");
                 SwitchViewContext();
 
+                var box = GetElementIn("SectionTitleList", RightArea) as ListBox;
+                if (box != null)
+                    box.DataContext = _fachInfo;
+
                 var text = SearchFieldText();
-                if (_uiState.FullTextQueryEnabled && (text == null || text.Equals(string.Empty)))
+                if (_uiState.FullTextQueryEnabled)
                     SetFullTextSearchDataContext();
                 else
                 {
                     this.SearchResult.DataContext = _sqlDb;
-                    var box = GetElementIn("SectionTitleList", RightArea) as ListBox;
-                    if (box != null)
-                        box.DataContext = _fachInfo;
 
                     var browser = GetView() as WebBrowser;
                     if (browser != null)
@@ -472,14 +473,15 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Html");
                 SwitchViewContext();
 
+                var box = GetElementIn("SectionTitleList", RightArea) as ListBox;
+                if (box != null)
+                    box.DataContext = _fachInfo;
+
                 if (_uiState.FullTextQueryEnabled)
                     SetFullTextSearchDataContext();
                 else
                 {
                     this.SearchResult.DataContext = _sqlDb;
-                    var box = GetElementIn("SectionTitleList", RightArea) as ListBox;
-                    if (box != null)
-                        box.DataContext = _fachInfo;
 
                     var browser = GetView() as WebBrowser;
                     if (browser != null)
@@ -494,14 +496,15 @@ namespace AmiKoWindows
                 this.DataContext = new ViewType("Html");
                 SwitchViewContext();
 
+                var box = GetElementIn("SectionTitleList", RightArea) as ListBox;
+                if (box != null)
+                    box.DataContext = _interactions;
+
                 if (_uiState.FullTextQueryEnabled)
                     SetFullTextSearchDataContext();
                 else
                 {
                     this.SearchResult.DataContext = _sqlDb;
-                    var box = GetElementIn("SectionTitleList", RightArea) as ListBox;
-                    if (box != null)
-                        box.DataContext = _interactions;
 
                     var browser = GetView() as WebBrowser;
                     if (browser != null)
