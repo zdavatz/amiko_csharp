@@ -537,25 +537,22 @@ namespace AmiKoWindows
                     EnableButton("CheckInteractionButton", (_prescriptions.Medications.Count > 0));
                 }
 
+                var box = GetElementIn("FileNameList", RightArea) as ListBox;
+                if (box != null)
+                    box.DataContext = _prescriptions;
+
+                var medicationList = GetElementIn("MedicationList", MainArea) as ListBox;
+                if (medicationList != null)
+                    medicationList.DataContext = _prescriptions;
+
+                var grid = GetView() as Grid;
+                if (grid != null)
+                    grid.DataContext = _prescriptions;
+
                 if (_uiState.FullTextQueryEnabled)
                     SetFullTextSearchDataContext();
                 else
-                {
                     this.SearchResult.DataContext = _sqlDb;
-                    var box = GetElementIn("FileNameList", RightArea) as ListBox;
-                    if (box != null)
-                        box.DataContext = _prescriptions;
-
-                    var medicationList = GetElementIn("MedicationList", MainArea) as ListBox;
-                    if (medicationList != null)
-                        medicationList.DataContext = _prescriptions;
-
-                    var grid = GetView() as Grid;
-                    if (grid != null)
-                    {
-                        grid.DataContext = _prescriptions;
-                    }
-                }
             }
         }
 
