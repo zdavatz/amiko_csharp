@@ -31,7 +31,7 @@ namespace AmiKoWindows
             public string msg;
         }
 
-        [DllImport("User32.dll")]
+        [DllImport("user32.dll")]
         public static extern Int32 FindWindow(String lpClassName, String lpWindowName);
 
         [DllImport("user32.dll")]
