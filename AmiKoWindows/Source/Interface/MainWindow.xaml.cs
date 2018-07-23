@@ -754,7 +754,7 @@ namespace AmiKoWindows
                             _searchSelectionItemHash = selection.Hash;
                             FullTextEntry entry = await _fullTextDb.GetEntryWithHash(_searchSelectionItemHash);
                             List<Article> listOfArticles = await _sqlDb.SearchListOfRegNrs(entry.GetRegnrsAsList());
-                            if (listOfArticles != null)
+                            if (listOfArticles != null && entry.RegChaptersDict != null)
                             {
                                 _fullTextSearch.Filter = "";
                                 _fullTextSearch.ShowTableWithArticles(listOfArticles, entry.RegChaptersDict);
