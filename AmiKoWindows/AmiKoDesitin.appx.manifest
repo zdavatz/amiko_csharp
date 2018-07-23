@@ -31,7 +31,16 @@
        Square150x150Logo="Resources\img\logo\desitin_logo.png"
        Square44x44Logo="Resources\img\logo\desitin_logo.png"
        Description="No.1 Arzneimittelkompendium Schweiz" />
+
+      <Extensions>
+        <Extension Category="windows.fileTypeAssociation">
+          <FileTypeAssociation Name="amk">
+            <SupportedFileTypes>
+              <FileType>.amk</FileType>
+            </SupportedFileTypes>
+          </FileTypeAssociation>
+        </Extension>
+      </Extensions>
     </Application>
-    <!-- Add extensions here!-->
   </Applications>
 </Package>
