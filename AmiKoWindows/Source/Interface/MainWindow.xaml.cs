@@ -536,8 +536,9 @@ namespace AmiKoWindows
                     EnableButton("NewPrescriptionButton", true);
                     EnableButton("SendPrescriptionButton", false);
 
-                    if (ActiveAccount != null && ActiveContact != null &&
-                        (_prescriptions.HasChange || !_prescriptions.IsActivePrescriptionPersisted))
+                    if (Account.IsSet() &&
+                        ActiveAccount != null &&
+                        ActiveContact != null && (_prescriptions.HasChange || !_prescriptions.IsActivePrescriptionPersisted))
                         EnableButton("SavePrescriptionButton", true);
 
                     EnableButton("CheckInteractionButton", (_prescriptions.Medications.Count > 0));
@@ -896,8 +897,8 @@ namespace AmiKoWindows
                         Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                     }
 
-                    if (ActiveContact != null &&
-                        (ActiveAccount != null && ActiveAccount.Fullname != null && ActiveAccount.Fullname.Length > 0))
+                    if (Account.IsSet() &&
+                        ActiveContact != null && (ActiveAccount != null && ActiveAccount.Fullname != null && ActiveAccount.Fullname.Length > 0))
                     {
                         EnableButton("SavePrescriptionButton", true);
                         EnableButton("SendPrescriptionButton", false);
@@ -930,8 +931,8 @@ namespace AmiKoWindows
                     var index = item.Id;
                     var added = _prescriptions.AddMedicationCommentAtIndex(index, text);
 
-                    if (added && ActiveContact != null &&
-                        (ActiveAccount != null && ActiveAccount.Fullname != null && ActiveAccount.Fullname.Length > 0))
+                    if (added && Account.IsSet() &&
+                        ActiveContact != null && (ActiveAccount != null && ActiveAccount.Fullname != null && ActiveAccount.Fullname.Length > 0))
                     {
                         EnableButton("SavePrescriptionButton", true);
                         EnableButton("SendPrescriptionButton", false);
@@ -1098,7 +1099,7 @@ namespace AmiKoWindows
                     FillPlaceDate();
 
                     EnableButton("CheckInteractionButton", _prescriptions.Medications.Count > 0);
-                    EnableButton("SavePrescriptionButton", (_prescriptions.HasChange || _prescriptions.IsPreview));
+                    EnableButton("SavePrescriptionButton", (Account.IsSet() && (_prescriptions.HasChange || _prescriptions.IsPreview)));
 
                     var saved = (!_prescriptions.HasChange && _prescriptions.IsActivePrescriptionPersisted);
                     EnableButton("SendPrescriptionButton", saved);
@@ -1340,7 +1341,7 @@ namespace AmiKoWindows
             }
 
             EnableButton("CheckInteractionButton", _prescriptions.Medications.Count > 0);
-            EnableButton("SavePrescriptionButton", true);
+            EnableButton("SavePrescriptionButton", Account.IsSet());
             EnableButton("SendPrescriptionButton", false);
 
             FillContactFields();
@@ -1871,7 +1872,7 @@ namespace AmiKoWindows
             EnableButton("SendPrescriptionButton", false);
             if (ActiveAccount != null && ActiveContact != null)
             {
-                if (hasMedications)
+                if (hasMedications && Account.IsSet())
                     EnableButton("SavePrescriptionButton", true);
                 else
                 {
