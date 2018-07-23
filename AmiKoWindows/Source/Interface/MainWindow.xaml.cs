@@ -659,7 +659,7 @@ namespace AmiKoWindows
                 this._search = false;
             }
             else
-                ResetSearchInDelay(600);
+                ResetSearchInDelay(400);
         }
 
         private async void ResetSearchInDelay(int delay = -1)
@@ -1522,9 +1522,13 @@ namespace AmiKoWindows
 
             UIState.Query query = UIState.QueryBySourceName(source.Name.Replace("QuerySelectButton", ""));
 
-            if (query != _uiState.GetQuery()) { // current query
+            var q = _uiState.GetQuery(); // current
+            if ((query == UIState.Query.Fulltext && query != q) ||
+                (q == UIState.Query.Fulltext && query != q))
+            {
                 this.SearchTextBox.Text = "";
             }
+
             // uncheck other buttons
             DependencyObject parent = (sender as ToggleButton).Parent;
             int count = VisualTreeHelper.GetChildrenCount(parent);
@@ -1552,10 +1556,10 @@ namespace AmiKoWindows
                 SetDataContext(state);
                 SetFullTextSearchDataContext();
             }
-            else
+            else {
                 SetState(state);
-
-            ResetSearchInDelay(-1);
+                _sqlDb.UpdateSearchResults(_uiState);
+            }
         }
 
         private void SetBrowserEmulationMode()
