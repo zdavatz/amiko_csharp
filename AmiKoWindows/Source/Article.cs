@@ -71,6 +71,8 @@ namespace AmiKoWindows
             return listOfSectionIds;
         }
 
+        // NOTE:
+        // https://github.com/zdavatz/amiko_csharp/issues/169
         public List<string> ListOfSectionTitles()
         {
             string[] sectionsTitles = Constants.SectionTitlesDE;
@@ -78,30 +80,28 @@ namespace AmiKoWindows
                 sectionsTitles = Constants.SectionTitlesFR;
 
             List<string> listOfSectionTitles = SectionTitles?.Split(';').ToList();
-            for (int i=0; i<listOfSectionTitles.Count; ++i)
+            for (int i = 0; i < listOfSectionTitles.Count; i++)
             {
                 string s = listOfSectionTitles[i];
                 foreach (string t in sectionsTitles)
                 {
                     string titleA = s.Replace(" ", "");
                     string titleB = Title.Replace(" ", "");
+
                     // Check first if title
-                    if (titleA.Contains(titleB))
-                    {
-                        if (s.Contains("®"))
-                            s = s.Substring(0, s.IndexOf("®") + 1);
-                        break;
+                    if (titleA.Contains(titleB) || titleB.Contains(titleA)) {
+                        var n = t.IndexOf("®");
+                        if (n > -1)
+                            s = t.Substring(0, n + 1);
+                        continue;
                     }
                     else if (s.Contains(t))
                     {
-                        s.Contains(t);
                         listOfSectionTitles[i] = t;
                         break;
                     }
                     else
-                    {
                         listOfSectionTitles[i] = listOfSectionTitles[i].Replace(" / ", "");
-                    }
                 }        
             }
             return listOfSectionTitles;
