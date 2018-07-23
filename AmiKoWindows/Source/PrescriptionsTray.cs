@@ -683,12 +683,18 @@ namespace AmiKoWindows
 
         public string GetFilePathByPlaceDate(string placeDate)
         {
+            Log.WriteLine("placeDate: {0}", placeDate);
             string path = null;
             if (placeDate == null || placeDate.Equals(string.Empty))
                 return path;
 
-            var savedAt = placeDate.Substring(placeDate.LastIndexOf(',') + 2, AMIKO_FILE_PLACE_DATE_FORMAT.Length);
+            string savedAt = null;
+            if (placeDate.Contains(","))
+                savedAt = placeDate.Substring(placeDate.LastIndexOf(',') + 2, AMIKO_FILE_PLACE_DATE_FORMAT.Length);
+            else
+                savedAt = placeDate;
             Log.WriteLine("savedAt: {0}", savedAt);
+
             if (savedAt != null && !savedAt.Equals(string.Empty))
             {   // place_date -> .amk filename
                 DateTime dt = DateTime.ParseExact(savedAt, AMIKO_FILE_PLACE_DATE_FORMAT, CultureInfo.InvariantCulture);
