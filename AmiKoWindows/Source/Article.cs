@@ -90,9 +90,11 @@ namespace AmiKoWindows
 
                     // Check first if title
                     if (titleA.Contains(titleB) || titleB.Contains(titleA)) {
-                        var n = t.IndexOf("®");
-                        if (n > -1)
-                            s = t.Substring(0, n + 1);
+                        var n = s.IndexOf("®");
+                        if (n > -1) {
+                            s = s.Substring(0, n + 1);
+                            listOfSectionTitles[i] = s;
+                        }
                         continue;
                     }
                     else if (s.Contains(t))
