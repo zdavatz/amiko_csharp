@@ -308,7 +308,10 @@ namespace AmiKoWindows
         public string SelectedFullTextSearchKey()
         {
             int idx = _selectedFullTextSearchKey.IndexOf("("); // Remove parentheses
-            return _selectedFullTextSearchKey.Substring(0, idx).Trim();
+            if (idx > -1)
+                return _selectedFullTextSearchKey.Substring(0, idx).Trim();
+
+            return "";
         }
 
         // For Fulltext Search. This keeps search results by fulltext query, but

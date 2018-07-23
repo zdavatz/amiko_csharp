@@ -122,7 +122,7 @@ namespace AmiKoWindows
                         }
                     }
 
-                    if (!filtered)
+                    if (!filtered && a.Title != null && a.Title.Length > 1)
                     {
                         string firstLetter = a.Title.Substring(0, 1).ToUpper();
                         if (rows % 2 == 0)
