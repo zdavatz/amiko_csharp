@@ -318,6 +318,7 @@ PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1 
 2. Copy all Assets in `AmiKoWindows/Assets/` to `AmiKoWindows/bin/Release/Output/yweseeGmbH.AmiKo/PackageFiles/Assets/` (Overwrite)
 3. Create pri files
 4. Re-Package using `MakeAppx.exe`
+5. Re-Sign using `SignTool.exe`
 
 ```powershell
 # e.g. AmiKoDesitin
@@ -342,7 +343,14 @@ PS C:\Users\...> 'makeappx.exe' pack /d .\ /p "AmiKo Desitin"
 # Replace appx
 PS C:\Users\...> Move-Item -Path "AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\PackageFiles\AmiKo Desitin.appx" `
       -Destination "AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\yweseeGmbH.AmiKo.appx" -Force
+
+# Sign (again)
+PS C:\Users\...> signtool.exe sign /fd <HASH ALGORITHM> /a /f <PFX> /p <PASSWORD> <FILE>.appx
 ```
+
+NOTE:  
+You need to install this `pfx` certificate into **Trusted People** on **Local
+Machine** via Certificate Wizard.
 
 ##### Reference
 
@@ -350,6 +358,7 @@ PS C:\Users\...> Move-Item -Path "AmiKoWindows\bin\Release\Output\yweseeGmbH.Ami
 * https://docs.microsoft.com/en-us/windows/uwp/porting/desktop-to-uwp-prepare
 * https://docs.microsoft.com/en-us/windows/uwp/porting/desktop-to-uwp-run-desktop-app-converter
 * https://docs.microsoft.com/en-us/windows/uwp/app-resources/makepri-exe-command-options
+* https://docs.microsoft.com/en-us/windows/uwp/packaging/sign-app-package-using-signtool
 
 
 ### Clean
