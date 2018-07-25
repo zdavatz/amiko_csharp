@@ -282,7 +282,14 @@ PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 
 
 ### Release
 
-#### Using Desktop App Converter (Desktop Bridge)
+You would need following steps.
+
+0. Convert Exe binary to Appx using `MakeRelease.ps1`
+1. Update AppxManifest.xml
+2. Re-Package Assets using `Package.ps1`
+3. Re-Signing
+
+#### 0. Using Desktop App Converter (Desktop Bridge)
 
 Download `Desktop App Converter` from Microsoft Store. And then use
 `MakeRelease.ps1` script with your signing certificate and key. (In PowerShell run as Administrator)
@@ -309,16 +316,61 @@ PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\MakeRelease.ps1 
 **Appx** will be generated in
 `AmiKoWindows/bin/{Debug,Release}/Output/{AmiKo,CoMed}`.
 
-##### Bundle Assets for Windows 10
+#### 1. Fix AppxManifest.xml
 
-`MakeRelease.ps1` script does also this step. If you want manually do it again. you can follow these instructions:
+Currently, `-AppFileTypes` option of **DesktopAppConverter** does not work
+expectedly for out configurations. Although fix `AppxManifest.xml` manually.
+
+Path:
+
+* `AmiKoWindows/bin/Release/Output/yweseeGmbH.AmiKo/PackageFiles/AppxManifest.xml`
+* `AmiKoWindows/bin/Release/Output/yweseeGmbH.CoMedDesitin/PackageFiles/AppxManifest.xml`
+
+```
+# add missing entries `Extensions`
+
+<Applications>
+  <Application>
+    ...
+
+    <Extensions>
+      <uap:Extension Category="windows.fileTypeAssociation">
+        <uap:FileTypeAssociation Name="amk">
+          <uap:Logo>Assets\Square44x44Logo.png</uap:Logo>
+          <uap:SupportedFileTypes>
+            <uap:FileType>.amk</uap:FileType>
+          </uap:SupportedFileTypes>
+        </uap:FileTypeAssociation>
+      </uap:Extension>
+    </Extensions>
+  </Application>
+</Applications>
+```
+
+
+#### 2. Bundle Assets for Windows 10
+
+`Package.ps1` script does also this step. If you want manually do it again. you can follow these instructions:
+
+```powershell
+# As Administrator
+
+# AmiKoDesitin
+PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\Package.ps1 "AmiKo" "Debug"
+PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\Package.ps1 "AmiKo" "Release"
+
+# CoMedDesitin
+PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\Package.ps1 "CoMed" "Debug"
+PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\Package.ps1 "CoMed" "Release"
+```
+
+Or,  
 
 0. Make sure `'C:\Program Files (x86)\Windows Kits\10\bin\10.0.17134.0\x64\{makepri,makeappx}.exe'` exist (Version `10.0.17134`, and set also **PATH**, as you need)
 1. Go to `AmiKoWindows/bin/Release/Output/yweseeGmbH.AmiKo/PackageFiles`
 2. Copy all Assets in `AmiKoWindows/Assets/` to `AmiKoWindows/bin/Release/Output/yweseeGmbH.AmiKo/PackageFiles/Assets/` (Overwrite)
 3. Create pri files
 4. Re-Package using `MakeAppx.exe`
-5. Re-Sign using `SignTool.exe`
 
 ```powershell
 # e.g. AmiKoDesitin
@@ -343,7 +395,11 @@ PS C:\Users\...> 'makeappx.exe' pack /d .\ /p "AmiKo Desitin"
 # Replace appx
 PS C:\Users\...> Move-Item -Path "AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\PackageFiles\AmiKo Desitin.appx" `
       -Destination "AmiKoWindows\bin\Release\Output\yweseeGmbH.AmiKo\yweseeGmbH.AmiKo.appx" -Force
+```
 
+#### 3. Re-Signing
+
+```powershell
 # Sign (again)
 PS C:\Users\...> signtool.exe sign /fd <HASH ALGORITHM> /a /f <PFX> /p <PASSWORD> <FILE>.appx
 ```
@@ -352,9 +408,11 @@ NOTE:
 You need to install this `pfx` certificate into **Trusted People** on **Local
 Machine** via Certificate Wizard.
 
+
 ##### Reference
 
 * https://aka.ms/converter
+* https://docs.microsoft.com/en-us/windows/uwp/launch-resume/handle-file-activation
 * https://docs.microsoft.com/en-us/windows/uwp/porting/desktop-to-uwp-prepare
 * https://docs.microsoft.com/en-us/windows/uwp/porting/desktop-to-uwp-run-desktop-app-converter
 * https://docs.microsoft.com/en-us/windows/uwp/app-resources/makepri-exe-command-options
