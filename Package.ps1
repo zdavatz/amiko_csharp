@@ -29,6 +29,15 @@ $appName = "${application} Desitin"
 
 $windowsKit = "10.0.17134.0"
 
+if ($application -eq "CoMed") {
+  $appId = "${appId}Desitin"
+}
+
+if ($configuration -eq "Debug") {
+  $appId = "${appId}.Debug"
+}
+
+
 # Configuring Assets for Windows 10
 
 Write-Host
