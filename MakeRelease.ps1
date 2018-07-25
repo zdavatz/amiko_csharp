@@ -41,7 +41,7 @@ if ($application -eq "CoMed") {
 # https://docs.microsoft.com/en-us/windows/uwp/porting/desktop-to-uwp-manual-conversion
 # https://docs.microsoft.com/en-us/windows/uwp/porting/desktop-to-uwp-run-desktop-app-converter
 
-$version = "1.0.8.0"
+$version = "1.0.9.0"
 $appId = "yweseeGmbH.${application}"
 $appName = "${application} Desitin"
 $description = "${application} Desitin"
