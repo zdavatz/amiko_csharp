@@ -336,7 +336,7 @@ Path:
     <Extensions>
       <uap:Extension Category="windows.fileTypeAssociation">
         <uap:FileTypeAssociation Name="amk">
-          <uap:Logo>Assets\Square44x44Logo.png</uap:Logo>
+          <uap:Logo>Assets\Square44x44Logo.scale-100.png</uap:Logo>
           <uap:SupportedFileTypes>
             <uap:FileType>.amk</uap:FileType>
           </uap:SupportedFileTypes>
