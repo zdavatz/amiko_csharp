@@ -202,6 +202,48 @@ namespace AmiKoWindows
             return _foundArticles.Count;
         }
 
+        // Finds articles in current _foundArticles
+        public async Task<long> Filter(UIState state, string query)
+        {
+            Log.WriteLine("query: {0}", query);
+
+            string type = state.GetQueryTypeAsName();
+            _foundArticles = _foundArticles.Where(a => {
+                string key = "";
+                switch (type)
+                {
+                    // case insensitive filter
+                    case "title":
+                        if (a.Title != null) key = a.Title.ToLower();
+                        break;
+                    case "author":
+                        if (a.Author != null) key = a.Author.ToLower();
+                        break;
+                    case "atccode":
+                        if (a.AtcCode != null) key = a.AtcCode.ToLower();
+                        break;
+                    case "ingredient":
+                        if (a.AtcCode != null) key = a.Substances.ToLower();
+                        break;
+                    case "regnr":
+                        if (a.Regnrs != null) key = a.Regnrs.ToLower();
+                        break;
+                    case "application":
+                        if (a.Application != null) key = a.Application.ToLower();
+                        break;
+                    case "eancode":
+                        if (a.Packages != null) key = a.Packages.ToLower();
+                        break;
+                    default:
+                        break;
+                }
+                return key.Contains(query);
+            }).ToList();
+            UpdateSearchResults(state);
+
+            return _foundArticles.Count;
+        }
+
         public async Task<Article> GetArticleWithId(long? id)
         {
             Article med = new Article();

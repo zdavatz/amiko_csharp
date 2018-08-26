@@ -644,13 +644,23 @@ namespace AmiKoWindows
 
                 long numResults = 0;
                 UIState.State state = _uiState.GetState();
+                Log.WriteLine("state: {0}", state);
                 if (_uiState.FullTextQueryEnabled) {
                     if (state == UIState.State.Favorites)
                         numResults = await _fullTextDb?.Filter(_uiState, text);
                     else
                         numResults = await _fullTextDb?.Search(_uiState, text);
-                } else
-                    numResults = await _sqlDb?.Search(_uiState, text);
+                } else {
+                    // NOTE:
+                    // This may need also to update search results count for
+                    // favorites. Which package is favorite is saved in text
+                    // file, thus is would need more work in xaml. For now,
+                    // it shows same count with Compendium Search in status bar.
+                    if (state == UIState.State.Favorites)
+                        numResults = await _sqlDb?.Filter(_uiState, text);
+                    else
+                        numResults = await _sqlDb?.Search(_uiState, text);
+                }
 
                 SetSpinnerEnabled(false);
                 sw.Stop();
