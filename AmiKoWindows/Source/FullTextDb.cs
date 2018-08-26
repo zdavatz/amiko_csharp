@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SQLite;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -161,6 +162,24 @@ namespace AmiKoWindows
             if (type.Equals("fulltext"))
             {
                 _foundEntries = await SearchFullText(query);
+            }
+
+            UpdateSearchResults(state);
+
+            return _foundEntries.Count;
+        }
+
+        // Finds entries in current _foundEntries
+        public async Task<long> Filter(UIState state, string query)
+        {
+            string type = state.GetQueryTypeAsName();
+            if (type.Equals("fulltext"))
+            {
+                // case insensitive
+                _foundEntries = _foundEntries.Where(e => {
+                    string keyword = e.Keyword.ToLower();
+                    return keyword.Contains(query.ToLower());
+                }).ToList();
             }
 
             UpdateSearchResults(state);
