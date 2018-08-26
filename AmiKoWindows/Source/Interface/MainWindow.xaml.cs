@@ -331,6 +331,7 @@ namespace AmiKoWindows
                 browser.ObjectForScripting = _fachInfo;
             }
         }
+
         #region Fill Utilities
         public void FillAccountFields()
         {
@@ -1555,6 +1556,9 @@ namespace AmiKoWindows
                 // only change data context (keep state)
                 SetDataContext(state);
                 SetFullTextSearchDataContext();
+
+                if (state == UIState.State.Favorites)
+                    ResetSearchInDelay(-1);
             }
             else {
                 SetState(state);
