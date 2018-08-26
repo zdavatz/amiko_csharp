@@ -581,6 +581,8 @@ namespace AmiKoWindows
                 }
 
                 var uid = contact.Uid;
+                if (uid == null)
+                    return;
                 ResetFields();
                 this.CurrentEntry = new Contact();
 

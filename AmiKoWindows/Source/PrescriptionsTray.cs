@@ -220,7 +220,14 @@ namespace AmiKoWindows
         // takes (file) name argument without ext
         public async Task DeleteFile(string fullpath)
         {
-            if (ActiveContact == null || ActiveAccount == null)
+            if (ActiveContact == null || ActiveContact.Uid == null ||
+                ActiveAccount == null)
+                return;
+
+            // NOTE:
+            // These directories may be not found, if user has samething
+            // issue in HD, but not sure.
+            if (_amikoDir == null || _inboxDir == null)
                 return;
 
             await Task.Run(() =>

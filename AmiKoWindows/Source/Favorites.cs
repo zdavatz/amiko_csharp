@@ -58,6 +58,9 @@ namespace AmiKoWindows
         */
         public void Load()
         {
+            if (!Directory.Exists(_userDataDir))
+                return;
+
             if (typeof(T) == typeof(Article))
             {
                 string favoritesFile = Path.Combine(_userDataDir, "favorites.txt");
@@ -76,6 +79,9 @@ namespace AmiKoWindows
         {
             await Task.Run(() =>
             {
+                if (!Directory.Exists(_userDataDir))
+                    return;
+
                 if (typeof(T) == typeof(Article))
                 {
                     if (_setOfIds.Count > 0)
