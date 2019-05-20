@@ -236,6 +236,7 @@
     <Compile Include="Source\PreviewImage.cs" />
     <Compile Include="Source\Presenters.cs" />
     <Compile Include="Source\Printer.cs" />
+    <Compile Include="Source\ShareUtility.cs" />
     <Compile Include="Source\StatusBarHelper.cs" />
     <Compile Include="Source\UIState.cs" />
     <Compile Include="Source\UpdateDb.cs" />

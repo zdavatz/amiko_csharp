@@ -40,7 +40,6 @@ using System.Windows.Navigation;
 using Microsoft.Win32;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
-
 using MahApps.Metro.Controls;
 
 namespace AmiKoWindows
@@ -83,11 +82,6 @@ namespace AmiKoWindows
         private ContextMenu _contextMenu = null;
         private bool _fileNameListInDrag = false;
         private bool _hasFile = false;
-
-        // For DataTransferManager
-        private IDataTransferManagerInterOp _interop = null;
-        private IntPtr _handle;
-        private List<IStorageItem>_outbox = new List<IStorageItem>();
 
         // current (selected section)
         private string _currentSection = null;
@@ -180,8 +174,6 @@ namespace AmiKoWindows
 
             // Set browser emulation mode. Thx Microsoft for these stupid hacks!!
             SetBrowserEmulationMode();
-
-            PrepareDataTransferManager();
         }
 
         #region WndProc Support
@@ -1778,63 +1770,31 @@ namespace AmiKoWindows
 
                 if (_prescriptions.ActiveFilePath != null)
                 {
-                    PrepareDataTransferManager();
-
-                    // outbox (tmp)
                     var filepath = _prescriptions.PickFile(_prescriptions.ActiveFilePath);
                     Log.WriteLine("filepath: {0}", filepath);
+                    try
+                    {
+                        this.ShareFilePathOrThrow(filepath);
+                    } catch (TypeLoadException exception)
+                    {
+                        Log.WriteLine("Cannot use ShareUtility {0}", exception);
 
-                    this._outbox = new List<IStorageItem>();
-                    StorageFile file = await StorageFile.GetFileFromPathAsync(filepath);
-                    _outbox.Add(file);
-
-                    _interop.ShowShareUIForWindow(_handle);
+                        // Use older API
+                        MAPI mapi = new MAPI();
+                        mapi.AddAttachment(filepath);
+                        string title = Utilities.GetMailSubject(
+                            ActiveContact.Fullname, ActiveContact.Birthdate, ActiveAccount.Fullname
+                        );
+                        mapi.SendMailPopup(title, Utilities.GetMailBody());
+                    }
                 }
             }
         }
 
-        // https://msdn.microsoft.com/en-us/library/windows/desktop/jj542488(v=vs.85).aspx
-        // https://github.com/arunjeetsingh/Build2015/blob/master/Win32ShareSourceSamples/WpfShareSource/MainWindow.xaml.cs
-        private void PrepareDataTransferManager()
+        private void ShareFilePathOrThrow(string amkFilePath)
         {
-            Log.WriteLine("_dataTransferManager: {0}", _dataTransferManager);
-            // NOTE:
-            // It seems that we have to create DataTransferManager instance
-            // every share.
-            if (_dataTransferManager != null)
-                _dataTransferManager = null;
-
-            var factory = WindowsRuntimeMarshal.GetActivationFactory(typeof(DataTransferManager));
-            this._interop = (IDataTransferManagerInterOp)factory;
-
-            Guid guid = new Guid("a5caee9b-8708-49d1-8d36-67d25a8da00c");
-            this._handle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
-            DataTransferManager m = null;
-            this._interop.GetForWindow(_handle, guid, out m);
-            Log.WriteLine("m: {0}", m);
-            if (m != null)
-            {
-                m.DataRequested += OnDataRequested;
-                this._dataTransferManager = m;
-            }
-        }
-
-        private void OnDataRequested(DataTransferManager sender, DataRequestedEventArgs e)
-        {
-            Log.WriteLine(sender.GetType().Name);
-
-            DataRequest req = e.Request;
-
-            if (_outbox.Count > 0)
-            {
-                var file = _outbox[0] as StorageFile;
-                req.Data.Properties.Title = Utilities.GetMailSubject(
-                    ActiveContact.Fullname, ActiveContact.Birthdate, ActiveAccount.Fullname
-                );
-                req.Data.Properties.Description = Path.GetFileName(file.Path);
-                req.Data.SetText(Utilities.GetMailBody());
-                req.Data.SetStorageItems(_outbox);
-            }
+            var s = new ShareUtility(amkFilePath, ActiveAccount, ActiveContact);
+            s.Share();
         }
 
         private void PrintPrescriptionButton_Click(object sender, RoutedEventArgs e)
@@ -2020,6 +1980,7 @@ namespace AmiKoWindows
         }
     }
 
+    
 	[ComImport, Guid("3A3DCD6C-3EAB-43DC-BCDE-45671CE800C8")]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IDataTransferManagerInterOp

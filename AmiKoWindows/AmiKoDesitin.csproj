@@ -95,9 +95,11 @@
   <ItemGroup>
     <Reference Include="ReachFramework" />
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="System.Runtime" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Runtime.InteropServices.WindowsRuntime" />
-    <Reference Include="System.Runtime.WindowsRuntime" />
+    <Reference Include="System.Runtime.WindowsRuntime">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETCore\v4.5\System.Runtime.WindowsRuntime.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Printing" />
     <Reference Include="Windows" />
@@ -213,6 +215,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Source\Account.cs" />
+    <Compile Include="Source\MAPI.cs" />
+    <Compile Include="Source\ShareUtility.cs" />
     <Compile Include="Source\DatabaseHelper.cs" />
     <Compile Include="Source\FileOps.cs" />
     <Compile Include="Source\FullTextDb.cs" />
@@ -284,7 +288,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Packages.config" />
+    <None Include="Packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="AmiKoDesitin.appx.manifest">
       <SubType>Designer</SubType>
     </None>
