@@ -1779,6 +1779,13 @@ namespace AmiKoWindows
                     {
                         Log.WriteLine("Cannot use ShareUtility {0}", exception);
 
+                        // Use older API
+                        MAPI mapi = new MAPI();
+                        mapi.AddAttachment(filepath);
+                        string title = Utilities.GetMailSubject(
+                            ActiveContact.Fullname, ActiveContact.Birthdate, ActiveAccount.Fullname
+                        );
+                        mapi.SendMailPopup(title, Utilities.GetMailBody());
                     }
                 }
             }
