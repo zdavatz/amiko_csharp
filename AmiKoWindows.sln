@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmiKoDesitin.Test", "AmiKoW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoMedDesitin.Test", "AmiKoWindows.Tests\CoMedDesitin.Test.csproj", "{F0543A39-DB11-4241-9429-AE25480BFAB6}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Amiko Destin Installer", "Amiko Destin\Amiko Destin.vdproj", "{B9070CD4-C28D-4E94-B547-26CCF1D0A29C}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Comed Destin Installer", "Comed Destin\Comed Destin.vdproj", "{471F3072-CF46-4953-8AAF-EBD895C9A06B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +83,22 @@ Global
 		{F0543A39-DB11-4241-9429-AE25480BFAB6}.Release|x64.Build.0 = Release|Any CPU
 		{F0543A39-DB11-4241-9429-AE25480BFAB6}.Release|x86.ActiveCfg = Release|Any CPU
 		{F0543A39-DB11-4241-9429-AE25480BFAB6}.Release|x86.Build.0 = Release|Any CPU
+		{B9070CD4-C28D-4E94-B547-26CCF1D0A29C}.Debug|Any CPU.ActiveCfg = Debug
+		{B9070CD4-C28D-4E94-B547-26CCF1D0A29C}.Debug|ARM.ActiveCfg = Debug
+		{B9070CD4-C28D-4E94-B547-26CCF1D0A29C}.Debug|x64.ActiveCfg = Debug
+		{B9070CD4-C28D-4E94-B547-26CCF1D0A29C}.Debug|x86.ActiveCfg = Debug
+		{B9070CD4-C28D-4E94-B547-26CCF1D0A29C}.Release|Any CPU.ActiveCfg = Release
+		{B9070CD4-C28D-4E94-B547-26CCF1D0A29C}.Release|ARM.ActiveCfg = Release
+		{B9070CD4-C28D-4E94-B547-26CCF1D0A29C}.Release|x64.ActiveCfg = Release
+		{B9070CD4-C28D-4E94-B547-26CCF1D0A29C}.Release|x86.ActiveCfg = Release
+		{471F3072-CF46-4953-8AAF-EBD895C9A06B}.Debug|Any CPU.ActiveCfg = Debug
+		{471F3072-CF46-4953-8AAF-EBD895C9A06B}.Debug|ARM.ActiveCfg = Debug
+		{471F3072-CF46-4953-8AAF-EBD895C9A06B}.Debug|x64.ActiveCfg = Debug
+		{471F3072-CF46-4953-8AAF-EBD895C9A06B}.Debug|x86.ActiveCfg = Debug
+		{471F3072-CF46-4953-8AAF-EBD895C9A06B}.Release|Any CPU.ActiveCfg = Release
+		{471F3072-CF46-4953-8AAF-EBD895C9A06B}.Release|ARM.ActiveCfg = Release
+		{471F3072-CF46-4953-8AAF-EBD895C9A06B}.Release|x64.ActiveCfg = Release
+		{471F3072-CF46-4953-8AAF-EBD895C9A06B}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
