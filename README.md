@@ -81,7 +81,7 @@ https://blogs.msdn.microsoft.com/commandline/2016/11/17/do-not-change-linux-file
 
 #### Prepare Initial Database Files
 
-At first, you need to put database and csv files into `Data` directory.  
+At first, you need to put database and csv files into `Data` directory.
 Once you have built the app with these files, you can update it via the feature
 of the app.
 
@@ -149,7 +149,7 @@ C:\Users\<USER>> cd AmiKo
 C:\Users\<USER>\AmiKo>
 ```
 
-And then, you can download packages (into `Packages`).  
+And then, you can download packages (into `Packages`).
 on PowerShell:
 
 ```powershell
@@ -157,7 +157,7 @@ on PowerShell:
 C:\Users\<USER>\AmiKo> .\NuGet.exe install "AmiKoWindows/packages.config"
 ```
 
-On Linux on Windows, it's not affected to long path name problem.  
+On Linux on Windows, it's not affected to long path name problem.
 on Bash (Linux on Windows with Mono):
 
 ```bash
@@ -275,6 +275,13 @@ PS C:\Users\...> Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe
 PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "AmiKo"
 ```
 
+#### Building Installer with Visual Studio
+
+- Get [Installer Project for Visual Studio](https://marketplace.visualstudio.com/items?itemName=visualstudioclient.MicrosoftVisualStudio2017InstallerProjects)
+- Build Amiko / Comed with Release configuration
+- Build Amiko / Comed Installer
+- The output should be at e.g. `Amiko Destin/Release/Amiko Destin.msi`
+
 ##### Reference
 
 * [Compile and build in Visual Studio](https://docs.microsoft.com/en-us/visualstudio/ide/compiling-and-building-in-visual-studio)
@@ -364,7 +371,7 @@ PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\Package.ps1 "CoM
 PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\Package.ps1 "CoMed" "Release"
 ```
 
-Or,  
+Or,
 
 0. Make sure `'C:\Program Files (x86)\Windows Kits\10\bin\10.0.17134.0\x64\{makepri,makeappx}.exe'` exist (Version `10.0.17134`, and set also **PATH**, as you need)
 1. Go to `AmiKoWindows/bin/Release/Output/yweseeGmbH.AmiKo/PackageFiles`
@@ -404,7 +411,7 @@ PS C:\Users\...> Move-Item -Path "AmiKoWindows\bin\Release\Output\yweseeGmbH.Ami
 PS C:\Users\...> signtool.exe sign /fd <HASH ALGORITHM> /a /f <PFX> /p <PASSWORD> <FILE>.appx
 ```
 
-NOTE:  
+NOTE:
 You need to install this `pfx` certificate into **Trusted People** on **Local
 Machine** via Certificate Wizard.
 
