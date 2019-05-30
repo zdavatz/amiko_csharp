@@ -33,7 +33,7 @@ using System.Windows.Media.Imaging;
 
 namespace AmiKoWindows
 {
-    class Utilities
+    public class Utilities
     {
         public static string AppCultureInfoName()
         {
