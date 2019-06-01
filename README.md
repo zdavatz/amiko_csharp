@@ -280,7 +280,7 @@ PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 
 - Get [Installer Project for Visual Studio](https://marketplace.visualstudio.com/items?itemName=visualstudioclient.MicrosoftVisualStudio2017InstallerProjects)
 - Build Amiko / Comed with Release configuration
 - Build Amiko / Comed Installer
-- The output should be at e.g. `Amiko Destin/Release/Amiko Destin.msi`
+- The output should be at e.g. `Amiko Desitin/Release/Amiko Desitin.msi`
 
 ##### Reference
 
