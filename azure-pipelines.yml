@@ -22,9 +22,36 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
+- task: CmdLine@2
+  inputs:
+    script: |
+      @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      choco install windows-sdk-8.1
+
+- task: PowerShell@2
+  inputs:
+    filePath: '.\download.ps1'
+    errorActionPreference: 'continue'
+
 - task: VSBuild@1
   inputs:
     platform: 'x86'
     solution: '$(solution)'
     configuration: '$(buildConfiguration)'
     msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: '**\bin\$(BuildConfiguration)\**'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: Build Result'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
