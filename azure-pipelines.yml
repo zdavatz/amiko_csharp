@@ -22,6 +22,27 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
+- task: CmdLine@2
+  inputs:
+    script: |
+      @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      choco install windows-sdk-8.1
+
+- task: CmdLine@2
+  inputs:
+    script: 'dir "C:\Program Files (x86)\Windows Kits\8.1\"'
+
+- task: MSBuild@1
+  inputs:
+    platform: 'x86'
+    solution: '$(solution)'
+    configuration: '$(buildConfiguration)'
+    msbuildArguments: '/t:AmikoDesitin /p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
+
 - task: VSBuild@1
   inputs:
     platform: 'x86'
