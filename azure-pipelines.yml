@@ -32,16 +32,10 @@ steps:
     script: |
       choco install windows-sdk-8.1
 
-- task: CmdLine@2
+- task: PowerShell@2
   inputs:
-    script: 'dir "C:\Program Files (x86)\Windows Kits\8.1\"'
-
-- task: MSBuild@1
-  inputs:
-    platform: 'x86'
-    solution: '$(solution)'
-    configuration: '$(buildConfiguration)'
-    msbuildArguments: '/t:AmikoDesitin /p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
+    filePath: '.\download.ps1'
+    errorActionPreference: 'continue'
 
 - task: VSBuild@1
   inputs:
