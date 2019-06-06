@@ -1,30 +1,30 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-    <Product Name='Amiko Desitin' Manufacturer='ywesee'
-        Id='27CF26CA-B7AD-4B17-8929-A8B59F460AC4'
-        UpgradeCode='F199632E-60C8-428A-8AE7-124562CC0735'
-        Language='1031' Codepage='1252' Version='1.0.0'>
+    <Product Name='Comed Desitin' Manufacturer='ywesee'
+        Id='67334990-0D4A-43D1-97DF-7DECA67A86B2'
+        UpgradeCode='5216D3B6-D1F0-430D-AF24-6472687DFF3F'
+        Language='1036' Codepage='1252' Version='1.0.0'>
 
-        <Package Id='*' Keywords='Installer' Description="Amiko Desitin Installer"
-            Comments='Install Amiko Desitin' Manufacturer='ywesee'
-            InstallerVersion='100' Languages='1031' Compressed='yes' SummaryCodepage='1252' />
+        <Package Id='*' Keywords='Installer' Description="Comed Desitin Installer"
+            Comments='Install Comed Desitin' Manufacturer='ywesee'
+            InstallerVersion='100' Languages='1036' Compressed='yes' SummaryCodepage='1252' />
 
         <Media Id='1' Cabinet='Sample.cab' EmbedCab='yes' DiskPrompt='CD-ROM #1' />
-        <Property Id='DiskPrompt' Value="Amiko Desitin Installation [1]" />
+        <Property Id='DiskPrompt' Value="Comed Desitin Installation [1]" />
 
         <Directory Id='TARGETDIR' Name='SourceDir'>
             <Directory Id='ProgramFilesFolder' Name='PFiles'>
                 <Directory Id='ywesee' Name='ywesee'>
-                    <Directory Id='INSTALLDIR' Name='AmikoDesitin'>
-                        <Component Id='MainExecutable' Guid='189B2B1B-4AD3-484F-A94C-7A9B5DB4F2F1'>
-                            <File Id='AmikoEXE' Name='Amiko Desitin.exe' DiskId='1' Source='Amiko Desitin.exe' KeyPath='yes'>
-                                <Shortcut Id="startmenuAmikoDesitin" Directory="ProgramMenuFolder" Name="Amiko Desitin"
+                    <Directory Id='INSTALLDIR' Name='ComedDesitin'>
+                        <Component Id='MainExecutable' Guid='BA8759AE-9065-435D-A092-F1A92E75E6A0'>
+                            <File Id='ComedEXE' Name='Comed Desitin.exe' DiskId='1' Source='Comed Desitin.exe' KeyPath='yes'>
+                                <Shortcut Id="startmenuComedDesitin" Directory="ProgramMenuFolder" Name="Comed Desitin"
                                         WorkingDirectory='INSTALLDIR' Icon="desitin_icon.ico" IconIndex="0" Advertise="yes" />
-                                <Shortcut Id="desktopAmikoDesitin" Directory="DesktopFolder" Name="Amiko Desitin"
+                                <Shortcut Id="desktopComedDesitin" Directory="DesktopFolder" Name="Comed Desitin"
                                     WorkingDirectory='INSTALLDIR' Icon="desitin_icon.ico" IconIndex="0" Advertise="yes" />
                             </File>
-                            <File Id='AmiKoDesitin.exe.config' Name='AmiKo Desitin.exe.config' DiskId='1' Source='AmiKo Desitin.exe.config' KeyPath='no' />
-                            <File Id='AmiKoDesitin.pdb' Name='AmiKo Desitin.pdb' DiskId='1' Source='AmiKo Desitin.pdb' KeyPath='no' />
+                            <File Id='ComedDesitin.exe.config' Name='Comed Desitin.exe.config' DiskId='1' Source='Comed Desitin.exe.config' KeyPath='no' />
+                            <File Id='ComedDesitin.pdb' Name='Comed Desitin.pdb' DiskId='1' Source='Comed Desitin.pdb' KeyPath='no' />
                             <File Id='AppxManifest.xml' Name='AppxManifest.xml' DiskId='1' Source='AppxManifest.xml' KeyPath='no' />
                             <File Id='EntityFramework.dll' Name='EntityFramework.dll' DiskId='1' Source='EntityFramework.dll' KeyPath='no' />
                             <File Id='EntityFramework.SqlServer.dll' Name='EntityFramework.SqlServer.dll' DiskId='1' Source='EntityFramework.SqlServer.dll' KeyPath='no' />
@@ -51,7 +51,7 @@
                         </Component>
                         <Directory Id='Resources' Name='Resources'>
                             <Directory Id='img' Name='img'>
-                                <Component Id='ImageResources' Guid='5D5EBC4F-7C7C-44E5-9794-5440B200EF79'>
+                                <Component Id='ImageResources' Guid='4C3EC3F5-5250-4AE4-9A14-5F982E3439DC'>
                                     <File Id='_28_star_gy.png' Name='28-star-gy.png' DiskId='1' Source='Resources\img\28-star-gy.png' KeyPath='yes' />
                                     <File Id='_28_star_ye.png' Name='28-star-ye.png' DiskId='1' Source='Resources\img\28-star-ye.png' KeyPath='no' />
                                     <File Id='aips32x32_dark.png' Name='aips32x32_dark.png' DiskId='1' Source='Resources\img\aips32x32_dark.png' KeyPath='no' />
@@ -76,7 +76,7 @@
                                 </Component>
                             </Directory>
                             <Directory Id='css' Name='css'>
-                                <Component Id='CSSResources' Guid='EA997AAF-7578-463F-831D-2541911A0F3C'>
+                                <Component Id='CSSResources' Guid='C7BA22D1-F846-44B5-8F24-D6548D8FDD9E'>
                                     <File Id='fachinfo_css.css' Name='fachinfo_css.css' DiskId='1' Source='Resources\css\fachinfo_css.css' KeyPath='yes' />
                                     <File Id='fulltext_style_css.css' Name='fulltext_style_css.css' DiskId='1' Source='Resources\css\fulltext_style_css.css' KeyPath='no' />
                                     <File Id='interactions_css.css' Name='interactions_css.css' DiskId='1' Source='Resources\css\interactions_css.css' KeyPath='no' />
@@ -85,33 +85,33 @@
                                 </Component>
                             </Directory>
                             <Directory Id='js' Name='js'>
-                                <Component Id='JSResources' Guid='E0F587A1-7AAE-44AA-9C5A-2F36DCEC893F'>
+                                <Component Id='JSResources' Guid='61C70684-DF9D-4915-8023-E0018694FF01'>
                                     <File Id='interaction_callbacks.js' Name='interaction_callbacks.js' DiskId='1' Source='Resources\js\interaction_callbacks.js' KeyPath='yes' />
                                     <File Id='main_callbacks.js' Name='main_callbacks.js' DiskId='1' Source='Resources\js\main_callbacks.js' KeyPath='no' />
                                 </Component>
                             </Directory>
                         </Directory>
                         <Directory Id='Data' Name='Data'>
-                            <Component Id='DataDir' Guid='2507ECA2-A487-48A7-AEA8-094688959E22'>
-                                <File Id='amiko_db_full_idx_de.db' Name='amiko_db_full_idx_de.db' DiskId='1' Source='Data\amiko_db_full_idx_de.db' KeyPath='yes' />
-                                <File Id='amiko_frequency_de.db' Name='amiko_frequency_de.db' DiskId='1' Source='Data\amiko_frequency_de.db' KeyPath='no' />
-                                <File Id='amiko_report_de.html' Name='amiko_report_de.html' DiskId='1' Source='Data\amiko_report_de.html' KeyPath='no' />
-                                <File Id='drug_interactions_csv_de.csv' Name='drug_interactions_csv_de.csv' DiskId='1' Source='Data\drug_interactions_csv_de.csv' KeyPath='no' />
+                            <Component Id='DataDir' Guid='080D185B-CF78-469D-BA0D-F7155F4231A1'>
+                                <File Id='amiko_db_full_idx_fr.db' Name='amiko_db_full_idx_fr.db' DiskId='1' Source='Data\amiko_db_full_idx_fr.db' KeyPath='yes' />
+                                <File Id='amiko_frequency_fr.db' Name='amiko_frequency_fr.db' DiskId='1' Source='Data\amiko_frequency_fr.db' KeyPath='no' />
+                                <File Id='amiko_report_fr.html' Name='amiko_report_fr.html' DiskId='1' Source='Data\amiko_report_fr.html' KeyPath='no' />
+                                <File Id='drug_interactions_csv_fr.csv' Name='drug_interactions_csv_fr.csv' DiskId='1' Source='Data\drug_interactions_csv_fr.csv' KeyPath='no' />
                             </Component>
                         </Directory>
                         <Directory Id='dir_x64' Name='x64'>
-                            <Component Id='X64Dir' Guid='B7E58790-45AE-4844-ACFD-90F2CA067EBC'>
+                            <Component Id='X64Dir' Guid='B082579F-A46A-47D4-8406-0E64905E7C72'>
                                 <File Id='X64SQLite.Interop.dll' Name='SQLite.Interop.dll' DiskId='1' Source='x64\SQLite.Interop.dll' KeyPath='yes' />
                             </Component>
                         </Directory>
                         <Directory Id='dir_x86' Name='x86'>
-                            <Component Id='X86Dir' Guid='38D88B90-F43F-4D2E-9555-07ED05BECD1D'>
+                            <Component Id='X86Dir' Guid='630842B5-EB3E-47B0-A360-21CECBB9C273'>
                                 <File Id='X86SQLite.Interop.dll' Name='SQLite.Interop.dll' DiskId='1' Source='x86\SQLite.Interop.dll' KeyPath='yes' />
                             </Component>
                         </Directory>
-                        <Directory Id='de_CH' Name='de-CH'>
-                            <Component Id='LocaleDir' Guid='D67DCF19-2797-4DC8-BBCC-422712CBE089'>
-                                <File Id='AmiKo_Desitin.resources.dll' Name='AmiKo Desitin.resources.dll' DiskId='1' Source='de-CH\AmiKo Desitin.resources.dll' KeyPath='yes' />
+                        <Directory Id='fr_CH' Name='fr-CH'>
+                            <Component Id='LocaleDir' Guid='8BEBFC83-585D-4792-B9A0-FBAADE54F1BF'>
+                                <File Id='Comed_Desitin.resources.dll' Name='Comed Desitin.resources.dll' DiskId='1' Source='fr-CH\Comed Desitin.resources.dll' KeyPath='yes' />
                             </Component>
                         </Directory>
                     </Directory>
@@ -121,7 +121,7 @@
             <Directory Id="DesktopFolder" Name="Desktop" />
         </Directory>
 
-        <Feature Id='Complete' Title='Amiko Desitin' Description='The complete package.' Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
+        <Feature Id='Complete' Title='Comed Desitin' Description='The complete package.' Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
             <ComponentRef Id='MainExecutable' />
             <ComponentRef Id='ImageResources' />
             <ComponentRef Id='CSSResources' />
