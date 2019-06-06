@@ -85,6 +85,8 @@ At first, you need to put database and csv files into `Data` directory.
 Once you have built the app with these files, you can update it via the feature
 of the app.
 
+It can be done by running `download.ps1` with Powershell, or:
+
 ```bash
 $ cd /path/to/project
 % mkdir -p AmiKoWindows/Data/{de,fr}
@@ -275,12 +277,16 @@ PS C:\Users\...> Start-Process '.\AmiKoWindows\bin\Debug\AmiKo\AmiKo Desitin.exe
 PS C:\Users\...> PowerShell.exe -ExecutionPolicy Bypass -File .\BuildAndRun.ps1 "AmiKo"
 ```
 
-#### Building Installer with Visual Studio
+#### Building Installer with WiX
 
-- Get [Installer Project for Visual Studio](https://marketplace.visualstudio.com/items?itemName=visualstudioclient.MicrosoftVisualStudio2017InstallerProjects)
+- Get [The WiX toolset](https://wixtoolset.org)
 - Build Amiko / Comed with Release configuration
-- Build Amiko / Comed Installer
-- The output should be at e.g. `Amiko Desitin/Release/Amiko Desitin.msi`
+- Run `MakeMsi.ps1` with Powershell
+  - Make sure you have WiX command in PATH,
+  - `;C:\Program Files (x86)\WiX Toolset v3.11\bin`
+- The output should be at:
+  - `AmikoWindows\bin\Release\Amiko-Installer\Amiko-Installer.msi`
+  - `AmikoWindows\bin\Release\Comed-Installer\Comed-Installer.msi`
 
 ##### Reference
 
