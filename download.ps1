@@ -1,3 +1,5 @@
+#!/usr/bin/env powershell -File
+
 New-Item -ItemType directory -Path AmiKoWindows/Data/de
 New-Item -ItemType directory -Path AmiKoWindows/Data/fr
 
