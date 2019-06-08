@@ -30,7 +30,7 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      choco install windows-sdk-8.1 wixtoolset
+      choco install windows-sdk-8.1 windows-sdk-10.0 wixtoolset
 
 - task: PowerShell@2
   inputs:
@@ -43,6 +43,12 @@ steps:
     solution: '$(solution)'
     configuration: '$(buildConfiguration)'
     msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\AmiKo /p AmikoWindows\bin\AmikoDesitin.appx
+      "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\CoMed /p AmikoWindows\bin\CoMedDesitin.appx
 
 - task: PowerShell@2
   inputs:
