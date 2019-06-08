@@ -47,8 +47,8 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\AmiKo /p AmikoWindows\bin\AmikoDesitin.appx
-      "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\CoMed /p AmikoWindows\bin\CoMedDesitin.appx
+      "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\AmiKo /p AmikoWindows\bin\Release\AmikoDesitin.appx
+      "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\CoMed /p AmikoWindows\bin\Release\CoMedDesitin.appx
 
 - task: PowerShell@2
   inputs:

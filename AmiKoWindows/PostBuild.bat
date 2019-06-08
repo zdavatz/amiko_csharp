@@ -10,7 +10,7 @@ ECHO --- Copying important files and folder ---
 
 SET appname="AmiKoDesitin"
 
-if %3=="fr" (
+if "%3"=="fr" (
   SET appname="CoMedDesitin"
 )
 (COPY /Y "%1\AmiKoWindows\%appname%.appx.manifest" "%2\AppxManifest.xml")

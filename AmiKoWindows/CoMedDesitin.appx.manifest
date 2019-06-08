@@ -33,7 +33,7 @@
        Description="No.1 Compendium des Médicaments Suisse" />
 
       <Extensions>
-        <Euap:xtension Category="windows.fileTypeAssociation">
+        <uap:Extension Category="windows.fileTypeAssociation">
           <uap:FileTypeAssociation Name="amk">
             <uap:SupportedFileTypes>
               <uap:FileType>.amk</uap:FileType>
