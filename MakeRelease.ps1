@@ -36,10 +36,10 @@ if ($application -eq "CoMed") {
 # AmiKoWindows/AmiKoDesitin.appx.manifest
 # AmiKoWindows/CoMedDesitin.appx.manifest
 #
-# References for Desktop Bridge and DesktopAppConverter.exe
+# References for App packager
 #
-# https://docs.microsoft.com/en-us/windows/uwp/porting/desktop-to-uwp-manual-conversion
-# https://docs.microsoft.com/en-us/windows/uwp/porting/desktop-to-uwp-run-desktop-app-converter
+# https://docs.microsoft.com/en-us/windows/uwp/packaging/create-app-package-with-makeappx-tool
+# https://docs.microsoft.com/en-us/windows/desktop/appxpkg/make-appx-package--makeappx-exe-
 
 $version = "1.0.11.0"
 $appId = "yweseeGmbH.${application}"
@@ -119,20 +119,8 @@ if ($configuration -eq "Debug") {
   $appId = "${appId}.Debug"
 }
 
-DesktopAppConverter.exe `
-  -Installer "${packageDir}" `
-  -AppExecutable "${application} Desitin.exe" `
-  -AppDisplayName "${application} Desitin" `
-  -AppDescription "${description}" `
-  -AppId "${appId}" `
-  -PackageName "${appId}" `
-  -PackageDisplayName "${appName}" `
-  -Destination "${outputDir}" `
-  -Publisher "${publisherId}" `
-  -PackageArch "$arch" `
-  -PackagePublisherDisplayName "${publisherName}" `
-  -Version "${version}" `
-  -MakeAppx -sign -Verbose -Verify
+$env:Path += ";C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64"
+MakeAppx.exe pack /d "${packageDir}" /p "${outputDir}\${application}.appx"
 
 if ($lastexitcode -ne 0) {
   Write-Host

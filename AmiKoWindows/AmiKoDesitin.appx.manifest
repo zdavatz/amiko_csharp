@@ -7,12 +7,12 @@
     Version="1.0.11.0"
     ProcessorArchitecture="x64"
     Publisher="CN=3F71A827-F362-4FF2-A406-EA63C19EA85B"
-    PublisherDisplayName="ywesee GmbH" />
+    />
     <Properties>
     <DisplayName>AmiKo Desitin</DisplayName>
     <PublisherDisplayName>ywesee GmbH</PublisherDisplayName>
     <Description>No.1 Arzneimittelkompendium der Schweiz</Description>
-    <Logo>Resources\img\logo\desitin_logo.50x50.png</Logo>
+    <Logo>Resources\img\desitin_icon.png</Logo>
   </Properties>
   <Resources>
     <Resource Language="de-ch" />
@@ -28,18 +28,18 @@
       <uap:VisualElements
        BackgroundColor="#464646"
        DisplayName="AmiKo Desitin"
-       Square150x150Logo="Resources\img\logo\desitin_logo.png"
-       Square44x44Logo="Resources\img\logo\desitin_logo.png"
+       Square150x150Logo="Resources\img\desitin_icon.png"
+       Square44x44Logo="Resources\img\desitin_icon.png"
        Description="No.1 Arzneimittelkompendium Schweiz" />
 
       <Extensions>
-        <Extension Category="windows.fileTypeAssociation">
-          <FileTypeAssociation Name="amk">
-            <SupportedFileTypes>
-              <FileType>.amk</FileType>
-            </SupportedFileTypes>
-          </FileTypeAssociation>
-        </Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="amk">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.amk</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
       </Extensions>
     </Application>
   </Applications>
