@@ -248,19 +248,11 @@ namespace AmiKoWindows
 
         private async void TakePictureButton_Click(object sender, RoutedEventArgs e)
         {
-            MediaCapture capture = null;
-            try
+            if (DetectCamera())
             {
-                capture = new MediaCapture();
+                MediaCapture capture = new MediaCapture();
                 await capture.InitializeAsync();
-            }
-            catch (TypeLoadException ex)
-            {
-                Log.WriteLine(ex.Message);
-            }
 
-            if (capture != null)
-            {
                 var preview = new PreviewImage(capture);
                 this.Picture.Source = preview;
                 await preview.StartAsync();
@@ -496,10 +488,11 @@ namespace AmiKoWindows
 
         private bool DetectCamera()
         {
+
             try
             {
                 // is camera available?
-                var _ = new MediaCapture();
+                TryLoadMediaCapture();
                 return true;
             }
             catch (TypeLoadException ex)
@@ -507,6 +500,11 @@ namespace AmiKoWindows
                 Log.WriteLine(ex.Message);
                 return false;
             }
+        }
+
+        private void TryLoadMediaCapture()
+        {
+            new MediaCapture();
         }
     }
 }
