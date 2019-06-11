@@ -93,9 +93,10 @@ namespace AmiKoWindows
             if (highlight != null && highlight.Length > 3)
             {
                 // Marks the keyword in the html
-                content = content.Replace(highlight, "<span class=\"mark\" style=\"background-color: yellow\">" + highlight + "</span>");
                 string firstUpper = highlight.Substring(0, 1).ToUpper() + highlight.Substring(1, highlight.Length - 1);
-                content = content.Replace(firstUpper, "<span class=\"mark\" style=\"background-color: yellow\">" + firstUpper + "</span>");
+
+                content += "<script>highlightText(document.body, '" + highlight + "')</script>";
+                content += "<script>highlightText(document.body, '" + firstUpper + "')</script>";
             }
 
             return content;
