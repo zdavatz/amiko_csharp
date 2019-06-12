@@ -70,6 +70,6 @@ steps:
 - task: CopyFilesOverSSH@0
   inputs:
     sshEndpoint: 'pillbox'
-    sourceFolder: 'drop/AmiKoWindows/bin/Release/Amiko-Installer/Amiko-Installer.msi'
+    sourceFolder: '$(build.artifactstagingdirectory)/AmiKoWindows/bin/Release/Amiko-Installer/Amiko-Installer.msi'
     contents: '**'
     targetFolder: '/home/ftp/Amiko_Desitin_Win7.msi'
