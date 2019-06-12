@@ -66,3 +66,10 @@ steps:
   displayName: 'Publish Artifact: Build Result'
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
+    
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'pillbox'
+    sourceFolder: 'AmiKoWindows\bin\Release\Amiko-Installer\Amiko-Installer.msi'
+    contents: '**'
+    targetFolder: '/home/ftp/Amiko_Desitin_Win7.msi'
