@@ -67,9 +67,10 @@ steps:
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
     
-- task: CopyFilesOverSSH@0
-  inputs:
-    sshEndpoint: 'pillbox'
-    sourceFolder: '$(build.artifactstagingdirectory)'
-    contents: 'AmiKoWindows/bin/Release/Amiko-Installer/Amiko-Installer.msi'
-    targetFolder: '/home/ftp/Amiko_Desitin_Win7.msi'
+# see Issue https://github.com/microsoft/azure-pipelines-tasks/issues/10642
+#- task: CopyFilesOverSSH@0
+#  inputs:
+#    sshEndpoint: 'pillbox'
+#    sourceFolder: '$(build.artifactstagingdirectory)'
+#    contents: 'AmiKoWindows/bin/Release/Amiko-Installer/Amiko-Installer.msi'
+#    targetFolder: '/home/ftp/Amiko_Desitin_Win7.msi'
