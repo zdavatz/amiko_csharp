@@ -47,6 +47,7 @@ function highlightText(node, text) {
                 var thisSpan = document.createElement('span');
                 thisSpan.innerText = text;
                 thisSpan.style.backgroundColor = "yellow";
+                thisSpan.className = 'mark';
                 wrapper.appendChild(thisSpan);
             }
         }
