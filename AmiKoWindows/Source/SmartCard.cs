@@ -46,8 +46,63 @@ namespace AmiKoWindows
         private SmartCard() { }
         ~SmartCard()
         {
+            this.DeviceMonitor.StatusChanged -= DeviceMonitor_StatusChanged;
+            this.DeviceMonitor.Cancel();
+            this.Monitor.CardInserted -= Monitor_CardInserted;
+            this.Monitor.Cancel();
         }
 
+        public void StartMonitor()
+        {
+            if (this.DeviceMonitoring) return;
+            DeviceMonitor = DeviceMonitorFactory.Instance.Create(SCardScope.System);
+            DeviceMonitor.StatusChanged += DeviceMonitor_StatusChanged;
+            DeviceMonitor.Initialized += (sender, args) => Console.WriteLine("5: {0}", args.ToString());
+            DeviceMonitor.MonitorException += (sender, args) => Console.WriteLine("6: {0}", args.ToString());
+
+            Monitor = MonitorFactory.Instance.Create(SCardScope.System);
+            Monitor.CardInserted += Monitor_CardInserted;
+            Monitor.CardInserted += (sender, args) => Console.WriteLine("0: {0}", args.ToString());
+            Monitor.CardRemoved += (sender, args) => Console.WriteLine("1: {0}", args.ToString());
+            Monitor.Initialized += (sender, args) => Console.WriteLine("2: {0}", args.ToString());
+            Monitor.StatusChanged += (sender, args) => Console.WriteLine("3: {0}", args.ToString());
+            Monitor.MonitorException += (sender, args) => Console.WriteLine("4: {0}", args.ToString());
+
+            DeviceMonitor.Start();
+            this.DeviceMonitoring = true;
+            this.InitialMonitorReaders();
+        }
+
+        private void DeviceMonitor_StatusChanged(object sender, DeviceChangeEventArgs e)
+        {
+            if (this.Monitoring)
+            {
+                Monitor.Cancel();
+            }
+            var readers = e.AllReaders.ToArray();
+            Monitor.Start(readers);
+            this.Monitoring = false;
+        }
+
+        private void Monitor_CardInserted(object sender, CardStatusEventArgs e)
+        {
+            this.RunAndRaise(e.ReaderName);
+        }
+
+        private void InitialMonitorReaders()
+        {
+            using (var context = ContextFactory.Instance.Establish(SCardScope.System))
+            {
+                var readers = context.GetReaders();
+                Monitor.Start(readers);
+                Monitoring = true;
+
+                foreach (var readerName in readers)
+                {
+                    this.RunAndRaise(readerName);
+                }
+            }
+        }
 
         public void RunAndRaise(string readerName)
         {
