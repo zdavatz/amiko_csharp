@@ -93,6 +93,12 @@
     <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PCSC, Version=4.1.1.0, Culture=neutral, PublicKeyToken=13b76e54a2ee80a7, processorArchitecture=MSIL">
+      <HintPath>..\Packages\PCSC.4.1.1\lib\net40\PCSC.dll</HintPath>
+    </Reference>
+    <Reference Include="PCSC.Iso7816, Version=4.1.1.0, Culture=neutral, PublicKeyToken=13b76e54a2ee80a7, processorArchitecture=MSIL">
+      <HintPath>..\Packages\PCSC.Iso7816.4.1.1\lib\net40\PCSC.Iso7816.dll</HintPath>
+    </Reference>
     <Reference Include="ReachFramework" />
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System.Runtime" />
@@ -240,6 +246,7 @@
     <Compile Include="Source\Presenters.cs" />
     <Compile Include="Source\Printer.cs" />
     <Compile Include="Source\ShareUtility.cs" />
+    <Compile Include="Source\SmartCard.cs" />
     <Compile Include="Source\StatusBarHelper.cs" />
     <Compile Include="Source\UIState.cs" />
     <Compile Include="Source\UpdateDb.cs" />
