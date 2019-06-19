@@ -97,7 +97,12 @@ namespace AmiKoWindows
         public int RawGender
         {
             get { return _Gender; }
-            set { SetField(ref _Gender, value, "Gender"); }
+            set
+            {
+                SetField(ref _Gender, value, "Gender");
+                OnPropertyChanged("IsMale");
+                OnPropertyChanged("IsFemale");
+            }
         }
         public string Gender
         {
@@ -107,6 +112,8 @@ namespace AmiKoWindows
                 int val = GENDER_FEMALE;
                 Int32.TryParse(value.ToString(), out val);
                 SetField(ref _Gender, val == GENDER_MALE ? GENDER_MALE : GENDER_FEMALE, "Gender");
+                OnPropertyChanged("IsMale");
+                OnPropertyChanged("IsFemale");
             }
         }
 
