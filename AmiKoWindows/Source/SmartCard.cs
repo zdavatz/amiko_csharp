@@ -12,7 +12,7 @@ using PCSC.Monitoring;
 
 namespace AmiKoWindows
 {
-    class SmartCard
+    public class SmartCard
     {
         private const byte INS_ERASE_BIN = 0x0E;
         private const byte INS_VRFY = 0x20;
@@ -81,7 +81,7 @@ namespace AmiKoWindows
             }
             var readers = e.AllReaders.ToArray();
             Monitor.Start(readers);
-            this.Monitoring = false;
+            this.Monitoring = true;
         }
 
         private void Monitor_CardInserted(object sender, CardStatusEventArgs e)
@@ -94,12 +94,15 @@ namespace AmiKoWindows
             using (var context = ContextFactory.Instance.Establish(SCardScope.System))
             {
                 var readers = context.GetReaders();
-                Monitor.Start(readers);
-                Monitoring = true;
-
-                foreach (var readerName in readers)
+                if (readers.Length > 0)
                 {
-                    this.RunAndRaise(readerName);
+                    Monitor.Start(readers);
+                    Monitoring = true;
+
+                    foreach (var readerName in readers)
+                    {
+                        this.RunAndRaise(readerName);
+                    }
                 }
             }
         }
