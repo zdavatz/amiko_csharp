@@ -175,8 +175,9 @@ namespace AmiKoWindows
             // Set browser emulation mode. Thx Microsoft for these stupid hacks!!
             SetBrowserEmulationMode();
 
-            SmartCard.Instance.StartMonitor();
-            SmartCard.Instance.ReceivedCardResult += ReceivedCardResult;
+            SmartCard smartcard = SmartCard.Instance;
+            smartcard.ReceivedCardResult += ReceivedCardResult;
+            smartcard.Start();
         }
 
         #region WndProc Support

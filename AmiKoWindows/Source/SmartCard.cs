@@ -14,74 +14,106 @@ namespace AmiKoWindows
 {
     public class SmartCard
     {
-        private const byte INS_ERASE_BIN = 0x0E;
-        private const byte INS_VRFY = 0x20;
-        private const byte INS_MANAGE_CHANNEL = 0x70;
-        private const byte INS_EXT_AUTH = 0x82;
-        private const byte INS_GET_CHALLENGE = 0x84;
-        private const byte INS_SELECT_FILE = 0xA4;
-        private const byte INS_READ_BIN = 0xB0;
-        private const byte INS_READ_REC = 0xB2;
-        private const byte INS_GET_RESP = 0xC0;
-        private const byte INS_ENVELOPE = 0xC2;
-        private const byte INS_GET_DATA = 0xCA;
-        private const byte INS_WRITE_BIN = 0xD0;
-        private const byte INS_WRITE_REC = 0xD2;
-        private const byte INS_UPDATE_BIN = 0xD6;
-        private const byte INS_PUT_DATA = 0xDA;
-        private const byte INS_UPDATE_REC = 0xDC;
-        private const byte INS_APPEND_REC = 0xE2;
-        /* for our transaction tracking, not defined in the specification */
-        private const byte INS_INVALID = 0x00;
-
         public static readonly SmartCard Instance = new SmartCard();
-        private bool DeviceMonitoring = false;
-        private bool Monitoring = false;
         private IDeviceMonitor DeviceMonitor = null;
         private ISCardMonitor Monitor = null;
 
         public delegate void ReceivedCardResultHandler(object sender, Result r);
         public event ReceivedCardResultHandler ReceivedCardResult;
 
-        private SmartCard() { }
+        private SmartCard() {}
         ~SmartCard()
         {
-            this.DeviceMonitor.StatusChanged -= DeviceMonitor_StatusChanged;
-            this.DeviceMonitor.Cancel();
-            this.Monitor.CardInserted -= Monitor_CardInserted;
-            this.Monitor.Cancel();
+            StopDeviceMonitor();
+            StopCardMonitor();
         }
 
-        public void StartMonitor()
+        public void Start()
         {
-            if (this.DeviceMonitoring) return;
+            InitialRuns();
+            RestartDeviceMonitor();
+            RestartCardMonitor();
+        }
+
+        private void RestartDeviceMonitor()
+        {
+            if (this.DeviceMonitor != null)
+            {
+                StopDeviceMonitor();
+            }
+            StartDeviceMonitor();
+        }
+
+        private void StartDeviceMonitor()
+        {
             DeviceMonitor = DeviceMonitorFactory.Instance.Create(SCardScope.System);
             DeviceMonitor.StatusChanged += DeviceMonitor_StatusChanged;
+            DeviceMonitor.MonitorException += DeviceMonitor_Exception;
+
             DeviceMonitor.Initialized += (sender, args) => Console.WriteLine("5: {0}", args.ToString());
             DeviceMonitor.MonitorException += (sender, args) => Console.WriteLine("6: {0}", args.ToString());
 
+            DeviceMonitor.Start();
+        }
+
+        private void StopDeviceMonitor()
+        {
+            if (this.DeviceMonitor == null) return;
+            this.DeviceMonitor.StatusChanged -= DeviceMonitor_StatusChanged;
+            this.DeviceMonitor.MonitorException -= DeviceMonitor_Exception;
+            this.DeviceMonitor.Cancel();
+            this.DeviceMonitor = null;
+        }
+
+        private void DeviceMonitor_Exception(object sender, DeviceMonitorExceptionEventArgs args)
+        {
+            RestartDeviceMonitor();
+        }
+
+        private void DeviceMonitor_StatusChanged(object sender, DeviceChangeEventArgs e)
+        {
+            RestartCardMonitor();
+        }
+
+        private void RestartCardMonitor()
+        {
+            if (this.Monitor != null)
+            {
+                StopCardMonitor();
+            }
+            using (var context = ContextFactory.Instance.Establish(SCardScope.System)) {
+                var readerNames = context.GetReaders();
+                if (readerNames.Length > 0) {
+                    StartCardMonitor(readerNames);
+                }
+            }
+        }
+
+        private void StartCardMonitor(string[] readerNames)
+        {
             Monitor = MonitorFactory.Instance.Create(SCardScope.System);
             Monitor.CardInserted += Monitor_CardInserted;
+            Monitor.MonitorException += Monitor_MonitorException;
+            Monitor.Start(readerNames);
+
             Monitor.CardInserted += (sender, args) => Console.WriteLine("0: {0}", args.ToString());
             Monitor.CardRemoved += (sender, args) => Console.WriteLine("1: {0}", args.ToString());
             Monitor.Initialized += (sender, args) => Console.WriteLine("2: {0}", args.ToString());
             Monitor.StatusChanged += (sender, args) => Console.WriteLine("3: {0}", args.ToString());
             Monitor.MonitorException += (sender, args) => Console.WriteLine("4: {0}", args.ToString());
-
-            DeviceMonitor.Start();
-            this.DeviceMonitoring = true;
-            this.InitialMonitorReaders();
         }
 
-        private void DeviceMonitor_StatusChanged(object sender, DeviceChangeEventArgs e)
+        private void StopCardMonitor()
         {
-            if (this.Monitoring)
-            {
-                Monitor.Cancel();
-            }
-            var readers = e.AllReaders.ToArray();
-            Monitor.Start(readers);
-            this.Monitoring = true;
+            if (this.Monitor == null) return;
+            this.Monitor.CardInserted -= Monitor_CardInserted;
+            Monitor.MonitorException -= Monitor_MonitorException; ;
+        }
+
+        private void Monitor_MonitorException(object sender, PCSC.Exceptions.PCSCException exception)
+        {
+            RestartDeviceMonitor();
+            RestartCardMonitor();
         }
 
         private void Monitor_CardInserted(object sender, CardStatusEventArgs e)
@@ -89,20 +121,14 @@ namespace AmiKoWindows
             this.RunAndRaise(e.ReaderName);
         }
 
-        private void InitialMonitorReaders()
+        private void InitialRuns()
         {
             using (var context = ContextFactory.Instance.Establish(SCardScope.System))
             {
                 var readers = context.GetReaders();
-                if (readers.Length > 0)
+                foreach (var readerName in readers)
                 {
-                    Monitor.Start(readers);
-                    Monitoring = true;
-
-                    foreach (var readerName in readers)
-                    {
-                        this.RunAndRaise(readerName);
-                    }
+                    this.RunAndRaise(readerName);
                 }
             }
         }
@@ -159,7 +185,7 @@ namespace AmiKoWindows
         private void selectFile(IsoReader reader, byte[] filePath)
         {
             var command = new CommandApdu(IsoCase.Case4Extended, SCardProtocol.T1);
-            command.INS = INS_SELECT_FILE;
+            command.INS = (byte)InstructionCode.SelectFile;
             command.P1 = 0x08;
             command.P2 = 0x00;
             command.Data = filePath;
@@ -173,7 +199,7 @@ namespace AmiKoWindows
         private void readBinary(IsoReader reader, int expectedResponseLength, Result r)
         {
             var command = new CommandApdu(IsoCase.Case2Extended, SCardProtocol.T1);
-            command.INS = INS_READ_BIN;
+            command.INS = (byte)InstructionCode.ReadBinary;
             command.Le = expectedResponseLength; // The length of the expected response
             var response = reader.Transmit(command);
             var data = response.GetData();
