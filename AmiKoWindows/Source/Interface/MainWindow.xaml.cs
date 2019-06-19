@@ -176,6 +176,7 @@ namespace AmiKoWindows
             SetBrowserEmulationMode();
 
             SmartCard.Instance.StartMonitor();
+            SmartCard.Instance.ReceivedCardResult += ReceivedCardResult;
         }
 
         #region WndProc Support
@@ -1623,6 +1624,28 @@ namespace AmiKoWindows
             });
         }
 
+        private void ReceivedCardResult(object sender, SmartCard.Result r) {
+            this.Invoke(new Action(() => ReceivedCardResultMainThread(r)));
+        }
+        private void ReceivedCardResultMainThread(SmartCard.Result r)
+        {
+            var viewType = DataContext as ViewType;
+            if (viewType.Mode.Equals("Form") && viewType.HasBook)
+            {
+                // Already opened address book
+            }
+            else
+            {
+                this.DataContext = new ViewType("Form", true);
+            }
+            var book = AddressBook.Content as AddressBookControl;
+
+            if (book != null)
+            {
+                book.ReceivedCardResult(r);
+            }
+        }
+
         private void OpenAddressBookButton_Click(object sender, RoutedEventArgs e)
         {
             var source = e.OriginalSource as FrameworkElement;
@@ -1982,7 +2005,7 @@ namespace AmiKoWindows
         }
     }
 
-    
+
 	[ComImport, Guid("3A3DCD6C-3EAB-43DC-BCDE-45671CE800C8")]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IDataTransferManagerInterOp
