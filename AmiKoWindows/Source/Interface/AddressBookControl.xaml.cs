@@ -149,6 +149,43 @@ namespace AmiKoWindows
             EnableButton("MinusButton", true);
         }
 
+        public async void ReceivedCardResult(SmartCard.Result r)
+        {
+            ContactList.UnselectAll();
+            this.CurrentEntry = new Contact();
+
+            ResetFields();
+            ResetMessage();
+
+            this.CurrentEntry.FamilyName = r.FamilyName;
+            this.CurrentEntry.GivenName = r.GivenName;
+            this.CurrentEntry.Birthdate = r.BirthDate;
+
+            const int GENDER_FEMALE = 0;
+            const int GENDER_MALE = 1;
+            if (r.Gender.Equals("woman"))
+            {
+                this.CurrentEntry.RawGender = GENDER_FEMALE;
+            }
+            else if (r.Gender.Equals("man"))
+            {
+                this.CurrentEntry.RawGender = GENDER_MALE;
+            }
+            EnableButton("MinusButton", false);
+
+            if (_patientDb != null)
+            {
+                var uid = this.CurrentEntry.GenerateUid();
+                var existingContact = await _patientDb.GetContactByUid(uid);
+                if (existingContact != null)
+                {
+                    this.CurrentEntry = existingContact;
+                }
+                SetCurrentEntryAsSelected();
+                EnableButton("MinusButton", true);
+            }
+        }
+
         private void Control_Loaded(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(e.ToString());
