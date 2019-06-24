@@ -4,7 +4,7 @@ AmiKo for Windows, written in C#.
 Applications are available in the Microsoft store now!
 
 | Name | Language | Build |
-|------|----------|
+|------|----------|-------|
 | [AmiKo Desitin] | Deutsch (Schweiz) | [Build in Azure Pipelines](https://dev.azure.com/ywesee/AmiKo_Csharp/_build?definitionId=1) |
 | [CoMed Desitin] | Français (Suisse) | [Build in Azure Pipelines](https://dev.azure.com/ywesee/AmiKo_Csharp/_build?definitionId=1) |
 
