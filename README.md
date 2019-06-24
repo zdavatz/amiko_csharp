@@ -5,8 +5,8 @@ Applications are available in the Microsoft store now!
 
 | Name | Language |
 |------|----------|
-| [AmiKo Desitin] | Deutsch (Schweiz) |
-| [CoMed Desitin] | Français (Suisse) |
+| [AmiKo Desitin] | Deutsch (Schweiz) | [Build in Azure Pipelines](https://dev.azure.com/ywesee/AmiKo_Csharp/_build?definitionId=1)
+| [CoMed Desitin] | Français (Suisse) | [Build in Azure Pipelines](https://dev.azure.com/ywesee/AmiKo_Csharp/_build?definitionId=1)
 
 [AmiKo Desitin]: https://www.microsoft.com/de-de/store/p/amiko-desitin/9wzdncrdffxc
 [CoMed Desitin]: https://www.microsoft.com/de-de/store/p/comed-desitin/9nlldb9vxmgx
