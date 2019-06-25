@@ -34,6 +34,7 @@ using MahApps.Metro.Controls;
 namespace AmiKoWindows
 {
     using ControlExtensions;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// NOTE:
@@ -149,7 +150,7 @@ namespace AmiKoWindows
             EnableButton("MinusButton", true);
         }
 
-        public async void ReceivedCardResult(SmartCard.Result r)
+        public async Task<Contact> ReceivedCardResult(SmartCard.Result r)
         {
             ContactList.UnselectAll();
             this.CurrentEntry = new Contact();
@@ -183,6 +184,9 @@ namespace AmiKoWindows
                 }
                 SetCurrentEntryAsSelected();
                 EnableButton("MinusButton", true);
+                return existingContact;
+            } else {
+                return null;
             }
         }
 
