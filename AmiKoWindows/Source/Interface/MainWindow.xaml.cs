@@ -1628,23 +1628,25 @@ namespace AmiKoWindows
         private void ReceivedCardResult(object sender, SmartCard.Result r) {
             this.Invoke(new Action(() => ReceivedCardResultMainThread(r)));
         }
-        private void ReceivedCardResultMainThread(SmartCard.Result r)
+        private async void ReceivedCardResultMainThread(SmartCard.Result r)
         {
-            var viewType = DataContext as ViewType;
-            if (viewType.Mode.Equals("Form") && viewType.HasBook)
-            {
-                // Already opened address book
-            }
-            else
-            {
-                this.DataContext = new ViewType("Form", true);
-            }
             var book = AddressBook.Content as AddressBookControl;
-
+            Contact existingContact = null;
             if (book != null)
             {
-                book.ReceivedCardResult(r);
+                existingContact = await book.ReceivedCardResult(r);
             }
+
+            if (existingContact != null)
+            {
+                this.DataContext = new ViewType("Form", false);
+                this.ActiveContact = existingContact;
+                _prescriptions.ActiveContact = ActiveContact;
+                _prescriptions.LoadFiles();
+            } else {
+                this.DataContext = new ViewType("Form", true);
+            }
+            FillContactFields();
         }
 
         private void OpenAddressBookButton_Click(object sender, RoutedEventArgs e)
