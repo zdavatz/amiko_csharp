@@ -139,7 +139,11 @@ namespace AmiKoWindows
             try
             {
                 this.Run(readerName, r);
-                if (this.ReceivedCardResult != null)
+                if (r.FamilyName != null &&
+                    r.GivenName != null &&
+                    r.BirthDate != null &&
+                    r.Gender != null &&
+                    this.ReceivedCardResult != null)
                 {
                     this.ReceivedCardResult(this, r);
                 }
