@@ -37,6 +37,12 @@
                             <File Id='MahApps.Metro.xml' Name='MahApps.Metro.xml' DiskId='1' Source='MahApps.Metro.xml' KeyPath='no' />
                             <File Id='MediaCaptureWPF.dll' Name='MediaCaptureWPF.dll' DiskId='1' Source='MediaCaptureWPF.dll' KeyPath='no' />
                             <File Id='MediaCaptureWPF.Native.dll' Name='MediaCaptureWPF.Native.dll' DiskId='1' Source='MediaCaptureWPF.Native.dll' KeyPath='no' />
+                            <File Id='PCSC.dll' Name='PCSC.dll' DiskId='1' Source='PCSC.dll' KeyPath='no' />
+                            <File Id='PCSC.Iso7816.dll' Name='PCSC.Iso7816.dll' DiskId='1' Source='PCSC.Iso7816.dll' KeyPath='no' />
+                            <File Id='PCSC.Iso7816.pdb' Name='PCSC.Iso7816.pdb' DiskId='1' Source='PCSC.Iso7816.pdb' KeyPath='no' />
+                            <File Id='PCSC.Iso7816.xml' Name='PCSC.Iso7816.xml' DiskId='1' Source='PCSC.Iso7816.xml' KeyPath='no' />
+                            <File Id='PCSC.pdb' Name='PCSC.pdb' DiskId='1' Source='PCSC.pdb' KeyPath='no' />
+                            <File Id='PCSC.xml' Name='PCSC.xml' DiskId='1' Source='PCSC.xml' KeyPath='no' />
                             <File Id='System.Data.SQLite.dll' Name='System.Data.SQLite.dll' DiskId='1' Source='System.Data.SQLite.dll' KeyPath='no' />
                             <File Id='System.Data.SQLite.EF6.dll' Name='System.Data.SQLite.EF6.dll' DiskId='1' Source='System.Data.SQLite.EF6.dll' KeyPath='no' />
                             <File Id='System.Data.SQLite.Linq.dll' Name='System.Data.SQLite.Linq.dll' DiskId='1' Source='System.Data.SQLite.Linq.dll' KeyPath='no' />
