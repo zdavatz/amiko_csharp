@@ -123,13 +123,19 @@ namespace AmiKoWindows
 
         private void InitialRuns()
         {
-            using (var context = ContextFactory.Instance.Establish(SCardScope.System))
+            try
             {
-                var readers = context.GetReaders();
-                foreach (var readerName in readers)
+                using (var context = ContextFactory.Instance.Establish(SCardScope.System))
                 {
-                    this.RunAndRaise(readerName);
+                    var readers = context.GetReaders();
+                    foreach (var readerName in readers)
+                    {
+                        this.RunAndRaise(readerName);
+                    }
                 }
+            } catch (Exception ex)
+            {
+                Console.WriteLine("Initital run exception: {0}", ex.ToString());
             }
         }
 
