@@ -420,6 +420,7 @@ PS C:\Users\...> signtool.exe sign /fd <HASH ALGORITHM> /a /f <PFX> /p <PASSWORD
 NOTE:
 You need to install this `pfx` certificate into **Trusted People** on **Local
 Machine** via Certificate Wizard.
+Use [importpfx.exe](http://home.fnal.gov/~jklemenc/importpfx.html) `importpfx.exe -f "somePfx.pfx" -p "somePassword" -t MACHINE -s "TRUSTEDPEOPLE"`
 
 
 ##### Reference
