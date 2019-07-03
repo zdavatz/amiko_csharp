@@ -271,7 +271,7 @@ namespace AmiKoWindows
                             var result = DateTime.ParseExact(s, "yyyyMMdd", provider);
                             string birthDate = result.ToString("dd.MM.yyyy");
                             Console.WriteLine("birthdate {0}", birthDate);
-                            r.BirthDate = birthDate;
+                            r.BirthDate = AddressBookControl.FormatBirthdate(birthDate);
                         }
                         catch (FormatException e)
                         {
