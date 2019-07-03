@@ -19,7 +19,7 @@ using System.Windows;
 
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ywesee")]
-[assembly: AssemblyCopyright("Copyright © 2017")]
+[assembly: AssemblyCopyright("Copyright © 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -58,8 +58,8 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.11.0")]
-[assembly: AssemblyFileVersion("1.0.11.0")]
+[assembly: AssemblyVersion("1.0.14.0")]
+[assembly: AssemblyFileVersion("1.0.14.0")]
 #if AMIKO
 [assembly: Guid("3F71A827-F362-4FF2-A406-EA63C19EA85B")]
 [assembly: NeutralResourcesLanguage("de-CH")]

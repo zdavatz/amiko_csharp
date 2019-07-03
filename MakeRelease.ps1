@@ -41,7 +41,7 @@ if ($application -eq "CoMed") {
 # https://docs.microsoft.com/en-us/windows/uwp/packaging/create-app-package-with-makeappx-tool
 # https://docs.microsoft.com/en-us/windows/desktop/appxpkg/make-appx-package--makeappx-exe-
 
-$version = "1.0.11.0"
+$version = "1.0.14.0"
 $appId = "yweseeGmbH.${application}"
 $appName = "${application} Desitin"
 $description = "${application} Desitin"
