@@ -50,9 +50,6 @@ namespace AmiKoWindows
             DeviceMonitor.StatusChanged += DeviceMonitor_StatusChanged;
             DeviceMonitor.MonitorException += DeviceMonitor_Exception;
 
-            DeviceMonitor.Initialized += (sender, args) => Console.WriteLine("5: {0}", args.ToString());
-            DeviceMonitor.MonitorException += (sender, args) => Console.WriteLine("6: {0}", args.ToString());
-
             DeviceMonitor.Start();
         }
 
@@ -81,11 +78,20 @@ namespace AmiKoWindows
             {
                 StopCardMonitor();
             }
-            using (var context = ContextFactory.Instance.Establish(SCardScope.System)) {
-                var readerNames = context.GetReaders();
-                if (readerNames.Length > 0) {
-                    StartCardMonitor(readerNames);
+            try
+            {
+                using (var context = ContextFactory.Instance.Establish(SCardScope.System))
+                {
+                    var readerNames = context.GetReaders();
+                    if (readerNames.Length > 0)
+                    {
+                        StartCardMonitor(readerNames);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("RestartCardMonitor {0}", e.ToString());
             }
         }
 
@@ -95,12 +101,6 @@ namespace AmiKoWindows
             Monitor.CardInserted += Monitor_CardInserted;
             Monitor.MonitorException += Monitor_MonitorException;
             Monitor.Start(readerNames);
-
-            Monitor.CardInserted += (sender, args) => Console.WriteLine("0: {0}", args.ToString());
-            Monitor.CardRemoved += (sender, args) => Console.WriteLine("1: {0}", args.ToString());
-            Monitor.Initialized += (sender, args) => Console.WriteLine("2: {0}", args.ToString());
-            Monitor.StatusChanged += (sender, args) => Console.WriteLine("3: {0}", args.ToString());
-            Monitor.MonitorException += (sender, args) => Console.WriteLine("4: {0}", args.ToString());
         }
 
         private void StopCardMonitor()
@@ -118,7 +118,7 @@ namespace AmiKoWindows
 
         private void Monitor_CardInserted(object sender, CardStatusEventArgs e)
         {
-            this.RunAndRaise(e.ReaderName);
+            this.RunAndRaise(e.ReaderName, null);
         }
 
         private void InitialRuns()
@@ -130,7 +130,7 @@ namespace AmiKoWindows
                     var readers = context.GetReaders();
                     foreach (var readerName in readers)
                     {
-                        this.RunAndRaise(readerName);
+                        this.RunAndRaise(readerName, null);
                     }
                 }
             } catch (Exception ex)
@@ -139,12 +139,12 @@ namespace AmiKoWindows
             }
         }
 
-        public void RunAndRaise(string readerName)
+        public void RunAndRaise(string readerName, ISCardContext context)
         {
             Result r = new Result();
             try
             {
-                this.Run(readerName, r);
+                this.Run(readerName, context, r);
                 if (r.FamilyName != null &&
                     r.GivenName != null &&
                     r.BirthDate != null &&
@@ -160,36 +160,33 @@ namespace AmiKoWindows
             }
         }
 
-        public void Run(string readerName, Result r)
+        public void Run(string readerName, ISCardContext _context, Result r)
         {
-            var contextFactory = ContextFactory.Instance;
-            using (var context = contextFactory.Establish(SCardScope.System))
+            var context = _context != null ? _context : ContextFactory.Instance.Establish(SCardScope.System);
+            var status = context.GetReaderStatus(readerName);
+            var reader = new SCardReader(context);
+            reader.Connect(readerName, SCardShareMode.Shared, SCardProtocol.T1);
+            SCardError error = reader.GetAttrib(SCardAttribute.AtrString, null, out var atrLength);
+            var cardAtr = new byte[atrLength];
+            reader.GetAttrib(SCardAttribute.AtrString, out cardAtr);
+            byte[] correctBytes = {
+                0x3b, 0x9f, 0x13, 0x81, 0xb1, 0x80, 0x37, 0x1f,
+                0x03, 0x80, 0x31, 0xf8, 0x69, 0x4d, 0x54, 0x43,
+                0x4f, 0x53, 0x70, 0x02, 0x01, 0x02, 0x81, 0x07, 0x86
+            };
+            Console.WriteLine("ATR: {0}", BitConverter.ToString(cardAtr));
+            if (!cardAtr.SequenceEqual(correctBytes))
             {
-                var status = context.GetReaderStatus(readerName);
-                var reader = new SCardReader(context);
-                reader.Connect(readerName, SCardShareMode.Shared, SCardProtocol.T1);
-                reader.GetAttrib(SCardAttribute.AtrString, null, out var atrLength);
-                var cardAtr = new byte[atrLength];
-                reader.GetAttrib(SCardAttribute.AtrString, out cardAtr);
-                byte[] correctBytes = {
-                    0x3b, 0x9f, 0x13, 0x81, 0xb1, 0x80, 0x37, 0x1f,
-                    0x03, 0x80, 0x31, 0xf8, 0x69, 0x4d, 0x54, 0x43,
-                    0x4f, 0x53, 0x70, 0x02, 0x01, 0x02, 0x81, 0x07, 0x86
-                };
-                Console.WriteLine("ATR: {0}", BitConverter.ToString(cardAtr));
-                if (!cardAtr.SequenceEqual(correctBytes))
-                {
-                    return;
-                }
-                var isoReader = new IsoReader(reader);
-                byte[] ef_id = { 0x2f, 0x06 };
-                selectFile(isoReader, ef_id);
-                readBinary(isoReader, 84, r);
-
-                byte[] ef_ad = { 0x2f, 0x07 };
-                selectFile(isoReader, ef_ad);
-                readBinary(isoReader, 95, r);
+                return;
             }
+            var isoReader = new IsoReader(reader);
+            byte[] ef_id = { 0x2f, 0x06 };
+            selectFile(isoReader, ef_id);
+            readBinary(isoReader, 84, r);
+
+            byte[] ef_ad = { 0x2f, 0x07 };
+            selectFile(isoReader, ef_ad);
+            readBinary(isoReader, 95, r);
         }
 
         private void selectFile(IsoReader reader, byte[] filePath)
