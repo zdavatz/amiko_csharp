@@ -606,11 +606,19 @@ namespace AmiKoWindows
                 ThemeManager.ChangeAppStyle(Application.Current,
                         ThemeManager.GetAccent("Steel"),
                         ThemeManager.GetAppTheme("BaseLight"));
+                this.CompendiumIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/aips32x32_gray.png", UriKind.RelativeOrAbsolute));
+                this.FavoritesIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/favorites32x32_gray.png", UriKind.RelativeOrAbsolute));
+                this.InteractionsIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/interactions32x32_gray.png", UriKind.RelativeOrAbsolute));
+                this.PrescriptionsIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/prescriptions64x64.png", UriKind.RelativeOrAbsolute));
             } else
             {
                 ThemeManager.ChangeAppStyle(Application.Current,
                         ThemeManager.GetAccent("Steel"),
                         ThemeManager.GetAppTheme("BaseDark"));
+                this.CompendiumIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/aips32x32_light.png", UriKind.RelativeOrAbsolute));
+                this.FavoritesIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/favorites32x32_light.png", UriKind.RelativeOrAbsolute));
+                this.InteractionsIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/interactions32x32_light.png", UriKind.RelativeOrAbsolute));
+                this.PrescriptionsIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/prescriptions64x64_light.png", UriKind.RelativeOrAbsolute));
             }
         }
 
