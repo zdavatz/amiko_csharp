@@ -45,6 +45,7 @@ using MahApps.Metro.Controls;
 namespace AmiKoWindows
 {
     using ControlExtensions;
+    using MahApps.Metro;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -174,6 +175,14 @@ namespace AmiKoWindows
 
             // Set browser emulation mode. Thx Microsoft for these stupid hacks!!
             SetBrowserEmulationMode();
+            
+            reloadColors();
+
+            UserPreferenceChangedEventHandler e3 = (o, e) =>
+            {
+                reloadColors();
+            };
+            SystemEvents.UserPreferenceChanged += e3;
         }
 
         #region WndProc Support
@@ -587,6 +596,21 @@ namespace AmiKoWindows
             {
                 this.Spinner.Visibility = Visibility.Hidden;
                 this.Spinner.Spin = false;
+            }
+        }
+
+        private void reloadColors()
+        {
+            if (Colors.isLightMode())
+            {
+                ThemeManager.ChangeAppStyle(Application.Current,
+                        ThemeManager.GetAccent("Steel"),
+                        ThemeManager.GetAppTheme("BaseLight"));
+            } else
+            {
+                ThemeManager.ChangeAppStyle(Application.Current,
+                        ThemeManager.GetAccent("Steel"),
+                        ThemeManager.GetAppTheme("BaseDark"));
             }
         }
 
