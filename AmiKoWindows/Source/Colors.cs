@@ -17,13 +17,24 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+using Microsoft.Win32;
+using System;
+using System.Windows;
+using System.Windows.Media;
+
 namespace AmiKoWindows
 {
     // See also Style.xaml
     class Colors
     {
         public const string SearchBoxItems = "DarkSlateGray"; // #FF2F4F4F
-        public const string SearchBoxChildItems = "DarkSlateGray"; // #FF2F4F4F
+        //public const string SearchBoxChildItems = "DarkSlateGray"; // #FF2F4F4F
+        public static Brush SearchBoxChildItems()
+        {
+            var r = Colors.themeResources;
+            var c = r["GrayBrush7"];
+            return (Brush)c;
+        }
         public const string SectionTitles = "DarkSlateGray"; // #FF2F4F4F
         public const string Originals = "Red"; // #FFFF0000
         public const string Generics = "Green"; // #FF008000
@@ -35,5 +46,15 @@ namespace AmiKoWindows
         // General names
         public const string PaleGray = "#f2f2f2";
         public const string ModestBlack = "#888888";
+
+        public static bool isLightMode()
+        {
+            return 1 == (int)Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme", 1);
+        }
+
+        private static ResourceDictionary themeResources = new ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml", UriKind.RelativeOrAbsolute)
+            };
     }
 }

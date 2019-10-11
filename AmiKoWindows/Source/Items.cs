@@ -23,6 +23,8 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace AmiKoWindows
 {
@@ -41,7 +43,7 @@ namespace AmiKoWindows
         public long? Id { get; set; }
         public string Ean { get; set; }
         public string Text { get; set; }
-        public string Color { get; set; }
+        public Brush Color { get; set; }
         public string Decoration { get; set; }
     }
 
@@ -101,11 +103,11 @@ namespace AmiKoWindows
                 {
                     // Extract package info and set color
                     string item = e1.Current;
-                    string color = Colors.SearchBoxChildItems;
-                    if (item.Contains(", O"))
+                    Brush color = Colors.SearchBoxChildItems();
+                    /*if (item.Contains(", O"))
                         color = Colors.Originals;
                     else if (item.Contains(", G"))
-                        color = Colors.Generics;
+                        color = Colors.Generics;*/
 
                     // Extract Eancode
                     string[] packages = e2.Current.Split('|');
@@ -124,7 +126,7 @@ namespace AmiKoWindows
                             Ean = ean,
                             Text = item,
                             Color = color,
-                            Decoration = decoration
+                            Decoration = decoration,
                         });
                     }
                 }
@@ -147,7 +149,7 @@ namespace AmiKoWindows
                     Add(new ChildItem()
                     {
                         Text = str,
-                        Color = Colors.SearchBoxChildItems
+                        Color = Colors.SearchBoxChildItems()
                     });
                 }
             }
@@ -189,7 +191,7 @@ namespace AmiKoWindows
                             Id = article.Id,
                             Text = article.Title,
                             IsFavorite = article.IsFavorite,
-                            ChildItems = ci
+                            ChildItems = ci,
                         });
                     }
                     else if (uiState.IsInteractions)
@@ -209,7 +211,7 @@ namespace AmiKoWindows
                             IsFavorite = article.IsFavorite,
                             ChildItems = new ChildItemsObservableCollection
                             {
-                                new ChildItem() { Text = numPackagesStr, Color = Colors.SearchBoxChildItems }
+                                new ChildItem() { Text = numPackagesStr, Color = Colors.SearchBoxChildItems() }
                             }
                         });
                     }
@@ -228,7 +230,7 @@ namespace AmiKoWindows
                             IsFavorite = article.IsFavorite,
                             ChildItems = new ChildItemsObservableCollection
                             {
-                                new ChildItem() { Text = article.Author, Color = Colors.SearchBoxChildItems }
+                                new ChildItem() { Text = article.Author, Color = Colors.SearchBoxChildItems() }
                             }
                         });
                     }
@@ -296,7 +298,7 @@ namespace AmiKoWindows
                             IsFavorite = article.IsFavorite,
                             ChildItems = new ChildItemsObservableCollection
                             {
-                                new ChildItem() { Text = article.Regnrs, Color = Colors.SearchBoxChildItems }
+                                new ChildItem() { Text = article.Regnrs, Color = Colors.SearchBoxChildItems() }
                             }
                         });
                     }
