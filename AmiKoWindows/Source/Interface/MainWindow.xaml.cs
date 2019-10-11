@@ -641,6 +641,21 @@ namespace AmiKoWindows
             SmartCard smartcard = SmartCard.Instance;
             smartcard.ReceivedCardResult += ReceivedCardResult;
             smartcard.Start();
+
+            patchScrollBarColor();
+        }
+
+        private void patchScrollBarColor()
+        {
+            ScrollViewer sv = (ScrollViewer)VisualTreeHelper.GetChild(this.SearchResult, 0);
+            sv.ApplyTemplate();
+            ScrollBar s = sv.Template.FindName("PART_VerticalScrollBar", sv) as ScrollBar;
+            var myResourceDictionary = new ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Controls.Scrollbars.xaml", UriKind.RelativeOrAbsolute)
+            };
+            var myStyle = myResourceDictionary["MetroScrollBar"] as Style;
+            s.Style = myStyle;
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
