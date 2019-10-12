@@ -111,7 +111,7 @@
                               </Grid>
                             </Grid>
 
-                            <Border Grid.Row="1" Margin="7,5,7,2" Padding="1" Background="Transparent" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1">
+                            <Border Grid.Row="1" Margin="7,5,7,2" Padding="1" Background="Transparent" Style="{DynamicResource MainWindowBorder}" VerticalAlignment="Stretch" BorderThickness="1">
                                 <ListBox
                                     Name="MedicationList" Style="{StaticResource MedicationListBox}" ItemContainerStyle="{StaticResource MedicationListBoxItem}"
                                     KeyboardNavigation.DirectionalNavigation="Cycle"
@@ -357,9 +357,9 @@
     </Controls:MetroWindow.LeftWindowCommands>
 
     <Grid x:Name="MainGrid" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        <Border Margin="0,0,0,29" Padding="0" Background="Transparent" BorderBrush="LightGray">
+        <Border Margin="0,0,0,29" Padding="0" Background="Transparent" Style="{DynamicResource MainWindowBorder}">
             <DockPanel LastChildFill="True">
-                <Border DockPanel.Dock="Top" Background="Transparent" BorderBrush="LightGray" BorderThickness="1,1,1,1" HorizontalAlignment="Stretch">
+                <Border DockPanel.Dock="Top" Background="Transparent" Style="{DynamicResource MainWindowBorder}" BorderThickness="1,1,1,1" HorizontalAlignment="Stretch">
                     <Grid>
                         <ToolBar ToolBarTray.IsLocked="True" HorizontalAlignment="Left">
                             <ToggleButton Name="Compendium" Style="{StaticResource StateSelectButton}" Click="StateButton_Click" Margin="6,6,0,6">
@@ -492,7 +492,7 @@
                         </ListBox>
                     </DockPanel>
 
-                    <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="1" Width="3" IsTabStop="False" />
+                    <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="1" Width="3" IsTabStop="False" Style="{DynamicResource MainWindowGridSplitter}" />
 
                     <ContentControl x:Name="MainArea" Grid.Column="2"
                         HorizontalAlignment="Stretch"
@@ -513,7 +513,7 @@
                         </ContentControl.Style>
                     </ContentControl>
 
-                    <GridSplitter HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="3" Width="3" IsTabStop="False" />
+                    <GridSplitter HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext" Grid.Column="3" Width="3" IsTabStop="False" Style="{DynamicResource MainWindowGridSplitter}" />
 
                     <ContentControl x:Name="RightArea" Grid.Column="4"
                         HorizontalAlignment="Stretch"

@@ -51,7 +51,7 @@ namespace AmiKoWindows
     {
         public string Id { get; set; }
         public string Title { get; set; }
-        public string Color { get; set; }
+        public Brush Color { get; set; }
     }
 
     public class FileItem
@@ -417,7 +417,7 @@ namespace AmiKoWindows
                 {
                     Id = item.Id,
                     Title = item.Title,
-                    Color = Colors.SectionTitles
+                    Color = Colors.SectionTitles()
                 });
             }
             _suppressNotification = false;

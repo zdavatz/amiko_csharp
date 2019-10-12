@@ -35,9 +35,12 @@ namespace AmiKoWindows
             var c = r["GrayBrush2"];
             return (Brush)c;
         }
+        public static Brush SectionTitles()
+        {
+            var r = Colors.themeResources;
+            var c = r["TextBrush"];
             return (Brush)c;
         }
-        public const string SectionTitles = "DarkSlateGray"; // #FF2F4F4F
         public const string Originals = "Red"; // #FFFF0000
         public const string Generics = "Green"; // #FF008000
 
