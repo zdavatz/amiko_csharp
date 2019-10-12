@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+using Microsoft.Win32;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -34,6 +35,8 @@ namespace AmiKoWindows
         string _cssStr;
         MainWindow _mainWindow;
         MainSqlDb _sqlDb;
+        string htmlPreColor;
+        Article currentArticle;
         #endregion
 
         #region Properties
@@ -58,6 +61,17 @@ namespace AmiKoWindows
             {
                 _cssStr = "<style>" + File.ReadAllText(CssFilePath) + "</style>";
             }
+
+            // Default blank page
+            UpdateHtml(ReplaceStyleForDarkMode("<!DOCTYPE html><head>"
+                + "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>"
+                + _cssStr
+                + "</head></html>"));
+            UserPreferenceChangedEventHandler e3 = (o, e) =>
+            {
+                ReloadColors();
+            };
+            SystemEvents.UserPreferenceChanged += e3;
         }
         #endregion
 
@@ -111,8 +125,7 @@ namespace AmiKoWindows
                 + _jsStr
                 + _cssStr
                 + "</head>";
-            HtmlText = headStr + htmlStr;
-
+            UpdateHtml(headStr + htmlStr);
             UpdateSectionTitleList(a);
         }
 
@@ -140,20 +153,48 @@ namespace AmiKoWindows
 
         public void UpdateSectionTitleList(Article a)
         {
+            currentArticle = a;
             SectionTitleListItems.Clear();
             // List of section titles
             List<TitleItem> listOfSectionTitles = a.ListOfSectionTitleItems();
             SectionTitleListItems.AddRange(listOfSectionTitles);
         }
 
-        public void LoadHtmlFromFile(string filePath)
+        public void UpdateHtml(string html)
         {
-            if (File.Exists(filePath))
-            {
-                string html = File.ReadAllText(filePath);
-                HtmlText = html;
-            }
+            htmlPreColor = html;
+            HtmlText = ReplaceStyleForDarkMode(html);
         }
+
         #endregion
+
+        private void ReloadColors()
+        {
+            HtmlText = ReplaceStyleForDarkMode(htmlPreColor);
+            UpdateSectionTitleList(currentArticle);
+        }
+
+        private string ReplaceStyleForDarkMode(string html)
+        {
+            bool currentNightMode = !Colors.IsLightMode();
+
+            if (currentNightMode)
+            {
+                html = html.Replace("#EEEEEE", "var(--background-color-gray)");
+                html = html.Replace("#006699", "#009EF3");
+                html = html.Replace("var(--text-color-normal)", "white");
+                html = html.Replace("var(--background-color-normal)", "#333333");
+                html = html.Replace("var(--background-color-gray)", "#444444");
+                html = html.Replace("var(--lines-color)", "orange");
+            }
+            else
+            {
+                html = html.Replace("var(--text-color-normal)", "black");
+                html = html.Replace("var(--background-color-normal)", "white");
+                html = html.Replace("var(--background-color-gray)", "eeeeee");
+                html = html.Replace("var(--lines-color)", "E5E7E8");
+            }
+            return html;
+        }
     }
 }

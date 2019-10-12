@@ -11,7 +11,13 @@
     font-weight: 400;
     src: url('../font/Roboto-ext.woff2') format('woff2');
 }
-
+body {
+	background-color:var(--background-color-normal);
+	-ms-scrollbar-base-color: var(--background-color-normal);
+	-ms-scrollbar-track-color: var(--background-color-normal);
+	-ms-scrollbar-arrow-color: var(--text-color-normal);
+	-ms-scrollbar-face-color: var(--text-color-normal);
+}
 #menue {
     z-index: 1;
     position: fixed;
@@ -26,7 +32,7 @@
     margin-bottom: 20px;
     padding-left: 0.2em;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #555555;
+    color: var(--text-color-normal);
 }
 #monographie .MonTitle {
     font-size: 1.3em;
@@ -61,7 +67,7 @@
 #monographie .header {
     font-size: 0.9em;
     font-weight: normal;
-    color: #555555;
+    color: var(--text-color-normal);
     text-align: left;
     margin-bottom: 2em;
     visibility: hidden;
@@ -70,14 +76,14 @@
 #monographie .footer {
     font-size: 0.9em;
     font-weight: normal;
-    color: #555555;
+    color: var(--text-color-normal);
     margin-top: 2.0em;
     border-top: #888888 1px solid;
     padding-top: 0.5em;
 }
 #monographie div p {
     font-size: 0.9em;
-    color: #555555;
+    color: var(--text-color-normal);
 }
 #monographie .paragraph {
     font-weight: normal;
@@ -163,7 +169,7 @@
     cursor: pointer;
 }
 .barcode:hover {
-    background-color: #eeeeee;
+    background-color: var(--background-color-gray);
 }
 
 #monographie table {
@@ -194,7 +200,7 @@
 }
 
 .tblArticles {
-    border: solid 1pt #E5E7E8;
+    border: solid 1pt var(--lines-color);
     vertical-align: top;
     text-align: left;
     border-spacing: 0;
@@ -204,23 +210,23 @@
     width: 37%;
     font-size: small;
     vertical-align: top;
-    border-top: solid 1pt #E5E7E8;
-    border-right: solid 1pt #E5E7E8;
+    border-top: solid 1pt var(--lines-color);
+    border-right: solid 1pt var(--lines-color);
 }
 .tblArticles .productEmpty {
     width: 37%;
 }
 .tblArticles .normal-right {
-    border-right: solid 1pt #E5E7E8;
-    border-top: solid 1pt #E5E7E8;
+    border-right: solid 1pt var(--lines-color);
+    border-top: solid 1pt var(--lines-color);
     width: 15%;
     text-align: right;
     vertical-align: top;
     font-size: small;
 }
 .tblArticles .normal-center {
-    border-right: solid 1pt #E5E7E8;
-    border-top: solid 1pt #E5E7E8;
+    border-right: solid 1pt var(--lines-color);
+    border-top: solid 1pt var(--lines-color);
     width: 10%;
     text-align: center;
     vertical-align: top;
@@ -229,9 +235,9 @@
 .tblArticles .picture {
     width: 15%;
     text-align: center;
-    border-top: solid 1pt #E5E7E8;
+    border-top: solid 1pt var(--lines-color);
 }
 .tblArticles .pictureEmpty {
     width: 15%;
-    border-top: solid 1pt #E5E7E8;
+    border-top: solid 1pt var(--lines-color);
 }

@@ -176,11 +176,11 @@ namespace AmiKoWindows
             // Set browser emulation mode. Thx Microsoft for these stupid hacks!!
             SetBrowserEmulationMode();
             
-            reloadColors();
+            ReloadColors();
 
             UserPreferenceChangedEventHandler e3 = (o, e) =>
             {
-                reloadColors();
+                ReloadColors();
             };
             SystemEvents.UserPreferenceChanged += e3;
         }
@@ -599,9 +599,10 @@ namespace AmiKoWindows
             }
         }
 
-        private void reloadColors()
+        private void ReloadColors()
         {
-            if (Colors.isLightMode())
+            Colors.ReloadColors();
+            if (Colors.IsLightMode())
             {
                 ThemeManager.ChangeAppStyle(Application.Current,
                         ThemeManager.GetAccent("Steel"),

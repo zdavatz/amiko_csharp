@@ -32,7 +32,9 @@ namespace AmiKoWindows
         public static Brush SearchBoxChildItems()
         {
             var r = Colors.themeResources;
-            var c = r["GrayBrush7"];
+            var c = r["GrayBrush2"];
+            return (Brush)c;
+        }
             return (Brush)c;
         }
         public const string SectionTitles = "DarkSlateGray"; // #FF2F4F4F
@@ -47,9 +49,27 @@ namespace AmiKoWindows
         public const string PaleGray = "#f2f2f2";
         public const string ModestBlack = "#888888";
 
-        public static bool isLightMode()
+        public static bool IsLightMode()
         {
             return 1 == (int)Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme", 1);
+        }
+
+        public static void ReloadColors()
+        {
+            if (IsLightMode())
+            {
+                themeResources = new ResourceDictionary
+                {
+                    Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml", UriKind.RelativeOrAbsolute)
+                };
+            }
+            else
+            {
+                themeResources = new ResourceDictionary
+                {
+                    Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml", UriKind.RelativeOrAbsolute)
+                };
+            }
         }
 
         private static ResourceDictionary themeResources = new ResourceDictionary
