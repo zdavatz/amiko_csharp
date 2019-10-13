@@ -179,10 +179,10 @@
                 </Grid>
             </Grid>
         </Grid>
-        <Border Margin="0" Width="265" Background="{StaticResource PaleGray}" BorderBrush="LightGray" VerticalAlignment="Stretch" BorderThickness="1,0,0,0" DockPanel.Dock="Right">
+        <Border Margin="0" Width="265" Background="{StaticResource PaleGray}" VerticalAlignment="Stretch" BorderThickness="1,0,0,0" DockPanel.Dock="Right">
             <StackPanel Height="Auto" Margin="16,19,16,16" VerticalAlignment="Stretch">
                 <!-- Address Book: Search TextBox -->
-                <TextBox Name="SearchPatientBox" Width="Auto" Height="21" Background="White" BorderBrush="DarkGray"
+                <TextBox Name="SearchPatientBox" Width="Auto" Height="21" Style="{DynamicResource ContactTextBox}"
                    TextChanged="SearchPatientBox_TextChanged" PreviewMouseDown="SearchPatientBox_PreviewMouseDown"
                    Controls:TextBoxHelper.Watermark="{x:Static p:Resources.searchPatient}"></TextBox>
                 <!-- Address Book: ListBox -->

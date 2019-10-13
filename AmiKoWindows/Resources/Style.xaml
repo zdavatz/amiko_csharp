@@ -11,11 +11,11 @@
     </ResourceDictionary.MergedDictionaries>
 
     <!-- See also Colors.cs -->
-    <SolidColorBrush x:Key="PaleGray" Color="#f2f2f2" />
+    <SolidColorBrush x:Key="PaleGray" Color="{DynamicResource Gray10}" />
     <SolidColorBrush x:Key="ModestBlack" Color="#888888" />
 
     <Style x:Key="MainWindowBorder" TargetType="{x:Type Border}">
-        <Setter Property="BorderBrush" Value="{DynamicResource DynamicResource MahApps.Brushes.Gray5}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Gray5}" />
     </Style>
     <Style x:Key="MainWindowGridSplitter" TargetType="{x:Type GridSplitter}">
         <Setter Property="Background" Value="Gray" />
@@ -448,7 +448,7 @@
         <Setter Property="Foreground" Value="Red" />
     </Style>
 
-    <Style x:Key="ContactListBox" TargetType="{x:Type ListBox}">
+    <Style x:Key="ContactListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="Cursor" Value="Hand" />
@@ -502,7 +502,7 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style x:Key="ContactTextBox" TargetType="{x:Type TextBox}">
+    <Style x:Key="ContactTextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MetroTextBox}">
         <Setter Property="Width" Value="Auto" />
         <Setter Property="Height" Value="27" />
         <Setter Property="Margin" Value="0" />
