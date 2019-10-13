@@ -41,6 +41,19 @@ namespace AmiKoWindows
             var c = r["TextBrush"];
             return (Brush)c;
         }
+        public static Brush Background()
+        {
+            var r = Colors.themeResources;
+            var c = r["WhiteBrush"];
+            return (Brush)c;
+        }
+        public static Brush TextBoxBorder()
+        {
+            var r = Colors.themeResources;
+            var c = r["GrayBrush7"];
+            return (Brush)c;
+        }
+
         public const string Originals = "Red"; // #FFFF0000
         public const string Generics = "Green"; // #FF008000
 

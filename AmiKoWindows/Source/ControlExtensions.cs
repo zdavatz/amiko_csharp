@@ -91,8 +91,8 @@ namespace AmiKoWindows
                     }
                     else
                     {
-                        box.BorderBrush = Brushes.DarkGray;
-                        box.Background = Brushes.White;
+                        box.BorderBrush = Colors.TextBoxBorder();
+                        box.Background = Colors.Background();
                     }
                 }
                 else if (element is Image)
