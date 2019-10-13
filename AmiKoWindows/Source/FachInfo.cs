@@ -156,8 +156,11 @@ namespace AmiKoWindows
             currentArticle = a;
             SectionTitleListItems.Clear();
             // List of section titles
-            List<TitleItem> listOfSectionTitles = a.ListOfSectionTitleItems();
-            SectionTitleListItems.AddRange(listOfSectionTitles);
+            if (a != null)
+            {
+                List<TitleItem> listOfSectionTitles = a.ListOfSectionTitleItems();
+                SectionTitleListItems.AddRange(listOfSectionTitles);
+            }
         }
 
         public void UpdateHtml(string html)
