@@ -389,7 +389,7 @@
         <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}" />
     </Style>
 
-    <Style x:Key="FileNameListBox" TargetType="{x:Type ListBox}">
+    <Style x:Key="FileNameListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
@@ -506,13 +506,11 @@
         <Setter Property="Width" Value="Auto" />
         <Setter Property="Height" Value="27" />
         <Setter Property="Margin" Value="0" />
-        <Setter Property="Padding" Value="4,4,4,4" />
-        <!-- <Setter Property="Background" Value="White" /> -->
         <Setter Property="BorderBrush" Value="DarkGray" />
     </Style>
 
-    <Style x:Key="MedicationListBox" TargetType="{x:Type ListBox}">
-        <Setter Property="BorderThickness" Value="0" />
+    <Style x:Key="MedicationListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
@@ -525,7 +523,7 @@
     <Style x:Key="MedicationListBoxItem" TargetType="{x:Type ListBoxItem}">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="BorderThickness" Value="0" />
-        <!-- <Setter Property="Foreground" Value="Black" /> -->
+        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Foreground}" /> 
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
@@ -547,8 +545,6 @@
         <Setter Property="Cursor" Value="IBeam" />
         <Setter Property="FontSize" Value="11" />
         <Setter Property="IsTabStop" Value="True" />
-        <!-- <Setter Property="Foreground" Value="Gray" /> -->
-        <!-- <Setter Property="Background" Value="White" /> -->
         <Setter Property="BorderBrush" Value="White" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="VerticalAlignment" Value="Top" />
@@ -596,7 +592,7 @@
          <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style x:Key="PrintMedicationListBox" TargetType="{x:Type ListBox}">
+    <Style x:Key="PrintMedicationListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
