@@ -63,7 +63,7 @@ namespace AmiKoWindows
             }
 
             // Default blank page
-            UpdateHtml(ReplaceStyleForDarkMode("<!DOCTYPE html><head>"
+            UpdateHtml(Colors.ReplaceStyleForDarkMode("<!DOCTYPE html><head>"
                 + "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>"
                 + _cssStr
                 + "</head></html>"));
@@ -166,38 +166,15 @@ namespace AmiKoWindows
         public void UpdateHtml(string html)
         {
             htmlPreColor = html;
-            HtmlText = ReplaceStyleForDarkMode(html);
+            HtmlText = Colors.ReplaceStyleForDarkMode(html);
         }
 
         #endregion
 
         private void ReloadColors()
         {
-            HtmlText = ReplaceStyleForDarkMode(htmlPreColor);
+            HtmlText = Colors.ReplaceStyleForDarkMode(htmlPreColor);
             UpdateSectionTitleList(currentArticle);
-        }
-
-        private string ReplaceStyleForDarkMode(string html)
-        {
-            bool currentNightMode = !Colors.IsLightMode();
-
-            if (currentNightMode)
-            {
-                html = html.Replace("#EEEEEE", "var(--background-color-gray)");
-                html = html.Replace("#006699", "#009EF3");
-                html = html.Replace("var(--text-color-normal)", "white");
-                html = html.Replace("var(--background-color-normal)", "#333333");
-                html = html.Replace("var(--background-color-gray)", "#444444");
-                html = html.Replace("var(--lines-color)", "orange");
-            }
-            else
-            {
-                html = html.Replace("var(--text-color-normal)", "black");
-                html = html.Replace("var(--background-color-normal)", "white");
-                html = html.Replace("var(--background-color-gray)", "eeeeee");
-                html = html.Replace("var(--lines-color)", "E5E7E8");
-            }
-            return html;
         }
     }
 }

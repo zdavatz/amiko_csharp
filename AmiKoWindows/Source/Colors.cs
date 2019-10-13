@@ -92,5 +92,28 @@ namespace AmiKoWindows
             {
                 Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml", UriKind.RelativeOrAbsolute)
             };
+
+        public static string ReplaceStyleForDarkMode(string html)
+        {
+            bool currentNightMode = !Colors.IsLightMode();
+
+            if (currentNightMode)
+            {
+                html = html.Replace("#EEEEEE", "var(--background-color-gray)");
+                html = html.Replace("#006699", "#009EF3");
+                html = html.Replace("var(--text-color-normal)", "white");
+                html = html.Replace("var(--background-color-normal)", "#333333");
+                html = html.Replace("var(--background-color-gray)", "#444444");
+                html = html.Replace("var(--lines-color)", "orange");
+            }
+            else
+            {
+                html = html.Replace("var(--text-color-normal)", "black");
+                html = html.Replace("var(--background-color-normal)", "white");
+                html = html.Replace("var(--background-color-gray)", "eeeeee");
+                html = html.Replace("var(--lines-color)", "E5E7E8");
+            }
+            return html;
+        }
     }
 }

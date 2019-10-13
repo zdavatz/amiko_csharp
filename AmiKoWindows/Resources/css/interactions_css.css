@@ -1,10 +1,20 @@
+body{}
+
+body {
+	background-color:var(--background-color-normal);
+	-ms-scrollbar-base-color: var(--background-color-normal);
+	-ms-scrollbar-track-color: var(--background-color-normal);
+	-ms-scrollbar-arrow-color: var(--text-color-normal);
+	-ms-scrollbar-face-color: var(--text-color-normal);
+}
+
 #interactions {
 	font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin-left:5px;
     margin-right:5px;
     margin-top:20px;
     margin-bottom:20px;
-    color:black;
+    color: var(--text-color-normal);
 }
 #interactions h3 {
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -22,7 +32,7 @@
 }
 #interactions table {
     font-family:'Segoe UI', Verdana, Tahoma, Geneva, sans-serif;
-    background-color:#eeeeee;
+    background-color:var(--background-color-gray);
     font-size:0.9em;
     margin-top:0.9em;
     margin-bottom:0.9em;
@@ -30,6 +40,7 @@
 #interactions td {
     font-family:'Segoe UI', Verdana, Tahoma, Geneva, sans-serif;
     font-size:0.9em;
+	color: var(--text-color-normal);
 }
 #interactions td p {
     font-family:'Segoe UI', Verdana, Tahoma, Geneva, sans-serif;
@@ -67,7 +78,7 @@
 }
 #interactions .paragraph0 {
     font-family:'Segoe UI', Verdana, Tahoma, Geneva, sans-serif;
-    background-color:#dfdfdf;
+	background-color:var(--background-color-gray);
 }
 .noSpacing {
     margin-top:0em;
@@ -81,4 +92,9 @@
     margin-left:0.5em;
     margin-top:0em;
     margin-bottom:0.5em;
+}
+
+#Farblegende {
+  background-color:var(--background-color-normal);
+  color:black; /* Always black */
 }
