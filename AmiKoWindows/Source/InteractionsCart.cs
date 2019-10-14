@@ -196,7 +196,10 @@ namespace AmiKoWindows
 
         public void ReloadColors()
         {
-            HtmlText = Colors.ReplaceStyleForDarkMode(_htmlPreColor);
+            if (_htmlPreColor != null)
+            {
+                HtmlText = Colors.ReplaceStyleForDarkMode(_htmlPreColor);
+            }
         }
 
         public void AddArticle(Article a)
