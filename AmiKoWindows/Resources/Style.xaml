@@ -11,8 +11,15 @@
     </ResourceDictionary.MergedDictionaries>
 
     <!-- See also Colors.cs -->
-    <SolidColorBrush x:Key="PaleGray" Color="#f2f2f2" />
+    <SolidColorBrush x:Key="PaleGray" Color="{DynamicResource Gray10}" />
     <SolidColorBrush x:Key="ModestBlack" Color="#888888" />
+
+    <Style x:Key="MainWindowBorder" TargetType="{x:Type Border}">
+        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Gray5}" />
+    </Style>
+    <Style x:Key="MainWindowGridSplitter" TargetType="{x:Type GridSplitter}">
+        <Setter Property="Background" Value="Gray" />
+    </Style>
 
     <Style x:Key="FlyoutToggleButton" TargetType="{x:Type ToggleButton}">
         <Setter Property="Template">
@@ -36,8 +43,8 @@
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontWeight" Value="Regular" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="Foreground" Value="Black" />
-        <Setter Property="Background" Value="White" />
+        <!-- <Setter Property="Foreground" Value="Black" /> -->
+        <!-- <Setter Property="Background" Value="White" /> -->
         <Setter Property="Controls:ButtonHelper.PreserveTextCase" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
@@ -52,7 +59,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="LightGray" />
+                            <!-- <Setter Property="Background" Value="LightGray" /> -->
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -64,8 +71,8 @@
         <Setter Property="FontSize" Value="15" />
         <Setter Property="FontWeight" Value="Regular" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="Foreground" Value="Black" />
-        <Setter Property="Background" Value="White" />
+        <!-- <Setter Property="Foreground" Value="Black" /> -->
+        <!-- <Setter Property="Background" Value="White" /> -->
         <Setter Property="Controls:ButtonHelper.PreserveTextCase" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
@@ -80,8 +87,8 @@
         <Setter Property="FontSize" Value="15" />
         <Setter Property="FontWeight" Value="Regular" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="Foreground" Value="Black" />
-        <Setter Property="Background" Value="White" />
+<!--         <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Background" Value="White" /> -->
         <Setter Property="Controls:ButtonHelper.PreserveTextCase" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
@@ -91,7 +98,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Border" Property="Background" Value="LightGray" />
+                            <!-- <Setter TargetName="Border" Property="Background" Value="LightGray" /> -->
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -108,7 +115,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Border" Property="Background" Value="{StaticResource PaleGray}" />
+                            <!-- <Setter TargetName="Border" Property="Background" Value="{StaticResource PaleGray}" /> -->
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -125,7 +132,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Border" Property="Background" Value="Black" />
+                            <!-- <Setter TargetName="Border" Property="Background" Value="Black" /> -->
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -143,7 +150,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Border" Property="Background" Value="{StaticResource PaleGray}" />
+                            <!-- <Setter TargetName="Border" Property="Background" Value="{StaticResource PaleGray}" /> -->
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -186,9 +193,11 @@
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Cursor" Value="Hand" />
         <Style.Triggers>
+            <!--
             <Trigger Property="IsChecked" Value="true">
                 <Setter Property="Background" Value="LightGray" />
             </Trigger>
+            -->
         </Style.Triggers>
     </Style>
 
@@ -196,8 +205,8 @@
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontWeight" Value="Regular" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="Foreground" Value="Black" />
-        <Setter Property="Background" Value="White" />
+        <!-- <Setter Property="Foreground" Value="Black" /> -->
+        <!-- <Setter Property="Background" Value="White" /> -->
         <Setter Property="Padding" Value="0" />
         <Setter Property="Margin" Value="6,5,6,0" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
@@ -215,7 +224,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="LightGray" />
+                            <!-- <Setter Property="Background" Value="LightGray" /> -->
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -223,14 +232,14 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsChecked" Value="true">
-                <Setter Property="Background" Value="LightGray" />
+                <!-- <Setter Property="Background" Value="LightGray" /> -->
                 <Setter Property="BorderThickness" Value="1" />
             </Trigger>
             <Trigger Property="IsFocused" Value="true">
                 <Setter Property="BorderThickness" Value="1" />
             </Trigger>
             <Trigger Property="IsPressed" Value="true">
-                <Setter Property="Background" Value="Gray" />
+                <!-- <Setter Property="Background" Value="Gray" /> -->
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -244,7 +253,7 @@
 
     <Style x:Key="SearchTextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MetroTextBox}">
         <Setter Property="Height" Value="38" />
-        <Setter Property="Background" Value="Lavender" />
+        <!-- <Setter Property="Background" Value="Lavender" /> -->
         <Setter Property="BorderBrush" Value="{DynamicResource TextBoxBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -253,7 +262,7 @@
         <Setter Property="Controls:TextBoxHelper.UseFloatingWatermark" Value="True" />
         <Style.Triggers>
             <Trigger Property="Controls:TextBoxHelper.HasText" Value="False">
-                <Setter Property="Foreground" Value="#FF4F7B8F" />
+                <!-- <Setter Property="Foreground" Value="#FF4F7B8F" /> -->
                 <Setter Property="Controls:TextBoxHelper.ButtonContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
@@ -269,32 +278,44 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="SearchListBox" TargetType="{x:Type ListBox}">
+    <Style x:Key="SearchListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBox}">
+                    <ScrollViewer x:Name="ScrollViewer">
+                        <ItemsPresenter/>
+                    </ScrollViewer>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="SearchListBoxItem" TargetType="{x:Type ListBoxItem}">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="Foreground" Value="Black" />
+        <!-- <Setter Property="Foreground" Value="Black" /> -->
+        <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}" />
+        <Setter Property="Background" Value="Red" />
         <Setter Property="IsTabStop" Value="True" />
         <Setter Property="Margin" Value="0,2,0,2" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Border Name="Border" SnapsToDevicePixels="True" Background="White" Margin="0">
+                    <Border Name="Border" SnapsToDevicePixels="True" Margin="0" Background="{DynamicResource MahApps.Brushes.Control.Background}">
                         <ContentPresenter />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Border" Property="Background" Value="AliceBlue" />
+                            <Setter TargetName="Border" Property="Background" Value="#44666699" />
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Border" Property="Background" Value="LightGray" />
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource MahApps.Brushes.AccentSelectedColor}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -319,10 +340,10 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Value="True">
-                <Setter Property="Background" Value="AliceBlue" />
+                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Value="True">
-                <Setter Property="Background" Value="LightGray" />
+                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.AccentSelectedColor}" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
@@ -365,9 +386,10 @@
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}" />
     </Style>
 
-    <Style x:Key="FileNameListBox" TargetType="{x:Type ListBox}">
+    <Style x:Key="FileNameListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
@@ -383,7 +405,7 @@
     <Style x:Key="FileNameListBoxItem" TargetType="{x:Type ListBoxItem}">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Foreground" Value="Black" />
+        <!-- <Setter Property="Foreground" Value="Black" /> -->
         <Setter Property="IsTabStop" Value="True" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
@@ -396,10 +418,10 @@
                     </StackPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Panel" Property="Background" Value="AliceBlue" />
+                            <!-- <Setter TargetName="Panel" Property="Background" Value="AliceBlue" /> -->
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Panel" Property="Background" Value="LightGray" />
+                            <!-- <Setter TargetName="Panel" Property="Background" Value="LightGray" /> -->
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -411,7 +433,7 @@
         <Style.Triggers>
             <Trigger Property="Orientation" Value="Vertical">
                 <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="Background" Value="White" />
+                <!-- <Setter Property="Background" Value="White" /> -->
                 <Setter Property="Width" Value="3" />
                 <Setter Property="Height" Value="Auto" />
             </Trigger>
@@ -426,7 +448,7 @@
         <Setter Property="Foreground" Value="Red" />
     </Style>
 
-    <Style x:Key="ContactListBox" TargetType="{x:Type ListBox}">
+    <Style x:Key="ContactListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="Cursor" Value="Hand" />
@@ -438,7 +460,7 @@
     <Style x:Key="ContactListBoxItem" TargetType="{x:Type ListBoxItem}">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Foreground" Value="Black" />
+        <!-- <Setter Property="Foreground" Value="Black" /> -->
         <Setter Property="IsTabStop" Value="True" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
@@ -452,10 +474,10 @@
                     </StackPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Panel" Property="Background" Value="AliceBlue" />
+                            <!-- <Setter TargetName="Panel" Property="Background" Value="AliceBlue" /> -->
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Panel" Property="Background" Value="LightGray" />
+                            <!-- <Setter TargetName="Panel" Property="Background" Value="LightGray" /> -->
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -480,17 +502,15 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style x:Key="ContactTextBox" TargetType="{x:Type TextBox}">
+    <Style x:Key="ContactTextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MetroTextBox}">
         <Setter Property="Width" Value="Auto" />
         <Setter Property="Height" Value="27" />
         <Setter Property="Margin" Value="0" />
-        <Setter Property="Padding" Value="4,4,4,4" />
-        <Setter Property="Background" Value="White" />
         <Setter Property="BorderBrush" Value="DarkGray" />
     </Style>
 
-    <Style x:Key="MedicationListBox" TargetType="{x:Type ListBox}">
-        <Setter Property="BorderThickness" Value="0" />
+    <Style x:Key="MedicationListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
@@ -503,7 +523,7 @@
     <Style x:Key="MedicationListBoxItem" TargetType="{x:Type ListBoxItem}">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Foreground}" /> 
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
@@ -525,8 +545,6 @@
         <Setter Property="Cursor" Value="IBeam" />
         <Setter Property="FontSize" Value="11" />
         <Setter Property="IsTabStop" Value="True" />
-        <Setter Property="Foreground" Value="Gray" />
-        <Setter Property="Background" Value="White" />
         <Setter Property="BorderBrush" Value="White" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="VerticalAlignment" Value="Top" />
@@ -552,13 +570,13 @@
 
     <!-- Extended.Wpf.Toolkit -->
     <Style TargetType="{x:Type toolkit:MessageBox}">
-         <Setter Property="Background" Value="White" />
+         <!-- <Setter Property="Background" Value="White" /> -->
          <Setter Property="BorderBrush" Value="White" />
-         <Setter Property="CaptionForeground" Value="Black" />
-         <Setter Property="WindowBorderBrush" Value="Gray" />
-         <Setter Property="WindowBackground" Value="White" />
+         <!-- <Setter Property="CaptionForeground" Value="Black" /> -->
+         <!-- <Setter Property="WindowBorderBrush" Value="Gray" /> -->
+         <!-- <Setter Property="WindowBackground" Value="White" /> -->
          <Setter Property="WindowOpacity" Value="1" />
-         <Setter Property="Foreground" Value="Gray" />
+         <!-- <Setter Property="Foreground" Value="Gray" /> -->
          <Setter Property="YesButtonStyle" Value="{StaticResource NoHighlightedButton}" />
          <Setter Property="NoButtonStyle" Value="{StaticResource NoHighlightedButton}" />
          <Setter Property="OkButtonStyle" Value="{StaticResource NoHighlightedButton}" />
@@ -574,7 +592,7 @@
          <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style x:Key="PrintMedicationListBox" TargetType="{x:Type ListBox}">
+    <Style x:Key="PrintMedicationListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource MetroListBox}">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
@@ -587,7 +605,7 @@
 
     <Style x:Key="PrintMedicationListBoxItem" TargetType="{x:Type ListBoxItem}">
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Foreground" Value="Black" />
+        <!-- <Setter Property="Foreground" Value="Black" /> -->
         <Setter Property="Margin" Value="2,6,0,6" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="VerticalAlignment" Value="Top" />

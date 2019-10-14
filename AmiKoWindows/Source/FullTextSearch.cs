@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Permissions;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 
 namespace AmiKoWindows
 {
@@ -51,6 +52,17 @@ namespace AmiKoWindows
                 _cssStr = $"<style>{File.ReadAllText(_cssFilePath)}</style>";
             }
 
+            // Default blank page
+            UpdateHtml(Colors.ReplaceStyleForDarkMode("<!DOCTYPE html><head>"
+                + "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>"
+                + _cssStr
+                + "</head></html>"));
+
+            UserPreferenceChangedEventHandler e3 = (o, e) =>
+            {
+                ReloadColors();
+            };
+            SystemEvents.UserPreferenceChanged += e3;
         }
 
         public FullTextSearch(List<Article> listOfArticles)
@@ -126,9 +138,9 @@ namespace AmiKoWindows
                     {
                         string firstLetter = a.Title.Substring(0, 1).ToUpper();
                         if (rows % 2 == 0)
-                            content_style = $"<li style=\"background-color:whitesmoke;\" id=\"{firstLetter}\">";
+                            content_style = $"<li style=\"background-color:var(--background-color-gray);\" id=\"{firstLetter}\">";
                         else
-                            content_style = $"<li style=\"background-color:white;\" id=\"{firstLetter}\">";
+                            content_style = $"<li style=\"background-color:var(--background-color-normal);\" id=\"{firstLetter}\">";
 
                         content += content_style + content_title + content_chapters + "</li>";
                         rows++;
@@ -138,7 +150,7 @@ namespace AmiKoWindows
                 htmlStr = content;
             }
 
-            HtmlText = $"<!DOCTYPE html><html>{headStr}{htmlStr}</html>";
+            UpdateHtml($"<!DOCTYPE html><html>{headStr}{htmlStr}</html>");
 
             // Section titles
             SectionTitleListItems.Clear();
@@ -152,6 +164,19 @@ namespace AmiKoWindows
                     });
             }
             SectionTitleListItems.AddRange(listOfSectionTitles);
+        }
+
+        private void UpdateHtml(string html)
+        {
+            HtmlText = Colors.ReplaceStyleForDarkMode(html);
+        }
+
+        private void ReloadColors()
+        {
+            if (_listOfArticles != null && _dictOfRegChapters != null)
+            {
+                ShowTableWithArticles(_listOfArticles, _dictOfRegChapters);
+            }
         }
         #endregion
     }

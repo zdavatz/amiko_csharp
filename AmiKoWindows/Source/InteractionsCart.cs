@@ -24,6 +24,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Security.Permissions;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 
 namespace AmiKoWindows
 {
@@ -31,6 +32,15 @@ namespace AmiKoWindows
     [ComVisible(true)]
     public class InteractionsCart : HtmlBase
     {
+        public InteractionsCart()
+        {
+            UserPreferenceChangedEventHandler e3 = (o, e) =>
+            {
+                ReloadColors();
+            };
+            SystemEvents.UserPreferenceChanged += e3;
+        }
+
         #region Private Fields
         Dictionary<string, string> _interactionsDict = new Dictionary<string, string>();
         // Dictionary of title to article
@@ -38,6 +48,7 @@ namespace AmiKoWindows
         string _jsStr;
         string _cssStr;
         string _imgFolder;
+        string _htmlPreColor;
         #endregion
 
         #region Public Methods
@@ -89,9 +100,9 @@ namespace AmiKoWindows
                     Tuple<string, string> atcInfo = GetAtcInfo(a);
 
                     if (medCount % 2 == 0)
-                        basketHtmlStr += "<tr style=\"background-color:lavender;\">";
+                        basketHtmlStr += "<tr style=\"background-color:color: var(--background-color-gray);\">";
                     else
-                        basketHtmlStr += "<tr style=\"background-color:white;\">";
+                        basketHtmlStr += "<tr style=\"background-color:var(--background-color-normal);\">";
                     basketHtmlStr += "<td>" + medCount + "</td>"
                             + "<td>" + title + " </td> "
                             + "<td>" + atcInfo.Item1 + "</td>"
@@ -151,7 +162,7 @@ namespace AmiKoWindows
                         "<p class=\"footnote\">2. Soutenu par: IBSA Institut Biochimique SA.</p>";
                 }
 
-                HtmlText = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />"
+                UpdateHtml("<!DOCTYPE html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />"
                     + "<script language=\"javascript\">" + _jsStr + "</script>"
                     + "<style>" + _cssStr + "</style>" + "</head>"
                     + "<body><div id=\"interactions\">"
@@ -160,7 +171,7 @@ namespace AmiKoWindows
                     + interactionsHtmlStr + "<br>"
                     + legendHtmlStr + "<br>"
                     + bottomNoteHtmlStr
-                    + "</div></body></html>";
+                    + "</div></body></html>");
             }
             else
             {
@@ -169,11 +180,25 @@ namespace AmiKoWindows
                 if (Utilities.AppLanguage().Equals("fr"))
                     basketHtmlStr = "<p class=\"paragraph0\">Votre panier de médicaments est vide.</p>";
 
-                HtmlText = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />"
+                UpdateHtml("<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />"
                     + "<style>" + _cssStr + "</style>" + "</head>"
                     + "<body><div id=\"interactions\">"
                     + basketHtmlStr
-                    + "</div></body></html>";
+                    + "</div></body></html>");
+            }
+        }
+
+        public void UpdateHtml(string html)
+        {
+            _htmlPreColor = html;
+            HtmlText = Colors.ReplaceStyleForDarkMode(html);
+        }
+
+        public void ReloadColors()
+        {
+            if (_htmlPreColor != null)
+            {
+                HtmlText = Colors.ReplaceStyleForDarkMode(_htmlPreColor);
             }
         }
 

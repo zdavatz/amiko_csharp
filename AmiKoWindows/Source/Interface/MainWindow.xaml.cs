@@ -45,6 +45,7 @@ using MahApps.Metro.Controls;
 namespace AmiKoWindows
 {
     using ControlExtensions;
+    using MahApps.Metro;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -174,6 +175,14 @@ namespace AmiKoWindows
 
             // Set browser emulation mode. Thx Microsoft for these stupid hacks!!
             SetBrowserEmulationMode();
+            
+            ReloadColors();
+
+            UserPreferenceChangedEventHandler e3 = (o, e) =>
+            {
+                ReloadColors();
+            };
+            SystemEvents.UserPreferenceChanged += e3;
         }
 
         #region WndProc Support
@@ -590,15 +599,33 @@ namespace AmiKoWindows
             }
         }
 
+        private void ReloadColors()
+        {
+            Colors.ReloadColors();
+            if (Colors.IsLightMode())
+            {
+                ThemeManager.ChangeAppStyle(Application.Current,
+                        ThemeManager.GetAccent("Steel"),
+                        ThemeManager.GetAppTheme("BaseLight"));
+                this.CompendiumIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/aips32x32_gray.png", UriKind.RelativeOrAbsolute));
+                this.FavoritesIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/favorites32x32_gray.png", UriKind.RelativeOrAbsolute));
+                this.InteractionsIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/interactions32x32_gray.png", UriKind.RelativeOrAbsolute));
+                this.PrescriptionsIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/prescriptions64x64.png", UriKind.RelativeOrAbsolute));
+            } else
+            {
+                ThemeManager.ChangeAppStyle(Application.Current,
+                        ThemeManager.GetAccent("Steel"),
+                        ThemeManager.GetAppTheme("BaseDark"));
+                this.CompendiumIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/aips32x32_light.png", UriKind.RelativeOrAbsolute));
+                this.FavoritesIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/favorites32x32_light.png", UriKind.RelativeOrAbsolute));
+                this.InteractionsIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/interactions32x32_light.png", UriKind.RelativeOrAbsolute));
+                this.PrescriptionsIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/prescriptions64x64_light.png", UriKind.RelativeOrAbsolute));
+            }
+        }
+
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             _statusBarHelper.IsConnectedToInternet();
-            await _sqlDb?.Search(_uiState, "");
-
-            _uiState.SetQuery(UIState.Query.Title);
-            this.SearchTextBoxWaterMark = _uiState.SearchTextBoxWaterMark;
-            TitleQuerySelectButton.Focus();
-            this.TitleQuerySelectButton.IsChecked = true;
 
             if (Account.IsSet())
             {
@@ -617,6 +644,27 @@ namespace AmiKoWindows
             SmartCard smartcard = SmartCard.Instance;
             smartcard.ReceivedCardResult += ReceivedCardResult;
             smartcard.Start();
+
+            patchScrollBarColor();
+
+            _uiState.SetQuery(UIState.Query.Title);
+            this.SearchTextBoxWaterMark = _uiState.SearchTextBoxWaterMark;
+            TitleQuerySelectButton.Focus();
+            this.TitleQuerySelectButton.IsChecked = true;
+            await _sqlDb?.Search(_uiState, "");
+        }
+
+        private void patchScrollBarColor()
+        {
+            ScrollViewer sv = (ScrollViewer)VisualTreeHelper.GetChild(this.SearchResult, 0);
+            sv.ApplyTemplate();
+            ScrollBar s = sv.Template.FindName("PART_VerticalScrollBar", sv) as ScrollBar;
+            var myResourceDictionary = new ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Controls.Scrollbars.xaml", UriKind.RelativeOrAbsolute)
+            };
+            var myStyle = myResourceDictionary["MetroScrollBar"] as Style;
+            s.Style = myStyle;
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
