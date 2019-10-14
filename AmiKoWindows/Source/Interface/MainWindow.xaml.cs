@@ -626,12 +626,6 @@ namespace AmiKoWindows
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             _statusBarHelper.IsConnectedToInternet();
-            await _sqlDb?.Search(_uiState, "");
-
-            _uiState.SetQuery(UIState.Query.Title);
-            this.SearchTextBoxWaterMark = _uiState.SearchTextBoxWaterMark;
-            TitleQuerySelectButton.Focus();
-            this.TitleQuerySelectButton.IsChecked = true;
 
             if (Account.IsSet())
             {
@@ -652,6 +646,12 @@ namespace AmiKoWindows
             smartcard.Start();
 
             patchScrollBarColor();
+
+            _uiState.SetQuery(UIState.Query.Title);
+            this.SearchTextBoxWaterMark = _uiState.SearchTextBoxWaterMark;
+            TitleQuerySelectButton.Focus();
+            this.TitleQuerySelectButton.IsChecked = true;
+            await _sqlDb?.Search(_uiState, "");
         }
 
         private void patchScrollBarColor()
