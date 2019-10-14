@@ -1,10 +1,19 @@
-﻿#fulltext {
+﻿body {
+	background-color:var(--background-color-normal);
+	-ms-scrollbar-base-color: var(--background-color-normal);
+	-ms-scrollbar-track-color: var(--background-color-normal);
+	-ms-scrollbar-arrow-color: var(--text-color-normal);
+	-ms-scrollbar-face-color: var(--text-color-normal);
+}
+
+#fulltext {
     margin-left: 10px;
     margin-right: 0px;
     margin-top: 10px;
     margin-bottom: 10px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color:var(--text-color-normal);
+	background-color:var(--background-color-gray);
 }
     #fulltext div p {
         font-size: 0.8em;
