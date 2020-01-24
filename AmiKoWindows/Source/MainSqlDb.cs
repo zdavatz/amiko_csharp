@@ -344,16 +344,21 @@ namespace AmiKoWindows
                     {
                         _db.ReOpenIfNecessary();
 
-                        if (title.Length > 2)
+                        title = title
+                            .Replace("a", "[aáàäâã]")
+                            .Replace("e", "[eéèëê]")
+                            .Replace("i", "[iíìî]")
+                            .Replace("o", "[oóòöôõ]")
+                            .Replace("u", "[uúùüû]");
+
+                        if (title.Length == 0)
                         {
-                            com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
-                                + KEY_TITLE + " LIKE '" + title + "%' OR "
-                                + KEY_TITLE + " LIKE '%" + title + "%'";
-                        }
-                        else
+                            com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE;
+
+                        } else
                         {
-                            com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
-                                + KEY_TITLE + " LIKE '" + title + "%'";
+                            com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE lower("
+                                + KEY_TITLE + ") GLOB '" + title + "*'";
                         }
 
                         using (SQLiteDataReader reader = com.ExecuteReader())
