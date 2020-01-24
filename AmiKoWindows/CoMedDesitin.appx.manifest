@@ -4,7 +4,7 @@
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
   <Identity Name="yweseeGmbH.CoMedDesitin"
-    Version="1.0.16.0"
+    Version="1.0.17.0"
     ProcessorArchitecture="x64"
     Publisher="CN=3F71A827-F362-4FF2-A406-EA63C19EA85B"
     />
