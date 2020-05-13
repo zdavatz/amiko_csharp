@@ -243,6 +243,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Source\Account.cs" />
+    <Compile Include="Source\GoogleSyncManager.cs" />
     <Compile Include="Source\DatabaseHelper.cs" />
     <Compile Include="Source\FileOps.cs" />
     <Compile Include="Source\FullTextDb.cs" />

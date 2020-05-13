@@ -264,6 +264,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Source\Account.cs" />
+    <Compile Include="Source\GoogleSyncManager.cs" />
     <Compile Include="Source\SmartCard.cs" />
     <Compile Include="Source\MAPI.cs" />
     <Compile Include="Source\ShareUtility.cs" />

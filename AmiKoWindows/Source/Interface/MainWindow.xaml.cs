@@ -46,6 +46,7 @@ namespace AmiKoWindows
 {
     using ControlExtensions;
     using MahApps.Metro;
+    using System.Threading;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -183,6 +184,20 @@ namespace AmiKoWindows
                 ReloadColors();
             };
             SystemEvents.UserPreferenceChanged += e3;
+
+            this.TryGoogleAsync();
+        }
+
+        private async Task TryGoogleAsync()
+        {
+            var gm = new GoogleSyncManager();
+            if (await gm.IsGoogleLoggedInAsync())
+            {
+                await gm.TryGoogleAsync();
+            } else
+            {
+                await gm.LoginGoogle();
+            }
         }
 
         #region WndProc Support
