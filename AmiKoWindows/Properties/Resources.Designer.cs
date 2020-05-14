@@ -246,7 +246,16 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("city", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string close {
+            get {
+                return ResourceManager.GetString("close", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Bemerkungen.
         /// </summary>
@@ -408,25 +417,43 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("interactions", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to ...
+        ///   Looks up a localized string similar to Login mit Google.
         /// </summary>
-        public static string mailSubject {
+        public static string loginWithGoogle {
             get {
-                return ResourceManager.GetString("mailSubject", resourceCulture);
+                return ResourceManager.GetString("loginWithGoogle", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to ...
+        ///   Looks up a localized string similar to Logout von Google.
+        /// </summary>
+        public static string logoutFromGoogle {
+            get {
+                return ResourceManager.GetString("logoutFromGoogle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Öffnen mit:{0}.
         /// </summary>
         public static string mailBody {
             get {
                 return ResourceManager.GetString("mailBody", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rezept {0}, {1} von {2}.
+        /// </summary>
+        public static string mailSubject {
+            get {
+                return ResourceManager.GetString("mailSubject", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to CSV erstellen.
         /// </summary>
@@ -804,7 +831,25 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("subscribe", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sync.
+        /// </summary>
+        public static string sync {
+            get {
+                return ResourceManager.GetString("sync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sync mit google.
+        /// </summary>
+        public static string syncWithGoogle {
+            get {
+                return ResourceManager.GetString("syncWithGoogle", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Titel.
         /// </summary>

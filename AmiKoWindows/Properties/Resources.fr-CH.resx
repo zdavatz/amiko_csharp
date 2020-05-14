@@ -381,4 +381,19 @@
   <data name="zip" xml:space="preserve">
     <value>NP</value>
   </data>
+  <data name="syncWithGoogle" xml:space="preserve">
+    <value>Sync with Google</value>
+  </data>
+  <data name="loginWithGoogle" xml:space="preserve">
+    <value>Login with Google</value>
+  </data>
+  <data name="logoutFromGoogle" xml:space="preserve">
+    <value>Logout from Google</value>
+  </data>
+  <data name="sync" xml:space="preserve">
+    <value>Sync</value>
+  </data>
+  <data name="close" xml:space="preserve">
+    <value>Close</value>
+  </data>
 </root>

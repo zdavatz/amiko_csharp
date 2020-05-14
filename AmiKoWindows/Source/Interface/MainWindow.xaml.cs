@@ -184,20 +184,6 @@ namespace AmiKoWindows
                 ReloadColors();
             };
             SystemEvents.UserPreferenceChanged += e3;
-
-            this.TryGoogleAsync();
-        }
-
-        private async Task TryGoogleAsync()
-        {
-            var gm = new GoogleSyncManager();
-            if (await gm.IsGoogleLoggedInAsync())
-            {
-                await gm.TryGoogleAsync();
-            } else
-            {
-                await gm.LoginGoogle();
-            }
         }
 
         #region WndProc Support
@@ -1554,6 +1540,26 @@ namespace AmiKoWindows
             {
                 var url = "mailto:zdavatz@ywesee.com?subject=AmiKo%20Desitin%20Feedback";
                 Process.Start(url);
+            }
+            else if (name.Equals("Settings"))
+            {
+                ViewType viewType = DataContext as ViewType;
+                if (viewType == null)
+                    return;
+                if (viewType.Mode.Equals("Html"))
+                {
+                    // NOTE
+                    // WebBrowser does not allow to put controls over on it :'(
+                    // Thus, flyouts does not work on HTML Context.
+                    //
+                    // https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/wpf-and-win32-interoperation
+                    SetState(UIState.State.Prescriptions);
+                    viewType = DataContext as ViewType;
+                    Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                }
+                viewType.HasSettings = true;
+                this.DataContext = viewType;
+                this.FlyoutMenu.IsOpen = false;
             }
             else if (name.Equals("About"))
             {

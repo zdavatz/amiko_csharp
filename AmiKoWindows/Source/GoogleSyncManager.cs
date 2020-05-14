@@ -14,6 +14,11 @@ namespace AmiKoWindows
 {
     class GoogleSyncManager
     {
+        public static readonly GoogleSyncManager Instance = new GoogleSyncManager();
+
+        private GoogleSyncManager()
+        { }
+
         private ClientSecrets GoogleSecrets()
         {
             var c = new ClientSecrets();
@@ -34,7 +39,7 @@ namespace AmiKoWindows
             return result != null;
         }
 
-        public async Task<UserCredential> LoginGoogle()
+        public async Task<UserCredential> Login()
         {
             var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                 this.GoogleSecrets(),
@@ -45,15 +50,16 @@ namespace AmiKoWindows
             return credential;
         }
 
-        public Task LogoutGoogle()
+        public Task Logout()
         {
-            return DataStore().DeleteAsync<TokenResponse>("user");
+            return DataStore().ClearAsync();
         }
 
-        public async Task TryGoogleAsync()
+        public async Task Sync()
         {
-            try {
-                var uc = await this.LoginGoogle();
+            try
+            {
+                var uc = await this.Login();
                 var service = new DriveService(new BaseClientService.Initializer()
                 {
                     HttpClientInitializer = uc,
