@@ -155,7 +155,7 @@ namespace AmiKoWindows
         private void SyncButton_Click(object sender, RoutedEventArgs e)
         {
             if (!IsLoggedIn) return;
-            GoogleSyncManager.Instance.Sync();
+            GoogleSyncManager.Instance.Synchronise();
         }
 
         #endregion
