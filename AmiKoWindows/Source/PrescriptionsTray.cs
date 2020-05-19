@@ -720,12 +720,14 @@ namespace AmiKoWindows
             presenter.MedicationsList = Medications;
 
             var serializer = new JavaScriptSerializer();
+            serializer.MaxJsonLength = 999999999;
             return serializer.Serialize(presenter);
         }
 
         private PrescriptionJSONPresenter DeserializeJson(string json)
         {
             var serializer = new JavaScriptSerializer();
+            serializer.MaxJsonLength = 999999999;
             return serializer.Deserialize<PrescriptionJSONPresenter>(json);
         }
 
