@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Apis.Requests;
+using System.Web.Script.Serialization;
 
 namespace AmiKoWindows
 {
@@ -60,21 +61,13 @@ namespace AmiKoWindows
 
         public async Task<DriveService> GetDriveInstance()
         {
-            try
+            var uc = await this.Login();
+            var service = new DriveService(new BaseClientService.Initializer()
             {
-                var uc = await this.Login();
-                var service = new DriveService(new BaseClientService.Initializer()
-                {
-                    HttpClientInitializer = uc,
-                    ApplicationName = "Amiko Desitin",
-                });
-                return service;
-            }
-            catch (Exception e)
-            {
-                Log.WriteLine(e.ToString());
-            }
-            return null;
+                HttpClientInitializer = uc,
+                ApplicationName = "Amiko Desitin",
+            });
+            return service;
         }
 
         private void ReportStatus(string str)
@@ -134,32 +127,42 @@ namespace AmiKoWindows
         private async Task<List<File>> ListRemoteFilesAndFolders()
         {
             var files = new List<File>();
-            try
-            {
-                DriveService drive = await GetDriveInstance();
-                string pageToken = null;
+            DriveService drive = await GetDriveInstance();
+            string pageToken = null;
 
-                do
-                {
-                    var list = drive.Files.List();
-                    list.Spaces = "appDataFolder";
-                    list.Fields = "nextPageToken, files(" + FILE_FIELDS + ")";
-                    var fileList = await list.ExecuteAsync();
-                    files.AddRange(fileList.Files);
-                    pageToken = fileList.NextPageToken;
-                } while (pageToken != null);
-            }
-            catch (Exception e)
+            do
             {
-                Log.WriteLine(e.ToString());
-                return null;
-            }
+                var list = drive.Files.List();
+                list.Spaces = "appDataFolder";
+                list.Fields = "nextPageToken, files(" + FILE_FIELDS + ")";
+                var fileList = await list.ExecuteAsync();
+                files.AddRange(fileList.Files);
+                pageToken = fileList.NextPageToken;
+            } while (pageToken != null);
             return files;
+        }
+
+        protected bool ShouldSyncPath(string path)
+        {
+            var syncFolder = IO.Path.Combine(Utilities.AppRoamingDataFolder(), "googleSync");
+            if (path.StartsWith(syncFolder))
+            {
+                return false;
+            }
+            var extension = IO.Path.GetExtension(path);
+            if (extension.Equals(".csv") // interaction files
+                || extension.Equals(".db") // patient db or main db
+                || extension.Equals(".html") // report
+                || extension.Equals(".zip") // temp file during update
+                )
+            {
+                return false;
+            }
+            return true;
         }
 
         protected List<IO.FileInfo> ListLocalFilesAndFolders()
         {
-            // TODO: skip patient db and db files and maybe more
             // TODO: create a fake file for doctor?
             var allFiles = new List<IO.FileInfo>();
             var filesDir = new IO.DirectoryInfo(Utilities.AppRoamingDataFolder());
@@ -167,21 +170,24 @@ namespace AmiKoWindows
             var pendingFolders = new List<IO.DirectoryInfo>();
             pendingFolders.Add(filesDir);
 
-            var syncFolder = new IO.FileInfo(IO.Path.Combine(filesDir.FullName, "googleSync"));
-
             while (pendingFolders.Count > 0)
             {
                 var currentFolder = pendingFolders[0];
                 IO.FileInfo[] children = currentFolder.GetFiles();
                 foreach (var child in children)
                 {
-                    if (child.FullName.Equals(syncFolder.FullName) || child.FullName.StartsWith(syncFolder.FullName))
+                    if (!ShouldSyncPath(child.FullName))
                     {
                         // Skip "googleSync" folder which is used to store sync and creds info
                         continue;
                     }
                     allFiles.Add(child);
-                    if (child.Attributes.HasFlag(IO.FileAttributes.Directory))
+                }
+                IO.DirectoryInfo[] childDirs = currentFolder.GetDirectories();
+                foreach (var child in childDirs)
+                {
+                    allFiles.Add(new IO.FileInfo(child.FullName));
+                    if (ShouldSyncPath(child.FullName))
                     {
                         pendingFolders.Add(new IO.DirectoryInfo(child.FullName));
                     }
@@ -221,6 +227,8 @@ namespace AmiKoWindows
                         string parent = thisFile.Parents.First();
                         if (parent != null)
                         {
+                            // For files at root level, the parent id is a folder that we cannot access.
+                            // Which would trigger an exception here:
                             File parentFile = idMap[parent];
                             parents.Insert(0, parentFile.Name);
                         }
@@ -232,7 +240,7 @@ namespace AmiKoWindows
                     }
                 }
                 parents.Add(file.Name);
-                string fullPath = string.Join(",", parents);
+                string fullPath = string.Join(IO.Path.DirectorySeparatorChar.ToString(), parents);
                 fileMap[fullPath] = file;
             }
             return fileMap;
@@ -292,30 +300,10 @@ namespace AmiKoWindows
             {
                 return new Dictionary<string, long>();
             }
-            var map = new Dictionary<string, long>();
-            try
-            {
-                /*
-                 * TODO
-                FileInputStream inputStream = new FileInputStream(versionFile);
-                JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
-                reader.beginObject();
-                while (reader.hasNext())
-                {
-                    string name = reader.nextName();
-                    Long version = reader.nextLong();
-                    map.put(name, version);
-                }
-                reader.endObject();
-                reader.close();
-                inputStream.close();
-                */
-            }
-            catch (Exception e)
-            {
-                Log.WriteLine(e.ToString());
-            }
-            return map;
+            string str = IO.File.ReadAllText(versionFile.FullName);
+            var serializer = new JavaScriptSerializer();
+            var dict = serializer.Deserialize<Dictionary<string, long>>(str);
+            return dict;
         }
 
         private void SaveLocalFileVersionMap(Dictionary<string, long> map)
@@ -326,27 +314,9 @@ namespace AmiKoWindows
             {
                 parent.Create();
             }
-            try
-            {
-                /*
-                 * TODO:
-                FileOutputStream stream = new FileOutputStream(versionFile);
-                JsonWriter writer = new JsonWriter(new OutputStreamWriter(stream, "UTF-8"));
-                writer.beginObject();
-                for (string key : map.keySet())
-                {
-                    Long version = map.get(key);
-                    writer.name(key).value(version);
-                }
-                writer.endObject();
-                writer.close();
-                stream.close();
-                */
-            }
-            catch (Exception e)
-            {
-                Log.WriteLine(e.ToString());
-            }
+            var serializer = new JavaScriptSerializer();
+            var str = serializer.Serialize(map);
+            IO.File.WriteAllText(versionFile.FullName, str);
         }
 
         protected void ReportUpdatedFile(IO.FileInfo file)
@@ -428,6 +398,7 @@ namespace AmiKoWindows
 
             void ReportStatus(string str)
             { // TODO
+                Log.WriteLine(str);
             }
 
             void PrepareFiles()
@@ -534,6 +505,7 @@ namespace AmiKoWindows
                 patientsToDownload = new Dictionary<string, File>();
                 localPatientsToDelete = new HashSet<string>();
                 remotePatientsToDelete = new Dictionary<string, File>();
+                return;
 
                 patientsToCreate.UnionWith(localPatientTimestamps.Keys);
                 patientsToCreate.ExceptWith(patientVersions.Keys);
@@ -632,13 +604,12 @@ namespace AmiKoWindows
                         var parentFile = folderToCreate.Directory;
                         bool atRoot = parentFile.FullName.Equals(this.filesDir.FullName);
                         string parentRelativeToFilesDir = Utilities.MakeRelativePath(this.filesDir.FullName, parentFile.FullName);
-                        File remoteParent = this.remoteFilesMap[parentRelativeToFilesDir];
+                        File remoteParent = this.remoteFilesMap.ContainsKey(parentRelativeToFilesDir) ? this.remoteFilesMap[parentRelativeToFilesDir] : null;
                         if (!atRoot && remoteParent == null)
                         {
                             // parent is not created yet, skip this
                             continue;
                         }
-
                         File fileMetadata = new File();
                         fileMetadata.Name = folderToCreate.Name;
                         fileMetadata.MimeType = "application/vnd.google-apps.folder";
@@ -650,33 +621,15 @@ namespace AmiKoWindows
                         {
                             fileMetadata.Parents = new List<string> { remoteParent.Id };
                         }
-                        /*
-        JsonBatchCallback<File> callback = new JsonBatchCallback<File>() {
-                            @Override
-                            public void onFailure(GoogleJsonError e,
-                                                  HttpHeaders responseHeaders)
-                                    throws IOException
-    {
-        Log.e(TAG, e.getMessage());
-    }
-
-    @Override
-                        public void onSuccess(File result,
-                                              HttpHeaders responseHeaders)
-                                throws IOException
-    {
-        Log.i(TAG, "Created folder");
-        Log.i(TAG, "File name: " + result.getName());
-        Log.i(TAG, "File ID: " + result.getId());
-        pathsToCreate.remove(relativePath);
-        remoteFilesMap.put(relativePath, result);
-        }
-    };*/
                         var req = driveService.Files.Create(fileMetadata);
                         req.Fields = FILE_FIELDS;
-                        batch.Queue<File>(req, (content, error, index, message) =>
+                        batch.Queue<File>(req, (result, error, index, message) =>
                         {
-                            // TODO
+                            Log.WriteLine("Created folder");
+                            Log.WriteLine("File name: " + result.Name);
+                            Log.WriteLine("File ID: " + result.Id);
+                            pathsToCreate.Remove(relativePath);
+                            remoteFilesMap[relativePath] = result;
                         });
                     }
                     if (batch.Count > 0)
@@ -698,7 +651,7 @@ namespace AmiKoWindows
                     IO.DirectoryInfo parentFile = localFile.Directory;
                     bool atRoot = parentFile.FullName.Equals(this.filesDir.FullName);
                     string parentRelativeToFilesDir = Utilities.MakeRelativePath(this.filesDir.FullName, parentFile.FullName);
-                    File remoteParent = this.remoteFilesMap[parentRelativeToFilesDir];
+                    File remoteParent = this.remoteFilesMap.ContainsKey(parentRelativeToFilesDir) ? this.remoteFilesMap[parentRelativeToFilesDir] : null;
 
                     if (!atRoot && !remoteParent.MimeType.Equals("application/vnd.google-apps.folder"))
                     {
@@ -741,15 +694,15 @@ namespace AmiKoWindows
             {
                 if (driveService == null) return;
                 int i = 0;
+                var toRemove = new HashSet<string>();
                 foreach (string path in this.pathsToUpdate.Keys)
                 {
                     string fileId = this.pathsToUpdate[path];
                     IO.FileInfo localFile = new IO.FileInfo(IO.Path.Combine(this.filesDir.FullName, path));
 
                     File fileMetadata = new File();
-                    fileMetadata.Id = fileId;
                     fileMetadata.Name = localFile.Name;
-                    //FileContent mediaContent = new FileContent("application/octet-stream", localFile);
+                    fileMetadata.ModifiedTime = localFile.LastWriteTime;
 
                     ReportStatus("Updating files (" + i + "/" + pathsToUpdate.Count + ")");
                     using (var fileStream = localFile.OpenRead())
@@ -757,15 +710,24 @@ namespace AmiKoWindows
                         var req = driveService.Files
                             .Update(fileMetadata, fileId, fileStream, "application/octet-stream");
                         req.Fields = FILE_FIELDS;
-                        await req.UploadAsync();
-                        var result = req.ResponseBody;
-                        pathsToUpdate.Remove(path);
-                        remoteFilesMap[path] = result;
-                        Log.WriteLine("Updated file");
-                        Log.WriteLine("File name: " + result.Name);
-                        Log.WriteLine("File ID: " + result.Id);
+                        var progress = await req.UploadAsync();
+                        if (progress.Status == Google.Apis.Upload.UploadStatus.Completed)
+                        {
+                            var result = req.ResponseBody;
+                            Log.WriteLine(result.ToString());
+                            Log.WriteLine("Updated file");
+                            Log.WriteLine("File name: " + result.Name);
+                            Log.WriteLine("File ID: " + result.Id);
+
+                            toRemove.Add(path);
+                            remoteFilesMap[path] = result;
+                        }
                     }
                     i++;
+                }
+                foreach (string x in toRemove)
+                {
+                    this.pathsToUpdate.Remove(x);
                 }
             }
 
@@ -777,29 +739,13 @@ namespace AmiKoWindows
                 foreach (string path in this.remoteFilesToDelete)
                 {
                     File remoteFile = this.remoteFilesMap[path];
-                    /*                    JsonBatchCallback<Void> callback = new JsonBatchCallback<Void>() {
-                                                    @Override
-                                                    public void onFailure(GoogleJsonError e,
-                                                                          HttpHeaders responseHeaders)
-                                                            throws IOException {
-                                            Log.e(TAG, e.getMessage());
-                                        }
-
-                                        @Override
-                                                    public void onSuccess(Void v,
-                                                                          HttpHeaders responseHeaders)
-                                                            throws IOException {
-                                            Log.i(TAG, "Deleted file");
-                                            Log.i(TAG, "fileId: " + remoteFile.getId());
-                                            remoteFilesToDelete.remove(path);
-                                            remoteFilesMap.remove(path);
-                                        }
-                                    };
-                                    */
                     var req = driveService.Files.Delete(remoteFile.Id);
-                    batch.Queue<string>(req, (content, error, index, message) =>
+                    batch.Queue<string>(req, (result, error, index, message) =>
                     {
-                        // TODO
+                        Log.WriteLine("Deleted file");
+                        Log.WriteLine("fileId: " + result);
+                        remoteFilesToDelete.Remove(path);
+                        remoteFilesMap.Remove(path);
                     });
                 }
                 if (batch.Count > 0) {
@@ -831,9 +777,16 @@ namespace AmiKoWindows
                         var req = driveService.Files.Get(fileId);
                         req.Fields = FILE_FIELDS;
                         await req.DownloadAsync(fileStream);
-                        localFile.LastWriteTime = (DateTime)remoteFile.ModifiedTime;
                         // TODO
                         // ReportUpdatedFile(localFile);
+                    }
+                    try
+                    {
+                        localFile.LastWriteTime = (DateTime)remoteFile.ModifiedTime;
+                    }
+                    catch (Exception e)
+                    {
+                        Log.WriteLine(e.ToString());
                     }
                     i++;
                 }
@@ -869,7 +822,7 @@ namespace AmiKoWindows
             private async Task CreatePatients(BatchRequest batch)
             {
                 if (driveService == null) return;
-                File patientFolder = remoteFilesMap["patients"];
+                File patientFolder = remoteFilesMap.ContainsKey("patients") ? remoteFilesMap["patients"] : null;
                 if (patientFolder == null)
                 {
                     Log.WriteLine("Cannot find patients folder");
@@ -883,30 +836,15 @@ namespace AmiKoWindows
                     fileMetadata.Properties = new Dictionary<string, string>(); // TODO;
                     fileMetadata.MimeType = "application/octet-stream";
                     fileMetadata.Parents = new List<string> { patientFolder.Id };
-
-                    /*JsonBatchCallback<File> callback = new JsonBatchCallback<File>() {
-                                @Override
-                                public void onFailure(GoogleJsonError e,
-                                                      HttpHeaders responseHeaders)
-                                        throws IOException {
-                        Log.e(TAG, e.getMessage());
-                    }
-
-                    @Override
-                                public void onSuccess(File result,
-                                                      HttpHeaders responseHeaders)
-                                        throws IOException {
-                        Log.i(TAG, "Created patient " + patient.uid);
-                        Log.i(TAG, "File ID: " + result.getId());
-                        patientsToCreate.remove(patient.uid);
-                        remotePatientsMap.put(patient.uid, result);
-                    }
-                };*/
+                    
                     var req = driveService.Files.Create(fileMetadata);
                     req.Fields = FILE_FIELDS;
-                    batch.Queue<File>(req, (content, error, index, message) =>
+                    batch.Queue<File>(req, (result, error, index, message) =>
                     {
-                        // TODO
+                        Log.WriteLine("Created patient " + patient.Id.ToString());
+                        Log.WriteLine("File ID: " + result.Id);
+                        patientsToCreate.Remove(patient.Id.ToString());
+                        remotePatientsMap[patient.Id.ToString()] = result;
                     });
                 }
             }
@@ -921,30 +859,16 @@ namespace AmiKoWindows
                     File fileMetadata = new File();
                     fileMetadata.Name = patient.Id.ToString();
                     fileMetadata.Properties = new Dictionary<string, string>(); // TODO: patient.toMap
-/*        JsonBatchCallback<File> callback = new JsonBatchCallback<File>() {
-                    @Override
-                    public void onFailure(GoogleJsonError e,
-                                          HttpHeaders responseHeaders)
-                            throws IOException {
-            Log.e(TAG, e.getMessage());
-        }
 
-        @Override
-                    public void onSuccess(File result,
-                                          HttpHeaders responseHeaders)
-                            throws IOException {
-            Log.i(TAG, "Updated files");
-            Log.i(TAG, "File name: " + result.getName());
-            Log.i(TAG, "File ID: " + result.getId());
-            patientsToUpdate.remove(patient.uid);
-            remotePatientsMap.put(patient.uid, result);
-        }
-    };*/
                     var req = driveService.Files.Update(fileMetadata, file.Id);
                     req.Fields = FILE_FIELDS;
-                    batch.Queue<File>(req, (content, error, index, message) =>
+                    batch.Queue<File>(req, (result, error, index, message) =>
                     {
-                        // TODO
+                        Log.WriteLine("Updated files");
+                        Log.WriteLine("File name: " + result.Name);
+                        Log.WriteLine("File ID: " + result.Id);
+                        patientsToUpdate.Remove(patient.Id.ToString());
+                        remotePatientsMap[patient.Id.ToString()] = result;
                     });
                 }
             }
@@ -954,28 +878,13 @@ namespace AmiKoWindows
                 if (driveService == null) return;
                 foreach (string uid in this.remotePatientsToDelete.Keys) {
                     File file = this.remotePatientsToDelete[uid];
-    /*JsonBatchCallback<Void> callback = new JsonBatchCallback<Void>() {
-                    @Override
-                    public void onFailure(GoogleJsonError e,
-                                          HttpHeaders responseHeaders)
-                            throws IOException {
-        Log.e(TAG, e.getMessage());
-    }
-
-    @Override
-                    public void onSuccess(Void v,
-                                          HttpHeaders responseHeaders)
-                            throws IOException {
-        Log.i(TAG, "Deleted remote patient");
-        Log.i(TAG, "fileId: " + file.getId());
-        remotePatientsToDelete.remove(uid);
-        remotePatientsMap.remove(uid);
-    }
-};*/
                     var req = driveService.Files.Delete(file.Id);
                     batch.Queue<string>(req, (content, error, index, message) =>
                     {
-                        // TODO
+                        Log.WriteLine("Deleted remote patient");
+                        Log.WriteLine("fileId: " + file.Id);
+                        remotePatientsToDelete.Remove(uid);
+                        remotePatientsMap.Remove(uid);
                     });
                 }
             }
