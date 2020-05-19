@@ -278,7 +278,7 @@ namespace AmiKoWindows
 
         public static string MakeRelativePath(string fromPath, string toPath)
         {
-            Uri fromUri = new Uri(fromPath);
+            Uri fromUri = new Uri(fromPath + Path.DirectorySeparatorChar);
             Uri toUri = new Uri(toPath);
 
             if (fromUri.Scheme != toUri.Scheme) { return toPath; } // path can't be made relative.
