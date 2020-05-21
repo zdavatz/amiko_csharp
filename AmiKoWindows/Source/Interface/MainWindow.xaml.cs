@@ -628,9 +628,10 @@ namespace AmiKoWindows
         {
             _statusBarHelper.IsConnectedToInternet();
 
+            Account.MigrateFromOldSettings();
             if (Account.IsSet())
             {
-                this.ActiveAccount = Properties.Settings.Default.Account;
+                this.ActiveAccount = Account.Read();
                 _prescriptions.ActiveAccount = ActiveAccount;
             }
 

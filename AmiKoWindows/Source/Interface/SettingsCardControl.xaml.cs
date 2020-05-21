@@ -83,11 +83,6 @@ namespace AmiKoWindows
                 this.DataContext = this;
             };
 
-            if (Properties.Settings.Default.Account == null)
-                Properties.Settings.Default.Account = new Account();
-            else
-                Properties.Settings.Default.Account.Reload();
-
             InitializeComponent();
         }
 

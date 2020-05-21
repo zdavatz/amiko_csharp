@@ -30,7 +30,7 @@ namespace AmiKoWindows
     // json properties for prescription
     // ```
     // Contact -> patient
-    // Account -> operotar
+    // Account -> operator
     // Medication[] -> medications
     // ```
     public class PrescriptionJSONPresenter
@@ -258,6 +258,60 @@ namespace AmiKoWindows
                     this.eancode = medication.Eancode;
 
                 this.product_name = medication.ProductName;
+            }
+        }
+    }
+
+    // The "account setting" of the doctor, not the operator in amk files
+    public class SettingAccountJSONPresenter
+    {
+        public string title { get; set; }
+        public string name { get; set; }
+        public string surname { get; set; }
+        public string street { get; set; }
+        public string city { get; set; }
+        public string zip { get; set; }
+        public string phone { get; set; }
+        public string email { get; set; }
+
+        public SettingAccountJSONPresenter()
+        {
+            // pass (for deserialization)
+        }
+
+        public SettingAccountJSONPresenter(Account account)
+        {
+            this.Account = account;
+        }
+
+        [ScriptIgnore]
+        public Account Account
+        {
+            get
+            {
+                var account = new Account();
+                account.Title = this.title;
+                account.GivenName = this.name;
+                account.FamilyName = this.surname;
+                account.Address = this.street;
+                account.City = this.city;
+                account.Zip = this.zip;
+                account.Phone = this.phone;
+                account.Email = this.email;
+                return account;
+            }
+
+            set
+            {
+                var account = value;
+                this.title = account.Title;
+                this.name = account.GivenName;
+                this.surname = account.FamilyName;
+                this.street = account.Address;
+                this.city = account.City;
+                this.zip = account.Zip;
+                this.phone = account.Phone;
+                this.email = account.Email;
             }
         }
     }
