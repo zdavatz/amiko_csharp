@@ -169,6 +169,8 @@ namespace AmiKoWindows
 
             _statusBarHelper = new StatusBarHelper();
 
+            GoogleSyncManager.Init(_patientDb);
+
             this.Spinner.Spin = false;
 
             // Set initial state

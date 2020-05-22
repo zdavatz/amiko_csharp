@@ -356,5 +356,43 @@ namespace AmiKoWindows
             }
             return text;
         }
-   }
+
+        public Contact(IDictionary<string, string> dict)
+        {
+            this.TimeStamp = dict[PatientDb.KEY_TIME_STAMP];
+            this.Uid = dict[PatientDb.KEY_UID];
+            this.FamilyName = dict[PatientDb.KEY_FAMILY_NAME];
+            this.GivenName = dict[PatientDb.KEY_GIVEN_NAME];
+            this.Birthdate = dict[PatientDb.KEY_BIRTHDATE];
+            this.Gender = dict[PatientDb.KEY_GENDER];
+            this.WeightKg = dict[PatientDb.KEY_WEIGHT_KG];
+            this.HeightCm = dict[PatientDb.KEY_HEIGHT_CM];
+            this.Zip = dict[PatientDb.KEY_ZIP];
+            this.City = dict[PatientDb.KEY_CITY];
+            this.Country = dict[PatientDb.KEY_COUNTRY];
+            this.Address = dict[PatientDb.KEY_ADDRESS];
+            this.Phone = dict[PatientDb.KEY_PHONE];
+            this.Email = dict[PatientDb.KEY_EMAIL];
+        }
+
+        public Dictionary<string, string>ToMapForSync()
+        {
+            var dict = new Dictionary<string, string>();
+            dict[PatientDb.KEY_TIME_STAMP] = this.TimeStamp;
+            dict[PatientDb.KEY_UID] = this.Uid;
+            dict[PatientDb.KEY_FAMILY_NAME] = this.FamilyName;
+            dict[PatientDb.KEY_GIVEN_NAME] = this.GivenName;
+            dict[PatientDb.KEY_BIRTHDATE] = this.Birthdate;
+            dict[PatientDb.KEY_GENDER] = this.Gender;
+            dict[PatientDb.KEY_WEIGHT_KG] = this.WeightKg;
+            dict[PatientDb.KEY_HEIGHT_CM] = this.HeightCm;
+            dict[PatientDb.KEY_ZIP] = this.Zip;
+            dict[PatientDb.KEY_CITY] = this.City;
+            dict[PatientDb.KEY_COUNTRY] = this.Country;
+            dict[PatientDb.KEY_ADDRESS] = this.Address;
+            dict[PatientDb.KEY_PHONE] = this.Phone;
+            dict[PatientDb.KEY_EMAIL] = this.Email;
+            return dict;
+        }
+    }
 }

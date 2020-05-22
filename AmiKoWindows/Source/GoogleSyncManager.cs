@@ -18,10 +18,22 @@ namespace AmiKoWindows
 {
     class GoogleSyncManager
     {
-        public static readonly GoogleSyncManager Instance = new GoogleSyncManager();
+        public static GoogleSyncManager Instance;
+        private PatientDb _patientDb;
 
-        private GoogleSyncManager()
-        { }
+        public static GoogleSyncManager Init(PatientDb db)
+        {
+            if (Instance == null)
+            {
+                Instance = new GoogleSyncManager(db);
+            }
+            return Instance;
+        }
+
+        private GoogleSyncManager(PatientDb db)
+        {
+            this._patientDb = db;
+        }
 
         private ClientSecrets GoogleSecrets()
         {
@@ -94,9 +106,7 @@ namespace AmiKoWindows
             Dictionary<string, long> localVersions = this.LocalFileVersionMap();
             Dictionary<string, long> patientVersions = this.ExtractPatientsFromFilesMap(localVersions);
 
-            //PatientDBAdapter db = new PatientDBAdapter(this);
-            //Map<string, Date> localPatientTimestamps = this.localPatientTimestamps(db);
-            var localPatientTimestamps = new Dictionary<string, DateTime>();
+            Dictionary<string, DateTime> localPatientTimestamps = await _patientDb.GetTimestampsOfContacts();
 
             Log.WriteLine("remoteFiles " + remoteFiles.ToString());
             Log.WriteLine("localFiles " + localFiles.ToString());
@@ -114,11 +124,11 @@ namespace AmiKoWindows
                     remoteFilesMap,
                     patientVersions,
                     localPatientTimestamps,
-                    remotePatientsMap
+                    remotePatientsMap,
+                    _patientDb
             );
 
             Dictionary<string, long> newVersionMap = await sp.Execute();
-            //db.close();
             this.SaveLocalFileVersionMap(newVersionMap);
             this.ReportStatus("Finished sync");
             Log.WriteLine("End syncing");
@@ -163,10 +173,8 @@ namespace AmiKoWindows
 
         protected List<IO.FileInfo> ListLocalFilesAndFolders()
         {
-            // TODO: create a fake file for doctor?
             var allFiles = new List<IO.FileInfo>();
             var filesDir = new IO.DirectoryInfo(Utilities.AppRoamingDataFolder());
-            //IO.FileInfo filesDir = this.getFilesDir();
             var pendingFolders = new List<IO.DirectoryInfo>();
             pendingFolders.Add(filesDir);
 
@@ -254,30 +262,19 @@ namespace AmiKoWindows
         private Dictionary<string, T> ExtractPatientsFromFilesMap<T>(Dictionary<string, T> filesMap)
         {
             var map = new Dictionary<string, T>();
+            var toRemove = new List<string>();
             foreach (string path in filesMap.Keys)
             {
-                if (path.StartsWith("patients/"))
+                if (path.StartsWith("patients" + IO.Path.DirectorySeparatorChar))
                 {
-                    map[path.Replace("patients/", "")] = filesMap[path];
-                    filesMap.Remove(path);
+                    map[path.Replace("patients" + IO.Path.DirectorySeparatorChar, "")] = filesMap[path];
+                    toRemove.Add(path);
                 }
             }
-            return map;
-        }
-
-        private Dictionary<string, DateTime> LocalPatientTimestamps(/*PatientDBAdapter db*/)
-        {
-            // TODO
-            //Dictionary<string, string> strMap = db.getAllTimestamps();
-            var map = new Dictionary<string, DateTime>();
-            /*for (string uid : strMap.keySet())
+            foreach (string x in toRemove)
             {
-                Date timeStamp = Utilities.dateFromTimestring(strMap.get(uid));
-                if (timeStamp != null)
-                {
-                    map.put(uid, timeStamp);
-                }
-            }*/
+                filesMap.Remove(x);
+            }
             return map;
         }
 
@@ -369,7 +366,7 @@ namespace AmiKoWindows
             public Dictionary<string, File> patientsToDownload; // uid : remote file
             public HashSet<string> localPatientsToDelete; // uid
             public Dictionary<string, File> remotePatientsToDelete;
-            //private PatientDBAdapter patientDB;
+            private PatientDb PatientDb;
 
             public SyncPlan(IO.FileInfo filesDir,
                      DriveService driveService,
@@ -378,8 +375,8 @@ namespace AmiKoWindows
                      Dictionary<string, File> remoteFilesMap,
                      Dictionary<string, long> patientVersions,
                      Dictionary<string, DateTime> localPatientTimestamps,
-                     Dictionary<string, File> remotePatientsMap
-                     //PatientDBAdapter patientDB
+                     Dictionary<string, File> remotePatientsMap,
+                     PatientDb patientDb
                      )
             {
                 this.filesDir = filesDir;
@@ -390,7 +387,7 @@ namespace AmiKoWindows
                 this.patientVersions = patientVersions;
                 this.localPatientTimestamps = localPatientTimestamps;
                 this.remotePatientsMap = remotePatientsMap;
-                //this.patientDB = patientDB;
+                this.PatientDb = patientDb;
 
                 PrepareFiles();
                 PreparePatients();
@@ -505,7 +502,6 @@ namespace AmiKoWindows
                 patientsToDownload = new Dictionary<string, File>();
                 localPatientsToDelete = new HashSet<string>();
                 remotePatientsToDelete = new Dictionary<string, File>();
-                return;
 
                 patientsToCreate.UnionWith(localPatientTimestamps.Keys);
                 patientsToCreate.ExceptWith(patientVersions.Keys);
@@ -828,12 +824,12 @@ namespace AmiKoWindows
                     Log.WriteLine("Cannot find patients folder");
                     return;
                 }
-                List<Contact> patients = new List<Contact>(); // TODO: this.patientDB.getPatientsWithUids(this.patientsToCreate);
+                List<Contact> patients = await this.PatientDb.GetContactsByUids(new List<string>(this.patientsToCreate));
                 foreach (Contact patient in patients)
                 {
                     File fileMetadata = new File();
-                    fileMetadata.Name = patient.Id.ToString();
-                    fileMetadata.Properties = new Dictionary<string, string>(); // TODO;
+                    fileMetadata.Name = patient.Uid.ToString();
+                    fileMetadata.Properties = patient.ToMapForSync();
                     fileMetadata.MimeType = "application/octet-stream";
                     fileMetadata.Parents = new List<string> { patientFolder.Id };
                     
@@ -841,24 +837,23 @@ namespace AmiKoWindows
                     req.Fields = FILE_FIELDS;
                     batch.Queue<File>(req, (result, error, index, message) =>
                     {
-                        Log.WriteLine("Created patient " + patient.Id.ToString());
+                        Log.WriteLine("Created patient " + patient.Uid.ToString());
                         Log.WriteLine("File ID: " + result.Id);
-                        patientsToCreate.Remove(patient.Id.ToString());
-                        remotePatientsMap[patient.Id.ToString()] = result;
+                        patientsToCreate.Remove(patient.Uid.ToString());
+                        remotePatientsMap[patient.Uid.ToString()] = result;
                     });
                 }
             }
 
-            private void UpdatePatients(BatchRequest batch)
+            private async Task UpdatePatients(BatchRequest batch)
             {
                 if (driveService == null) return;
-                List<Contact> patients = new List<Contact>();
-                // TODO: this.patientDB.getPatientsWithUids(this.patientsToUpdate.keySet());
+                List<Contact> patients = await this.PatientDb.GetContactsByUids(new List<string>(this.patientsToUpdate.Keys));
                 foreach (Contact patient in patients) {
-                    File file = this.patientsToUpdate[patient.Id.ToString()];
+                    File file = this.patientsToUpdate[patient.Uid.ToString()];
                     File fileMetadata = new File();
-                    fileMetadata.Name = patient.Id.ToString();
-                    fileMetadata.Properties = new Dictionary<string, string>(); // TODO: patient.toMap
+                    fileMetadata.Name = patient.Uid.ToString();
+                    fileMetadata.Properties = patient.ToMapForSync();
 
                     var req = driveService.Files.Update(fileMetadata, file.Id);
                     req.Fields = FILE_FIELDS;
@@ -867,8 +862,8 @@ namespace AmiKoWindows
                         Log.WriteLine("Updated files");
                         Log.WriteLine("File name: " + result.Name);
                         Log.WriteLine("File ID: " + result.Id);
-                        patientsToUpdate.Remove(patient.Id.ToString());
-                        remotePatientsMap[patient.Id.ToString()] = result;
+                        patientsToUpdate.Remove(patient.Uid.ToString());
+                        remotePatientsMap[patient.Uid.ToString()] = result;
                     });
                 }
             }
@@ -894,7 +889,8 @@ namespace AmiKoWindows
                 foreach (string uid in this.patientsToDownload.Keys)
                 {
                     File file = this.patientsToDownload[uid];
-                    // TODO: this.patientDB.upsertRecordByUid(new Patient(file.getProperties()));
+                    Contact contact = new Contact(file.Properties);
+                    await this.PatientDb.UpsertContactByUid(contact);
                     // TODO: reportUpdatedPatient(uid);
                 }
             }
@@ -903,7 +899,7 @@ namespace AmiKoWindows
             {
                 foreach (string uid in this.localPatientsToDelete)
                 {
-                    // TODO: this.patientDB.deletePatientWithUid(uid);
+                    await this.PatientDb.DeleteContactByUid(uid);
                     this.patientVersions.Remove(uid);
                     // TODO: reportUpdatedPatient(uid);
                 }
@@ -932,7 +928,7 @@ namespace AmiKoWindows
 
                 ReportStatus("Syncing patients");
                 await this.CreatePatients(batch);
-                this.UpdatePatients(batch);
+                await this.UpdatePatients(batch);
                 this.DeletePatients(batch);
                 if (batch.Count > 0) {
                     await batch.ExecuteAsync();
