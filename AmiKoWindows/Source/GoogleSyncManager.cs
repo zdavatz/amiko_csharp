@@ -1,4 +1,23 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿/*
+Copyright (c) ywesee GmbH
+
+This file is part of AmiKo for Windows.
+
+AmiKo for Windows is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Drive.v3;
 using Google.Apis.Drive.v3.Data;
@@ -8,18 +27,26 @@ using System;
 using System.Collections.Generic;
 using IO = System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Apis.Requests;
 using System.Web.Script.Serialization;
+using System.ComponentModel;
 
 namespace AmiKoWindows
 {
-    class GoogleSyncManager
+    class GoogleSyncManager : INotifyPropertyChanged
     {
         public static GoogleSyncManager Instance;
         private PatientDb _patientDb;
+        public IProgress<SyncProgress> Progress;
+        private bool _IsSyncing = false;
+        public bool IsSyncing
+        {
+            get { return _IsSyncing; }
+            set { _IsSyncing = value; OnPropertyChanged("IsSyncing"); }
+        }
+        private System.Timers.Timer timer;
 
         public static GoogleSyncManager Init(PatientDb db)
         {
@@ -33,7 +60,23 @@ namespace AmiKoWindows
         private GoogleSyncManager(PatientDb db)
         {
             this._patientDb = db;
+            this.timer = new System.Timers.Timer(5 * 60 * 1000);
+            this.timer.Elapsed += (sender, e) =>
+            {
+                Task.Run(() => this.Synchronise());
+            };
+            this.timer.Enabled = true;
+            Task.Run(() => this.Synchronise());
         }
+
+        #region Event Handlers
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
 
         private ClientSecrets GoogleSecrets()
         {
@@ -83,7 +126,9 @@ namespace AmiKoWindows
         }
 
         private void ReportStatus(string str)
-        { // TODO
+        {
+            if (this.Progress == null) return;
+            this.Progress.Report(new SyncProgressText(str));
         }
 
         #region Sync Logic
@@ -91,47 +136,58 @@ namespace AmiKoWindows
 
         public async Task Synchronise()
         {
-            Log.WriteLine("Start syncing");
-            this.ReportStatus("Starting sync");
-            List<File> remoteFiles = await this.ListRemoteFilesAndFolders();
-            if (remoteFiles == null)
+            if (IsSyncing) return;
+            IsSyncing = true;
+
+            try
             {
-                // Error during listing all files, better stop, otherwise we will wrongly delete files
-                return;
+                Log.WriteLine("Start syncing");
+                this.ReportStatus("Starting sync");
+                List<File> remoteFiles = await this.ListRemoteFilesAndFolders();
+                if (remoteFiles == null)
+                {
+                    // Error during listing all files, better stop, otherwise we will wrongly delete files
+                    return;
+                }
+                List<IO.FileInfo> localFiles = this.ListLocalFilesAndFolders();
+                Dictionary<string, File> remoteFilesMap = this.RemoteFilesToMap(remoteFiles);
+                Dictionary<string, File> remotePatientsMap = this.ExtractPatientsFromFilesMap(remoteFilesMap);
+                Dictionary<string, IO.FileInfo> localFilesMap = this.LocalFilesToMap(localFiles);
+                Dictionary<string, long> localVersions = this.LocalFileVersionMap();
+                Dictionary<string, long> patientVersions = this.ExtractPatientsFromFilesMap(localVersions);
+
+                Dictionary<string, DateTime> localPatientTimestamps = await _patientDb.GetTimestampsOfContacts();
+
+                Log.WriteLine("remoteFiles " + remoteFiles.ToString());
+                Log.WriteLine("localFiles " + localFiles.ToString());
+                Log.WriteLine("remoteFilesMap " + remoteFilesMap.ToString());
+                Log.WriteLine("localFilesMap " + localFilesMap.ToString());
+                Log.WriteLine("localVersions " + localVersions.ToString());
+                Log.WriteLine("remotePatientsMap " + remotePatientsMap.ToString());
+                Log.WriteLine("patientVersions " + patientVersions.ToString());
+
+                SyncPlan sp = new SyncPlan(
+                        new IO.FileInfo(Utilities.AppRoamingDataFolder()),
+                        await GetDriveInstance(),
+                        localFilesMap,
+                        localVersions,
+                        remoteFilesMap,
+                        patientVersions,
+                        localPatientTimestamps,
+                        remotePatientsMap,
+                        _patientDb,
+                        this.Progress
+                );
+
+                Dictionary<string, long> newVersionMap = await sp.Execute();
+                this.SaveLocalFileVersionMap(newVersionMap);
+                this.ReportStatus("Finished sync");
+                Log.WriteLine("End syncing");
+            } catch (Exception e)
+            {
+                Log.WriteLine(e.ToString());
             }
-            List<IO.FileInfo> localFiles = this.ListLocalFilesAndFolders();
-            Dictionary<string, File> remoteFilesMap = this.RemoteFilesToMap(remoteFiles);
-            Dictionary<string, File> remotePatientsMap = this.ExtractPatientsFromFilesMap(remoteFilesMap);
-            Dictionary<string, IO.FileInfo> localFilesMap = this.LocalFilesToMap(localFiles);
-            Dictionary<string, long> localVersions = this.LocalFileVersionMap();
-            Dictionary<string, long> patientVersions = this.ExtractPatientsFromFilesMap(localVersions);
-
-            Dictionary<string, DateTime> localPatientTimestamps = await _patientDb.GetTimestampsOfContacts();
-
-            Log.WriteLine("remoteFiles " + remoteFiles.ToString());
-            Log.WriteLine("localFiles " + localFiles.ToString());
-            Log.WriteLine("remoteFilesMap " + remoteFilesMap.ToString());
-            Log.WriteLine("localFilesMap " + localFilesMap.ToString());
-            Log.WriteLine("localVersions " + localVersions.ToString());
-            Log.WriteLine("remotePatientsMap " + remotePatientsMap.ToString());
-            Log.WriteLine("patientVersions " + patientVersions.ToString());
-
-            SyncPlan sp = new SyncPlan(
-                    new IO.FileInfo(Utilities.AppRoamingDataFolder()),
-                    await GetDriveInstance(),
-                    localFilesMap,
-                    localVersions,
-                    remoteFilesMap,
-                    patientVersions,
-                    localPatientTimestamps,
-                    remotePatientsMap,
-                    _patientDb
-            );
-
-            Dictionary<string, long> newVersionMap = await sp.Execute();
-            this.SaveLocalFileVersionMap(newVersionMap);
-            this.ReportStatus("Finished sync");
-            Log.WriteLine("End syncing");
+            IsSyncing = false;
         }
 
         private async Task<List<File>> ListRemoteFilesAndFolders()
@@ -316,16 +372,6 @@ namespace AmiKoWindows
             IO.File.WriteAllText(versionFile.FullName, str);
         }
 
-        protected void ReportUpdatedFile(IO.FileInfo file)
-        {
-            // TODO
-        }
-
-        protected void ReportUpdatedPatient(string uid)
-        {
-            // TODO
-        }
-
         public static string LastSynced()
         {
             IO.FileInfo versionFile = new IO.FileInfo(IO.Path.Combine(Utilities.AppRoamingDataFolder(), "googleSync", "versions.json"));
@@ -333,10 +379,7 @@ namespace AmiKoWindows
             {
                 return "None";
             }
-            // TODO
-            //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm.ss");
-            //return sdf.format(new Date(versionFile.lastModified()));
-            return "";
+            return versionFile.LastWriteTime.ToString();
         }
 
         class SyncPlan
@@ -367,6 +410,7 @@ namespace AmiKoWindows
             public HashSet<string> localPatientsToDelete; // uid
             public Dictionary<string, File> remotePatientsToDelete;
             private PatientDb PatientDb;
+            private IProgress<SyncProgress> Progress;
 
             public SyncPlan(IO.FileInfo filesDir,
                      DriveService driveService,
@@ -376,7 +420,8 @@ namespace AmiKoWindows
                      Dictionary<string, long> patientVersions,
                      Dictionary<string, DateTime> localPatientTimestamps,
                      Dictionary<string, File> remotePatientsMap,
-                     PatientDb patientDb
+                     PatientDb patientDb,
+                     IProgress<SyncProgress> progress
                      )
             {
                 this.filesDir = filesDir;
@@ -388,14 +433,28 @@ namespace AmiKoWindows
                 this.localPatientTimestamps = localPatientTimestamps;
                 this.remotePatientsMap = remotePatientsMap;
                 this.PatientDb = patientDb;
+                this.Progress = progress;
 
                 PrepareFiles();
                 PreparePatients();
             }
 
             void ReportStatus(string str)
-            { // TODO
-                Log.WriteLine(str);
+            {
+                if (this.Progress == null) return;
+                Progress.Report(new SyncProgressText(str));
+            }
+
+            void ReportUpdatedFile(IO.FileInfo file)
+            {
+                if (this.Progress == null) return;
+                Progress.Report(new SyncProgressFile(file));
+            }
+
+            void ReportUpdatedPatient(string uid)
+            {
+                if (this.Progress == null) return;
+                Progress.Report(new SyncProgressContact(uid));
             }
 
             void PrepareFiles()
@@ -784,8 +843,7 @@ namespace AmiKoWindows
                         var req = driveService.Files.Get(fileId);
                         req.Fields = FILE_FIELDS;
                         await req.DownloadAsync(fileStream);
-                        // TODO
-                        // ReportUpdatedFile(localFile);
+                        ReportUpdatedFile(localFile);
                     }
                     try
                     {
@@ -807,7 +865,7 @@ namespace AmiKoWindows
                     ReportStatus("Deleting files (" + i + "/" + localFilesToDelete.Count + ")");
                     IO.FileInfo file = new IO.FileInfo(IO.Path.Combine(this.filesDir.FullName, path));
                     file.Delete();
-                    // TODO: ReportUpdatedFile(file);
+                    ReportUpdatedFile(file);
                     i++;
                 }
             }
@@ -902,7 +960,7 @@ namespace AmiKoWindows
                     File file = this.patientsToDownload[uid];
                     Contact contact = new Contact(file.Properties);
                     await this.PatientDb.UpsertContactByUid(contact);
-                    // TODO: reportUpdatedPatient(uid);
+                    ReportUpdatedPatient(uid);
                 }
             }
 
@@ -912,7 +970,7 @@ namespace AmiKoWindows
                 {
                     await this.PatientDb.DeleteContactByUid(uid);
                     this.patientVersions.Remove(uid);
-                    // TODO: reportUpdatedPatient(uid);
+                    ReportUpdatedPatient(uid);
                 }
             }
 
@@ -976,5 +1034,31 @@ namespace AmiKoWindows
             }
         }
         #endregion
+    }
+
+    abstract class SyncProgress { }
+    class SyncProgressText : SyncProgress
+    {
+        public string Value;
+        public SyncProgressText(string str)
+        {
+            Value = str;
+        }
+    }
+    class SyncProgressFile : SyncProgress
+    {
+        public IO.FileInfo File;
+        public SyncProgressFile(IO.FileInfo file)
+        {
+            File = file;
+        }
+    }
+    class SyncProgressContact : SyncProgress
+    {
+        public string ContactUid;
+        public SyncProgressContact(string uid)
+        {
+            ContactUid = uid;
+        }
     }
 }
