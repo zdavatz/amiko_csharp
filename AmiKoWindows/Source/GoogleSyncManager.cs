@@ -430,7 +430,9 @@ namespace AmiKoWindows
                         {
                             DateTime localModified = localFile.LastWriteTime;
                             DateTime? remoteModified = remoteFile.ModifiedTime;
-                            if (localModified > remoteModified)
+                            var diff = localModified - remoteModified;
+                            var absDiff = Math.Abs(diff?.TotalSeconds ?? 0);
+                            if (absDiff > 1 && localModified > remoteModified)
                             {
                                 pathsToUpdate[path] = remoteFile.Id;
                             }
@@ -472,11 +474,16 @@ namespace AmiKoWindows
                         IO.FileInfo localFile = localFilesMap[path];
                         var localModified = localFile.LastWriteTime;
                         var remoteModified = remoteFile.ModifiedTime;
-                        if (localModified > remoteModified)
+                        var diff = localModified - remoteModified;
+                        var absDiff = Math.Abs(diff?.TotalSeconds ?? 0);
+                        // Windows and Google Drive seems to have different resolution of last modified time
+                        // e.g. one is sth like 1:23:45.67 and one is 1:23:45
+                        // We consider files within 1 seconds the same 
+                        if (absDiff > 1 && localModified > remoteModified)
                         {
                             pathsToUpdate[path] = remoteFile.Id;
                         }
-                        else if (localModified < remoteModified)
+                        else if (absDiff > 1 && localModified < remoteModified)
                         {
                             pathsToDownload[path] = remoteFile.Id;
                         }
@@ -522,7 +529,9 @@ namespace AmiKoWindows
                         if (remoteVerion.Equals(localVersion))
                         {
                             var remoteModified = remoteFile.ModifiedTime;
-                            if (localTimestamp > remoteModified)
+                            var diff = localTimestamp - remoteModified;
+                            var absDiff = Math.Abs(diff?.TotalSeconds ?? 0);
+                            if (absDiff > 1 && localTimestamp > remoteModified)
                             {
                                 patientsToUpdate[uid] = remoteFile;
                             }
@@ -555,11 +564,13 @@ namespace AmiKoWindows
                         DateTime timestamp = localPatientTimestamps[uid];
                         File remoteFile = remotePatientsMap[uid];
                         var remoteModified = remoteFile.ModifiedTime;
-                        if (timestamp > remoteModified)
+                        var diff = timestamp - remoteModified;
+                        var absDiff = Math.Abs(diff?.TotalSeconds ?? 0);
+                        if (absDiff > 1 && timestamp > remoteModified)
                         {
                             patientsToUpdate[uid] = remoteFile;
                         }
-                        else if (remoteModified > timestamp)
+                        else if (absDiff > 1 && remoteModified > timestamp)
                         {
                             patientsToDownload[uid] = remoteFile;
                         }
