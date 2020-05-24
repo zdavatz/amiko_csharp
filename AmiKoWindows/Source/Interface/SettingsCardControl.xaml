@@ -32,7 +32,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Margin="9,21,9,9">
+            <Grid Grid.Row="0" Margin="9,21,0,9">
                 <StackPanel>
                     <DockPanel Margin="7,3,0,6">
                         <TextBlock Style="{StaticResource ContactTextBlock}">
@@ -50,6 +50,9 @@
                         </Button>
                     </DockPanel>
                     <DockPanel Margin="7,3,0,6">
+                        <TextBlock Style="{StaticResource ContactTextBlock}" Width="313">
+                            <Label Style="{StaticResource ContactLabel}" Content="{Binding Path=SyncStatus}" />
+                        </TextBlock>
                         <Button
                             Name="SyncButton"
                             Style="{StaticResource NoHighlightedButton}"
@@ -58,7 +61,7 @@
                             HorizontalAlignment="Right" 
                             Cursor="Hand" 
                             Click="SyncButton_Click"
-                            IsEnabled="{Binding Path=IsLoggedIn}"
+                            IsEnabled="{Binding Path=SyncButtonEnabled}"
                             >
                             <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.sync}" />
                         </Button>
@@ -72,8 +75,8 @@
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" Margin="0">
                     <Button
-                        Name="SaveButton" Style="{StaticResource NoHighlightedButton}"
-                        Grid.Column="2" Margin="0,3,24,9" HorizontalAlignment="Right" Cursor="Hand" Click="SaveButton_Click">
+                        Name="CloseButton" Style="{StaticResource NoHighlightedButton}"
+                        Grid.Column="2" Margin="0,3,24,9" HorizontalAlignment="Right" Cursor="Hand" Click="CloseButton_Click">
                         <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.close}" />
                     </Button>
                 </Grid>

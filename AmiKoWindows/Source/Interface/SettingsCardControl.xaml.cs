@@ -18,23 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Threading;
 using System.Threading.Tasks;
-using MahApps.Metro.Controls;
-using Windows.Foundation;
-using Windows.Media;
-using Windows.Media.Capture;
-using Windows.Media.MediaProperties;
-using Windows.Storage;
 
 
 namespace AmiKoWindows
@@ -62,7 +49,23 @@ namespace AmiKoWindows
         public Boolean IsLoggedIn
         {
             get { return _IsLoggedIn; }
-            set { _IsLoggedIn = value; OnPropertyChanged("IsLoggedIn"); }
+            set { _IsLoggedIn = value; OnPropertyChanged("IsLoggedIn"); OnPropertyChanged("SyncButtonEnabled"); }
+        }
+        private string _SyncStatus = "";
+        public string SyncStatus
+        {
+            get { return _SyncStatus; }
+            set { _SyncStatus = value; OnPropertyChanged("SyncStatus"); }
+        }
+        private bool _IsSyncing = false;
+        public bool IsSyncing
+        {
+            get { return _IsSyncing; }
+            set { _IsSyncing = value; OnPropertyChanged("IsSyncing"); OnPropertyChanged("SyncButtonEnabled"); }
+        }
+        public bool SyncButtonEnabled
+        {
+            get { return !_IsSyncing && IsLoggedIn; }
         }
         #endregion
 
@@ -90,6 +93,23 @@ namespace AmiKoWindows
         {
             Log.WriteLine(e.ToString());
             ReloadGoogleLoginStateAsync();
+            GoogleSyncManager.Instance.PropertyChanged += (_sender, prop) =>
+            {
+                if (prop.PropertyName.Equals("IsSyncing"))
+                {
+                    IsSyncing = GoogleSyncManager.Instance.IsSyncing;
+                }
+            };
+            var progress = new Progress<SyncProgress>();
+            progress.ProgressChanged += (progressSender, p) =>
+            {
+                if (p is SyncProgressText)
+                {
+                    SyncStatus = ((SyncProgressText)p).Value;
+                }
+                // TODO: handle updated contacts and files
+            };
+            GoogleSyncManager.Instance.Progress = progress;
         }
 
         private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
@@ -102,6 +122,10 @@ namespace AmiKoWindows
                 _mainWindow = Window.GetWindow(_parent.Parent) as AmiKoWindows.MainWindow;
             else
                 _mainWindow = null;
+            if (!IsSyncing)
+            {
+                SyncStatus = "Last Synced: " + GoogleSyncManager.LastSynced();
+            }
         }
 
         private async Task ReloadGoogleLoginStateAsync()
@@ -119,12 +143,7 @@ namespace AmiKoWindows
 
         #region Actions
 
-        private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
             if (_parent != null)
@@ -149,8 +168,10 @@ namespace AmiKoWindows
 
         private void SyncButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!IsLoggedIn) return;
-            GoogleSyncManager.Instance.Synchronise();
+            if (!IsLoggedIn || IsSyncing) return;
+            Task.Run(() =>
+                GoogleSyncManager.Instance.Synchronise()
+            );
         }
 
         #endregion
