@@ -420,7 +420,7 @@ namespace AmiKoWindows
                     {
                         _db.ReOpenIfNecessary();
                         var q = String.Format(
-                            @"DELETE FROM {0} WHERE {1} = @uid LIMIT 1;",
+                            @"DELETE FROM {0} WHERE {1} = @uid;",
                             DATABASE_TABLE, KEY_UID
                         );
                         //Log.WriteLine("Query: {0}", q);
