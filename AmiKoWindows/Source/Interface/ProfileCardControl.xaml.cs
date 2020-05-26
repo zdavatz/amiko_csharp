@@ -128,6 +128,21 @@ namespace AmiKoWindows
                 EnableDeletePictureButton(false);
             else
                 LoadPicture();
+
+            GoogleSyncManager.Instance.Progress.ProgressChanged += (_sender, progress) =>
+            {
+                if (progress is SyncProgressFile)
+                {
+                    var p = progress as SyncProgressFile;
+                    if (p.File.FullName.Equals(Account.AccountFilePath()))
+                    {
+                        this.CurrentEntry = Account.Read();
+                    } else if (p.File.FullName.Equals(Utilities.AccountPictureFilePath()))
+                    {
+                        LoadPicture();
+                    }
+                }
+            };
         }
 
         private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
