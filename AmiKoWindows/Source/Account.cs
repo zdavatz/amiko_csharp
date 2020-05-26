@@ -217,20 +217,29 @@ namespace AmiKoWindows
             {
                 return null;
             }
-            var jsonStr = File.ReadAllText(accountPath);
+
+            string jsonStr;
+            using (var fileStream = new FileStream(accountPath, FileMode.Open,
+                              FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (StreamReader reader = new StreamReader(fileStream))
+                {
+                    jsonStr = reader.ReadToEnd();
+                }
+            }
             var serializer = new JavaScriptSerializer();
             SettingAccountJSONPresenter presenter = serializer.Deserialize<SettingAccountJSONPresenter>(jsonStr);
             return presenter.Account;
         }
         
-        public void Save()
+        public override void Save()
         {
             var serializer = new JavaScriptSerializer();
             var str = serializer.Serialize(new SettingAccountJSONPresenter(this));
             File.WriteAllText(AccountFilePath(), str);
         }
 
-        static string AccountFilePath()
+        public static string AccountFilePath()
         {
             var filesDir = Utilities.AppRoamingDataFolder();
             var accountPath = Path.Combine(filesDir, "doctor.json");

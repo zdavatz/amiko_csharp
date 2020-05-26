@@ -725,7 +725,11 @@ namespace AmiKoWindows
                     }
 
                     ReportStatus("Uploading new files (" + i + "/" + pathsToCreate.Count + ")");
-                    using (var fileStream = localFile.OpenRead())
+                    using (var fileStream = new IO.FileStream(
+                        localFile.FullName,
+                        IO.FileMode.Open,
+                        IO.FileAccess.Read,
+                        IO.FileShare.ReadWrite))
                     {
                         var req = driveService.Files
                             .Create(fileMetadata, fileStream, "application/octet-stream");
@@ -759,7 +763,11 @@ namespace AmiKoWindows
                     fileMetadata.ModifiedTime = localFile.LastWriteTime;
 
                     ReportStatus("Updating files (" + i + "/" + pathsToUpdate.Count + ")");
-                    using (var fileStream = localFile.OpenRead())
+                    using (var fileStream = new IO.FileStream(
+                        localFile.FullName,
+                        IO.FileMode.Open,
+                        IO.FileAccess.Read,
+                        IO.FileShare.ReadWrite))
                     {
                         var req = driveService.Files
                             .Update(fileMetadata, fileId, fileStream, "application/octet-stream");
@@ -826,12 +834,15 @@ namespace AmiKoWindows
                     }
                     ReportStatus("Downloading files (" + i + "/" + pathsToDownload.Count + ")");
 
-                    using (var fileStream = localFile.OpenWrite())
+                    using (var fileStream = localFile.Exists ? new IO.FileStream(
+                        localFile.FullName,
+                        IO.FileMode.Open,
+                        IO.FileAccess.Write,
+                        IO.FileShare.ReadWrite) : localFile.OpenWrite())
                     {
                         var req = driveService.Files.Get(fileId);
                         req.Fields = FILE_FIELDS;
                         await req.DownloadAsync(fileStream);
-                        ReportUpdatedFile(localFile);
                     }
                     try
                     {
@@ -841,6 +852,7 @@ namespace AmiKoWindows
                     {
                         Log.WriteLine(e.ToString());
                     }
+                    ReportUpdatedFile(localFile);
                     i++;
                 }
             }
@@ -948,7 +960,6 @@ namespace AmiKoWindows
                     File file = this.patientsToDownload[uid];
                     Contact contact = new Contact(file.Properties);
                     await this.PatientDb.UpsertContactByUid(contact);
-                    ReportUpdatedPatient(uid);
                 }
             }
 
@@ -958,7 +969,6 @@ namespace AmiKoWindows
                 {
                     await this.PatientDb.DeleteContactByUid(uid);
                     this.patientVersions.Remove(uid);
-                    ReportUpdatedPatient(uid);
                 }
             }
 
