@@ -100,16 +100,13 @@ namespace AmiKoWindows
                     IsSyncing = GoogleSyncManager.Instance.IsSyncing;
                 }
             };
-            var progress = new Progress<SyncProgress>();
-            progress.ProgressChanged += (progressSender, p) =>
+            GoogleSyncManager.Instance.Progress.ProgressChanged += (progressSender, p) =>
             {
                 if (p is SyncProgressText)
                 {
                     SyncStatus = ((SyncProgressText)p).Value;
                 }
-                // TODO: handle updated contacts and files
             };
-            GoogleSyncManager.Instance.Progress = progress;
         }
 
         private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)

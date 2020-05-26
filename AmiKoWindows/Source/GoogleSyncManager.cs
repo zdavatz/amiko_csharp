@@ -37,9 +37,9 @@ namespace AmiKoWindows
 {
     class GoogleSyncManager : INotifyPropertyChanged
     {
-        public static GoogleSyncManager Instance;
+        public static GoogleSyncManager Instance = new GoogleSyncManager();
         private PatientDb _patientDb;
-        public IProgress<SyncProgress> Progress;
+        public readonly Progress<SyncProgress> Progress = new Progress<SyncProgress>();
         private bool _IsSyncing = false;
         public bool IsSyncing
         {
@@ -48,17 +48,9 @@ namespace AmiKoWindows
         }
         private System.Timers.Timer timer;
 
-        public static GoogleSyncManager Init(PatientDb db)
+        public void Init(PatientDb db)
         {
-            if (Instance == null)
-            {
-                Instance = new GoogleSyncManager(db);
-            }
-            return Instance;
-        }
-
-        private GoogleSyncManager(PatientDb db)
-        {
+            if (this._patientDb != null) return;
             this._patientDb = db;
             this.timer = new System.Timers.Timer(5 * 60 * 1000);
             this.timer.Elapsed += (sender, e) =>
@@ -127,8 +119,7 @@ namespace AmiKoWindows
 
         private void ReportStatus(string str)
         {
-            if (this.Progress == null) return;
-            this.Progress.Report(new SyncProgressText(str));
+            ((IProgress<SyncProgress>)this.Progress).Report(new SyncProgressText(str));
         }
 
         #region Sync Logic
@@ -441,20 +432,17 @@ namespace AmiKoWindows
 
             void ReportStatus(string str)
             {
-                if (this.Progress == null) return;
                 Progress.Report(new SyncProgressText(str));
             }
 
             void ReportUpdatedFile(IO.FileInfo file)
             {
-                if (this.Progress == null) return;
                 Progress.Report(new SyncProgressFile(file));
             }
 
-            void ReportUpdatedPatient(string uid)
+            void ReportUpdatedPatients(HashSet<string> uids)
             {
-                if (this.Progress == null) return;
-                Progress.Report(new SyncProgressContact(uid));
+                Progress.Report(new SyncProgressContacts(uids));
             }
 
             void PrepareFiles()
@@ -985,6 +973,13 @@ namespace AmiKoWindows
                 Log.WriteLine("new remote map after uploading " + remoteFilesMap.ToString());
                 await this.DownloadRemoteFiles();
                 this.DeleteLocalFiles();
+
+                var changedPatients = new HashSet<string>(this.localPatientsToDelete.Union(this.patientsToDownload.Keys));
+                if (changedPatients.Count > 0)
+                {
+                    ReportUpdatedPatients(changedPatients);
+                }
+
                 var newVersionMap = this.RemoteFilesToVersionMap(this.remoteFilesMap);
                 return newVersionMap;
             }
@@ -1053,12 +1048,12 @@ namespace AmiKoWindows
             File = file;
         }
     }
-    class SyncProgressContact : SyncProgress
+    class SyncProgressContacts : SyncProgress
     {
-        public string ContactUid;
-        public SyncProgressContact(string uid)
+        public HashSet<string> ContactUid;
+        public SyncProgressContacts(HashSet<string> uids)
         {
-            ContactUid = uid;
+            ContactUid = uids;
         }
     }
 }

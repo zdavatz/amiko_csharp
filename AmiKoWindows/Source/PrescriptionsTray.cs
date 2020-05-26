@@ -131,6 +131,18 @@ namespace AmiKoWindows
             _inboxDir = Utilities.GetInboxPath();
             _outboxDir = Utilities.GetOutboxPath();
             Utilities.EnforceDir(_amikoDir);
+
+            GoogleSyncManager.Instance.Progress.ProgressChanged += (_sender, progress) =>
+            {
+                if (progress is SyncProgressFile)
+                {
+                    var p = progress as SyncProgressFile;
+                    if (p.File.Extension.Equals(AMIKO_FILE_SUFFIX))
+                    {
+                        LoadFiles();
+                    }
+                }
+            };
         }
 
         public void UpdateMedicationList()
