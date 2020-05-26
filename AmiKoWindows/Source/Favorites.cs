@@ -39,6 +39,17 @@ namespace AmiKoWindows
             // Load favorites from persistent storage
             MigrateFromOldFormat();
             Load();
+            GoogleSyncManager.Instance.Progress.ProgressChanged += (sender, progress) =>
+            {
+                if (progress is SyncProgressFile)
+                {
+                    var p = progress as SyncProgressFile;
+                    if (p.File.FullName.Equals(this.FilePath()))
+                    {
+                        this.Load();
+                    }
+                }
+            };
         }
 
         private void MigrateFromOldFormat()
@@ -84,6 +95,19 @@ namespace AmiKoWindows
             return new List<string>(_setOfIds);
         }
 
+        public string FilePath()
+        {
+            if (typeof(T) == typeof(Article))
+            {
+                return Path.Combine(_userDataDir, "favorites.json");
+            }
+            else if (typeof(T) == typeof(FullTextEntry))
+            {
+                return Path.Combine(_userDataDir, "favorites-full-text.json");
+            }
+            return null;
+        }
+
         /*
         string local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         string roaming = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -94,22 +118,11 @@ namespace AmiKoWindows
                 return;
 
             var serializer = new JavaScriptSerializer();
-            if (typeof(T) == typeof(Article))
-            {
-                string favoritesFile = Path.Combine(_userDataDir, "favorites.json");
-                if (!File.Exists(favoritesFile))
-                    return;
-                var jsonStr = File.ReadAllText(favoritesFile);
-                _setOfIds = new HashSet<string>(serializer.Deserialize<List<string>>(jsonStr));
-            }
-            else if (typeof(T) == typeof(FullTextEntry))
-            {
-                string favoritesFile = Path.Combine(_userDataDir, "favorites-full-text.json");
-                if (!File.Exists(favoritesFile))
-                    return;
-                var jsonStr = File.ReadAllText(favoritesFile);
-                _setOfIds = new HashSet<string>(serializer.Deserialize<List<string>>(jsonStr));
-            }
+            var favoritesFile = this.FilePath();
+            if (!File.Exists(favoritesFile))
+                return;
+            var jsonStr = File.ReadAllText(favoritesFile);
+            _setOfIds = new HashSet<string>(serializer.Deserialize<List<string>>(jsonStr));
         }
 
         public void Save()
@@ -118,23 +131,11 @@ namespace AmiKoWindows
                 return;
             var serializer = new JavaScriptSerializer();
 
-            if (typeof(T) == typeof(Article))
+            if (_setOfIds.Count > 0)
             {
-                if (_setOfIds.Count > 0)
-                {
-                    string favoritesFile = Path.Combine(_userDataDir, "favorites.json");
-                    var jsonStr = serializer.Serialize(new List<string>(_setOfIds));
-                    File.WriteAllText(favoritesFile, jsonStr);
-                }
-            }
-            else if (typeof(T) == typeof(FullTextEntry))
-            {
-                if (_setOfIds.Count > 0)
-                {
-                    string favoritesFile = Path.Combine(_userDataDir, "favorites-full-text.json");
-                    var jsonStr = serializer.Serialize(new List<string>(_setOfIds));
-                    File.WriteAllText(favoritesFile, jsonStr);
-                }
+                string favoritesFile = this.FilePath();
+                var jsonStr = serializer.Serialize(new List<string>(_setOfIds));
+                File.WriteAllText(favoritesFile, jsonStr);
             }
         }
 
