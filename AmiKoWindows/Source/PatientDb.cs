@@ -714,7 +714,15 @@ namespace AmiKoWindows
                             while (reader.Read())
                             {
                                 var uid = reader[KEY_UID] as string;
-                                var timestamp = DateTime.ParseExact(reader[KEY_TIME_STAMP] as string, Contact.TIME_STAMP_DATE_FORMAT, null);
+                                var stringValue = reader[KEY_TIME_STAMP] as string;
+                                DateTime timestamp;
+                                try
+                                {
+                                    timestamp = DateTime.ParseExact(stringValue, Contact.TIME_STAMP_DATE_FORMAT, null);
+                                } catch (FormatException _)
+                                {
+                                    timestamp = DateTime.ParseExact(stringValue, Contact.OLD_TIME_STAMP_DATE_FORMAT, null);
+                                }
                                 contacts[uid] = timestamp;
                             }
                         }

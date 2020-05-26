@@ -30,7 +30,9 @@ namespace AmiKoWindows
 {
     public class Contact : INotifyPropertyChanged
     {
-        public const string TIME_STAMP_DATE_FORMAT = "yyyy-MM-dd'T'HHmmss";
+        // Previous version of seems to use a different timestamp format than the one in Android / iOS / Mac
+        public const string TIME_STAMP_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm.ss";
+        public const string OLD_TIME_STAMP_DATE_FORMAT = "yyyy-MM-dd'T'HHmmss";
 
         private const int GENDER_FEMALE = 0;
         private const int GENDER_MALE = 1;
@@ -378,7 +380,18 @@ namespace AmiKoWindows
         public Dictionary<string, string>ToMapForSync()
         {
             var dict = new Dictionary<string, string>();
-            dict[PatientDb.KEY_TIME_STAMP] = this.TimeStamp;
+            string timeStampString;
+            try
+            {
+                DateTime.ParseExact(this.TimeStamp, TIME_STAMP_DATE_FORMAT, null);
+                timeStampString = this.TimeStamp;
+            } catch (FormatException e)
+            {
+                // Migrate from the old format
+                var dt = DateTime.ParseExact(this.TimeStamp, OLD_TIME_STAMP_DATE_FORMAT, null);
+                timeStampString = dt.ToString(TIME_STAMP_DATE_FORMAT);
+            }
+            dict[PatientDb.KEY_TIME_STAMP] = timeStampString;
             dict[PatientDb.KEY_UID] = this.Uid;
             dict[PatientDb.KEY_FAMILY_NAME] = this.FamilyName;
             dict[PatientDb.KEY_GIVEN_NAME] = this.GivenName;
