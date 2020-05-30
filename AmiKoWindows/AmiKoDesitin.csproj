@@ -274,9 +274,6 @@
     </Compile>
     <Compile Include="Source\Account.cs" />
     <Compile Include="Source\GoogleSyncManager.cs" />
-    <Compile Include="Source\Interface\SettingsCardControl.xaml.cs">
-      <DependentUpon>SettingsCardControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Source\SmartCard.cs" />
     <Compile Include="Source\MAPI.cs" />
     <Compile Include="Source\ShareUtility.cs" />
@@ -285,6 +282,7 @@
     <Compile Include="Source\FullTextDb.cs" />
     <Compile Include="Source\FullTextEntry.cs" />
     <Compile Include="Source\FullTextSearch.cs" />
+    <Compile Include="Source\GoogleConstants.cs" />
     <Compile Include="Source\HtmlBase.cs" />
     <Compile Include="Source\InteractionsCart.cs" />
     <Compile Include="Source\Items.cs" />
@@ -332,6 +330,9 @@
     </Compile>
     <Compile Include="Source\Interface\SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Source\Interface\SettingsCardControl.xaml.cs">
+      <DependentUpon>SettingsCardControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

@@ -73,8 +73,8 @@ namespace AmiKoWindows
         private ClientSecrets GoogleSecrets()
         {
             var c = new ClientSecrets();
-            c.ClientId = Constants.GoogleClientId;
-            c.ClientSecret = Constants.GoogleClientSecret;
+            c.ClientId = GoogleConstants.ClientId;
+            c.ClientSecret = GoogleConstants.ClientSecret;
             return c;
         }
 
