@@ -127,6 +127,7 @@ namespace AmiKoWindows
 
         public async Task Synchronise()
         {
+            if (!await this.IsGoogleLoggedInAsync()) return;
             if (IsSyncing) return;
             IsSyncing = true;
 
