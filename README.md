@@ -167,6 +167,11 @@ on Bash (Linux on Windows with Mono):
 user@host:/path/to/project $ nuget install AmiKoWindows/packages.config
 ```
 
+### Fill in Google API Client ID and Secret for Google Drive Syncing
+
+1. Rename `GoogleConstants.sample.cs` to `GoogleConstants.cs`
+2. Fill the the details in the file
+
 ### Make
 
 From this step, you may need to use PowerShell on Windows.
