@@ -984,12 +984,6 @@ namespace AmiKoWindows
                 await this.DownloadRemoteFiles();
                 this.DeleteLocalFiles();
 
-                var changedPatients = new HashSet<string>(this.localPatientsToDelete.Union(this.patientsToDownload.Keys));
-                if (changedPatients.Count > 0)
-                {
-                    ReportUpdatedPatients(changedPatients);
-                }
-
                 var newVersionMap = this.RemoteFilesToVersionMap(this.remoteFilesMap);
                 return newVersionMap;
             }
@@ -1010,6 +1004,13 @@ namespace AmiKoWindows
                 Log.WriteLine("new remote map after uploading patients " + remotePatientsMap.ToString());
                 await this.DownloadRemotePatients();
                 await this.DeleteLocalPatients();
+
+                var changedPatients = new HashSet<string>(this.localPatientsToDelete.Union(this.patientsToDownload.Keys));
+                if (changedPatients.Count > 0)
+                {
+                    ReportUpdatedPatients(changedPatients);
+                }
+
                 var newVersionMap = this.RemoteFilesToVersionMap(this.remotePatientsMap);
                 return newVersionMap;
             }
