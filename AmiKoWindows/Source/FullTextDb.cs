@@ -146,7 +146,7 @@ namespace AmiKoWindows
                     _favorites.Add(entry);
             }
             // Save list of favorites to file
-            await _favorites.Save();
+            _favorites.Save();
             // Update list of found entries
             foreach (FullTextEntry e in _foundEntries)
             {

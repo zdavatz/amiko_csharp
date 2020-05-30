@@ -22,103 +22,110 @@ using System.ComponentModel;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Web.Script.Serialization;
 using System.Windows;
 
 namespace AmiKoWindows
 {
-    /// https://msdn.microsoft.com/en-us/library/system.configuration.applicationsettingsbase%28v=vs.110%29.aspx?f=255&MSPPError=-2147217396
-    [Serializable]
     public class Account : ApplicationSettingsBase, INotifyPropertyChanged
     {
+        private string _title = "";
         [UserScopedSetting()]
         [SettingsSerializeAs(System.Configuration.SettingsSerializeAs.Binary)]
         [DefaultSettingValue("")]
         public string Title {
-            get { return (string)this[nameof(Title)]; }
+            get { return _title; }
             set {
-                this[nameof(Title)] = value;
+                _title = value;
                 OnPropertyChanged("Title");
                 OnPropertyChanged("Fullname");
             }
         }
 
+        private string _givenName = "";
         [UserScopedSetting()]
         [SettingsSerializeAs(System.Configuration.SettingsSerializeAs.Binary)]
         [DefaultSettingValue("")]
         public string GivenName {
-            get { return (string)this[nameof(GivenName)]; }
+            get { return _givenName; }
             set {
-                this[nameof(GivenName)] = value;
+                this._givenName = value;
                 OnPropertyChanged("GivenName");
                 OnPropertyChanged("Fullname");
             }
         }
 
+        private string _familyName;
         [UserScopedSetting()]
         [SettingsSerializeAs(System.Configuration.SettingsSerializeAs.Binary)]
         [DefaultSettingValue("")]
         public string FamilyName {
-            get { return (string)this[nameof(FamilyName)]; }
+            get { return _familyName; }
             set {
-                this[nameof(FamilyName)] = value;
+                this._familyName = value;
                 OnPropertyChanged("FamilyName");
                 OnPropertyChanged("Fullname");
             }
         }
 
+        private string _address;
         [UserScopedSetting()]
         [SettingsSerializeAs(System.Configuration.SettingsSerializeAs.Binary)]
         [DefaultSettingValue("")]
         public string Address {
-            get { return (string)this[nameof(Address)]; }
+            get { return _address; }
             set {
-                this[nameof(Address)] = value;
+                this._address = value;
                 OnPropertyChanged("Address");
             }
         }
 
+        private string _city;
         [UserScopedSetting()]
         [SettingsSerializeAs(System.Configuration.SettingsSerializeAs.Binary)]
         [DefaultSettingValue("")]
         public string City {
-            get { return (string)this[nameof(City)]; }
+            get { return _city; }
             set {
-                this[nameof(City)] = value;
+                this._city = value;
                 OnPropertyChanged("City");
                 OnPropertyChanged("Place");
             }
         }
 
+        private string _zip;
         [UserScopedSetting()]
         [SettingsSerializeAs(System.Configuration.SettingsSerializeAs.Binary)]
         [DefaultSettingValue("")]
         public string Zip {
-            get { return (string)this[nameof(Zip)]; }
+            get { return _zip; }
             set {
-                this[nameof(Zip)] = value;
+                this._zip = value;
                 OnPropertyChanged("Zip");
                 OnPropertyChanged("Place");
             }
         }
 
+        private string _phone;
         [UserScopedSetting()]
         [SettingsSerializeAs(System.Configuration.SettingsSerializeAs.Binary)]
         [DefaultSettingValue("")]
         public string Phone {
-            get { return (string)this[nameof(Phone)]; }
+            get { return this._phone; }
             set {
-                this[nameof(Phone)] = value;
+                this._phone = value;
                 OnPropertyChanged("Phone");
             }
         }
 
+        private string _email;
         [UserScopedSetting()]
         [SettingsSerializeAs(System.Configuration.SettingsSerializeAs.Binary)]
         [DefaultSettingValue("")]
         public string Email {
-            get { return (string)this[nameof(Email)]; }
+            get { return this._email; }
             set {
-                this[nameof(Email)] = value;
+                this._email = value;
                 OnPropertyChanged("Email");
             }
         }
@@ -182,6 +189,63 @@ namespace AmiKoWindows
         }
         #endregion
 
+        public static void MigrateFromOldSettings()
+        {
+            // We used to save doctor information in Properties.Settings.Default.Account
+            // and that has been moved to app folder's doctor.json for syncing
+            if (IsSet()) return;
+            var a = AmiKoWindows.Properties.Settings.Default.Account;
+            if (a == null) return;
+            a.Reload();
+            var account = new Account();
+            account.Title = (string)a[nameof(Title)];
+            account.GivenName = (string)a[nameof(GivenName)];
+            account.FamilyName = (string)a[nameof(FamilyName)];
+            account.Address = (string)a[nameof(Address)];
+            account.City = (string)a[nameof(City)];
+            account.Zip = (string)a[nameof(Zip)];
+            account.Phone = (string)a[nameof(Phone)];
+            account.Email = (string)a[nameof(Email)];
+            account.Save();
+            AmiKoWindows.Properties.Settings.Default.Reset();
+        }
+
+        static public Account Read()
+        {
+            var accountPath = AccountFilePath();
+            if (!File.Exists(accountPath))
+            {
+                return null;
+            }
+
+            string jsonStr;
+            using (var fileStream = new FileStream(accountPath, FileMode.Open,
+                              FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (StreamReader reader = new StreamReader(fileStream))
+                {
+                    jsonStr = reader.ReadToEnd();
+                }
+            }
+            var serializer = new JavaScriptSerializer();
+            SettingAccountJSONPresenter presenter = serializer.Deserialize<SettingAccountJSONPresenter>(jsonStr);
+            return presenter.Account;
+        }
+        
+        public override void Save()
+        {
+            var serializer = new JavaScriptSerializer();
+            var str = serializer.Serialize(new SettingAccountJSONPresenter(this));
+            File.WriteAllText(AccountFilePath(), str);
+        }
+
+        public static string AccountFilePath()
+        {
+            var filesDir = Utilities.AppRoamingDataFolder();
+            var accountPath = Path.Combine(filesDir, "doctor.json");
+            return accountPath;
+        }
+
         static readonly string[] requiredPlainTextFields = new string[] {
             "GivenName", "FamilyName", "Address", "City", "Zip",
         };
@@ -190,17 +254,25 @@ namespace AmiKoWindows
         static public bool IsSet()
         {
             // NOTE: Namespace `AmiKoWindows` is required in static context
-            if (AmiKoWindows.Properties.Settings.Default == null)
+            if (!File.Exists(AccountFilePath()))
+            {
                 return false;
+            }
 
-            Account account = AmiKoWindows.Properties.Settings.Default.Account as Account;
+            Account account = Read();
             if (account == null)
                 return false;
 
-            return 0 == requiredPlainTextFields.Where(f => {
-                string v = (string)account[f];
-                return (v == null || v.Equals(string.Empty));
-            }).Count();
+            if (account.GivenName.Equals("")
+                || account.FamilyName.Equals("")
+                || account.Address.Equals("")
+                || account.City.Equals("")
+                || account.Zip.Equals("")
+                )
+            {
+                return false;
+            }
+            return true;
         }
 
         static public bool ValidateProperty(string propertyName, string text)

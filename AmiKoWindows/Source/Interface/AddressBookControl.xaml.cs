@@ -203,6 +203,25 @@ namespace AmiKoWindows
 
             this.ContactList.DataContext = _patientDb;
             this.CurrentEntry = new Contact();
+
+            GoogleSyncManager.Instance.Progress.ProgressChanged += (_sender, progress) =>
+            {
+                if (progress is SyncProgressContacts)
+                {
+                    var p = progress as SyncProgressContacts;
+                    Dispatcher.InvokeAsync(async () =>
+                    {
+                        await _patientDb.LoadAllContacts();
+                        _patientDb.UpdateContactList();
+
+                        if (this.CurrentEntry.Uid != null && this.CurrentEntry.Id != null && p.ContactUid.Contains(this.CurrentEntry.Uid))
+                        {
+                            this.CurrentEntry = await _patientDb.GetContactById(this.CurrentEntry.Id);
+                        }
+                        this.RawContactsCount = _patientDb.Count;
+                    });
+                }
+            };
         }
 
         private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)

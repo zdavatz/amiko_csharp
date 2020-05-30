@@ -31,31 +31,41 @@ public class ViewType : INotifyPropertyChanged
         set { this._mode = value; NotifyChanged("Mode"); }
     }
 
-    private bool _hasBook;
-    private bool _hasCard;
+    enum OverlayMode
+    {
+        None = 0,
+        Book = 1,
+        Card = 2,
+        Settings = 3,
+    }
+    private OverlayMode _overlayMode;
 
     public bool HasBook
     {
-        get { return this._hasBook; }
-        set { this._hasBook = value; NotifyChanged("HasBook"); }
+        get { return this._overlayMode == OverlayMode.Book; }
+        set { this._overlayMode = value ? OverlayMode.Book : OverlayMode.None; NotifyChanged("HasBook"); }
     }
 
     public bool HasCard
     {
-        get { return this._hasCard; }
-        set { this._hasCard = value; NotifyChanged("HasCard"); }
+        get { return this._overlayMode == OverlayMode.Card; }
+        set { this._overlayMode = value ? OverlayMode.Card : OverlayMode.None; NotifyChanged("HasCard"); }
+    }
+
+    public bool HasSettings
+    {
+        get { return this._overlayMode == OverlayMode.Settings; }
+        set { this._overlayMode = value ? OverlayMode.Settings : OverlayMode.None; NotifyChanged("HasSettings"); }
     }
 
     public ViewType(string modeName) {
       this.Mode = modeName;
-      this.HasBook = false;
-      this.HasCard = false;
+      this._overlayMode = OverlayMode.None;
     }
 
     public ViewType(string mode, bool hasBook) {
       this.Mode = mode;
       this.HasBook = hasBook;
-      this.HasCard = false;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

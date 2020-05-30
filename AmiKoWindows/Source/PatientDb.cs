@@ -43,21 +43,21 @@ namespace AmiKoWindows
         // * https://github.com/zdavatz/amiko-osx/blob/8910324a74970d4b7e2b170fb000dbdda934451c/MLPatientDBAdapter.m#L87
         // * https://github.com/zdavatz/AmiKo-iOS/blob/49470597fb11a020206aa2051e7c629ac118be0b/AmiKoDesitin/MLPatientDBAdapter.m#L54
         const string KEY_ID = "_id";
-        const string KEY_TIME_STAMP = "time_stamp";
-        const string KEY_UID = "uid";
+        public const string KEY_TIME_STAMP = "time_stamp";
+        public const string KEY_UID = "uid";
 
-        const string KEY_GIVEN_NAME = "given_name";
-        const string KEY_FAMILY_NAME = "family_name";
-        const string KEY_ADDRESS = "address";
-        const string KEY_CITY = "city";
-        const string KEY_ZIP = "zip";
-        const string KEY_COUNTRY = "country";
-        const string KEY_BIRTHDATE = "birthdate";
-        const string KEY_GENDER = "gender";
-        const string KEY_WEIGHT_KG = "weight_kg";
-        const string KEY_HEIGHT_CM = "height_cm";
-        const string KEY_PHONE = "phone";
-        const string KEY_EMAIL = "email";
+        public const string KEY_GIVEN_NAME = "given_name";
+        public const string KEY_FAMILY_NAME = "family_name";
+        public const string KEY_ADDRESS = "address";
+        public const string KEY_CITY = "city";
+        public const string KEY_ZIP = "zip";
+        public const string KEY_COUNTRY = "country";
+        public const string KEY_BIRTHDATE = "birthdate";
+        public const string KEY_GENDER = "gender";
+        public const string KEY_WEIGHT_KG = "weight_kg";
+        public const string KEY_HEIGHT_CM = "height_cm";
+        public const string KEY_PHONE = "phone";
+        public const string KEY_EMAIL = "email";
 
         public static readonly Regex BIRTHDATE_NONDEVIDER_RGX = new Regex(@"[\-\/]", RegexOptions.Compiled);
         public static readonly Regex BIRTHDATE_ZEROPADDED_RGX = new Regex(@"(\A|\.)0*", RegexOptions.Compiled);
@@ -220,6 +220,67 @@ namespace AmiKoWindows
         }
 
         // Returns operations succeed or not
+        public async Task<bool> UpsertContactByUid(Contact contact)
+        {
+            bool result = false;
+            await Task.Run(() =>
+            {
+                if (_db.IsOpen())
+                {
+                    using (SQLiteCommand cmd = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+                        string q;
+
+                        q = String.Format(@"SELECT {0} FROM {1} WHERE {2} = @uid LIMIT 1;",
+                            KEY_ID, DATABASE_TABLE, KEY_UID);
+                        //Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
+                        cmd.Parameters.AddWithValue("@uid", contact.Uid);
+                        var existingId = cmd.ExecuteScalar() as long?;
+                        if (existingId == null)
+                        {
+                            string[] columnNames = DATABASE_COLUMNS.Where(
+                                k => k != KEY_ID).ToArray();
+                            var parameters = columnNames.Select(c =>
+                                String.Format("@{0}", c)).ToArray();
+                            q = String.Format(@"INSERT INTO {0} ({1}) VALUES ({2});",
+                                DATABASE_TABLE, String.Join(",", columnNames), String.Join(",", parameters));
+                            //Log.WriteLine("Query: {0}", q);
+                            cmd.CommandText = q;
+                            foreach (var item in contact.ToParameters(columnNames))
+                                cmd.Parameters.AddWithValue(item.Key, item.Value);
+
+                            cmd.ExecuteNonQuery();
+
+                            return;
+                        }
+                        else
+                        {
+                            string[] columnNames = DATABASE_COLUMNS.Where(
+                                k => k != KEY_ID && k != KEY_UID).ToArray();
+
+                            var parameterPairs = columnNames.Select(c =>
+                                String.Format("{0} = @{1}", c, c)).ToArray();
+                            q = String.Format(@"UPDATE {0} SET {1} WHERE {2} = @uid;",
+                                DATABASE_TABLE, String.Join(",", parameterPairs), KEY_UID);
+                            Log.WriteLine("Query: {0}", q);
+                            cmd.CommandText = q;
+                            foreach (var item in contact.ToParameters(columnNames))
+                                cmd.Parameters.AddWithValue(item.Key, item.Value);
+
+                            cmd.Parameters.AddWithValue("@uid", contact.Uid);
+                            int rows = cmd.ExecuteNonQuery();
+                            if (rows == 1)
+                                result = true;
+                        }
+                    }
+                }
+            });
+            return result;
+        }
+
+        // Returns operations succeed or not
         public async Task<bool> UpdateContact(Contact contact)
         {
             bool result = false;
@@ -339,6 +400,32 @@ namespace AmiKoWindows
                         //Log.WriteLine("Query: {0}", q);
                         cmd.CommandText = q;
                         cmd.Parameters.AddWithValue("@id", id);
+                        int rows = cmd.ExecuteNonQuery();
+                        if (rows == 1)
+                            result = true;
+                    }
+                }
+            });
+            return result;
+        }
+
+        public async Task<bool> DeleteContactByUid(string uid)
+        {
+            bool result = false;
+            await Task.Run(() =>
+            {
+                if (!_onMemory && _db.IsOpen())
+                {
+                    using (SQLiteCommand cmd = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+                        var q = String.Format(
+                            @"DELETE FROM {0} WHERE {1} = @uid;",
+                            DATABASE_TABLE, KEY_UID
+                        );
+                        //Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
+                        cmd.Parameters.AddWithValue("@uid", uid);
                         int rows = cmd.ExecuteNonQuery();
                         if (rows == 1)
                             result = true;
@@ -477,6 +564,39 @@ namespace AmiKoWindows
             return contact;
         }
 
+        public async Task<List<Contact>> GetContactsByUids(List<string> uids)
+        {
+            List<Contact> contacts = new List<Contact>();
+
+            if (uids == null || uids.Count == 0)
+                return contacts;
+
+            await Task.Run(() =>
+            {
+                if (_db.IsOpen())
+                {
+                    using (SQLiteCommand cmd = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+                        var uidsStr = "(" + String.Join(",", uids.Select(s=> "'" + s + "'")) + ")";
+                        var q = String.Format(
+                            @"SELECT * FROM {0} WHERE {1} IN {2} LIMIT 1;",
+                            DATABASE_TABLE, KEY_UID, uidsStr);
+                        cmd.CommandText = q;
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var contact = CursorToContact(reader);
+                                contacts.Add(contact);
+                            }
+                        }
+                    }
+                }
+            });
+            return contacts;
+        }
+
         public async Task<List<Contact>> GetAllContacts()
         {
             List<Contact> contacts = new List<Contact>();
@@ -565,6 +685,46 @@ namespace AmiKoWindows
                         {
                             while (reader.Read())
                                 contacts.Add(CursorToContact(reader));
+                        }
+                    }
+                }
+            });
+            Log.WriteLine("contacts.Length (db): {0}", contacts.Count);
+            return contacts;
+        }
+
+        public async Task<Dictionary<string, DateTime>> GetTimestampsOfContacts()
+        {
+            var contacts = new Dictionary<string, DateTime>();
+            await Task.Run(() =>
+            {
+                if (_db.IsOpen())
+                {
+                    using (SQLiteCommand cmd = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+                        
+                        var q = String.Format(
+                            @"SELECT {0}, {1} FROM {2};", KEY_UID, KEY_TIME_STAMP, DATABASE_TABLE);
+                        Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
+
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var uid = reader[KEY_UID] as string;
+                                var stringValue = reader[KEY_TIME_STAMP] as string;
+                                DateTime timestamp;
+                                try
+                                {
+                                    timestamp = DateTime.ParseExact(stringValue, Contact.TIME_STAMP_DATE_FORMAT, null);
+                                } catch (FormatException _)
+                                {
+                                    timestamp = DateTime.ParseExact(stringValue, Contact.OLD_TIME_STAMP_DATE_FORMAT, null);
+                                }
+                                contacts[uid] = timestamp;
+                            }
                         }
                     }
                 }

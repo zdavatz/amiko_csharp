@@ -104,10 +104,7 @@ namespace AmiKoWindows
                 this.DataContext = this;
             };
 
-            if (Properties.Settings.Default.Account == null)
-                Properties.Settings.Default.Account = new Account();
-            else
-                Properties.Settings.Default.Account.Reload();
+            CurrentEntry = Account.Read() ?? new Account();    
 
             InitializeComponent();
         }
@@ -116,7 +113,7 @@ namespace AmiKoWindows
         {
             Log.WriteLine(e.ToString());
 
-            this.CurrentEntry = Properties.Settings.Default.Account;
+            this.CurrentEntry = Account.Read();
 
             if (!DetectCamera())
                 this.TakePictureButton.Visibility = Visibility.Hidden;
@@ -131,6 +128,21 @@ namespace AmiKoWindows
                 EnableDeletePictureButton(false);
             else
                 LoadPicture();
+
+            GoogleSyncManager.Instance.Progress.ProgressChanged += (_sender, progress) =>
+            {
+                if (progress is SyncProgressFile)
+                {
+                    var p = progress as SyncProgressFile;
+                    if (p.File.FullName.Equals(Account.AccountFilePath()))
+                    {
+                        this.CurrentEntry = Account.Read();
+                    } else if (p.File.FullName.Equals(Utilities.AccountPictureFilePath()))
+                    {
+                        LoadPicture();
+                    }
+                }
+            };
         }
 
         private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
@@ -201,9 +213,7 @@ namespace AmiKoWindows
 
             if (valid)
             {
-                Properties.Settings.Default.Account = this.CurrentEntry;
-                Properties.Settings.Default.Account.Save();
-                Properties.Settings.Default.Save();
+                this.CurrentEntry.Save();
 
                 _mainWindow.ActiveAccount = this.CurrentEntry;
             }

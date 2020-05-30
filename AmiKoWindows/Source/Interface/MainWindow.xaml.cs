@@ -46,6 +46,7 @@ namespace AmiKoWindows
 {
     using ControlExtensions;
     using MahApps.Metro;
+    using System.Threading;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -167,6 +168,8 @@ namespace AmiKoWindows
             _prescriptions.LoadFiles();
 
             _statusBarHelper = new StatusBarHelper();
+
+            GoogleSyncManager.Instance.Init(_patientDb);
 
             this.Spinner.Spin = false;
 
@@ -627,9 +630,10 @@ namespace AmiKoWindows
         {
             _statusBarHelper.IsConnectedToInternet();
 
+            Account.MigrateFromOldSettings();
             if (Account.IsSet())
             {
-                this.ActiveAccount = Properties.Settings.Default.Account;
+                this.ActiveAccount = Account.Read();
                 _prescriptions.ActiveAccount = ActiveAccount;
             }
 
@@ -1539,6 +1543,26 @@ namespace AmiKoWindows
             {
                 var url = "mailto:zdavatz@ywesee.com?subject=AmiKo%20Desitin%20Feedback";
                 Process.Start(url);
+            }
+            else if (name.Equals("Settings"))
+            {
+                ViewType viewType = DataContext as ViewType;
+                if (viewType == null)
+                    return;
+                if (viewType.Mode.Equals("Html"))
+                {
+                    // NOTE
+                    // WebBrowser does not allow to put controls over on it :'(
+                    // Thus, flyouts does not work on HTML Context.
+                    //
+                    // https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/wpf-and-win32-interoperation
+                    SetState(UIState.State.Prescriptions);
+                    viewType = DataContext as ViewType;
+                    Prescriptions.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                }
+                viewType.HasSettings = true;
+                this.DataContext = viewType;
+                this.FlyoutMenu.IsOpen = false;
             }
             else if (name.Equals("About"))
             {

@@ -147,7 +147,7 @@ namespace AmiKoWindows
                     _favorites.Add(article);
             }
             // Save list of favorites to file
-            await _favorites.Save();
+            _favorites.Save();
             // Update list of found articles
             foreach (Article a in _foundArticles)
             {

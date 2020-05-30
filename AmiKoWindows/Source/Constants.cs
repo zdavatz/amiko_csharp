@@ -60,5 +60,13 @@ namespace AmiKoWindows
             "Posologie", "Précautions", "Interactions", "Grossesse/All.", "Conduite", "Effets indésir.", "Surdosage", "Propriétés/Effets",
             "Cinétique", "Préclinique", "Remarques", "Numéro d'autorisation", "Présentation", "Titulaire", "Mise à jour"
         };
+
+#if AMIKO
+        public static readonly string GoogleClientId = "<your amiko google client id>";
+        public static readonly string GoogleClientSecret = "<your amiko google client secret>";
+#elif COMED
+        public static readonly string GoogleClientId = "<your comed google client id>";
+        public static readonly string GoogleClientSecret = "<your comed google client secret>";
+#endif
     }
 }
