@@ -160,6 +160,7 @@ namespace AmiKoWindows
                     await GoogleSyncManager.Instance.Login();
                 }
                 await ReloadGoogleLoginStateAsync();
+                GoogleSyncManager.Instance.Synchronise();
             });
         }
 
