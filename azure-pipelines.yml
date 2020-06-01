@@ -27,9 +27,17 @@ steps:
     script: |
       @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
 
+# Download secure file
+# Download a secure file to the agent machine
+- task: DownloadSecureFile@1
+  name: downloadGoogleConstants
+  inputs:
+    secureFile: GoogleConstants.cs
+
 - task: CmdLine@2
   inputs:
     script: |
+      copy $(downloadGoogleConstants.secureFilePath) $(Build.SourcesDirectory)\AmiKoWindows\Source\GoogleConstants.cs
       choco install windows-sdk-8.1 windows-sdk-10.0 wixtoolset
 
 - task: PowerShell@2
@@ -66,7 +74,7 @@ steps:
   displayName: 'Publish Artifact: Build Result'
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
-    
+
 # see Issue https://github.com/microsoft/azure-pipelines-tasks/issues/10642
 #- task: CopyFilesOverSSH@0
 #  inputs:
@@ -74,3 +82,4 @@ steps:
 #    sourceFolder: '$(build.artifactstagingdirectory)'
 #    contents: 'AmiKoWindows/bin/Release/Amiko-Installer/Amiko-Installer.msi'
 #    targetFolder: '/home/ftp/Amiko_Desitin_Win7.msi'
+
