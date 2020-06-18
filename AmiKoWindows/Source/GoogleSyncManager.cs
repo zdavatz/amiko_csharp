@@ -837,7 +837,7 @@ namespace AmiKoWindows
 
                     using (var fileStream = localFile.Exists ? new IO.FileStream(
                         localFile.FullName,
-                        IO.FileMode.Open,
+                        IO.FileMode.Truncate,
                         IO.FileAccess.Write,
                         IO.FileShare.ReadWrite) : localFile.OpenWrite())
                     {
