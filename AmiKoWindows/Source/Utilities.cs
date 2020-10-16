@@ -26,6 +26,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -376,9 +377,20 @@ namespace AmiKoWindows
 
         public static string GenerateHash(string baseString)
         {
-            long hash = Hash(baseString);
-            // cast signed long to unsigned long (same as macOS Version of AmiKo)
-            return String.Format("{0}", (ulong)Hash(baseString));
+            return SHA256Hash(baseString);
+        }
+
+        public static string SHA256Hash(string text)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(text);
+            SHA256Managed hashstring = new SHA256Managed();
+            byte[] hash = hashstring.ComputeHash(bytes);
+            string hashString = string.Empty;
+            foreach (byte x in hash)
+            {
+                hashString += String.Format("{0:x2}", x);
+            }
+            return hashString;
         }
 
         // Returns hashed long number same as NSString (CFString)'s Hash Implementation.
