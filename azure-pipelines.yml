@@ -23,6 +23,7 @@ steps:
     restoreSolution: '$(solution)'
 
 - task: CmdLine@2
+  displayName: Install chocolatey
   inputs:
     script: |
       @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
@@ -35,17 +36,21 @@ steps:
     secureFile: GoogleConstants.cs
 
 - task: CmdLine@2
+  displayName: Install dependencies
   inputs:
     script: |
-      copy $(downloadGoogleConstants.secureFilePath) $(Build.SourcesDirectory)\AmiKoWindows\Source\GoogleConstants.cs
+      copy $(Build.SourcesDirectory)\AmiKoWindows\Source\GoogleConstants.sample.cs $(Build.SourcesDirectory)\AmiKoWindows\Source\GoogleConstants.cs
+      copy /y $(downloadGoogleConstants.secureFilePath) $(Build.SourcesDirectory)\AmiKoWindows\Source\GoogleConstants.cs
       choco install windows-sdk-8.1 windows-sdk-10.0 wixtoolset
 
 - task: PowerShell@2
+  displayName: Download databases
   inputs:
     filePath: '.\download.ps1'
     errorActionPreference: 'continue'
 
 - task: VSBuild@1
+  displayName: MSBuild
   inputs:
     platform: 'x86'
     solution: '$(solution)'
@@ -53,12 +58,14 @@ steps:
     msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
 
 - task: CmdLine@2
+  displayName: Make Appx
   inputs:
     script: |
       "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\AmiKo /p AmikoWindows\bin\Release\AmikoDesitin.appx
       "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\CoMed /p AmikoWindows\bin\Release\CoMedDesitin.appx
 
 - task: PowerShell@2
+  displayName: Make MSI
   inputs:
     filePath: '.\MakeMsi.ps1'
     errorActionPreference: 'continue'
