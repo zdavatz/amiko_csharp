@@ -328,6 +328,28 @@ namespace AmiKoWindows
             return result;
         }
 
+        public async Task UpdateContactUid(Contact contact)
+        {
+            await Task.Run(() =>
+            {
+                if (_db.IsOpen())
+                {
+                    using (SQLiteCommand cmd = _db.Command())
+                    {
+                        _db.ReOpenIfNecessary();
+                        string q = String.Format(@"UPDATE {0} SET {1} = @newUid WHERE {2} = @id;",
+                            DATABASE_TABLE, KEY_UID, KEY_ID);
+                        //Log.WriteLine("Query: {0}", q);
+                        cmd.CommandText = q;
+
+                        cmd.Parameters.AddWithValue("@id", contact.Id);
+                        cmd.Parameters.AddWithValue("@newUid", contact.Uid);
+                        int rows = cmd.ExecuteNonQuery();
+                    }
+                }
+            });
+        }
+
         // Returns inserted new id, if insert succeeds
         public async Task<long?> InsertContact(Contact contact)
         {
