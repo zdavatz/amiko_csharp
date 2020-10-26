@@ -524,7 +524,7 @@ namespace AmiKoWindows
                 // Uid (in file) may wrong one from iOS and macOS (they have old
                 // implementation)
                 contact = presenter.Contact;
-                contact.Uid = FixedUidOf(contact);
+                contact.Uid = Utilities.FixedUidOf(contact);
             }
             catch (Exception ex)
             {
@@ -633,7 +633,7 @@ namespace AmiKoWindows
             // Uid (in file) may wrong one from iOS and macOS (they have old
             // implementation)
             Contact contact = presenter.Contact;
-            return FixedUidOf(contact);
+            return Utilities.FixedUidOf(contact);
         }
 
         private string ReadHash(string path)
@@ -648,23 +648,6 @@ namespace AmiKoWindows
                 return null;
 
             return presenter.prescription_hash;
-        }
-
-        private string FixedUidOf(Contact contact)
-        {
-            if (contact == null)
-                return null;
-
-            var uid = contact.Uid;
-            Log.WriteLine("uid: {0}", uid);
-
-            contact.Birthdate = AddressBookControl.FormatBirthdate(contact.Birthdate);
-            var validUid = contact.GenerateUid();
-            if (uid == null || uid.Equals(string.Empty) || !validUid.Equals(uid))
-                uid = validUid;
-
-            Log.WriteLine("uid: {0}", uid);
-            return uid;
         }
 
         #region Private File Path Utility Methods (_amikoDir)
@@ -754,7 +737,7 @@ namespace AmiKoWindows
             // Uid (in file) may wrong one from iOS and macOS (they have old
             // implementation)
             Contact contact = presenter.Contact;
-            contact.Uid = FixedUidOf(contact);
+            contact.Uid = Utilities.FixedUidOf(contact);
 
             this.Hash = presenter.prescription_hash;
             this.PlaceDate = presenter.place_date;
