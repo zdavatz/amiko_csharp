@@ -471,6 +471,38 @@ namespace AmiKoWindows
             }
             return (result + (result << (len & 31)));
         }
+
+        public static string FixedUidOf(Contact contact)
+        {
+            if (contact == null)
+                return null;
+
+            var uid = contact.Uid;
+            Log.WriteLine("uid: {0}", uid);
+
+            contact.Birthdate = AddressBookControl.FormatBirthdate(contact.Birthdate);
+            var validUid = contact.GenerateUid();
+            if (uid != null && !uid.Equals(string.Empty) && !validUid.Equals(uid))
+            {
+                // Move the files from the old folder to the new one because the contact's uid has changed
+                var amkBaseDir = PrescriptionsPath();
+                var oldAmkDir = Path.Combine(amkBaseDir, uid);
+                var newAmkDir = Path.Combine(amkBaseDir, validUid);
+
+                if (Directory.Exists(oldAmkDir))
+                {
+                    Directory.Move(oldAmkDir, newAmkDir);
+                }
+            }
+
+            if (uid == null || uid.Equals(string.Empty) || !validUid.Equals(uid))
+            {
+                uid = validUid;
+            }
+
+            Log.WriteLine("uid: {0}", uid);
+            return uid;
+        }
         #endregion
 
         #region Time Functions

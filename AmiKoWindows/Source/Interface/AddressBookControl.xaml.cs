@@ -501,9 +501,16 @@ namespace AmiKoWindows
                         Contact contact = await _patientDb.GetContactById(item.Id.Value);
                         if (contact != null)
                         {
+                            var oldUid = contact.Uid;
+                            contact.Uid = Utilities.FixedUidOf(contact);
                             this.CurrentEntry = contact;
                             if (_mainWindow != null)
                                 _mainWindow.ActiveContact = contact;
+                            if (!oldUid.Equals(contact.Uid))
+                            {
+                                await _patientDb.UpdateContactUid(contact);
+                                await _patientDb.LoadAllContacts();
+                            }
                         }
                     }
                 }
