@@ -31,6 +31,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using Windows.ApplicationModel;
 
 namespace AmiKoWindows
 {
@@ -67,10 +68,20 @@ namespace AmiKoWindows
 
         public static string AppVersion()
         {
-            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            if (version != "")
+            try
             {
-                return version;
+                // Show version in appx manifest
+                // https://github.com/zdavatz/amiko_csharp/issues/242
+                Package package = Package.Current;
+                PackageId packageId = package.Id;
+                PackageVersion version = packageId.Version;
+                return string.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
+            } catch (Exception e) {
+                var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                if (version != "")
+                {
+                    return version;
+                }
             }
             return "1.0.0";
         }
