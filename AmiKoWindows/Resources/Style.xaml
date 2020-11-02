@@ -421,7 +421,7 @@
                             <!-- <Setter TargetName="Panel" Property="Background" Value="AliceBlue" /> -->
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <!-- <Setter TargetName="Panel" Property="Background" Value="LightGray" /> -->
+                            <Setter TargetName="Panel" Property="Background" Value="{DynamicResource AccentColorBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -477,7 +477,7 @@
                             <!-- <Setter TargetName="Panel" Property="Background" Value="AliceBlue" /> -->
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <!-- <Setter TargetName="Panel" Property="Background" Value="LightGray" /> -->
+                            <Setter TargetName="Panel" Property="Background" Value="{DynamicResource AccentColorBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
