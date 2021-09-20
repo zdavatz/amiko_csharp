@@ -21,3 +21,7 @@ function deleteRow(cmdID, currentRow) {
         // alert(e);
     }
 }
+
+function callEPhaAPI() {
+    window.external.JSNotify("callEpha", 0);
+}

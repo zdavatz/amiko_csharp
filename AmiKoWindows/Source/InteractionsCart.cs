@@ -20,11 +20,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Security.Permissions;
 using System.Runtime.InteropServices;
+using System.Web.Script.Serialization;
 using Microsoft.Win32;
+using System.Threading.Tasks;
 
 namespace AmiKoWindows
 {
@@ -52,7 +55,7 @@ namespace AmiKoWindows
         #endregion
 
         #region Public Methods
-        public void JSNotify(string cmd, object o)
+        public async void JSNotify(string cmd, object o)
         {
             if (cmd.Equals("deleteSingleRow"))
             {
@@ -63,7 +66,37 @@ namespace AmiKoWindows
             else if (cmd.Equals("deleteAllRows"))
             {
                 RemoveAllArticles();
+            } else if (cmd.Equals("callEpha"))
+            {
+                await CallEPha();
             }
+        }
+
+        public async Task CallEPha()
+        {
+            if (_articleBasket.Count == 0) return;
+            var dicts = new List<Dictionary<string, string>>();
+            foreach (var kvp in _articleBasket)
+            {
+                Article a = kvp.Value;
+                var parts = Regex.Split(a.Packages, "\\|");
+                var dict = new Dictionary<string, string>();
+                dict["type"] = "drug";
+                dict["gtin"] = parts[9];
+                dicts.Add(dict);
+            }
+            var jsonStr = new JavaScriptSerializer().Serialize(dicts);
+            var content = new StringContent(jsonStr, Encoding.UTF8, "application/json");
+
+            var client = new HttpClient();
+            var endpoint = "https://api.epha.health/clinic/advice/" + Utilities.AppLanguage() + "/";
+            var result = await client.PostAsync(endpoint, content);
+            var responseStr = await result.Content.ReadAsStringAsync();
+            var deserialized = new JavaScriptSerializer().DeserializeObject(responseStr);
+            var resultDict = deserialized as Dictionary<string, object>;
+            var dataDict = resultDict["data"] as Dictionary<string, object>;
+            var link = dataDict["link"] as string;
+            System.Diagnostics.Process.Start(link);
         }
 
         public void LoadFiles()
@@ -117,6 +150,7 @@ namespace AmiKoWindows
 
                 string interactionsHtmlStr = "";
                 string deleteAllButtonStr = "";
+                string ephaButtonStr = "";
                 bool interactionsPresent = false;
                 if (medCount > 1)
                 {
@@ -134,6 +168,7 @@ namespace AmiKoWindows
                     }
                     deleteAllButtonStr = "<div id=\"Delete_all\"><input type=\"button\" value=\"" + deleteAllButtonStr + "\" onclick=\"deleteRow('DeleteAll',this)\" /></div>";
                 }
+                ephaButtonStr = "<input type=\"button\" value=\"EPha API\" style=\"cursor: pointer; float:right;\" onclick=\"callEPhaAPI()\" />";
 
                 string topNoteHtmlStr = "";
                 string legendHtmlStr = "";
@@ -166,7 +201,7 @@ namespace AmiKoWindows
                     + "<script language=\"javascript\">" + _jsStr + "</script>"
                     + "<style>" + _cssStr + "</style>" + "</head>"
                     + "<body><div id=\"interactions\">"
-                    + basketHtmlStr + deleteAllButtonStr + "<br><br>"
+                    + basketHtmlStr + deleteAllButtonStr + ephaButtonStr + "<br><br>"
                     + topNoteHtmlStr
                     + interactionsHtmlStr + "<br>"
                     + legendHtmlStr + "<br>"
