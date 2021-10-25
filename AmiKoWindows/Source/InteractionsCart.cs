@@ -66,15 +66,15 @@ namespace AmiKoWindows
             else if (cmd.Equals("deleteAllRows"))
             {
                 RemoveAllArticles();
-            } else if (cmd.Equals("callEpha"))
+            } else if (cmd.StartsWith("openLink:"))
             {
-                await CallEPha();
+                System.Diagnostics.Process.Start(cmd.Replace("openLink:", ""));
             }
         }
 
-        public async Task CallEPha()
+        public async Task<Dictionary<string, dynamic>>CallEPha()
         {
-            if (_articleBasket.Count == 0) return;
+            if (_articleBasket.Count == 0) return null;
             var dicts = new List<Dictionary<string, string>>();
             foreach (var kvp in _articleBasket)
             {
@@ -92,11 +92,109 @@ namespace AmiKoWindows
             var endpoint = "https://api.epha.health/clinic/advice/" + Utilities.AppLanguage() + "/";
             var result = await client.PostAsync(endpoint, content);
             var responseStr = await result.Content.ReadAsStringAsync();
-            var deserialized = new JavaScriptSerializer().DeserializeObject(responseStr);
+            dynamic deserialized = new JavaScriptSerializer().DeserializeObject(responseStr);
             var resultDict = deserialized as Dictionary<string, object>;
-            var dataDict = resultDict["data"] as Dictionary<string, object>;
-            var link = dataDict["link"] as string;
-            System.Diagnostics.Process.Start(link);
+            var code = deserialized["meta"]["code"];
+            if (code >= 200 && code < 300)
+            {
+                return resultDict["data"] as Dictionary<string, dynamic>;
+            }
+            return null;
+        }
+
+        public string HtmlForEPhaResponse(Dictionary<string, dynamic> dict)
+        {
+            int safety = dict["safety"];
+            int kinetic = dict["risk"]["kinetic"];
+            int qtc = dict["risk"]["qtc"];
+            int warning = dict["risk"]["warning"];
+            int serotonerg = dict["risk"]["serotonerg"];
+            int anticholinergic = dict["risk"]["anticholinergic"];
+            int adverse = dict["risk"]["adverse"];
+            string lang = Utilities.AppLanguage();
+
+            string html_str = "";
+
+            if (lang == "de")
+            {
+                html_str += "Sicherheit<BR>";
+                html_str += "<p class='risk-description'>Je höher die Sicherheit, desto sicherer die Kombination.</p>";
+            }
+            else
+            {
+                html_str += "Sécurité<BR>";
+                html_str += "<p class='risk-description'>Plus la sécurité est élevée, plus la combinaison est sûre.</p>";
+            }
+
+            html_str += "<div class='risk'>100";
+            html_str += "<div class='gradient'>" +
+                    "<div class='pin' style='left: " + (100 - safety) + "%'>" + safety + "</div>" +
+                "</div>";
+            html_str += "0</div><BR><BR>";
+
+            if (lang == "de")
+            {
+                html_str += "Risikofaktoren<BR>";
+                html_str += "<p class='risk-description'>Je tiefer das Risiko, desto sicherer die Kombination.</p>";
+            }
+            else
+            {
+                html_str += "Facteurs de risque<BR>";
+                html_str += "<p class='risk-description'>Plus le risque est faible, plus la combinaison est sûre.</p>";
+            }
+
+            html_str += "<table class='risk-table'>";
+            html_str += "<tr><td class='risk-name'>";
+            html_str += lang == "de" ? "Pharmakokinetik" : "Pharmacocinétique";
+            html_str += "</td>";
+            html_str += "<td>";
+            html_str += "<div class='risk'>0";
+            html_str += "<div class='gradient'><div class='pin' style='left: " + kinetic + "%'>" + kinetic + "</div></div>";
+            html_str += "100</div>";
+            html_str += "</td></tr>";
+            html_str += "<tr><td class='risk-name'>";
+            html_str += lang == "de" ? "Verlängerung der QT-Zeit" : "Allongement du temps QT";
+            html_str += "</td>";
+            html_str += "<td>";
+            html_str += "<div class='risk'>0";
+            html_str += "<div class='gradient'><div class='pin' style='left: " + qtc + "%'>" + qtc + "</div></div>";
+            html_str += "100</div>";
+            html_str += "</td></tr>";
+            html_str += "<tr><td class='risk-name'>";
+            html_str += lang == "de" ? "Warnhinweise" : "Avertissements";
+            html_str += "</td>";
+            html_str += "<td>";
+            html_str += "<div class='risk'>0";
+            html_str += "<div class='gradient'><div class='pin' style='left: " + warning + "%'>" + warning + "</div></div>";
+            html_str += "100</div>";
+            html_str += "</td></tr>";
+            html_str += "<tr><td class='risk-name'>";
+            html_str += lang == "de" ? "Serotonerge Effekte" : "Effets sérotoninergiques";
+            html_str += "</td>";
+            html_str += "<td>";
+            html_str += "<div class='risk'>0";
+            html_str += "<div class='gradient'><div class='pin' style='left: " + serotonerg + "%'>" + serotonerg + "</div></div>";
+            html_str += "100</div>";
+            html_str += "</td></tr>";
+            html_str += "<tr><td class='risk-name'>";
+            html_str += lang == "de" ? "Anticholinerge Effekte" : "Effets anticholinergiques";
+            html_str += "</td>";
+            html_str += "<td>";
+            html_str += "<div class='risk'>0";
+            html_str += "<div class='gradient'><div class='pin' style='left: " + anticholinergic + "%'>" + anticholinergic + "</div></div>";
+            html_str += "100</div>";
+            html_str += "</td></tr>";
+            html_str += "<tr><td class='risk-name'>";
+            html_str += lang == "de" ? "Allgemeine Nebenwirkungen" : "Effets secondaires généraux";
+            html_str += "</td>";
+            html_str += "<td>";
+            html_str += "<div class='risk'>0";
+            html_str += "<div class='gradient'><div class='pin' style='left: " + adverse + "%'>" + adverse + "</div></div>";
+            html_str += "100</div>";
+            html_str += "</td></tr>";
+            html_str += "</table>";
+
+            return html_str;
         }
 
         public void LoadFiles()
@@ -114,8 +212,14 @@ namespace AmiKoWindows
             _imgFolder = Path.Combine(Utilities.AppExecutingFolder(), Constants.IMG_FOLDER);
         }
 
-        public void ShowBasket()
+        public async Task ShowBasket(bool skipEPha = false)
         {
+            if (!skipEPha)
+            {
+                // If we want to load from EPha, we better run once without EPha first
+                // so the user can see results faster.
+                await ShowBasket(true);
+            }
             if (_articleBasket.Count > 0)
             {
                 int medCount = 1;
@@ -148,6 +252,12 @@ namespace AmiKoWindows
                 }
                 basketHtmlStr += "</table>";
 
+                Dictionary<string, dynamic> ephaResponse = skipEPha ? null : await CallEPha();
+                if (ephaResponse != null)
+                {
+                    basketHtmlStr += HtmlForEPhaResponse(ephaResponse);
+                }
+
                 string interactionsHtmlStr = "";
                 string deleteAllButtonStr = "";
                 string ephaButtonStr = "";
@@ -168,7 +278,11 @@ namespace AmiKoWindows
                     }
                     deleteAllButtonStr = "<div id=\"Delete_all\"><input type=\"button\" value=\"" + deleteAllButtonStr + "\" onclick=\"deleteRow('DeleteAll',this)\" /></div>";
                 }
-                ephaButtonStr = "<input type=\"button\" value=\"EPha API\" style=\"cursor: pointer; float:right;\" onclick=\"callEPhaAPI()\" />";
+                if (ephaResponse != null)
+                {
+                    var buttonString = Utilities.AppLanguage() == "de" ? "EPha API Details anzeigen" : "Afficher les détails de l'API EPha";
+                    ephaButtonStr = "<input type=\"button\" value=\""+ buttonString + "\" style=\"cursor: pointer; float:right;\" onclick=\"openLink('" + ephaResponse["link"] +"')\" />";
+                }
 
                 string topNoteHtmlStr = "";
                 string legendHtmlStr = "";
