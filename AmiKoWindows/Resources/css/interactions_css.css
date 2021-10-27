@@ -98,3 +98,47 @@ body {
   background-color:var(--background-color-normal);
   color:black; /* Always black */
 }
+
+
+div.risk {
+    margin-top:  25px;
+    display: flex;
+}
+
+p.risk-description {
+    font-size: 0.8em;
+}
+
+div.gradient {
+    background: linear-gradient(90deg, rgba(0,255,0,1) 0%, rgba(255,0,0,1) 100%);
+    height:  20px;
+    flex-grow: 1;
+}
+
+div.gradient .pin {
+    position: relative;
+    display: inline-block;
+    top: -22px;
+}
+
+div.gradient .pin::after {
+    content: "";
+    height: 22px;
+    border: 1px solid red;
+    display: inline-block;
+    top: 100%;
+    position: absolute;
+    left: 50%;
+    width: 5px;
+    background: black;
+    margin-left: -2.5px;
+}
+
+.risk-table {
+    background:  white;
+    width: 100%;
+}
+
+.risk-name {
+    width: 300px;
+}
