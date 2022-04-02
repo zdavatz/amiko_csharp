@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-2019'
 
 variables:
   solution: '**/*.sln'
@@ -55,7 +55,7 @@ steps:
     platform: 'x86'
     solution: '$(solution)'
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
+    msbuildArgs: '/p:AppxBundlePlatforms="x86|x64|ARM" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
 
 - task: CmdLine@2
   displayName: Make Appx
