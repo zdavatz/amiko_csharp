@@ -26,17 +26,35 @@
                             <File Id='AmiKoDesitin.exe.config' Name='AmiKo Desitin.exe.config' DiskId='1' Source='AmiKo Desitin.exe.config' KeyPath='no' />
                             <File Id='AmiKoDesitin.pdb' Name='AmiKo Desitin.pdb' DiskId='1' Source='AmiKo Desitin.pdb' KeyPath='no' />
                             <File Id='AppxManifest.xml' Name='AppxManifest.xml' DiskId='1' Source='AppxManifest.xml' KeyPath='no' />
+                            <File Id='ControlzEx.dll' Name='ControlzEx.dll' DiskId='1' Source='ControlzEx.dll' KeyPath='no' />
+                            <File Id='ControlzEx.pdb' Name='ControlzEx.pdb' DiskId='1' Source='ControlzEx.pdb' KeyPath='no' />
                             <File Id='EntityFramework.dll' Name='EntityFramework.dll' DiskId='1' Source='EntityFramework.dll' KeyPath='no' />
                             <File Id='EntityFramework.SqlServer.dll' Name='EntityFramework.SqlServer.dll' DiskId='1' Source='EntityFramework.SqlServer.dll' KeyPath='no' />
                             <File Id='EntityFramework.SqlServer.xml' Name='EntityFramework.SqlServer.xml' DiskId='1' Source='EntityFramework.SqlServer.xml' KeyPath='no' />
                             <File Id='EntityFramework.xml' Name='EntityFramework.xml' DiskId='1' Source='EntityFramework.xml' KeyPath='no' />
                             <File Id='FontAwesome.WPF.dll' Name='FontAwesome.WPF.dll' DiskId='1' Source='FontAwesome.WPF.dll' KeyPath='no' />
                             <File Id='FontAwesome.WPF.xml' Name='FontAwesome.WPF.xml' DiskId='1' Source='FontAwesome.WPF.xml' KeyPath='no' />
+                            <File Id='Google.Apis.Auth.dll' Name='Google.Apis.Auth.dll' DiskId='1' Source='Google.Apis.Auth.dll' KeyPath='no' />
+                            <File Id='Google.Apis.Auth.pdb' Name='Google.Apis.Auth.pdb' DiskId='1' Source='Google.Apis.Auth.pdb' KeyPath='no' />
+                            <File Id='Google.Apis.Auth.PlatformServices.dll' Name='Google.Apis.Auth.PlatformServices.dll' DiskId='1' Source='Google.Apis.Auth.PlatformServices.dll' KeyPath='no' />
+                            <File Id='Google.Apis.Auth.xml' Name='Google.Apis.Auth.xml' DiskId='1' Source='Google.Apis.Auth.xml' KeyPath='no' />
+                            <File Id='Google.Apis.Core.dll' Name='Google.Apis.Core.dll' DiskId='1' Source='Google.Apis.Core.dll' KeyPath='no' />
+                            <File Id='Google.Apis.Core.pdb' Name='Google.Apis.Core.pdb' DiskId='1' Source='Google.Apis.Core.pdb' KeyPath='no' />
+                            <File Id='Google.Apis.Core.xml' Name='Google.Apis.Core.xml' DiskId='1' Source='Google.Apis.Core.xml' KeyPath='no' />
+                            <File Id='Google.Apis.dll' Name='Google.Apis.dll' DiskId='1' Source='Google.Apis.dll' KeyPath='no' />
+                            <File Id='Google.Apis.Drive.v3.dll' Name='Google.Apis.Drive.v3.dll' DiskId='1' Source='Google.Apis.Drive.v3.dll' KeyPath='no' />
+                            <File Id='Google.Apis.Drive.v3.pdb' Name='Google.Apis.Drive.v3.pdb' DiskId='1' Source='Google.Apis.Drive.v3.pdb' KeyPath='no' />
+                            <File Id='Google.Apis.Drive.v3.xml' Name='Google.Apis.Drive.v3.xml' DiskId='1' Source='Google.Apis.Drive.v3.xml' KeyPath='no' />
+                            <File Id='Google.Apis.pdb' Name='Google.Apis.pdb' DiskId='1' Source='Google.Apis.pdb' KeyPath='no' />
+                            <File Id='Google.Apis.PlatformServices.dll' Name='Google.Apis.PlatformServices.dll' DiskId='1' Source='Google.Apis.PlatformServices.dll' KeyPath='no' />
+                            <File Id='Google.Apis.xml' Name='Google.Apis.xml' DiskId='1' Source='Google.Apis.xml' KeyPath='no' />
                             <File Id='MahApps.Metro.dll' Name='MahApps.Metro.dll' DiskId='1' Source='MahApps.Metro.dll' KeyPath='no' />
                             <File Id='MahApps.Metro.pdb' Name='MahApps.Metro.pdb' DiskId='1' Source='MahApps.Metro.pdb' KeyPath='no' />
                             <File Id='MahApps.Metro.xml' Name='MahApps.Metro.xml' DiskId='1' Source='MahApps.Metro.xml' KeyPath='no' />
                             <File Id='MediaCaptureWPF.dll' Name='MediaCaptureWPF.dll' DiskId='1' Source='MediaCaptureWPF.dll' KeyPath='no' />
                             <File Id='MediaCaptureWPF.Native.dll' Name='MediaCaptureWPF.Native.dll' DiskId='1' Source='MediaCaptureWPF.Native.dll' KeyPath='no' />
+                            <File Id='Newtonsoft.Json.dll' Name='Newtonsoft.Json.dll' DiskId='1' Source='Newtonsoft.Json.dll' KeyPath='no' />
+                            <File Id='Newtonsoft.Json.xml' Name='Newtonsoft.Json.xml' DiskId='1' Source='Newtonsoft.Json.xml' KeyPath='no' />
                             <File Id='PCSC.dll' Name='PCSC.dll' DiskId='1' Source='PCSC.dll' KeyPath='no' />
                             <File Id='PCSC.Iso7816.dll' Name='PCSC.Iso7816.dll' DiskId='1' Source='PCSC.Iso7816.dll' KeyPath='no' />
                             <File Id='PCSC.Iso7816.pdb' Name='PCSC.Iso7816.pdb' DiskId='1' Source='PCSC.Iso7816.pdb' KeyPath='no' />
