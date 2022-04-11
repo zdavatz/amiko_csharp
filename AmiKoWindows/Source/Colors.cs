@@ -32,26 +32,26 @@ namespace AmiKoWindows
         public static Brush SearchBoxChildItems()
         {
             var r = Colors.themeResources;
-            var c = r["GrayBrush2"];
-            return (Brush)c;
+            var c = (Brush)r["MahApps.Brushes.Gray2"];
+            return c;
         }
         public static Brush SectionTitles()
         {
             var r = Colors.themeResources;
-            var c = r["TextBrush"];
-            return (Brush)c;
+            var c = (Brush)r["MahApps.Brushes.Text"];
+            return c;
         }
         public static Brush Background()
         {
             var r = Colors.themeResources;
-            var c = r["WhiteBrush"];
-            return (Brush)c;
+            var c = (Brush)r["MahApps.Brushes.ThemeBackground"];
+            return c;
         }
         public static Brush TextBoxBorder()
         {
             var r = Colors.themeResources;
-            var c = r["GrayBrush7"];
-            return (Brush)c;
+            var c = (Brush)r["MahApps.Brushes.Gray7"];
+            return c;
         }
 
         public const string Originals = "Red"; // #FFFF0000
@@ -76,21 +76,21 @@ namespace AmiKoWindows
             {
                 themeResources = new ResourceDictionary
                 {
-                    Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml", UriKind.RelativeOrAbsolute)
+                    Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Steel.xaml", UriKind.RelativeOrAbsolute)
                 };
             }
             else
             {
                 themeResources = new ResourceDictionary
                 {
-                    Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml", UriKind.RelativeOrAbsolute)
+                    Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Steel.xaml", UriKind.RelativeOrAbsolute)
                 };
             }
         }
 
         private static ResourceDictionary themeResources = new ResourceDictionary
             {
-                Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml", UriKind.RelativeOrAbsolute)
+                Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Steel.xaml", UriKind.RelativeOrAbsolute)
             };
 
         public static string ReplaceStyleForDarkMode(string html)

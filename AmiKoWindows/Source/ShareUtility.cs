@@ -10,6 +10,7 @@ using System.Windows.Interop;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 
+
 namespace AmiKoWindows
 {
     class ShareUtility
@@ -39,6 +40,7 @@ namespace AmiKoWindows
 
         public async void Share()
         {
+            /*
             var factory = WindowsRuntimeMarshal.GetActivationFactory(typeof(DataTransferManager));
             this._interop = (IDataTransferManagerInterOp)factory;
 
@@ -58,9 +60,10 @@ namespace AmiKoWindows
             _outbox.Add(file);
 
             _interop.ShowShareUIForWindow(_handle);
+            */
         }
 
-
+        /*
         private void OnDataRequested(DataTransferManager sender, DataRequestedEventArgs e)
         {
             Log.WriteLine(sender.GetType().Name);
@@ -78,5 +81,6 @@ namespace AmiKoWindows
                 req.Data.SetStorageItems(_outbox);
             }
         }
+        */
     }
 }

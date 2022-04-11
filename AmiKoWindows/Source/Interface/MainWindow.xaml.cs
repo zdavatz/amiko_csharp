@@ -39,13 +39,12 @@ using System.Windows.Navigation;
 
 using Microsoft.Win32;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage;
 using MahApps.Metro.Controls;
 
 namespace AmiKoWindows
 {
     using ControlExtensions;
-    using MahApps.Metro;
+    using ControlzEx.Theming;
     using System.Threading;
 
     /// <summary>
@@ -59,7 +58,7 @@ namespace AmiKoWindows
             public MainSqlDb MainSqlDb { get; set; }
         }
 
-        private DataTransferManager _dataTransferManager;
+        //private DataTransferManager _dataTransferManager;
 
         static bool _willNavigate = false;
 
@@ -171,7 +170,7 @@ namespace AmiKoWindows
 
             GoogleSyncManager.Instance.Init(_patientDb);
 
-            this.Spinner.Spin = false;
+            //this.Spinner.Spin = false;
 
             // Set initial state
             SetState(UIState.State.Compendium);
@@ -592,13 +591,13 @@ namespace AmiKoWindows
         {
             if (enabled)
             {
-                this.Spinner.Visibility = Visibility.Visible;
-                this.Spinner.Spin = true;
+                //this.Spinner.Visibility = Visibility.Visible;
+                //this.Spinner.Spin = true;
             }
             else
             {
-                this.Spinner.Visibility = Visibility.Hidden;
-                this.Spinner.Spin = false;
+                //this.Spinner.Visibility = Visibility.Hidden;
+                //this.Spinner.Spin = false;
             }
         }
 
@@ -607,18 +606,14 @@ namespace AmiKoWindows
             Colors.ReloadColors();
             if (Colors.IsLightMode())
             {
-                ThemeManager.ChangeAppStyle(Application.Current,
-                        ThemeManager.GetAccent("Steel"),
-                        ThemeManager.GetAppTheme("BaseLight"));
+                ThemeManager.Current.ChangeTheme(this, "Light.Steel");
                 this.CompendiumIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/aips32x32_gray.png", UriKind.RelativeOrAbsolute));
                 this.FavoritesIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/favorites32x32_gray.png", UriKind.RelativeOrAbsolute));
                 this.InteractionsIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/interactions32x32_gray.png", UriKind.RelativeOrAbsolute));
                 this.PrescriptionsIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/prescriptions64x64.png", UriKind.RelativeOrAbsolute));
             } else
             {
-                ThemeManager.ChangeAppStyle(Application.Current,
-                        ThemeManager.GetAccent("Steel"),
-                        ThemeManager.GetAppTheme("BaseDark"));
+                ThemeManager.Current.ChangeTheme(this, "Dark.Steel");
                 this.CompendiumIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/aips32x32_light.png", UriKind.RelativeOrAbsolute));
                 this.FavoritesIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/favorites32x32_light.png", UriKind.RelativeOrAbsolute));
                 this.InteractionsIcon.Source = new BitmapImage(new Uri("pack://application:,,,/Resources/img/interactions32x32_light.png", UriKind.RelativeOrAbsolute));

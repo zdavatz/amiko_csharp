@@ -22,7 +22,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 using System.Windows;
 
 namespace AmiKoWindows
@@ -227,15 +227,13 @@ namespace AmiKoWindows
                     jsonStr = reader.ReadToEnd();
                 }
             }
-            var serializer = new JavaScriptSerializer();
-            SettingAccountJSONPresenter presenter = serializer.Deserialize<SettingAccountJSONPresenter>(jsonStr);
-            return presenter.Account;
+            SettingAccountJSONPresenter o = JsonConvert.DeserializeObject< SettingAccountJSONPresenter>(jsonStr);
+            return o.Account;
         }
         
         public override void Save()
         {
-            var serializer = new JavaScriptSerializer();
-            var str = serializer.Serialize(new SettingAccountJSONPresenter(this));
+            string str = JsonConvert.SerializeObject(new SettingAccountJSONPresenter(this), Formatting.Indented);
             File.WriteAllText(AccountFilePath(), str);
         }
 

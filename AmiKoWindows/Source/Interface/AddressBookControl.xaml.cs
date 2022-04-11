@@ -1021,12 +1021,14 @@ namespace AmiKoWindows
                 button.IsEnabled = isEnabled;
 
             // icon button
+            /*
             var image = button.Content as FontAwesome.WPF.ImageAwesome;
             if (image != null)
                 if (isEnabled)
                     image.Foreground = Brushes.Black;
                 else
                     image.Foreground = Brushes.LightGray;
+            */
         }
     }
 }

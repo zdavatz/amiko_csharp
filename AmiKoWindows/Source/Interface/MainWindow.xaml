@@ -11,10 +11,10 @@
     mc:Ignorable="d"
     Loaded="MainWindow_Loaded"
     Closed="MainWindow_Closed"
-    Title="{x:Static p:Resources.appTitle}" TitleCaps="False"
+    Title="{x:Static p:Resources.appTitle}"
+    TitleCharacterCasing="Normal"
     Height="1080" Width="1920"
     GlowBrush="Black"
-    EnableDWMDropShadow="True"
     BorderThickness="1"
     AllowsTransparency="False"
     SaveWindowPosition="True"
@@ -137,15 +137,15 @@
                                                             Name="PrintMedicationLabelButton" Style="{StaticResource WhiteIconButton}"
                                                             Margin="0,0,1,0" Height="28" Width="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="PrintMedicationLabelButton_Click"
                                                             Cursor="Hand">
-                                                            <fa:ImageAwesome Name="PrintMedicationLabel" Icon="Print" Visibility="Visible" Foreground="DarkGray"
-                                                                VerticalAlignment="Center" Margin="0" Height="14" Width="14" />
+                                                            <!--<fa:ImageAwesome Name="PrintMedicationLabel" Icon="Print" Visibility="Visible" Foreground="DarkGray"
+                                                                VerticalAlignment="Center" Margin="0" Height="14" Width="14" />-->
                                                         </Button>
                                                         <Button
                                                             Name="DeleteMedicationButton" Style="{StaticResource WhiteIconButton}"
                                                             Margin="0,0,1,0" Height="28" Width="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="DeleteMedicationButton_Click"
                                                             Cursor="Hand">
-                                                            <fa:ImageAwesome Name="DeleteMedication" Icon="Trash" Visibility="Visible" Foreground="DarkGray"
-                                                                VerticalAlignment="Center" Margin="0" Height="14" Width="14" />
+                                                            <!--<fa:ImageAwesome Name="DeleteMedication" Icon="Trash" Visibility="Visible" Foreground="DarkGray"
+                                                                VerticalAlignment="Center" Margin="0" Height="14" Width="14" />-->
                                                         </Button>
                                                     </StackPanel>
                                                 </Grid>
@@ -416,8 +416,8 @@
                         </ToolBar>
                         <Button Name="PrintPrescriptionButton" HorizontalAlignment="Right" Style="{StaticResource PrintIconButton}"
                             Click="PrintPrescriptionButton_Click" IsEnabled="False">
-                            <fa:ImageAwesome Name="PrintPrescription" Icon="Print" Visibility="Visible" Foreground="LightGray"
-                                VerticalAlignment="Center" Margin="0" Height="18" Width="18" />
+                            <!--<fa:ImageAwesome Name="PrintPrescription" Icon="Print" Visibility="Visible" Foreground="LightGray"
+                                VerticalAlignment="Center" Margin="0" Height="18" Width="18" />-->
                         </Button>
                     </Grid>
                 </Border>
@@ -570,8 +570,8 @@
                 <TextBlock Text="{Binding Path=DatabaseStatusText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4,0,0,0" VerticalAlignment="Center"
                            HorizontalAlignment="Left"></TextBlock>
             </StatusBarItem>
-            <fa:ImageAwesome DockPanel.Dock="Right" x:Name="Spinner" Icon="StarOutline" Foreground="Yellow" Visibility="Visible" Spin="False"
-                VerticalAlignment="Center" Margin="6,1,0,0" Height="14" Width="14" SpinDuration="2" />
+            <!--<fa:ImageAwesome DockPanel.Dock="Right" x:Name="Spinner" Icon="StarOutline" Foreground="Yellow" Visibility="Visible" Spin="False"
+                VerticalAlignment="Center" Margin="6,1,0,0" Height="14" Width="14" SpinDuration="2" />-->
         </StatusBar>
     </Grid>
 </Controls:MetroWindow>

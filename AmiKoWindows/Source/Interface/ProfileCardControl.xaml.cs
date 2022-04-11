@@ -408,6 +408,7 @@ namespace AmiKoWindows
             }
         }
 
+        [System.Runtime.Versioning.SupportedOSPlatform("windows10.0.10240.0")]
         private async void TakePicture(MediaCapture capture, PreviewImage preview, string outputFile, int delay)
         {
             if (!File.Exists(outputFile))
@@ -488,12 +489,14 @@ namespace AmiKoWindows
         private void EnableDeletePictureButton(bool isEnabled)
         {
             this.DeletePictureButton.IsEnabled = isEnabled;
+            /* 
             var image = this.DeletePictureButton.Content as FontAwesome.WPF.ImageAwesome;
             if (image != null)
                 if (isEnabled)
                     image.Foreground = Brushes.Black;
                 else
                     image.Foreground = Brushes.LightGray;
+            */
         }
 
         private bool DetectCamera()

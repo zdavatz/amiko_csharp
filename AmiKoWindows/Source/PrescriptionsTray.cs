@@ -26,8 +26,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 using System.Windows;
+using Newtonsoft.Json;
 
 namespace AmiKoWindows
 {
@@ -714,16 +715,12 @@ namespace AmiKoWindows
             presenter.Contact = ActiveContact;
             presenter.MedicationsList = Medications;
 
-            var serializer = new JavaScriptSerializer();
-            serializer.MaxJsonLength = 999999999;
-            return serializer.Serialize(presenter);
+            return JsonConvert.SerializeObject(presenter, Formatting.None);
         }
 
         private PrescriptionJSONPresenter DeserializeJson(string json)
         {
-            var serializer = new JavaScriptSerializer();
-            serializer.MaxJsonLength = 999999999;
-            return serializer.Deserialize<PrescriptionJSONPresenter>(json);
+            return JsonConvert.DeserializeObject<PrescriptionJSONPresenter>(json);
         }
 
         // Restores json data into current properties

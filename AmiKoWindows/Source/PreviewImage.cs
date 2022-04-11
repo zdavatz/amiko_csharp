@@ -23,14 +23,14 @@ using System.Windows.Interop;
 using Windows.Media;
 using Windows.Media.Capture;
 using Windows.Media.MediaProperties;
-using MediaCaptureWPF.Native;
+//using MediaCaptureWPF.Native;
 
 
 namespace AmiKoWindows
 {
     public class PreviewImage : D3DImage
     {
-        private CapturePreviewNative _Preview;
+        //private CapturePreviewNative _Preview;
         private MediaCapture _Capture;
         private uint _Width;
         private uint _Height;
@@ -41,7 +41,7 @@ namespace AmiKoWindows
             this._Width = properties.Width;
             this._Height = properties.Height;
 
-            this._Preview = new CapturePreviewNative(this, _Width, _Height);
+            //this._Preview = new CapturePreviewNative(this, _Width, _Height);
             this._Capture = capture;
         }
 
@@ -54,13 +54,13 @@ namespace AmiKoWindows
                 Container = null
             };
 
-            await _Capture.StartPreviewToCustomSinkAsync(profile, (IMediaExtension)_Preview.MediaSink);
+            //await _Capture.StartPreviewToCustomSinkAsync(profile, (IMediaExtension)_Preview.MediaSink);
         }
 
         // Add missing function (MediaCaptureWPF 1.0.0)
         public async Task StopAsync()
         {
-            await _Capture.StopPreviewAsync();
+            //await _Capture.StopPreviewAsync();
         }
     }
 }

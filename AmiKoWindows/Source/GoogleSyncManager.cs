@@ -30,7 +30,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Apis.Requests;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 using System.ComponentModel;
 
 namespace AmiKoWindows
@@ -346,8 +346,7 @@ namespace AmiKoWindows
                 return new Dictionary<string, long>();
             }
             string str = IO.File.ReadAllText(versionFile.FullName);
-            var serializer = new JavaScriptSerializer();
-            var dict = serializer.Deserialize<Dictionary<string, long>>(str);
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, long>>(str);
             return dict;
         }
 
@@ -359,8 +358,7 @@ namespace AmiKoWindows
             {
                 parent.Create();
             }
-            var serializer = new JavaScriptSerializer();
-            var str = serializer.Serialize(map);
+            var str = JsonConvert.SerializeObject(map, Formatting.None);
             IO.File.WriteAllText(versionFile.FullName, str);
         }
 

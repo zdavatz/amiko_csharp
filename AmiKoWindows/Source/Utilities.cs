@@ -567,7 +567,7 @@ namespace AmiKoWindows
             var button = box.GetType().GetField("_button", BindingFlags.NonPublic | BindingFlags.Instance);
             FieldInfo field = typeof(MessageBoxButton).GetField(buttonType, BindingFlags.Public | BindingFlags.Static);
             button.SetValue(box, (MessageBoxButton)field.GetValue(null));
-            System.Windows.VisualStateManager.GoToState(box, buttonType, false);
+            //VisualStateManager.GoToState(box, buttonType, false);
             box.Text = text;
             box.Caption = caption;
             box.OkButtonContent = Properties.Resources.ok;

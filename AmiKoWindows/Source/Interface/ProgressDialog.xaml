@@ -8,13 +8,13 @@
         mc:Ignorable="d"
         ResizeMode="NoResize" WindowStyle="None"
         GlowBrush="Black"
-        EnableDWMDropShadow="True"
         BorderThickness="1" 
         Topmost="True"
         WindowStartupLocation="CenterScreen"
         RenderOptions.ClearTypeHint="Enabled"
         TextOptions.TextFormattingMode="Display"
-        Title="Updating database" TitleCaps="False"
+        Title="Updating database"
+        TitleCharacterCasing="Normal"
         Height="220" Width="500">
     <Grid>
         <StackPanel Orientation="Vertical">
