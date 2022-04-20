@@ -27,6 +27,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using FontAwesome5;
 
 using Microsoft.VisualBasic.FileIO;
 using MahApps.Metro.Controls;
@@ -1021,14 +1022,12 @@ namespace AmiKoWindows
                 button.IsEnabled = isEnabled;
 
             // icon button
-            /*
-            var image = button.Content as FontAwesome.WPF.ImageAwesome;
+            var image = button.Content as ImageAwesome;
             if (image != null)
                 if (isEnabled)
                     image.Foreground = Brushes.Black;
                 else
                     image.Foreground = Brushes.LightGray;
-            */
         }
     }
 }

@@ -35,7 +35,7 @@ using Windows.Media;
 using Windows.Media.Capture;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
-
+using FontAwesome5;
 
 namespace AmiKoWindows
 {
@@ -489,14 +489,12 @@ namespace AmiKoWindows
         private void EnableDeletePictureButton(bool isEnabled)
         {
             this.DeletePictureButton.IsEnabled = isEnabled;
-            /* 
-            var image = this.DeletePictureButton.Content as FontAwesome.WPF.ImageAwesome;
+            var image = this.DeletePictureButton.Content as ImageAwesome;
             if (image != null)
                 if (isEnabled)
                     image.Foreground = Brushes.Black;
                 else
                     image.Foreground = Brushes.LightGray;
-            */
         }
 
         private bool DetectCamera()
