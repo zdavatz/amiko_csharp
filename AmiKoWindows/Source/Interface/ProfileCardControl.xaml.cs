@@ -115,7 +115,7 @@ namespace AmiKoWindows
 
             this.CurrentEntry = Account.Read();
 
-            if (!DetectCamera())
+            if (!DetectCamera().Wait(1000))
                 this.TakePictureButton.Visibility = Visibility.Hidden;
 
             var path = Utilities.AccountPictureFilePath();
@@ -258,7 +258,7 @@ namespace AmiKoWindows
 
         private async void TakePictureButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DetectCamera())
+            if (await DetectCamera())
             {
                 MediaCapture capture = new MediaCapture();
                 await capture.InitializeAsync();
@@ -497,13 +497,13 @@ namespace AmiKoWindows
                     image.Foreground = Brushes.LightGray;
         }
 
-        private bool DetectCamera()
+        private async Task<bool> DetectCamera()
         {
 
             try
             {
                 // is camera available?
-                TryLoadMediaCapture();
+                await TryLoadMediaCapture();
                 return true;
             }
             catch (TypeLoadException ex)
@@ -513,9 +513,16 @@ namespace AmiKoWindows
             }
         }
 
-        private void TryLoadMediaCapture()
+        private async Task<Boolean> TryLoadMediaCapture()
         {
-            new MediaCapture();
+            try
+            {
+                await new MediaCapture().InitializeAsync();
+                return true;
+            } catch (Exception _e)
+            {
+                return false;
+            }
         }
     }
 }
