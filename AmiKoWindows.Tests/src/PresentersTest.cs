@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 using AmiKoWindows;
@@ -15,12 +15,10 @@ namespace AmiKoWindows.Tests
     {
 
         private static readonly Regex WHITESPACES = new Regex(@"\s*", RegexOptions.Compiled);
-        private JavaScriptSerializer Serializer;
-
+        
         [SetUp]
         public void SetUp()
         {
-            Serializer = new JavaScriptSerializer();
         }
 
         [TearDown]
@@ -38,9 +36,9 @@ namespace AmiKoWindows.Tests
             var presenter = new ContactJSONPresenter(contact);
             var expected = ExpectedJSONWithObject(contact);
 
-            string resultJSON = Serializer.Serialize(presenter);
+            string resultJSON = JsonConvert.SerializeObject(presenter);
             Assert.AreEqual(expected, resultJSON);
-            Assert.IsTrue(Serializer.Deserialize<Contact>(resultJSON) is Contact);
+            Assert.IsTrue(JsonConvert.DeserializeObject<Contact>(resultJSON) is Contact);
         }
 
         [Test]
@@ -67,7 +65,7 @@ namespace AmiKoWindows.Tests
                 contact[entry.Key] = (string)entry.Value;
 
             var presenter = new ContactJSONPresenter(contact);
-            string resultJSON = Serializer.Serialize(presenter);
+            string resultJSON = JsonConvert.SerializeObject(presenter);
 
             foreach (KeyValuePair<string, string> entry in properties)
                 Assert.IsTrue(resultJSON.Contains(entry.Value));
@@ -82,9 +80,9 @@ namespace AmiKoWindows.Tests
             var presenter = new AccountJSONPresenter(account);
             var expected = ExpectedJSONWithObject(account);
 
-            string resultJSON = Serializer.Serialize(presenter);
+            string resultJSON = JsonConvert.SerializeObject(presenter);
             Assert.AreEqual(expected, resultJSON);
-            Assert.IsTrue(Serializer.Deserialize<Account>(resultJSON) is Account);
+            Assert.IsTrue(JsonConvert.DeserializeObject<Account>(resultJSON) is Account);
         }
 
         [Test]
@@ -106,7 +104,7 @@ namespace AmiKoWindows.Tests
                 account[entry.Key] = (string)entry.Value;
 
             var presenter = new AccountJSONPresenter(account);
-            string resultJSON = Serializer.Serialize(presenter);
+            string resultJSON = JsonConvert.SerializeObject(presenter);
 
             foreach (KeyValuePair<string, string> entry in properties)
                 Assert.IsTrue(resultJSON.Contains(entry.Value));
@@ -135,9 +133,9 @@ namespace AmiKoWindows.Tests
                 GetStringValue<Medication>(new List<Medication>())
             );
 
-            string resultJSON = Serializer.Serialize(presenter);
+            string resultJSON = JsonConvert.SerializeObject(presenter);
             Assert.AreEqual(expected, resultJSON);
-            Assert.IsTrue(Serializer.Deserialize<Account>(resultJSON) is Account);
+            Assert.IsTrue(JsonConvert.DeserializeObject<Account>(resultJSON) is Account);
         }
 
         [Test]
@@ -183,7 +181,7 @@ namespace AmiKoWindows.Tests
             presenter.Account = account;
             presenter.MedicationsList = new List<Medication>();
 
-            string resultJSON = Serializer.Serialize(presenter);
+            string resultJSON = JsonConvert.SerializeObject(presenter);
 
             Assert.IsTrue(resultJSON.Contains(placeDate));
             Assert.IsTrue(resultJSON.Contains(hash));
