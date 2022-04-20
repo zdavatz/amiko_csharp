@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net5.0-windows10.0.20348.0</TargetFramework>
 		<UseWindowsForms>true</UseWindowsForms>
 		<UseWPF>true</UseWPF>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
 
 		<RootNamespace>AmiKoWindows</RootNamespace>
 		<AssemblyName>AmiKo Desitin</AssemblyName>
 		<ApplicationIcon />
 		<StartupObject>AmiKoWindows.Program</StartupObject>
-		<Platforms>AnyCPU;ARM64</Platforms>
+		<Platforms>AnyCPU;x86;x64;arm64</Platforms>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' And '$(Log)' == 'Trace' ">
@@ -24,19 +24,12 @@
 		<DefineConstants>AMIKO</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <PlatformTarget>x86</PlatformTarget>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+		<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
 	  <PlatformTarget>ARM64</PlatformTarget>
 	</PropertyGroup>
-	<!--<PropertyGroup>
-		<PostBuildEvent>$(MSBuildProjectDirectory)\PostBuild.bat $(SolutionDir) $(TargetDir) de</PostBuildEvent>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+	  <PlatformTarget>X86</PlatformTarget>
 	</PropertyGroup>
-	<PropertyGroup>
-		<PreBuildEvent>$(MSBuildProjectDirectory)\PreBuild.bat $(SolutionDir) Resources.de-CH.resx</PreBuildEvent>
-	</PropertyGroup>-->
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="$(MSBuildProjectDirectory)\PreBuild.bat $(SolutionDir) Resources.de-CH.resx" />
 	</Target>
@@ -47,9 +40,7 @@
 		<PackageReference Include="EntityFramework">
 			<Version>6.4.4</Version>
 		</PackageReference>
-		<PackageReference Include="Extended.Wpf.Toolkit">
-			<Version>4.3.0</Version>
-		</PackageReference>
+		<PackageReference Include="FontAwesome5" Version="2.1.6" />
 		<PackageReference Include="Google.Apis.Drive.v3">
 			<Version>1.57.0.2601</Version>
 		</PackageReference>
@@ -62,13 +53,11 @@
 		<PackageReference Include="MahApps.Metro.Resources">
 			<Version>0.6.1</Version>
 		</PackageReference>
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.4" />
 		<PackageReference Include="Microsoft.Net.Compilers">
 			<Version>4.1.0</Version>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.NET.Test.Sdk">
-			<Version>17.1.0</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools">
 			<Version>10.0.22000.197</Version>
@@ -76,20 +65,12 @@
 		<PackageReference Include="PCSC.Iso7816">
 			<Version>6.0.0</Version>
 		</PackageReference>
-		<PackageReference Include="System.Data.SQLite">
-			<Version>1.0.115.5</Version>
-		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
 		<None Update="Properties\Settings.settings">
 			<Generator>SettingsSingleFileGenerator</Generator>
 			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
 		</None>
-		<Compile Update="Properties\Settings.Designer.cs">
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Settings.settings</DependentUpon>
-			<DesignTimeSharedInput>True</DesignTimeSharedInput>
-		</Compile>
 		<!-- Data -->
 		<None Update="Data\de\amiko_report_de.html" />
 		<None Update="Data\de\amiko_db_full_idx_de.db" />
@@ -101,23 +82,21 @@
 		<None Update="AmiKo.Config\App.config" />
 	</ItemGroup>
 	<ItemGroup>
-		<Compile Update="Properties\Resources.de-CH.Designer.cs">
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Resources.de-CH.resx</DependentUpon>
-			<DesignTime>True</DesignTime>
-		</Compile>
-		<Compile Update="Properties\Resources.Designer.cs">
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Resources.resx</DependentUpon>
-			<DesignTime>True</DesignTime>
-		</Compile>
 		<EmbeddedResource Update="Properties\Resources.de-CH.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>Resources.de-CH.Designer.cs</LastGenOutput>
+			<StronglyTypedFileName>$(IntermediateOutputPath)\Resources.de-CH.Designer.cs</StronglyTypedFileName>
+			<StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+			<StronglyTypedNamespace>Microsoft.Windows.PowerShell.ScriptAnalyzer</StronglyTypedNamespace>
+			<StronglyTypedClassName>Resources.de-CH</StronglyTypedClassName>
 		</EmbeddedResource>
 		<EmbeddedResource Update="Properties\Resources.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+			<StronglyTypedFileName>$(IntermediateOutputPath)\Resources.Designer.cs</StronglyTypedFileName>
+			<StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+			<StronglyTypedNamespace>Microsoft.Windows.PowerShell.ScriptAnalyzer</StronglyTypedNamespace>
+			<StronglyTypedClassName>Resources</StronglyTypedClassName>
 		</EmbeddedResource>
 	</ItemGroup>
 	<ItemGroup>
