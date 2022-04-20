@@ -630,10 +630,8 @@ namespace AmiKoWindows
             }
 
             //Log.WriteLine(sender.GetType().Name);
-            var dialog = Utilities.MessageDialog(
-                Properties.Resources.msgContactDeleteConfirmation, "", "OKCancel");
-            dialog.ShowDialog();
-            var result = dialog.MessageBoxResult;
+
+            var result = MessageBox.Show(Properties.Resources.msgContactDeleteConfirmation, "", MessageBoxButton.OKCancel);
 
             if (result == MessageBoxResult.OK)
             {

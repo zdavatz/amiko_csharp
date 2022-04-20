@@ -45,6 +45,7 @@ namespace AmiKoWindows
 {
     using ControlExtensions;
     using ControlzEx.Theming;
+    using MahApps.Metro.Controls.Dialogs;
     using System.Threading;
 
     /// <summary>
@@ -58,7 +59,7 @@ namespace AmiKoWindows
             public MainSqlDb MainSqlDb { get; set; }
         }
 
-        //private DataTransferManager _dataTransferManager;
+        private DataTransferManager _dataTransferManager;
 
         static bool _willNavigate = false;
 
@@ -170,7 +171,7 @@ namespace AmiKoWindows
 
             GoogleSyncManager.Instance.Init(_patientDb);
 
-            //this.Spinner.Spin = false;
+            this.Spinner.Spin = false;
 
             // Set initial state
             SetState(UIState.State.Compendium);
@@ -591,13 +592,13 @@ namespace AmiKoWindows
         {
             if (enabled)
             {
-                //this.Spinner.Visibility = Visibility.Visible;
-                //this.Spinner.Spin = true;
+                this.Spinner.Visibility = Visibility.Visible;
+                this.Spinner.Spin = true;
             }
             else
             {
-                //this.Spinner.Visibility = Visibility.Hidden;
-                //this.Spinner.Spin = false;
+                this.Spinner.Visibility = Visibility.Hidden;
+                this.Spinner.Spin = false;
             }
         }
 
@@ -747,7 +748,9 @@ namespace AmiKoWindows
                     numResults = _fullTextDb.GetCount();
                 }
                 else
+                {
                     numResults = await _sqlDb?.Search(_uiState, text);
+                }
 
                 SetSpinnerEnabled(false);
                 sw.Stop();
@@ -1109,12 +1112,11 @@ namespace AmiKoWindows
         {
             if (item != null && item.IsValid)
             {
-                var dialog = Utilities.MessageDialog(
-                    Properties.Resources.msgPrescriptionDeleteConfirmation, "", "OKCancel");
-                dialog.ShowDialog();
-
-                var result = dialog.MessageBoxResult;
-                if (result == MessageBoxResult.OK)
+                var result = await this.ShowMessageAsync("",
+                    Properties.Resources.msgPrescriptionDeleteConfirmation,
+                    MessageDialogStyle.AffirmativeAndNegative
+                    );
+                if (result == MessageDialogResult.Affirmative)
                 {
                     await _prescriptions.DeleteFile(item.Path);
                     _prescriptions.Renew();
@@ -1309,15 +1311,12 @@ namespace AmiKoWindows
             if (filepath == null)
                 return;
 
-            Xceed.Wpf.Toolkit.MessageBox dialog = null;
             var filename = Path.GetFileName(filepath);
 
             var result = await _prescriptions.ImportFile(filepath);
             if (result == PrescriptionsTray.Result.Invalid)
             {
-                dialog = Utilities.MessageDialog(
-                    Properties.Resources.msgPrescriptionImportFailure, "", "OK");
-                dialog.ShowDialog();
+                MessageBox.Show(Properties.Resources.msgPrescriptionImportFailure, "", MessageBoxButton.OK);
                 return;
             }
             else if (result == PrescriptionsTray.Result.Found)
@@ -1325,8 +1324,7 @@ namespace AmiKoWindows
                 this.ActiveContact = _prescriptions.ActiveContact;
                 this.ActiveAccount = _prescriptions.ActiveAccount;
 
-                dialog = Utilities.MessageDialog(
-                    String.Format(Properties.Resources.msgPrescriptionFileFound, filename), "", "OK");
+                MessageBox.Show(String.Format(Properties.Resources.msgPrescriptionFileFound, filename), "", MessageBoxButton.OK);
             }
             else if (result == PrescriptionsTray.Result.Ok)
             {
@@ -1390,8 +1388,7 @@ namespace AmiKoWindows
 
                 // TODO validate medications
 
-                dialog = Utilities.MessageDialog(
-                    String.Format(Properties.Resources.msgPrescriptionImportSuccess, filename), "", "OK");
+                MessageBox.Show(String.Format(Properties.Resources.msgPrescriptionImportSuccess, filename), "", MessageBoxButton.OK);
             }
 
             EnableButton("CheckInteractionButton", _prescriptions.Medications.Count > 0);
@@ -1414,9 +1411,6 @@ namespace AmiKoWindows
             var nowId = ActiveContact.Id;
             SetActiveFileAsSelected();
             ActiveContact.Id = nowId;
-
-            if (dialog != null)
-                dialog.ShowDialog();
         }
 
         private void SetActiveFileAsSelected()
@@ -1820,16 +1814,18 @@ namespace AmiKoWindows
             bool asRewriting = false;
             if (_prescriptions.IsActivePrescriptionPersisted)
             {
-                var dialog = Utilities.MessageDialog(
-                    Properties.Resources.msgPrescriptionSavingContextConfirmation, "", "YesNoCancel");
-                // Note: see Style.xaml about style of MessageBox
-                dialog.YesButtonContent = Properties.Resources.rewrite;
-                dialog.NoButtonContent = Properties.Resources.newPrescription;
-                dialog.ShowDialog();
-                var result = dialog.MessageBoxResult;
+                var dialogSettings = new MetroDialogSettings();
+                dialogSettings.AffirmativeButtonText = Properties.Resources.rewrite;
+                dialogSettings.NegativeButtonText = Properties.Resources.newPrescription;
+                dialogSettings.FirstAuxiliaryButtonText = Properties.Resources.cancel;
+                var result = await this.ShowMessageAsync(
+                    "", Properties.Resources.msgPrescriptionSavingContextConfirmation,
+                    MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary,
+                    dialogSettings
+                    );
 
-                doSave = (result == MessageBoxResult.Yes || result == MessageBoxResult.No);
-                asRewriting = (result == MessageBoxResult.Yes);
+                doSave = (result == MessageDialogResult.Affirmative || result == MessageDialogResult.Negative);
+                asRewriting = (result == MessageDialogResult.Affirmative);
             }
 
             if (doSave)
