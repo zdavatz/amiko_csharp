@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 using System.Globalization;
 using System.Linq;
 using System.IO;
@@ -227,7 +227,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand cmd = _db.Command())
+                    using (SqliteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
                         string q;
@@ -243,7 +243,7 @@ namespace AmiKoWindows
                             string[] columnNames = DATABASE_COLUMNS.Where(
                                 k => k != KEY_ID).ToArray();
                             var parameters = columnNames.Select(c =>
-                                String.Format("@{0}", c)).ToArray();
+                                String.Format("${0}", c)).ToArray();
                             q = String.Format(@"INSERT INTO {0} ({1}) VALUES ({2});",
                                 DATABASE_TABLE, String.Join(",", columnNames), String.Join(",", parameters));
                             //Log.WriteLine("Query: {0}", q);
@@ -288,7 +288,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand cmd = _db.Command())
+                    using (SqliteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
                         string q;
@@ -334,7 +334,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand cmd = _db.Command())
+                    using (SqliteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
                         string q = String.Format(@"UPDATE {0} SET {1} = @newUid WHERE {2} = @id;",
@@ -358,7 +358,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand cmd = _db.Command())
+                    using (SqliteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
                         string q;
@@ -382,7 +382,7 @@ namespace AmiKoWindows
                         string[] columnNames = DATABASE_COLUMNS.Where(
                             k => k != KEY_ID).ToArray();
                         var parameters = columnNames.Select(c =>
-                            String.Format("@{0}", c)).ToArray();
+                            String.Format("${0}", c)).ToArray();
                         q = String.Format(@"INSERT INTO {0} ({1}) VALUES ({2});",
                             DATABASE_TABLE, String.Join(",", columnNames), String.Join(",", parameters));
                         //Log.WriteLine("Query: {0}", q);
@@ -412,7 +412,7 @@ namespace AmiKoWindows
             {
                 if (!_onMemory && _db.IsOpen())
                 {
-                    using (SQLiteCommand cmd = _db.Command())
+                    using (SqliteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
                         var q = String.Format(
@@ -438,7 +438,7 @@ namespace AmiKoWindows
             {
                 if (!_onMemory && _db.IsOpen())
                 {
-                    using (SQLiteCommand cmd = _db.Command())
+                    using (SqliteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
                         var q = String.Format(
@@ -523,7 +523,7 @@ namespace AmiKoWindows
                 }
                 else if (_db.IsOpen())
                 {
-                    using (SQLiteCommand cmd = _db.Command())
+                    using (SqliteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
                         var q = String.Format(
@@ -532,7 +532,7 @@ namespace AmiKoWindows
                         //Log.WriteLine("Query: {0}", q);
                         cmd.CommandText = q;
                         cmd.Parameters.AddWithValue("@id", id);
-                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        using (SqliteDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                                 contact = CursorToContact(reader);
@@ -567,7 +567,7 @@ namespace AmiKoWindows
                 }
                 else if (_db.IsOpen())
                 {
-                    using (SQLiteCommand cmd = _db.Command())
+                    using (SqliteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
                         var q = String.Format(
@@ -575,7 +575,7 @@ namespace AmiKoWindows
                             DATABASE_TABLE, KEY_UID);
                         cmd.CommandText = q;
                         cmd.Parameters.AddWithValue("@uid", uid);
-                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        using (SqliteDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                                 contact = CursorToContact(reader);
@@ -597,7 +597,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand cmd = _db.Command())
+                    using (SqliteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
                         var uidsStr = "(" + String.Join(",", uids.Select(s=> "'" + s + "'")) + ")";
@@ -605,7 +605,7 @@ namespace AmiKoWindows
                             @"SELECT * FROM {0} WHERE {1} IN {2} LIMIT 1;",
                             DATABASE_TABLE, KEY_UID, uidsStr);
                         cmd.CommandText = q;
-                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        using (SqliteDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -628,14 +628,14 @@ namespace AmiKoWindows
                     contacts = _foundContacts;
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand cmd = _db.Command())
+                    using (SqliteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
                         var q = String.Format(
                             @"SELECT * FROM {0} ORDER BY {1};", DATABASE_TABLE, SORT_KEYS);
                         //Log.WriteLine("Query: {0}", q);
                         cmd.CommandText = q;
-                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        using (SqliteDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                                 contacts.Add(CursorToContact(reader));
@@ -686,7 +686,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand cmd = _db.Command())
+                    using (SqliteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
 
@@ -703,7 +703,7 @@ namespace AmiKoWindows
                                 String.Format("%{0}%", texts[i]));
                         }
 
-                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        using (SqliteDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                                 contacts.Add(CursorToContact(reader));
@@ -722,7 +722,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand cmd = _db.Command())
+                    using (SqliteCommand cmd = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
                         
@@ -731,7 +731,7 @@ namespace AmiKoWindows
                         Log.WriteLine("Query: {0}", q);
                         cmd.CommandText = q;
 
-                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        using (SqliteDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -832,7 +832,7 @@ namespace AmiKoWindows
 
             if (_db.IsOpen())
             {
-                using (SQLiteCommand cmd = _db.Command())
+                using (SqliteCommand cmd = _db.Command())
                 {
                     _db.ReOpenIfNecessary();
                     var q = String.Format(
@@ -840,7 +840,7 @@ namespace AmiKoWindows
                         DATABASE_TABLE);
                     //Log.WriteLine("Query: {0}", q);
                     cmd.CommandText = q;
-                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    using (SqliteDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                             result = (long)reader.GetInt64(0);
@@ -869,7 +869,7 @@ namespace AmiKoWindows
             return result;
         }
 
-        private Contact CursorToContact(SQLiteDataReader reader)
+        private Contact CursorToContact(SqliteDataReader reader)
         {
             Contact contact = new Contact();
 

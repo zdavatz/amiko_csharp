@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -252,14 +252,14 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand com = _db.Command())
+                    using (SqliteCommand com = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
 
                         com.CommandText = "SELECT * FROM " + DATABASE_TABLE + " WHERE "
                         + KEY_ROWID + " LIKE '" + id + "'";
 
-                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        using (SqliteDataReader reader = com.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -281,14 +281,14 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand com = _db.Command())
+                    using (SqliteCommand com = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
 
                         com.CommandText = "SELECT * FROM " + DATABASE_TABLE + " WHERE "
                         + KEY_PACKAGES + " LIKE '%" + eancode + "%'";
 
-                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        using (SqliteDataReader reader = com.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -310,7 +310,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand com = _db.Command())
+                    using (SqliteCommand com = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
 
@@ -318,7 +318,7 @@ namespace AmiKoWindows
                             + KEY_REGNRS + " LIKE '%, " + regnr + "%' OR "
                             + KEY_REGNRS + " LIKE '" + regnr + "%'";
 
-                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        using (SqliteDataReader reader = com.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -340,7 +340,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand com = _db.Command())
+                    using (SqliteCommand com = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
 
@@ -361,7 +361,7 @@ namespace AmiKoWindows
                                 + KEY_TITLE + ") GLOB '" + title + "*'";
                         }
 
-                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        using (SqliteDataReader reader = com.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -383,14 +383,14 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand com = _db.Command())
+                    using (SqliteCommand com = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
 
                         com.CommandText = "SELECT " + SHORT_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
                             + KEY_AUTHOR + " LIKE '" + author + "%'";
 
-                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        using (SqliteDataReader reader = com.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -412,7 +412,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand com = _db.Command())
+                    using (SqliteCommand com = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
 
@@ -426,7 +426,7 @@ namespace AmiKoWindows
                             + KEY_SUBSTANCES + " like '%, " + atccode + "%' OR "
                             + KEY_SUBSTANCES + " like '" + atccode + "%'";
 
-                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        using (SqliteDataReader reader = com.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -448,7 +448,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand com = _db.Command())
+                    using (SqliteCommand com = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
 
@@ -456,7 +456,7 @@ namespace AmiKoWindows
                             + KEY_SUBSTANCES + " LIKE '%, " + ingredient + "%' OR "
                             + KEY_SUBSTANCES + " LIKE " + "'" + ingredient + "%'";
 
-                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        using (SqliteDataReader reader = com.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -478,7 +478,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand com = _db.Command())
+                    using (SqliteCommand com = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
 
@@ -486,7 +486,7 @@ namespace AmiKoWindows
                             + KEY_REGNRS + " LIKE '%, " + regnr + "%' OR "
                             + KEY_REGNRS + " LIKE '" + regnr + "%'";
 
-                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        using (SqliteDataReader reader = com.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -508,7 +508,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand com = _db.Command())
+                    using (SqliteCommand com = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
 
@@ -527,7 +527,7 @@ namespace AmiKoWindows
                             if (count % N == 0)
                             {
                                 com.CommandText = "SELECT " + FT_SEARCH_TABLE + " FROM " + DATABASE_TABLE + " WHERE " + subQuery;
-                                using (SQLiteDataReader reader = com.ExecuteReader())
+                                using (SqliteDataReader reader = com.ExecuteReader())
                                 {
                                     while (reader.Read())
                                     {
@@ -555,7 +555,7 @@ namespace AmiKoWindows
                         }
 
                         com.CommandText = query;
-                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        using (SqliteDataReader reader = com.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -577,7 +577,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand com = _db.Command())
+                    using (SqliteCommand com = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
 
@@ -589,7 +589,7 @@ namespace AmiKoWindows
                             + KEY_INDICATIONS + " LIKE '" + application + "%' OR "
                             + KEY_INDICATIONS + " LIKE '%;" + application + "%'";
 
-                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        using (SqliteDataReader reader = com.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -611,14 +611,14 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand com = _db.Command())
+                    using (SqliteCommand com = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
 
                         com.CommandText = "SELECT " + PACKAGES_TABLE + " FROM " + DATABASE_TABLE + " WHERE "
                             + KEY_PACKAGES + " LIKE '%" + eancode + "%'";
 
-                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        using (SqliteDataReader reader = com.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -640,7 +640,7 @@ namespace AmiKoWindows
             {
                 if (_db.IsOpen())
                 {
-                    using (SQLiteCommand com = _db.Command())
+                    using (SqliteCommand com = _db.Command())
                     {
                         _db.ReOpenIfNecessary();
 
@@ -659,7 +659,7 @@ namespace AmiKoWindows
                                 String.Format("%{0}%", eancodes[i]));
                         }
 
-                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        using (SqliteDataReader reader = com.ExecuteReader())
                         {
                             while (reader.Read())
                                 articles.Add(CursorToShortArticle(reader));
@@ -673,7 +673,7 @@ namespace AmiKoWindows
         #endregion
 
         #region Private Methods
-        private Article CursorToVeryShortArticle(SQLiteDataReader reader)
+        private Article CursorToVeryShortArticle(SqliteDataReader reader)
         {
             Article article = new Article();
 
@@ -687,7 +687,7 @@ namespace AmiKoWindows
             return article;
         }
 
-        private Article CursorToShortArticle(SQLiteDataReader reader)
+        private Article CursorToShortArticle(SqliteDataReader reader)
         {
             Article article = new Article();
 
@@ -710,7 +710,7 @@ namespace AmiKoWindows
             return article;
         }
 
-        private Article CursorToArticle(SQLiteDataReader reader)
+        private Article CursorToArticle(SqliteDataReader reader)
         {
             Article article = new Article();
 
