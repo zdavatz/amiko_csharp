@@ -11,7 +11,7 @@ namespace AmiKoWindows
         [STAThread]
         static void Main()
         {
-            // Console.WriteLine("Hello");
+            Console.WriteLine("Hello");
             App application = new App();
             application.InitializeComponent();
             application.Run();

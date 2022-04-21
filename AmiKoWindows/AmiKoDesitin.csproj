@@ -11,7 +11,8 @@
 		<AssemblyName>AmiKo Desitin</AssemblyName>
 		<ApplicationIcon />
 		<StartupObject>AmiKoWindows.Program</StartupObject>
-		<Platforms>AnyCPU;x86;x64;arm64</Platforms>
+		<Platforms>x86;x64;arm64</Platforms>
+		<RuntimeIdentifiers>win10-x86;win-x64;win-arm64</RuntimeIdentifiers>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' And '$(Log)' == 'Trace' ">
@@ -24,12 +25,22 @@
 		<DefineConstants>AMIKO</DefineConstants>
 	</PropertyGroup>
 
-		<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-	  <PlatformTarget>ARM64</PlatformTarget>
+	<PropertyGroup>
+		<PlatformTarget>ARM64</PlatformTarget>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+	<!-- <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+		<PlatformTarget>ARM64</PlatformTarget>
+	</PropertyGroup> -->
+	<PropertyGroup Condition=" '$(_PlatformWithoutConfigurationInference)' == 'ARM64' ">
+		<PlatformTarget Condition=" '$(PlatformTarget)' == '' ">ARM64</PlatformTarget>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(_PlatformWithoutConfigurationInference)' == 'arm64' ">
+		<PlatformTarget Condition=" '$(PlatformTarget)' == '' ">arm64</PlatformTarget>
+	</PropertyGroup>
+	<!-- <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
 	  <PlatformTarget>X86</PlatformTarget>
-	</PropertyGroup>
+	</PropertyGroup> -->
+
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="$(MSBuildProjectDirectory)\PreBuild.bat $(SolutionDir) Resources.de-CH.resx" />
 	</Target>
