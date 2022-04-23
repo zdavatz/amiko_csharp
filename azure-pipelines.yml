@@ -21,7 +21,7 @@ steps:
     key: 'test'
     restoreKeys: |
        test
-    path: $(Pipeline.defaultworkingdirectory)\AmiKoWindows\Data
+    path: AmiKoWindows\Data
   displayName: Cache
 
 - task: NuGetToolInstaller@0
@@ -76,7 +76,7 @@ steps:
 - task: VSBuild@1
   displayName: MSBuild
   inputs:
-    platform: 'ARM64'
+    platform: 'Arm64'
     msbuildArchitecture: 'arm64'
     solution: '$(solution)'
     configuration: '$(buildConfiguration)'
