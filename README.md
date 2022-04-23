@@ -169,7 +169,7 @@ user@host:/path/to/project $ nuget install AmiKoWindows/packages.config
 
 ### Fill in Google API Client ID and Secret for Google Drive Syncing
 
-1. Rename `GoogleConstants.sample.cs` to `AmiKoWindows\Source\GoogleConstants.cs`
+1. Rename `GoogleConstants.cs.sample` to `AmiKoWindows\Source\GoogleConstants.cs`
 2. Fill the the details in the file
 
 ### Make
