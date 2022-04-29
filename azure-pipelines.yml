@@ -138,6 +138,26 @@ steps:
     PathtoPublish: 'AmikoWindows\bin\ComedDesitin-X86.appx'
     artifactName: 'ComedDesitin-ARM86.appx'
 
+- task: GithubRelease@1 
+  displayName: 'Create GitHub Release'
+  inputs:
+    gitHubConnection: github.com_b123400
+    repositoryName: b123400/amiko_csharp
+    tagSource: userSpecifiedTag
+    tag: $(Build.BuildNumber)
+    assets: |
+      AmikoWindows\bin\AmikoDesitin-ARM64.appx
+      AmikoWindows\bin\AmikoDesitin-X64.appx
+      AmikoWindows\bin\AmikoDesitin-X86.appx
+      AmikoWindows\bin\ComedDesitin-ARM64.appx
+      AmikoWindows\bin\ComedDesitin-X64.appx
+      AmikoWindows\bin\ComedDesitin-X86.appx
+      AmiKoWindows\bin\Release\ARM64\Amiko-Installer\Amiko-Installer-ARM64.msi
+      AmiKoWindows\bin\Release\X64\Amiko-Installer\Amiko-Installer-X64.msi
+      AmiKoWindows\bin\Release\X86\Amiko-Installer\Amiko-Installer-X86.msi
+      AmiKoWindows\bin\Release\ARM64\Comed-Installer\Comed-Installer-ARM64.msi
+      AmiKoWindows\bin\Release\X64\Comed-Installer\Comed-Installer-X64.msi
+      AmiKoWindows\bin\Release\X86\Comed-Installer\Comed-Installer-X86.msi
 
 # see Issue https://github.com/microsoft/azure-pipelines-tasks/issues/10642
 #- task: CopyFilesOverSSH@0
