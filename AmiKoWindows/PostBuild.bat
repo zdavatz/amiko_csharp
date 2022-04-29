@@ -8,9 +8,10 @@ ECHO --- Copying important files and folder ---
 
 (ROBOCOPY "%1\AmiKoWindows\Data\%3" "%2\Data" /NP /NJH)
 
+SET platform="%4"
 SET appname="AmiKoDesitin"
 
 if "%3"=="fr" (
   SET appname="CoMedDesitin"
 )
-(COPY /Y "%1\AmiKoWindows\%appname%.appx.manifest" "%2\AppxManifest.xml")
+(COPY /Y "%1\AmiKoWindows\AppxManifest\%appname%-%platform%.appx.manifest" "%2\AppxManifest.xml")

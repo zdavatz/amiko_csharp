@@ -15,14 +15,6 @@ variables:
   appxPackageDir: '$(build.defaultworkingdirectory)\AppxPackages\'
 
 steps:
-- task: Cache@2
-  inputs:
-    key: 'test'
-    restoreKeys: |
-       test
-    path: AmiKoWindows\Data
-  displayName: Cache
-
 - task: NuGetToolInstaller@0
 
 - task: NuGetCommand@2
@@ -83,20 +75,13 @@ steps:
   displayName: Make Appx
   inputs:
     script: |
-      cd .\AmikoWindows\bin\x86\Debug\net5.0-windows10.0.20348.0\
-      dir
-      cd ..\..\..\..\..
-      cd .\AmikoWindows\bin\ARM64\Debug\net5.0-windows10.0.20348.0\
-      dir
-      cd ..\..\..\..\..
-  # "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\ARM64\Debug\net5.0-windows10.0.20348.0\ /p AmikoWindows\bin\AmikoDesitin.appx
-  # "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Debug\CoMed /p AmikoWindows\bin\Debug\CoMedDesitin.appx
-
-# - task: PowerShell@2
-#   displayName: Make MSI
-#   inputs:
-#     filePath: '.\MakeMsi.ps1'
-#     errorActionPreference: 'continue'
+      "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\ARM64\AmiKo\net5.0-windows10.0.20348.0\ /p AmikoWindows\bin\AmikoDesitin-ARM64.appx
+      "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\X64\AmiKo\net5.0-windows10.0.20348.0\ /p AmikoWindows\bin\AmikoDesitin-X64.appx
+      "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\X86\AmiKo\net5.0-windows10.0.20348.0\ /p AmikoWindows\bin\AmikoDesitin-X86.appx
+      
+      "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\ARM64\CoMed\net5.0-windows10.0.20348.0\ /p AmikoWindows\bin\ComedDesitin-ARM64.appx
+      "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\X64\CoMed\net5.0-windows10.0.20348.0\ /p AmikoWindows\bin\ComedDesitin-X64.appx
+      "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\X86\CoMed\net5.0-windows10.0.20348.0\ /p AmikoWindows\bin\ComedDesitin-X86.appx
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
