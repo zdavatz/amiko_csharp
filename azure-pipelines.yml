@@ -83,12 +83,18 @@ steps:
       "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\X64\CoMed\net5.0-windows10.0.20348.0\ /p AmikoWindows\bin\ComedDesitin-X64.appx
       "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\X86\CoMed\net5.0-windows10.0.20348.0\ /p AmikoWindows\bin\ComedDesitin-X86.appx
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+- task: PowerShell@2
+  displayName: Make MSI
   inputs:
-    SourceFolder: '$(system.defaultworkingdirectory)'
-    Contents: 'AmikoWindows\bin\**'
-    TargetFolder: '$(build.artifactstagingdirectory)'
+    filePath: '.\MakeMsi.ps1'
+    errorActionPreference: 'continue'
+
+# - task: CopyFiles@2
+#   displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+#   inputs:
+#     SourceFolder: '$(system.defaultworkingdirectory)'
+#     Contents: 'AmikoWindows\bin\**'
+#     TargetFolder: '$(build.artifactstagingdirectory)'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: Build Result'

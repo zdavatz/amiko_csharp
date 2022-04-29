@@ -23,121 +23,158 @@
                                 <Shortcut Id="desktopAmikoDesitin" Directory="DesktopFolder" Name="Amiko Desitin"
                                     WorkingDirectory='INSTALLDIR' Icon="desitin_icon.ico" IconIndex="0" Advertise="yes" />
                             </File>
-                            <File Id='AmiKoDesitin.exe.config' Name='AmiKo Desitin.exe.config' DiskId='1' Source='AmiKo Desitin.exe.config' KeyPath='no' />
-                            <File Id='AmiKoDesitin.pdb' Name='AmiKo Desitin.pdb' DiskId='1' Source='AmiKo Desitin.pdb' KeyPath='no' />
-                            <File Id='AppxManifest.xml' Name='AppxManifest.xml' DiskId='1' Source='AppxManifest.xml' KeyPath='no' />
-                            <File Id='ControlzEx.dll' Name='ControlzEx.dll' DiskId='1' Source='ControlzEx.dll' KeyPath='no' />
-                            <File Id='ControlzEx.pdb' Name='ControlzEx.pdb' DiskId='1' Source='ControlzEx.pdb' KeyPath='no' />
-                            <File Id='EntityFramework.dll' Name='EntityFramework.dll' DiskId='1' Source='EntityFramework.dll' KeyPath='no' />
-                            <File Id='EntityFramework.SqlServer.dll' Name='EntityFramework.SqlServer.dll' DiskId='1' Source='EntityFramework.SqlServer.dll' KeyPath='no' />
-                            <File Id='EntityFramework.SqlServer.xml' Name='EntityFramework.SqlServer.xml' DiskId='1' Source='EntityFramework.SqlServer.xml' KeyPath='no' />
-                            <File Id='EntityFramework.xml' Name='EntityFramework.xml' DiskId='1' Source='EntityFramework.xml' KeyPath='no' />
-                            <File Id='FontAwesome.WPF.dll' Name='FontAwesome.WPF.dll' DiskId='1' Source='FontAwesome.WPF.dll' KeyPath='no' />
-                            <File Id='FontAwesome.WPF.xml' Name='FontAwesome.WPF.xml' DiskId='1' Source='FontAwesome.WPF.xml' KeyPath='no' />
-                            <File Id='Google.Apis.Auth.dll' Name='Google.Apis.Auth.dll' DiskId='1' Source='Google.Apis.Auth.dll' KeyPath='no' />
-                            <File Id='Google.Apis.Auth.pdb' Name='Google.Apis.Auth.pdb' DiskId='1' Source='Google.Apis.Auth.pdb' KeyPath='no' />
-                            <File Id='Google.Apis.Auth.PlatformServices.dll' Name='Google.Apis.Auth.PlatformServices.dll' DiskId='1' Source='Google.Apis.Auth.PlatformServices.dll' KeyPath='no' />
-                            <File Id='Google.Apis.Auth.xml' Name='Google.Apis.Auth.xml' DiskId='1' Source='Google.Apis.Auth.xml' KeyPath='no' />
-                            <File Id='Google.Apis.Core.dll' Name='Google.Apis.Core.dll' DiskId='1' Source='Google.Apis.Core.dll' KeyPath='no' />
-                            <File Id='Google.Apis.Core.pdb' Name='Google.Apis.Core.pdb' DiskId='1' Source='Google.Apis.Core.pdb' KeyPath='no' />
-                            <File Id='Google.Apis.Core.xml' Name='Google.Apis.Core.xml' DiskId='1' Source='Google.Apis.Core.xml' KeyPath='no' />
-                            <File Id='Google.Apis.dll' Name='Google.Apis.dll' DiskId='1' Source='Google.Apis.dll' KeyPath='no' />
-                            <File Id='Google.Apis.Drive.v3.dll' Name='Google.Apis.Drive.v3.dll' DiskId='1' Source='Google.Apis.Drive.v3.dll' KeyPath='no' />
-                            <File Id='Google.Apis.Drive.v3.pdb' Name='Google.Apis.Drive.v3.pdb' DiskId='1' Source='Google.Apis.Drive.v3.pdb' KeyPath='no' />
-                            <File Id='Google.Apis.Drive.v3.xml' Name='Google.Apis.Drive.v3.xml' DiskId='1' Source='Google.Apis.Drive.v3.xml' KeyPath='no' />
-                            <File Id='Google.Apis.pdb' Name='Google.Apis.pdb' DiskId='1' Source='Google.Apis.pdb' KeyPath='no' />
-                            <File Id='Google.Apis.PlatformServices.dll' Name='Google.Apis.PlatformServices.dll' DiskId='1' Source='Google.Apis.PlatformServices.dll' KeyPath='no' />
-                            <File Id='Google.Apis.xml' Name='Google.Apis.xml' DiskId='1' Source='Google.Apis.xml' KeyPath='no' />
-                            <File Id='MahApps.Metro.dll' Name='MahApps.Metro.dll' DiskId='1' Source='MahApps.Metro.dll' KeyPath='no' />
-                            <File Id='MahApps.Metro.pdb' Name='MahApps.Metro.pdb' DiskId='1' Source='MahApps.Metro.pdb' KeyPath='no' />
-                            <File Id='MahApps.Metro.xml' Name='MahApps.Metro.xml' DiskId='1' Source='MahApps.Metro.xml' KeyPath='no' />
-                            <File Id='MediaCaptureWPF.dll' Name='MediaCaptureWPF.dll' DiskId='1' Source='MediaCaptureWPF.dll' KeyPath='no' />
-                            <File Id='MediaCaptureWPF.Native.dll' Name='MediaCaptureWPF.Native.dll' DiskId='1' Source='MediaCaptureWPF.Native.dll' KeyPath='no' />
-                            <File Id='Newtonsoft.Json.dll' Name='Newtonsoft.Json.dll' DiskId='1' Source='Newtonsoft.Json.dll' KeyPath='no' />
-                            <File Id='Newtonsoft.Json.xml' Name='Newtonsoft.Json.xml' DiskId='1' Source='Newtonsoft.Json.xml' KeyPath='no' />
-                            <File Id='PCSC.dll' Name='PCSC.dll' DiskId='1' Source='PCSC.dll' KeyPath='no' />
-                            <File Id='PCSC.Iso7816.dll' Name='PCSC.Iso7816.dll' DiskId='1' Source='PCSC.Iso7816.dll' KeyPath='no' />
-                            <File Id='PCSC.Iso7816.pdb' Name='PCSC.Iso7816.pdb' DiskId='1' Source='PCSC.Iso7816.pdb' KeyPath='no' />
-                            <File Id='PCSC.Iso7816.xml' Name='PCSC.Iso7816.xml' DiskId='1' Source='PCSC.Iso7816.xml' KeyPath='no' />
-                            <File Id='PCSC.pdb' Name='PCSC.pdb' DiskId='1' Source='PCSC.pdb' KeyPath='no' />
-                            <File Id='PCSC.xml' Name='PCSC.xml' DiskId='1' Source='PCSC.xml' KeyPath='no' />
-                            <File Id='System.Data.SQLite.dll' Name='System.Data.SQLite.dll' DiskId='1' Source='System.Data.SQLite.dll' KeyPath='no' />
-                            <File Id='System.Data.SQLite.EF6.dll' Name='System.Data.SQLite.EF6.dll' DiskId='1' Source='System.Data.SQLite.EF6.dll' KeyPath='no' />
-                            <File Id='System.Data.SQLite.Linq.dll' Name='System.Data.SQLite.Linq.dll' DiskId='1' Source='System.Data.SQLite.Linq.dll' KeyPath='no' />
-                            <File Id='System.Data.SQLite.xml' Name='System.Data.SQLite.xml' DiskId='1' Source='System.Data.SQLite.xml' KeyPath='no' />
-                            <File Id='System.Runtime.WindowsRuntime.dll' Name='System.Runtime.WindowsRuntime.dll' DiskId='1' Source='System.Runtime.WindowsRuntime.dll' KeyPath='no' />
-                            <File Id='System.Runtime.WindowsRuntime.xml' Name='System.Runtime.WindowsRuntime.xml' DiskId='1' Source='System.Runtime.WindowsRuntime.xml' KeyPath='no' />
-                            <File Id='System.Windows.Controls.Input.Toolkit.dll' Name='System.Windows.Controls.Input.Toolkit.dll' DiskId='1' Source='System.Windows.Controls.Input.Toolkit.dll' KeyPath='no' />
-                            <File Id='System.Windows.Controls.Layout.Toolkit.dll' Name='System.Windows.Controls.Layout.Toolkit.dll' DiskId='1' Source='System.Windows.Controls.Layout.Toolkit.dll' KeyPath='no' />
-                            <File Id='System.Windows.Interactivity.dll' Name='System.Windows.Interactivity.dll' DiskId='1' Source='System.Windows.Interactivity.dll' KeyPath='no' />
-                            <File Id='WPFToolkit.dll' Name='WPFToolkit.dll' DiskId='1' Source='WPFToolkit.dll' KeyPath='no' />
-                            <File Id='Xceed.Wpf.Toolkit.dll' Name='Xceed.Wpf.Toolkit.dll' DiskId='1' Source='Xceed.Wpf.Toolkit.dll' KeyPath='no' />
+                            <File Name='AmiKo Desitin.deps.json' DiskId='1' Source='AmiKo Desitin.deps.json' KeyPath='no' />
+                            <File Name='AmiKo Desitin.dll' DiskId='1' Source='AmiKo Desitin.dll' KeyPath='no' />
+                            <File Name='AmiKo Desitin.dll.config' DiskId='1' Source='AmiKo Desitin.dll.config' KeyPath='no' />
+                            <File Name='AmiKo Desitin.pdb' DiskId='1' Source='AmiKo Desitin.pdb' KeyPath='no' />
+                            <File Name='AmiKo Desitin.runtimeconfig.dev.json' DiskId='1' Source='AmiKo Desitin.runtimeconfig.dev.json' KeyPath='no' />
+                            <File Name='AmiKo Desitin.runtimeconfig.json' DiskId='1' Source='AmiKo Desitin.runtimeconfig.json' KeyPath='no' />
+                            <File Name='AppxManifest.xml' DiskId='1' Source='AppxManifest.xml' KeyPath='no' />
+                            <File Name='ControlzEx.dll' DiskId='1' Source='ControlzEx.dll' KeyPath='no' />
+                            <File Name='EntityFramework.SqlServer.dll' DiskId='1' Source='EntityFramework.SqlServer.dll' KeyPath='no' />
+                            <File Name='EntityFramework.dll' DiskId='1' Source='EntityFramework.dll' KeyPath='no' />
+                            <File Name='FontAwesome5.Net.dll' DiskId='1' Source='FontAwesome5.Net.dll' KeyPath='no' />
+                            <File Name='FontAwesome5.dll' DiskId='1' Source='FontAwesome5.dll' KeyPath='no' />
+                            <File Name='Google.Apis.Auth.PlatformServices.dll' DiskId='1' Source='Google.Apis.Auth.PlatformServices.dll' KeyPath='no' />
+                            <File Name='Google.Apis.Auth.dll' DiskId='1' Source='Google.Apis.Auth.dll' KeyPath='no' />
+                            <File Name='Google.Apis.Core.dll' DiskId='1' Source='Google.Apis.Core.dll' KeyPath='no' />
+                            <File Name='Google.Apis.Drive.v3.dll' DiskId='1' Source='Google.Apis.Drive.v3.dll' KeyPath='no' />
+                            <File Name='Google.Apis.dll' DiskId='1' Source='Google.Apis.dll' KeyPath='no' />
+                            <File Name='MahApps.Metro.dll' DiskId='1' Source='MahApps.Metro.dll' KeyPath='no' />
+                            <File Name='Microsoft.Data.Sqlite.dll' DiskId='1' Source='Microsoft.Data.Sqlite.dll' KeyPath='no' />
+                            <File Name='Microsoft.Windows.SDK.NET.dll' DiskId='1' Source='Microsoft.Windows.SDK.NET.dll' KeyPath='no' />
+                            <File Name='Microsoft.Xaml.Behaviors.dll' DiskId='1' Source='Microsoft.Xaml.Behaviors.dll' KeyPath='no' />
+                            <File Name='Newtonsoft.Json.dll' DiskId='1' Source='Newtonsoft.Json.dll' KeyPath='no' />
+                            <File Name='PCSC.Iso7816.dll' DiskId='1' Source='PCSC.Iso7816.dll' KeyPath='no' />
+                            <File Name='PCSC.dll' DiskId='1' Source='PCSC.dll' KeyPath='no' />
+
+                            <File Name='SQLitePCLRaw.batteries_v2.dll' DiskId='1' Source='SQLitePCLRaw.batteries_v2.dll' KeyPath='no' />
+                            <File Name='SQLitePCLRaw.core.dll' DiskId='1' Source='SQLitePCLRaw.core.dll' KeyPath='no' />
+                            <File Name='SQLitePCLRaw.provider.e_sqlite3.dll' DiskId='1' Source='SQLitePCLRaw.provider.e_sqlite3.dll' KeyPath='no' />
+                            <File Name='System.Data.SqlClient.dll' DiskId='1' Source='System.Data.SqlClient.dll' KeyPath='no' />
+                            <File Name='System.Windows.Controls.Input.Toolkit.dll' DiskId='1' Source='System.Windows.Controls.Input.Toolkit.dll' KeyPath='no' />
+                            <File Name='System.Windows.Controls.Layout.Toolkit.dll' DiskId='1' Source='System.Windows.Controls.Layout.Toolkit.dll' KeyPath='no' />
+                            <File Name='WPFToolkit.dll' DiskId='1' Source='WPFToolkit.dll' KeyPath='no' />
+                            <File Name='WinRT.Runtime.dll' DiskId='1' Source='WinRT.Runtime.dll' KeyPath='no' />
                         </Component>
-                        <Directory Id='Resources' Name='Resources'>
-                            <Directory Id='img' Name='img'>
-                                <Component Id='ImageResources' Guid='5D5EBC4F-7C7C-44E5-9794-5440B200EF79'>
-                                    <File Id='_28_star_gy.png' Name='28-star-gy.png' DiskId='1' Source='Resources\img\28-star-gy.png' KeyPath='yes' />
-                                    <File Id='_28_star_ye.png' Name='28-star-ye.png' DiskId='1' Source='Resources\img\28-star-ye.png' KeyPath='no' />
-                                    <File Id='aips32x32_dark.png' Name='aips32x32_dark.png' DiskId='1' Source='Resources\img\aips32x32_dark.png' KeyPath='no' />
-                                    <File Id='aips32x32_gray.png' Name='aips32x32_gray.png' DiskId='1' Source='Resources\img\aips32x32_gray.png' KeyPath='no' />
-                                    <File Id='amiko_icon.ico' Name='amiko_icon.ico' DiskId='1' Source='Resources\img\amiko_icon.ico' KeyPath='no' />
-                                    <File Id='amiko_icon.png' Name='amiko_icon.png' DiskId='1' Source='Resources\img\amiko_icon.png' KeyPath='no' />
-                                    <File Id='amiko_icon.targetsize_44_altform_unplated.png' Name='amiko_icon.targetsize-44_altform-unplated.png' DiskId='1' Source='Resources\img\amiko_icon.targetsize-44_altform-unplated.png' KeyPath='no' />
-                                    <File Id='desitin_icon.ico' Name='desitin_icon.ico' DiskId='1' Source='Resources\img\desitin_icon.ico' KeyPath='no' />
-                                    <File Id='desitin_icon.png' Name='desitin_icon.png' DiskId='1' Source='Resources\img\desitin_icon.png' KeyPath='no' />
-                                    <File Id='desitin_icon.targetsize_44_altform_unplated.png' Name='desitin_icon.targetsize-44_altform-unplated.png' DiskId='1' Source='Resources\img\desitin_icon.targetsize-44_altform-unplated.png' KeyPath='no' />
-                                    <File Id='desitin_icon_300x300.png' Name='desitin_icon_300x300.png' DiskId='1' Source='Resources\img\desitin_icon_300x300.png' KeyPath='no' />
-                                    <File Id='desitin_splash.png' Name='desitin_splash.png' DiskId='1' Source='Resources\img\desitin_splash.png' KeyPath='no' />
-                                    <File Id='favorites32x32_dark.png' Name='favorites32x32_dark.png' DiskId='1' Source='Resources\img\favorites32x32_dark.png' KeyPath='no' />
-                                    <File Id='favorites32x32_gray.png' Name='favorites32x32_gray.png' DiskId='1' Source='Resources\img\favorites32x32_gray.png' KeyPath='no' />
-                                    <File Id='interactions32x32_dark.png' Name='interactions32x32_dark.png' DiskId='1' Source='Resources\img\interactions32x32_dark.png' KeyPath='no' />
-                                    <File Id='interactions32x32_gray.png' Name='interactions32x32_gray.png' DiskId='1' Source='Resources\img\interactions32x32_gray.png' KeyPath='no' />
-                                    <File Id='magnifying_glass.png' Name='magnifying-glass.png' DiskId='1' Source='Resources\img\magnifying-glass.png' KeyPath='no' />
-                                    <File Id='mag_glass_16x16.png' Name='mag_glass_16x16.png' DiskId='1' Source='Resources\img\mag_glass_16x16.png' KeyPath='no' />
-                                    <File Id='menu_button.png' Name='menu_button.png' DiskId='1' Source='Resources\img\menu_button.png' KeyPath='no' />
-                                    <File Id='prescriptions64x64.png' Name='prescriptions64x64.png' DiskId='1' Source='Resources\img\prescriptions64x64.png' KeyPath='no' />
-                                    <File Id='trash_icon_2.png' Name='trash_icon_2.png' DiskId='1' Source='Resources\img\trash_icon_2.png' KeyPath='no' />
-                                </Component>
-                            </Directory>
-                            <Directory Id='css' Name='css'>
-                                <Component Id='CSSResources' Guid='EA997AAF-7578-463F-831D-2541911A0F3C'>
-                                    <File Id='fachinfo_css.css' Name='fachinfo_css.css' DiskId='1' Source='Resources\css\fachinfo_css.css' KeyPath='yes' />
-                                    <File Id='fulltext_style_css.css' Name='fulltext_style_css.css' DiskId='1' Source='Resources\css\fulltext_style_css.css' KeyPath='no' />
-                                    <File Id='interactions_css.css' Name='interactions_css.css' DiskId='1' Source='Resources\css\interactions_css.css' KeyPath='no' />
-                                    <File Id='shopping_css.css' Name='shopping_css.css' DiskId='1' Source='Resources\css\shopping_css.css' KeyPath='no' />
-                                    <File Id='zurrose_css.css' Name='zurrose_css.css' DiskId='1' Source='Resources\css\zurrose_css.css' KeyPath='no' />
-                                </Component>
-                            </Directory>
-                            <Directory Id='js' Name='js'>
-                                <Component Id='JSResources' Guid='E0F587A1-7AAE-44AA-9C5A-2F36DCEC893F'>
-                                    <File Id='interaction_callbacks.js' Name='interaction_callbacks.js' DiskId='1' Source='Resources\js\interaction_callbacks.js' KeyPath='yes' />
-                                    <File Id='main_callbacks.js' Name='main_callbacks.js' DiskId='1' Source='Resources\js\main_callbacks.js' KeyPath='no' />
-                                </Component>
-                            </Directory>
-                        </Directory>
+
                         <Directory Id='Data' Name='Data'>
                             <Component Id='DataDir' Guid='2507ECA2-A487-48A7-AEA8-094688959E22'>
-                                <File Id='amiko_db_full_idx_de.db' Name='amiko_db_full_idx_de.db' DiskId='1' Source='Data\amiko_db_full_idx_de.db' KeyPath='yes' />
-                                <File Id='amiko_frequency_de.db' Name='amiko_frequency_de.db' DiskId='1' Source='Data\amiko_frequency_de.db' KeyPath='no' />
-                                <File Id='amiko_report_de.html' Name='amiko_report_de.html' DiskId='1' Source='Data\amiko_report_de.html' KeyPath='no' />
-                                <File Id='drug_interactions_csv_de.csv' Name='drug_interactions_csv_de.csv' DiskId='1' Source='Data\drug_interactions_csv_de.csv' KeyPath='no' />
+                                <File Name='amiko_db_full_idx_de.db' DiskId='1' Source='Data/amiko_db_full_idx_de.db' KeyPath='yes' />
+                                <File Name='amiko_frequency_de.db' DiskId='1' Source='Data/amiko_frequency_de.db' KeyPath='no' />
+                                <File Name='amiko_report_de.html' DiskId='1' Source='Data/amiko_report_de.html' KeyPath='no' />
+                                <File Name='drug_interactions_csv_de.csv' DiskId='1' Source='Data/drug_interactions_csv_de.csv' KeyPath='no' />
                             </Component>
                         </Directory>
-                        <Directory Id='dir_x64' Name='x64'>
-                            <Component Id='X64Dir' Guid='B7E58790-45AE-4844-ACFD-90F2CA067EBC'>
-                                <File Id='X64SQLite.Interop.dll' Name='SQLite.Interop.dll' DiskId='1' Source='x64\SQLite.Interop.dll' KeyPath='yes' />
-                            </Component>
+                        <Directory Id='Resources' Name='Resources'>
+                            <Directory Id='Resources_css' Name='css'>
+                                <Component Id='CSSResources' Guid='EA997AAF-7578-463F-831D-2541911A0F3C'>
+                                    <File Name='fachinfo_css.css' DiskId='1' Source='Resources/css/fachinfo_css.css' KeyPath='yes' />
+                                    <File Name='fulltext_style_css.css' DiskId='1' Source='Resources/css/fulltext_style_css.css' KeyPath='no' />
+                                    <File Name='interactions_css.css' DiskId='1' Source='Resources/css/interactions_css.css' KeyPath='no' />
+                                    <File Name='shopping_css.css' DiskId='1' Source='Resources/css/shopping_css.css' KeyPath='no' />
+                                    <File Name='zurrose_css.css' DiskId='1' Source='Resources/css/zurrose_css.css' KeyPath='no' />
+                                </Component>
+                            </Directory>
+                            <Directory Id='Resources_img' Name='img'>
+                                <Component Id='ImageResources' Guid='5D5EBC4F-7C7C-44E5-9794-5440B200EF79'>
+                                    <File Name='28-star-gy.png' DiskId='1' Source='Resources/img/28-star-gy.png' KeyPath='yes' />
+                                    <File Name='28-star-ye.png' DiskId='1' Source='Resources/img/28-star-ye.png' KeyPath='no' />
+                                    <File Name='aips32x32_dark.png' DiskId='1' Source='Resources/img/aips32x32_dark.png' KeyPath='no' />
+                                    <File Name='aips32x32_gray.png' DiskId='1' Source='Resources/img/aips32x32_gray.png' KeyPath='no' />
+                                    <File Name='aips32x32_light.png' DiskId='1' Source='Resources/img/aips32x32_light.png' KeyPath='no' />
+                                    <File Name='amiko_icon.ico' DiskId='1' Source='Resources/img/amiko_icon.ico' KeyPath='no' />
+                                    <File Name='amiko_icon.png' DiskId='1' Source='Resources/img/amiko_icon.png' KeyPath='no' />
+                                    <File Name='amiko_icon.targetsize-44_altform-unplated.png' DiskId='1' Source='Resources/img/amiko_icon.targetsize-44_altform-unplated.png' KeyPath='no' />
+                                    <File Name='desitin_icon.ico' DiskId='1' Source='Resources/img/desitin_icon.ico' KeyPath='no' />
+                                    <File Name='desitin_icon.png' DiskId='1' Source='Resources/img/desitin_icon.png' KeyPath='no' />
+                                    <File Name='desitin_icon.targetsize-44_altform-unplated.png' DiskId='1' Source='Resources/img/desitin_icon.targetsize-44_altform-unplated.png' KeyPath='no' />
+                                    <File Name='desitin_icon_300x300.png' DiskId='1' Source='Resources/img/desitin_icon_300x300.png' KeyPath='no' />
+                                    <File Name='desitin_splash.png' DiskId='1' Source='Resources/img/desitin_splash.png' KeyPath='no' />
+                                    <File Name='favorites32x32_dark.png' DiskId='1' Source='Resources/img/favorites32x32_dark.png' KeyPath='no' />
+                                    <File Name='favorites32x32_gray.png' DiskId='1' Source='Resources/img/favorites32x32_gray.png' KeyPath='no' />
+                                    <File Name='favorites32x32_light.png' DiskId='1' Source='Resources/img/favorites32x32_light.png' KeyPath='no' />
+                                    <File Name='interactions32x32_dark.png' DiskId='1' Source='Resources/img/interactions32x32_dark.png' KeyPath='no' />
+                                    <File Name='interactions32x32_gray.png' DiskId='1' Source='Resources/img/interactions32x32_gray.png' KeyPath='no' />
+                                    <File Name='interactions32x32_light.png' DiskId='1' Source='Resources/img/interactions32x32_light.png' KeyPath='no' />
+                                    <File Name='mag_glass_16x16.png' DiskId='1' Source='Resources/img/mag_glass_16x16.png' KeyPath='no' />
+                                    <File Name='magnifying-glass.png' DiskId='1' Source='Resources/img/magnifying-glass.png' KeyPath='no' />
+                                    <File Name='menu_button.png' DiskId='1' Source='Resources/img/menu_button.png' KeyPath='no' />
+                                    <File Name='prescriptions64x64.png' DiskId='1' Source='Resources/img/prescriptions64x64.png' KeyPath='no' />
+                                    <File Name='prescriptions64x64_light.png' DiskId='1' Source='Resources/img/prescriptions64x64_light.png' KeyPath='no' />
+                                    <File Name='trash_icon_2.png' DiskId='1' Source='Resources/img/trash_icon_2.png' KeyPath='no' />
+                                </Component>
+                            </Directory>
+                            <Directory Id='Resources_js' Name='js'>
+                                <Component Id='JSResources' Guid='E0F587A1-7AAE-44AA-9C5A-2F36DCEC893F'>
+                                    <File Name='interaction_callbacks.js' DiskId='1' Source='Resources/js/interaction_callbacks.js' KeyPath='yes' />
+                                    <File Name='main_callbacks.js' DiskId='1' Source='Resources/js/main_callbacks.js' KeyPath='no' />
+                                </Component>
+                            </Directory>
                         </Directory>
-                        <Directory Id='dir_x86' Name='x86'>
-                            <Component Id='X86Dir' Guid='38D88B90-F43F-4D2E-9555-07ED05BECD1D'>
-                                <File Id='X86SQLite.Interop.dll' Name='SQLite.Interop.dll' DiskId='1' Source='x86\SQLite.Interop.dll' KeyPath='yes' />
+                        <Directory Id='de' Name='de'>
+                            <Component Id='DeDir' Guid='D67DCF19-2797-4DC8-BBCC-612712CBE089'>
+                                <File Name='MahApps.Metro.resources.dll' DiskId='1' Source='de/MahApps.Metro.resources.dll' KeyPath='yes' />
                             </Component>
                         </Directory>
                         <Directory Id='de_CH' Name='de-CH'>
-                            <Component Id='LocaleDir' Guid='D67DCF19-2797-4DC8-BBCC-422712CBE089'>
-                                <File Id='AmiKo_Desitin.resources.dll' Name='AmiKo Desitin.resources.dll' DiskId='1' Source='de-CH\AmiKo Desitin.resources.dll' KeyPath='yes' />
+                            <Component Id='LocaleDeDir' Guid='D67DCF19-2797-4DC8-BBCC-422712CBE089'>
+                                <File Id='de_AmiKo_Desitin.resources.dll' Name='AmiKo Desitin.resources.dll' DiskId='1' Source='de-CH/AmiKo Desitin.resources.dll' KeyPath='yes' />
                             </Component>
                         </Directory>
+                        <Directory Id='fr_CH' Name='fr-CH'>
+                            <Component Id='LocaleFrDir' Guid='8BEBFC83-585D-4792-B9A0-FBAADE54F1BF'>
+                                <File Id='fr_AmiKo_Desitin.resources.dll' Name='AmiKo Desitin.resources.dll' DiskId='1' Source='fr-CH/AmiKo Desitin.resources.dll' KeyPath='yes' />
+                            </Component>
+                        </Directory>
+                        <Directory Id='ref' Name='ref'>
+                            <Component Id='RefDir' Guid='D67DCF19-2797-4DC8-BBCC-721712CBE089'>
+                                <File Id='Ref_AmiKo_Desitin.dll' Name='AmiKo Desitin.dll' DiskId='1' Source='ref/AmiKo Desitin.dll' KeyPath='yes' />
+                            </Component>
+                        </Directory>
+                        <Directory Id='runtimes' Name='runtimes'>
+                            <Directory Id='runtimes_win' Name='win'>
+                                <Directory Id='runtimes_win_lib' Name='lib'>
+                                    <Directory Id='runtimes_win_lib_netcoreapp2.1' Name='netcoreapp2.1'>
+                                        <Component Id='RuntimeWinDir' Guid='D67DCF19-2797-4DC8-BBCC-609712CBE089'>
+                                            <File Id='Runtime_System.Data.SqlClient.dll' Name='System.Data.SqlClient.dll' DiskId='1' Source='runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.dll' KeyPath='yes' />
+                                        </Component>
+                                    </Directory>
+                                </Directory>
+                            </Directory>
+                            <Directory Id='runtimes_win_arm' Name='arm'>
+                                <Directory Id='runtimes_win_arm_native' Name='native'>
+                                    <Component Id='RuntimeARMDir' Guid='D67DCF19-2797-4DC8-BBCC-831712CBE089'>
+                                        <File Id='Arm_e_sqlite3.dll' Name='e_sqlite3.dll' DiskId='1' Source='runtimes/win-arm/native/e_sqlite3.dll' KeyPath='yes' />
+                                    </Component>
+                                </Directory>
+                            </Directory>
+                            <Directory Id='runtimes_win_arm64' Name='arm64'>
+                                <Directory Id='runtimes_win_arm64_native' Name='native'>
+                                    <Component Id='RuntimeARM64Dir' Guid='D67DCF19-2797-4DC8-BBCC-101112CBE089'>
+                                        <File Id='Arm64_e_sqlite3.dll' Name='e_sqlite3.dll' DiskId='1' Source='runtimes/win-arm64/native/e_sqlite3.dll' KeyPath='yes' />
+                                        <File Id='Arm64_sni.dll' Name='sni.dll' DiskId='1' Source='runtimes/win-arm64/native/sni.dll' KeyPath='no' />
+                                    </Component>
+                                </Directory>
+                            </Directory>
+                            <Directory Id='runtimes_win_x64' Name='x64'>
+                                <Directory Id='runtimes_win_x64_native' Name='native'>
+                                    <Component Id='RuntimeX64Dir' Guid='D67DCF19-2797-4DC8-BBCC-111112CBE089'>
+                                        <File Id='X64_e_sqlite3.dll' Name='e_sqlite3.dll' DiskId='1' Source='runtimes/win-x64/native/e_sqlite3.dll' KeyPath='yes' />
+                                        <File Id='X64_sni.dll' Name='sni.dll' DiskId='1' Source='runtimes/win-x64/native/sni.dll' KeyPath='no' />
+                                    </Component>
+                                </Directory>
+                            </Directory>
+                            <Directory Id='runtimes_win_x86' Name='x86'>
+                                <Directory Id='runtimes_win_x86_native' Name='native'>
+                                    <Component Id='RuntimeX86Dir' Guid='D67DCF19-2797-4DC8-BBCC-896412CBE089'>
+                                        <File Id='X86_e_sqlite3.dll' Name='e_sqlite3.dll' DiskId='1' Source='runtimes/win-x86/native/e_sqlite3.dll' KeyPath='yes' />
+                                        <File Id='X86_sni.dll' Name='sni.dll' DiskId='1' Source='runtimes/win-x86/native/sni.dll' KeyPath='no' />
+                                    </Component>
+                                </Directory>
+                            </Directory>
+                        </Directory>
+
                     </Directory>
                 </Directory>
             </Directory>
@@ -147,13 +184,19 @@
 
         <Feature Id='Complete' Title='Amiko Desitin' Description='The complete package.' Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
             <ComponentRef Id='MainExecutable' />
-            <ComponentRef Id='ImageResources' />
-            <ComponentRef Id='CSSResources' />
-            <ComponentRef Id='JSResources' />
             <ComponentRef Id='DataDir' />
-            <ComponentRef Id='X64Dir' />
-            <ComponentRef Id='X86Dir' />
-            <ComponentRef Id='LocaleDir' />
+            <ComponentRef Id='CSSResources' />
+            <ComponentRef Id='ImageResources' />
+            <ComponentRef Id='JSResources' />
+            <ComponentRef Id='DeDir' />
+            <ComponentRef Id='LocaleDeDir' />
+            <ComponentRef Id='LocaleFrDir' />
+            <ComponentRef Id='RefDir' />
+            <ComponentRef Id='RuntimeWinDir' />
+            <ComponentRef Id='RuntimeARMDir' />
+            <ComponentRef Id='RuntimeARM64Dir' />
+            <ComponentRef Id='RuntimeX64Dir' />
+            <ComponentRef Id='RuntimeX86Dir' />
         </Feature>
 
         <Icon Id="desitin_icon.ico" SourceFile="Resources\img\desitin_icon.ico" />
