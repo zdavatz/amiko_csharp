@@ -25,7 +25,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Security.Permissions;
 using System.Runtime.InteropServices;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 using Microsoft.Win32;
 using System.Threading.Tasks;
 
@@ -85,14 +85,14 @@ namespace AmiKoWindows
                 dict["gtin"] = parts[9];
                 dicts.Add(dict);
             }
-            var jsonStr = new JavaScriptSerializer().Serialize(dicts);
+            var jsonStr = JsonConvert.SerializeObject(dicts, Formatting.None);
             var content = new StringContent(jsonStr, Encoding.UTF8, "application/json");
 
             var client = new HttpClient();
             var endpoint = "https://api.epha.health/clinic/advice/" + Utilities.AppLanguage() + "/";
             var result = await client.PostAsync(endpoint, content);
             var responseStr = await result.Content.ReadAsStringAsync();
-            dynamic deserialized = new JavaScriptSerializer().DeserializeObject(responseStr);
+            dynamic deserialized = JsonConvert.DeserializeObject(responseStr);
             var resultDict = deserialized as Dictionary<string, object>;
             var code = deserialized["meta"]["code"];
             if (code >= 200 && code < 300)

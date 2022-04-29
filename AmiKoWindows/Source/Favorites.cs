@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 
 namespace AmiKoWindows
 {
@@ -117,24 +117,22 @@ namespace AmiKoWindows
             if (!Directory.Exists(_userDataDir))
                 return;
 
-            var serializer = new JavaScriptSerializer();
             var favoritesFile = this.FilePath();
             if (!File.Exists(favoritesFile))
                 return;
             var jsonStr = File.ReadAllText(favoritesFile);
-            _setOfIds = new HashSet<string>(serializer.Deserialize<List<string>>(jsonStr));
+            _setOfIds = new HashSet<string>(JsonConvert.DeserializeObject<List<string>>(jsonStr));
         }
 
         public void Save()
         {
             if (!Directory.Exists(_userDataDir))
                 return;
-            var serializer = new JavaScriptSerializer();
-
+            
             if (_setOfIds.Count > 0)
             {
                 string favoritesFile = this.FilePath();
-                var jsonStr = serializer.Serialize(new List<string>(_setOfIds));
+                var jsonStr = JsonConvert.SerializeObject(_setOfIds, Formatting.Indented);
                 File.WriteAllText(favoritesFile, jsonStr);
             }
         }

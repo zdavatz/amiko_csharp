@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 
 // JSON Data Presenters
 namespace AmiKoWindows
@@ -61,7 +61,7 @@ namespace AmiKoWindows
         }
 
         #region Accessors for Internal Objects
-        [ScriptIgnore]
+        [JsonIgnore]
         public Account Account {
             set { _accountPresenter = new AccountJSONPresenter(value); }
             get {
@@ -82,7 +82,7 @@ namespace AmiKoWindows
             }
         }
 
-        [ScriptIgnore]
+        [JsonIgnore]
         public Contact Contact {
             set { _contactPresenter = new ContactJSONPresenter(value); }
             get {
@@ -109,7 +109,7 @@ namespace AmiKoWindows
             }
         }
 
-        [ScriptIgnore]
+        [JsonIgnore]
         public List<Medication> MedicationsList {
             set { _medications = value.Select(m => new MedicationJSONPresenter(m)).ToArray(); }
             get {
@@ -284,7 +284,7 @@ namespace AmiKoWindows
             this.Account = account;
         }
 
-        [ScriptIgnore]
+        [JsonIgnore]
         public Account Account
         {
             get

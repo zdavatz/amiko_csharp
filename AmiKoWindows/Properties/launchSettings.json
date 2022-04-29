@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AmiKoDesitin": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

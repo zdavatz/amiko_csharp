@@ -317,7 +317,7 @@ namespace AmiKoWindows
             return Utilities.GenerateHash(baseString);
         }
 
-        // Returns a dictionary contains db parameters to SQLiteCommand. e.g. @id => "1"
+        // Returns a dictionary contains db parameters to SqliteCommand. e.g. @id => "1"
         public Dictionary<string, string> ToParameters(string[] columnNames)
         {
             int length = columnNames.Length;
@@ -331,7 +331,7 @@ namespace AmiKoWindows
                     continue;
 
                 var propertyName = Utilities.ConvertSnakeCaseToTitleCase(columnName);
-                var key = String.Format("@{0}", columnName);
+                var key = String.Format("${0}", columnName);
                 result.Add(key, GetStringValue(propertyName));
             }
             return result;

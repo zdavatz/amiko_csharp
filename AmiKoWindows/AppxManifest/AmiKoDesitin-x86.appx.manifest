@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
+  <Identity Name="yweseeGmbH.AmiKo"
+    Version="1.0.25.0"
+    ProcessorArchitecture="x86"
+    Publisher="CN=3F71A827-F362-4FF2-A406-EA63C19EA85B"
+    />
+    <Properties>
+    <DisplayName>AmiKo Desitin</DisplayName>
+    <PublisherDisplayName>ywesee GmbH</PublisherDisplayName>
+    <Description>No.1 Arzneimittelkompendium der Schweiz</Description>
+    <Logo>Resources\img\desitin_icon.png</Logo>
+  </Properties>
+  <Resources>
+    <Resource Language="de-ch" />
+  </Resources>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14316.0" MaxVersionTested="10.0.14316.0" />
+  </Dependencies>
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust"/>
+  </Capabilities>
+  <Applications>
+    <Application Id="yweseeGmbH.AmiKo" Executable="AmiKo Desitin.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+       BackgroundColor="#464646"
+       DisplayName="AmiKo Desitin"
+       Square150x150Logo="Resources\img\desitin_icon.png"
+       Square44x44Logo="Resources\img\desitin_icon.png"
+       Description="No.1 Arzneimittelkompendium Schweiz" />
+
+      <Extensions>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="amk">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.amk</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+</Package>

@@ -5,7 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    xmlns:fa="http://schemas.fontawesome.io/icons/"
+    xmlns:fa="http://schemas.fontawesome.com/icons/"
     xmlns:p="clr-namespace:AmiKoWindows.Properties"
     xmlns:local="clr-namespace:AmiKoWindows"
     mc:Ignorable="d"
@@ -221,7 +221,7 @@
                                 <Button Name="DeleteCsvFileButton" Style="{StaticResource SnackBarButton}"
                                     HorizontalAlignment="Right" Margin="0,2,9,2" Padding="0"
                                     Cursor="Hand" Height="22" Width="22" Click="DeleteCsvFileButton_Click">
-                                    <fa:ImageAwesome Name="Wipe" Icon="Times" Visibility="Visible" Foreground="White"
+                                    <fa:ImageAwesome Name="Wipe" Icon="Solid_Times" Visibility="Visible" Foreground="White"
                                         VerticalAlignment="Center" Margin="0" Height="13" Width="13" />
                                 </Button>
                             </StackPanel>
@@ -236,7 +236,7 @@
                                 Name="PlusButton" Style="{StaticResource IconButton}"
                                 Margin="0" Height="31" Width="28" HorizontalAlignment="Center" Click="PlusButton_Click" IsEnabled="True"
                                 Cursor="Hand">
-                                <fa:ImageAwesome Name="Plus" Icon="Plus" Visibility="Visible" Foreground="Black"
+                                <fa:ImageAwesome Name="Plus" Icon="Solid_Plus" Visibility="Visible" Foreground="Black"
                                     VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                             </Button>
                         </Grid>
@@ -245,7 +245,7 @@
                                 Name="MinusButton" Style="{StaticResource IconButton}"
                                 Margin="0" Height="31" Width="28" HorizontalAlignment="Center" Click="MinusButton_Click" IsEnabled="False"
                                 Cursor="Hand">
-                                <fa:ImageAwesome Name="Minus" Icon="Minus" Visibility="Visible" Foreground="LightGray"
+                                <fa:ImageAwesome Name="Minus" Icon="Solid_Minus" Visibility="Visible" Foreground="LightGray"
                                     VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                             </Button>
                         </Grid>
@@ -259,7 +259,7 @@
                             <Button
                                 Name="SwitchBookButton" Style="{StaticResource IconButton}"
                                 Margin="0" Width="Auto" Click="SwitchBookButton_Click" Cursor="Hand">
-                                <fa:ImageAwesome Name="AddressBook" Icon="AddressBook" Visibility="Visible" Foreground="Black"
+                                <fa:ImageAwesome Name="AddressBook" Icon="Regular_AddressBook" Visibility="Visible" Foreground="Black"
                                     VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                             </Button>
                         </Grid>

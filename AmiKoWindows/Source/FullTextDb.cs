@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -195,12 +195,12 @@ namespace AmiKoWindows
             {
                 _db.ReOpenIfNecessary();
 
-                using (SQLiteCommand com = _db.Command())
+                using (SqliteCommand com = _db.Command())
                 {
                     com.CommandText = "SELECT * FROM " + DATABASE_TABLE + " WHERE "
                         + KEY_ROWID + " LIKE " + "'" + hash + "'";
 
-                    using (SQLiteDataReader reader = com.ExecuteReader())
+                    using (SqliteDataReader reader = com.ExecuteReader())
                     {
                         while (reader.Read())
                         {
@@ -219,7 +219,7 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                using (SQLiteCommand com = _db.Command())
+                using (SqliteCommand com = _db.Command())
                 {
                     _db.ReOpenIfNecessary();
 
@@ -228,7 +228,7 @@ namespace AmiKoWindows
                         com.CommandText = "SELECT * FROM " + DATABASE_TABLE + " WHERE "
                             + KEY_KEYWORD + " LIKE " + "'" + keyword + "%'";
 
-                        using (SQLiteDataReader reader = com.ExecuteReader())
+                        using (SqliteDataReader reader = com.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -244,7 +244,7 @@ namespace AmiKoWindows
         #endregion
 
         #region Private Methods
-        private FullTextEntry CursorToFullTextEntry(SQLiteDataReader reader)
+        private FullTextEntry CursorToFullTextEntry(SqliteDataReader reader)
         {
             FullTextEntry entry = new FullTextEntry();
 

@@ -35,7 +35,7 @@ using Windows.Media;
 using Windows.Media.Capture;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
-
+using FontAwesome5;
 
 namespace AmiKoWindows
 {
@@ -115,7 +115,7 @@ namespace AmiKoWindows
 
             this.CurrentEntry = Account.Read();
 
-            if (!DetectCamera())
+            if (!DetectCamera().Wait(1000))
                 this.TakePictureButton.Visibility = Visibility.Hidden;
 
             var path = Utilities.AccountPictureFilePath();
@@ -258,7 +258,7 @@ namespace AmiKoWindows
 
         private async void TakePictureButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DetectCamera())
+            if (await DetectCamera())
             {
                 MediaCapture capture = new MediaCapture();
                 await capture.InitializeAsync();
@@ -408,6 +408,7 @@ namespace AmiKoWindows
             }
         }
 
+        [System.Runtime.Versioning.SupportedOSPlatform("windows10.0.10240.0")]
         private async void TakePicture(MediaCapture capture, PreviewImage preview, string outputFile, int delay)
         {
             if (!File.Exists(outputFile))
@@ -488,7 +489,7 @@ namespace AmiKoWindows
         private void EnableDeletePictureButton(bool isEnabled)
         {
             this.DeletePictureButton.IsEnabled = isEnabled;
-            var image = this.DeletePictureButton.Content as FontAwesome.WPF.ImageAwesome;
+            var image = this.DeletePictureButton.Content as ImageAwesome;
             if (image != null)
                 if (isEnabled)
                     image.Foreground = Brushes.Black;
@@ -496,13 +497,13 @@ namespace AmiKoWindows
                     image.Foreground = Brushes.LightGray;
         }
 
-        private bool DetectCamera()
+        private async Task<bool> DetectCamera()
         {
 
             try
             {
                 // is camera available?
-                TryLoadMediaCapture();
+                await TryLoadMediaCapture();
                 return true;
             }
             catch (TypeLoadException ex)
@@ -512,9 +513,16 @@ namespace AmiKoWindows
             }
         }
 
-        private void TryLoadMediaCapture()
+        private async Task<Boolean> TryLoadMediaCapture()
         {
-            new MediaCapture();
+            try
+            {
+                await new MediaCapture().InitializeAsync();
+                return true;
+            } catch (Exception _e)
+            {
+                return false;
+            }
         }
     }
 }

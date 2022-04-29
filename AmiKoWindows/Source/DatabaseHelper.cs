@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,13 +27,13 @@ namespace AmiKoWindows
 {
     class DatabaseHelper
     {
-        private SQLiteConnection _conn;
+        private SqliteConnection _conn;
         private string _dbPath;
 
         #region Public Methods
         public bool IsOpen()
         {
-            return _conn.State == System.Data.ConnectionState.Open;
+            return _conn != null && _conn.State == System.Data.ConnectionState.Open;
         }
 
         public async Task CreateDB(string dbPath, string dbSchema)
@@ -43,28 +43,26 @@ namespace AmiKoWindows
 
             _dbPath = dbPath;
 
-            SQLiteConnection.CreateFile(dbPath);
             await OpenDB(_dbPath);
 
             if (IsOpen()) {
-                SQLiteCommand cmd = Command(dbSchema);
+                SqliteCommand cmd = Command(dbSchema);
                 cmd.ExecuteNonQuery();
             }
             CloseDB();
         }
 
-        public async Task<SQLiteConnection> OpenDB(string dbPath)
+        public async Task<SqliteConnection> OpenDB(string dbPath)
         {
             if (_conn != null)
                 return _conn;
 
             _dbPath = dbPath;
-
             await Task.Run(() =>
             {
                 if (File.Exists(dbPath))
                 {
-                    _conn = new SQLiteConnection("Data Source=" + dbPath);
+                    _conn = new SqliteConnection("Data Source=" + dbPath);
                     _conn.Open();
                 }
                 while (!IsOpen());
@@ -73,7 +71,7 @@ namespace AmiKoWindows
             return null;
         }
 
-        public SQLiteConnection ReOpenIfNecessary()
+        public SqliteConnection ReOpenIfNecessary()
         {
             if (!IsOpen())
                 OpenDB(_dbPath).Wait();
@@ -88,14 +86,16 @@ namespace AmiKoWindows
             GC.WaitForPendingFinalizers();
         }
 
-        public SQLiteCommand Command()
+        public SqliteCommand Command()
         {
-            return new SQLiteCommand(_conn);
+            var command = new SqliteCommand();
+            command.Connection = _conn;
+            return command;
         }
 
-        public SQLiteCommand Command(string text)
+        public SqliteCommand Command(string text)
         {
-            return new SQLiteCommand(text, _conn);
+            return new SqliteCommand(text, _conn);
         }
 
         public async Task<long?> GetNumRecords(string table)
@@ -104,7 +104,7 @@ namespace AmiKoWindows
 
             await Task.Run(() =>
             {
-                using (SQLiteCommand cmd = Command("SELECT COUNT(*) FROM " + table))
+                using (SqliteCommand cmd = Command("SELECT COUNT(*) FROM " + table))
                 {
                     numRecords = cmd.ExecuteScalar() as long?;
                 }

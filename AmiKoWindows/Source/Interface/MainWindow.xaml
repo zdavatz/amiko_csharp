@@ -5,16 +5,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    xmlns:fa="http://schemas.fontawesome.io/icons/"
+    xmlns:fa="http://schemas.fontawesome.com/icons/"
     xmlns:p="clr-namespace:AmiKoWindows.Properties"
     xmlns:local="clr-namespace:AmiKoWindows"
     mc:Ignorable="d"
     Loaded="MainWindow_Loaded"
     Closed="MainWindow_Closed"
-    Title="{x:Static p:Resources.appTitle}" TitleCaps="False"
+    Title="{x:Static p:Resources.appTitle}"
+    TitleCharacterCasing="Normal"
     Height="1080" Width="1920"
     GlowBrush="Black"
-    EnableDWMDropShadow="True"
     BorderThickness="1"
     AllowsTransparency="False"
     SaveWindowPosition="True"
@@ -137,14 +137,14 @@
                                                             Name="PrintMedicationLabelButton" Style="{StaticResource WhiteIconButton}"
                                                             Margin="0,0,1,0" Height="28" Width="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="PrintMedicationLabelButton_Click"
                                                             Cursor="Hand">
-                                                            <fa:ImageAwesome Name="PrintMedicationLabel" Icon="Print" Visibility="Visible" Foreground="DarkGray"
+                                                            <fa:ImageAwesome Name="PrintMedicationLabel" Icon="Solid_Print" Visibility="Visible" Foreground="DarkGray"
                                                                 VerticalAlignment="Center" Margin="0" Height="14" Width="14" />
                                                         </Button>
                                                         <Button
                                                             Name="DeleteMedicationButton" Style="{StaticResource WhiteIconButton}"
                                                             Margin="0,0,1,0" Height="28" Width="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="DeleteMedicationButton_Click"
                                                             Cursor="Hand">
-                                                            <fa:ImageAwesome Name="DeleteMedication" Icon="Trash" Visibility="Visible" Foreground="DarkGray"
+                                                            <fa:ImageAwesome Name="DeleteMedication" Icon="Solid_Trash" Visibility="Visible" Foreground="DarkGray"
                                                                 VerticalAlignment="Center" Margin="0" Height="14" Width="14" />
                                                         </Button>
                                                     </StackPanel>
@@ -416,7 +416,7 @@
                         </ToolBar>
                         <Button Name="PrintPrescriptionButton" HorizontalAlignment="Right" Style="{StaticResource PrintIconButton}"
                             Click="PrintPrescriptionButton_Click" IsEnabled="False">
-                            <fa:ImageAwesome Name="PrintPrescription" Icon="Print" Visibility="Visible" Foreground="LightGray"
+                            <fa:ImageAwesome Name="PrintPrescription" Icon="Solid_Print" Visibility="Visible" Foreground="LightGray"
                                 VerticalAlignment="Center" Margin="0" Height="18" Width="18" />
                         </Button>
                     </Grid>
@@ -570,7 +570,7 @@
                 <TextBlock Text="{Binding Path=DatabaseStatusText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4,0,0,0" VerticalAlignment="Center"
                            HorizontalAlignment="Left"></TextBlock>
             </StatusBarItem>
-            <fa:ImageAwesome DockPanel.Dock="Right" x:Name="Spinner" Icon="StarOutline" Foreground="Yellow" Visibility="Visible" Spin="False"
+            <fa:ImageAwesome DockPanel.Dock="Right" x:Name="Spinner" Icon="Solid_Star" Foreground="Yellow" Visibility="Visible" Spin="False"
                 VerticalAlignment="Center" Margin="6,1,0,0" Height="14" Width="14" SpinDuration="2" />
         </StatusBar>
     </Grid>

@@ -5,7 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    xmlns:fa="http://schemas.fontawesome.io/icons/"
+    xmlns:fa="http://schemas.fontawesome.com/icons/"
     xmlns:p="clr-namespace:AmiKoWindows.Properties"
     xmlns:local="clr-namespace:AmiKoWindows"
     mc:Ignorable="d"
@@ -106,18 +106,18 @@
                         <TextBlock Name="CountDown" FontSize="17" Margin="0,2,9,0" Text="0" Visibility="Hidden" />
                         <Button Name="TakePictureButton" Style="{StaticResource WhiteIconButton}"
                             Margin="0,0,7,0" HorizontalAlignment="Right" Cursor="Hand" Click="TakePictureButton_Click">
-                            <fa:ImageAwesome Name="Camera" Icon="Camera" Visibility="Visible" Foreground="Black"
+                            <fa:ImageAwesome Name="Camera" Icon="Solid_Camera" Visibility="Visible" Foreground="Black"
                                 VerticalAlignment="Center" Margin="0" Height="19" Width="19" />
                         </Button>
                         <Button Name="SetAccountAvatarButton" Style="{StaticResource WhiteIconButton}"
                             Margin="0,0,7,0" HorizontalAlignment="Right" Cursor="Hand" Click="SetAccountAvatarButton_Click">
-                            <fa:ImageAwesome Name="User" Icon="UserCircle" Visibility="Visible" Foreground="Black"
+                            <fa:ImageAwesome Name="User" Icon="Regular_UserCircle" Visibility="Visible" Foreground="Black"
                                 VerticalAlignment="Center" Margin="0" Height="19" Width="19" />
                         </Button>
                         <Grid Margin="0,0,16,0">
                             <Button Name="DeletePictureButton" Style="{StaticResource WhiteIconButton}"
                                 Margin="0" HorizontalAlignment="Right" Cursor="Hand" Click="DeletePictureButton_Click">
-                                <fa:ImageAwesome Name="Times" Icon="Times" Visibility="Visible" Foreground="Black"
+                                <fa:ImageAwesome Name="Times" Icon="Solid_Times" Visibility="Visible" Foreground="Black"
                                     VerticalAlignment="Center" Margin="0" Height="17" Width="17" />
                             </Button>
                         </Grid>
