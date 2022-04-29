@@ -9,10 +9,10 @@
 
 		<RootNamespace>AmiKoWindows</RootNamespace>
 		<AssemblyName>AmiKo Desitin</AssemblyName>
-		<ApplicationIcon />
+		<ApplicationIcon>Resources\img\desitin_icon.ico</ApplicationIcon>
 		<StartupObject>AmiKoWindows.Program</StartupObject>
-		<Platforms>x86;x64;arm64</Platforms>
-		<RuntimeIdentifiers>win10-x86;win-x64;win-arm64</RuntimeIdentifiers>
+		<Platforms>AnyCPU;x86;x64;arm64</Platforms>
+		<DisableWinExeOutputInference>false</DisableWinExeOutputInference>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' And '$(Log)' == 'Trace' ">
@@ -25,27 +25,46 @@
 		<DefineConstants>AMIKO</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
 		<PlatformTarget>ARM64</PlatformTarget>
 	</PropertyGroup>
-	<!-- <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+		<PlatformTarget>X86</PlatformTarget>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
 		<PlatformTarget>ARM64</PlatformTarget>
-	</PropertyGroup> -->
-	<PropertyGroup Condition=" '$(_PlatformWithoutConfigurationInference)' == 'ARM64' ">
-		<PlatformTarget Condition=" '$(PlatformTarget)' == '' ">ARM64</PlatformTarget>
+		<OutputPath>bin\Release\ARM64\AmiKo\</OutputPath>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(_PlatformWithoutConfigurationInference)' == 'arm64' ">
-		<PlatformTarget Condition=" '$(PlatformTarget)' == '' ">arm64</PlatformTarget>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+		<PlatformTarget>X86</PlatformTarget>
+		<OutputPath>bin\Release\X86\AmiKo\</OutputPath>
 	</PropertyGroup>
-	<!-- <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-	  <PlatformTarget>X86</PlatformTarget>
-	</PropertyGroup> -->
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+		<PlatformTarget>X64</PlatformTarget>
+		<OutputPath>bin\Release\X64\AmiKo\</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+		<DebugType>pdbonly</DebugType>
+		<Optimize>true</Optimize>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<Prefer32Bit>false</Prefer32Bit>
+	</PropertyGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="$(MSBuildProjectDirectory)\PreBuild.bat $(SolutionDir) Resources.de-CH.resx" />
 	</Target>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="$(MSBuildProjectDirectory)\PostBuild.bat $(SolutionDir) $(OutDir) de" />
+		<Exec Command="$(MSBuildProjectDirectory)\PostBuild.bat $(SolutionDir) $(OutDir) de $(Platform)" />
 	</Target>
 	<ItemGroup>
 		<PackageReference Include="EntityFramework">
@@ -156,5 +175,13 @@
 		<Resource Include="Resources\img\interactions32x32_light.png" />
 		<Resource Include="Resources\img\prescriptions64x64_light.png" />
 		<Resource Include="Resources\img\aips32x32_light.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<FileAssociation Include=".amk">
+			<Visible>False</Visible>
+			<Description>AmiKo Prescription File</Description>
+			<Progid>AmiKo</Progid>
+			<DefaultIcon>Resources\img\desitin_icon.ico</DefaultIcon>
+		</FileAssociation>
 	</ItemGroup>
 </Project>

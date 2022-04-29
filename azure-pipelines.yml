@@ -11,9 +11,8 @@ pool:
 
 variables:
   solution: '**/*.sln'
-  # buildPlatform: 'x86|x64|ARM'
-  buildConfiguration: 'Debug'
-  appxPackageDir: '$(build.defaultworkingdirectory)\AppxPackages\\'
+  buildConfiguration: 'Release'
+  appxPackageDir: '$(build.defaultworkingdirectory)\AppxPackages\'
 
 steps:
 - task: Cache@2
@@ -57,30 +56,28 @@ steps:
     filePath: '.\download.ps1'
     errorActionPreference: 'continue'
 
-# - task: VSBuild@1
-#   displayName: MSBuild
-#   inputs:
-#     platform: 'x86'
-#     solution: '$(solution)'
-#     configuration: '$(buildConfiguration)'
-#     msbuildArgs: '/p:AppxBundlePlatforms="x86" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
-
-# - task: VSBuild@1
-#   displayName: MSBuild
-#   inputs:
-#     platform: 'x64'
-#     solution: '$(solution)'
-#     configuration: '$(buildConfiguration)'
-#     msbuildArgs: '/p:AppxBundlePlatforms="x64" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
+- task: VSBuild@1
+  displayName: MSBuild
+  inputs:
+    platform: 'x86'
+    solution: '$(solution)'
+    msbuildArgs: '/p:Platform=x86 /p:Configuration=$(buildConfiguration) /p:AppxBundlePlatforms="x86" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
 
 - task: VSBuild@1
   displayName: MSBuild
   inputs:
-    platform: 'Arm64'
-    msbuildArchitecture: 'arm64'
+    platform: 'x64'
     solution: '$(solution)'
-    configuration: '$(buildConfiguration)'
-    msbuildArgs: '/p:AppxBundlePlatforms="ARM64" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
+    msbuildArgs: '/p:Platform=x64 /p:Configuration=$(buildConfiguration) /p:AppxBundlePlatforms="x64" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
+
+- task: VSBuild@1
+  displayName: MSBuild
+  inputs:
+    platform: 'ARM64'
+    # msbuildArchitecture: 'arm64'
+    # vsVersion: '16.0'
+    solution: '$(solution)'
+    msbuildArgs: '/p:Platform=ARM64 /p:Configuration=$(buildConfiguration) /p:AppxBundlePlatforms="ARM64" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
 
 - task: CmdLine@2
   displayName: Make Appx
