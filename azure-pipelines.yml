@@ -141,7 +141,7 @@ steps:
 - task: GithubRelease@1 
   displayName: 'Create GitHub Release'
   inputs:
-    gitHubConnection: github.com_b123400
+    gitHubConnection: github.com_zdavatz
     repositoryName: b123400/amiko_csharp
     tagSource: userSpecifiedTag
     tag: $(Build.BuildNumber)
