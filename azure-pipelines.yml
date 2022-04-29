@@ -142,7 +142,7 @@ steps:
   displayName: 'Create GitHub Release'
   inputs:
     gitHubConnection: github.com_zdavatz
-    repositoryName: b123400/amiko_csharp
+    repositoryName: zdavatz/amiko_csharp
     tagSource: userSpecifiedTag
     tag: $(Build.BuildNumber)
     assets: |
