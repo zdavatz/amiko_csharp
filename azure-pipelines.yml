@@ -4,10 +4,12 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+  branches:
+    include:
+    - '*'
 
 pool:
-  vmImage: 'windows-2019'
+  vmImage: 'windows-2022'
 
 variables:
   solution: '**/*.sln'
@@ -15,12 +17,6 @@ variables:
   appxPackageDir: '$(build.defaultworkingdirectory)\AppxPackages\'
 
 steps:
-- task: NuGetToolInstaller@0
-
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
-
 - task: CmdLine@2
   displayName: Install chocolatey
   inputs:
@@ -47,6 +43,19 @@ steps:
   inputs:
     filePath: '.\download.ps1'
     errorActionPreference: 'continue'
+
+- task: NuGetToolInstaller@0
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: CmdLine@2
+  displayName: Debug
+  inputs:
+    script: |
+      dir .\AmiKoWindows
+      dir .\AmiKoWindows\obj
 
 - task: VSBuild@1
   displayName: MSBuild
@@ -75,6 +84,8 @@ steps:
   displayName: Make Appx
   inputs:
     script: |
+      dir .\AmikoWindows\bin\Release\ARM64\
+
       "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\ARM64\AmiKo\net5.0-windows10.0.20348.0\ /p AmikoWindows\bin\AmikoDesitin-ARM64.appx
       "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\X64\AmiKo\net5.0-windows10.0.20348.0\ /p AmikoWindows\bin\AmikoDesitin-X64.appx
       "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\MakeAppx.exe" pack /d .\AmikoWindows\bin\Release\X86\AmiKo\net5.0-windows10.0.20348.0\ /p AmikoWindows\bin\AmikoDesitin-X86.appx

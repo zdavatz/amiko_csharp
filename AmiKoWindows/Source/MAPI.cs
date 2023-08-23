@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using System.Windows;
 
 namespace AmiKoWindows
 {

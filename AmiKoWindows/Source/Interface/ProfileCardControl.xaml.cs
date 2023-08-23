@@ -224,21 +224,16 @@ namespace AmiKoWindows
 
         private void SelectPictureButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new System.Windows.Forms.OpenFileDialog();
+            var dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Filter = String.Format(
                 "{0} | {1}", "Image Files (*.gif, *.jpg, *.jpeg, *.png)", "*.gif; *.jpg; *.jpeg; *.png");
             dialog.DefaultExt = ".png";
             var result = dialog.ShowDialog();
-            switch (result)
+            if (result ?? false)
             {
-                case System.Windows.Forms.DialogResult.OK:
-                    ImportPicture(dialog.FileName, Utilities.AccountPictureFilePath());
-                    LoadPicture();
-                    ValidateField(this.Picture);
-                    break;
-                case System.Windows.Forms.DialogResult.Cancel:
-                default:
-                    break;
+                ImportPicture(dialog.FileName, Utilities.AccountPictureFilePath());
+                LoadPicture();
+                ValidateField(this.Picture);
             }
         }
 
