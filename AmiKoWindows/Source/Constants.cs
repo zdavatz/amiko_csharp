@@ -41,6 +41,12 @@ namespace AmiKoWindows
 
         // User's profile (Account)
         public const string ACCOUNT_PICTURE_FILE = @"op_signature.png"; // (same as macOS version)
+        public const string ACCOUNT_JSON_FILE = "doctor.json";
+
+        // HIN OAuth
+        public const string HIN_SDS_ACCESS_TOKEN = @"sds-access-token.json";
+        public const string HIN_ADSWISS_ACCESS_TOKEN = @"adswiss-access-token.json";
+        public const string HIN_ADSWISS_AUTH_HANDLE = @"adswiss-auth-handle.json";
 
         // JSON values
         public const string JSON_GENDER_WOMAN = "woman";

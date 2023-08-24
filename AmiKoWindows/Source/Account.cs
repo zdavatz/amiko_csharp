@@ -240,7 +240,7 @@ namespace AmiKoWindows
         public static string AccountFilePath()
         {
             var filesDir = Utilities.AppRoamingDataFolder();
-            var accountPath = Path.Combine(filesDir, "doctor.json");
+            var accountPath = Path.Combine(filesDir, Constants.ACCOUNT_JSON_FILE);
             return accountPath;
         }
 
