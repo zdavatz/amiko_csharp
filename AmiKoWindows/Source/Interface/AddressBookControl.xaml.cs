@@ -686,14 +686,13 @@ namespace AmiKoWindows
                     filepath = _csvFilepath;
                 else
                 {
-                    var dialog = new System.Windows.Forms.OpenFileDialog();
+                    var dialog = new Microsoft.Win32.OpenFileDialog();
                     dialog.Filter = String.Format(
                         "{0} | {1}", "CSV File (*.csv)", "*.csv");
                     dialog.DefaultExt = ".csv";
                     var result = dialog.ShowDialog();
-                    switch (result)
+                    if (result ?? false)
                     {
-                        case System.Windows.Forms.DialogResult.OK:
                             var file = dialog.FileName;
                             var name = Path.GetFileName(file);
                             var tmpPath = Path.Combine(Utilities.GetInboxPath(), name);
@@ -704,10 +703,6 @@ namespace AmiKoWindows
 
                             if (File.Exists(tmpPath))
                                 filepath = tmpPath;
-                            break;
-                        case System.Windows.Forms.DialogResult.Cancel:
-                        default:
-                            break;
                     }
                 }
 

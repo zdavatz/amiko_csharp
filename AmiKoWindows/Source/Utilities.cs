@@ -252,7 +252,7 @@ namespace AmiKoWindows
 
         public static void SaveImageFileAsPng(Stream input, Stream output)
         {
-            using (var image = System.Drawing.Image.FromStream(input))
+            using (var image = Image.FromStream(input))
             using (var bitmap = new Bitmap(image.Width, image.Height))
             using (var graphics = Graphics.FromImage(bitmap))
             {

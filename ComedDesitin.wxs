@@ -27,7 +27,6 @@
                             <File Name='CoMed Desitin.dll' DiskId='1' Source='CoMed Desitin.dll' KeyPath='no' />
                             <File Name='CoMed Desitin.dll.config' DiskId='1' Source='CoMed Desitin.dll.config' KeyPath='no' />
                             <File Name='CoMed Desitin.pdb' DiskId='1' Source='CoMed Desitin.pdb' KeyPath='no' />
-                            <File Name='CoMed Desitin.runtimeconfig.dev.json' DiskId='1' Source='CoMed Desitin.runtimeconfig.dev.json' KeyPath='no' />
                             <File Name='CoMed Desitin.runtimeconfig.json' DiskId='1' Source='CoMed Desitin.runtimeconfig.json' KeyPath='no' />
                             <File Name='AppxManifest.xml' DiskId='1' Source='AppxManifest.xml' KeyPath='no' />
                             <File Name='ControlzEx.dll' DiskId='1' Source='ControlzEx.dll' KeyPath='no' />
@@ -127,29 +126,30 @@
                                 <File Id='fr_CoMed_Desitin.resources.dll' Name='CoMed Desitin.resources.dll' DiskId='1' Source='fr-CH/CoMed Desitin.resources.dll' KeyPath='yes' />
                             </Component>
                         </Directory>
-                        <Directory Id='ref' Name='ref'>
-                            <Component Id='RefDir' Guid='D67DCF19-2797-4DC8-BBCC-721712CBE089'>
-                                <File Id='Ref_CoMed_Desitin.dll' Name='CoMed Desitin.dll' DiskId='1' Source='ref/CoMed Desitin.dll' KeyPath='yes' />
-                            </Component>
-                        </Directory>
                         <Directory Id='runtimes' Name='runtimes'>
                             <Directory Id='runtimes_win' Name='win'>
                                 <Directory Id='runtimes_win_lib' Name='lib'>
+                                    <Directory Id='runtimes_win_lib_net6.0' Name='net6.0'>
+                                        <Component Id='RuntimeWinLibNet6' Guid='D67DCF19-2797-4DC8-BBCC-111712CBE089'>
+                                            <File Id='Runtime_Microsoft.Win32.SystemEvents.dll' Name='Microsoft.Win32.SystemEvents.dll' DiskId='1' Source='runtimes/win/lib/net6.0/Microsoft.Win32.SystemEvents.dll' KeyPath='yes' />
+                                            <File Id='Runtime_System.Drawing.Common.dll' Name='System.Drawing.Common.dll' DiskId='1' Source='runtimes/win/lib/net6.0/System.Drawing.Common.dll' KeyPath='no' />
+                                        </Component>
+                                    </Directory>
                                     <Directory Id='runtimes_win_lib_netcoreapp2.1' Name='netcoreapp2.1'>
-                                        <Component Id='RuntimeWinDir' Guid='D67DCF19-2797-4DC8-BBCC-609712CBE089'>
+                                        <Component Id='RuntimeWinLibNetCoreApp2.1' Guid='D67DCF19-2797-4DC8-BBCC-609712CBE089'>
                                             <File Id='Runtime_System.Data.SqlClient.dll' Name='System.Data.SqlClient.dll' DiskId='1' Source='runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.dll' KeyPath='yes' />
                                         </Component>
                                     </Directory>
                                 </Directory>
                             </Directory>
-                            <Directory Id='runtimes_win_arm' Name='arm'>
+                            <Directory Id='runtimes_win_arm' Name='win-arm'>
                                 <Directory Id='runtimes_win_arm_native' Name='native'>
                                     <Component Id='RuntimeARMDir' Guid='D67DCF19-2797-4DC8-BBCC-831712CBE089'>
                                         <File Id='Arm_e_sqlite3.dll' Name='e_sqlite3.dll' DiskId='1' Source='runtimes/win-arm/native/e_sqlite3.dll' KeyPath='yes' />
                                     </Component>
                                 </Directory>
                             </Directory>
-                            <Directory Id='runtimes_win_arm64' Name='arm64'>
+                            <Directory Id='runtimes_win_arm64' Name='win-arm64'>
                                 <Directory Id='runtimes_win_arm64_native' Name='native'>
                                     <Component Id='RuntimeARM64Dir' Guid='D67DCF19-2797-4DC8-BBCC-101112CBE089'>
                                         <File Id='Arm64_e_sqlite3.dll' Name='e_sqlite3.dll' DiskId='1' Source='runtimes/win-arm64/native/e_sqlite3.dll' KeyPath='yes' />
@@ -157,7 +157,7 @@
                                     </Component>
                                 </Directory>
                             </Directory>
-                            <Directory Id='runtimes_win_x64' Name='x64'>
+                            <Directory Id='runtimes_win_x64' Name='win-x64'>
                                 <Directory Id='runtimes_win_x64_native' Name='native'>
                                     <Component Id='RuntimeX64Dir' Guid='D67DCF19-2797-4DC8-BBCC-111112CBE089'>
                                         <File Id='X64_e_sqlite3.dll' Name='e_sqlite3.dll' DiskId='1' Source='runtimes/win-x64/native/e_sqlite3.dll' KeyPath='yes' />
@@ -165,7 +165,7 @@
                                     </Component>
                                 </Directory>
                             </Directory>
-                            <Directory Id='runtimes_win_x86' Name='x86'>
+                            <Directory Id='runtimes_win_x86' Name='win-x86'>
                                 <Directory Id='runtimes_win_x86_native' Name='native'>
                                     <Component Id='RuntimeX86Dir' Guid='D67DCF19-2797-4DC8-BBCC-896412CBE089'>
                                         <File Id='X86_e_sqlite3.dll' Name='e_sqlite3.dll' DiskId='1' Source='runtimes/win-x86/native/e_sqlite3.dll' KeyPath='yes' />
@@ -191,8 +191,8 @@
             <ComponentRef Id='DeDir' />
             <ComponentRef Id='LocaleDeDir' />
             <ComponentRef Id='LocaleFrDir' />
-            <ComponentRef Id='RefDir' />
-            <ComponentRef Id='RuntimeWinDir' />
+            <ComponentRef Id='RuntimeWinLibNetCoreApp2.1' />
+            <ComponentRef Id='RuntimeWinLibNet6' />
             <ComponentRef Id='RuntimeARMDir' />
             <ComponentRef Id='RuntimeARM64Dir' />
             <ComponentRef Id='RuntimeX64Dir' />
