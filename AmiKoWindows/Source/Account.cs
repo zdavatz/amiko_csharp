@@ -29,6 +29,8 @@ namespace AmiKoWindows
 {
     public class Account : ApplicationSettingsBase, INotifyPropertyChanged
     {
+        public static event EventHandler? AccountSaved;
+
         private string _title = "";
         [UserScopedSetting()]
         [SettingsSerializeAs(System.Configuration.SettingsSerializeAs.Binary)]
@@ -250,6 +252,7 @@ namespace AmiKoWindows
         {
             string str = JsonConvert.SerializeObject(new SettingAccountJSONPresenter(this), Formatting.Indented);
             File.WriteAllText(AccountFilePath(), str);
+            Account.AccountSaved?.Invoke(this, new EventArgs());
         }
 
         public static string AccountFilePath()
