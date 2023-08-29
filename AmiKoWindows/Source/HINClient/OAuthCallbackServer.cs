@@ -79,7 +79,7 @@ namespace AmiKoWindows.Source.HINClient
 
         private async Task GetAccessTokenFromCodeAndClose(string code, string state)
         {
-            var tokens = await HINClient.FetchAccessTokenWithAuthCode(code);
+            var tokens = await HINClient.FetchAccessTokenWithAuthCode(code, state);
             if (state == HINClient.SDSApplicationName)
             {
                 HINSettingsManager.Instance.SDSAccessToken = tokens;
