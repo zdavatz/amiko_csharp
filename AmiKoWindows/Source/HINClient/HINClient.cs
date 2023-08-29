@@ -57,7 +57,6 @@ namespace AmiKoWindows.Source.HINClient
         {
             var client = new HttpClient();
             var endpoint = "https://oauth2.hin.ch/REST/v1/OAuth/GetAccessToken";
-            //var endpoint = "https://b123400.net/amiko_oauth.txt";
 
             var content = new FormUrlEncodedContent(new[]
             {

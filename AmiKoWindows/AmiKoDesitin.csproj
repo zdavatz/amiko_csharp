@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
+		<PackageId>AmiKoDesitin</PackageId>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net6.0-windows10.0.20348.0</TargetFramework>
 		<RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
@@ -8,7 +9,7 @@
 		<UseWPF>true</UseWPF>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
-
+		
 		<RootNamespace>AmiKoWindows</RootNamespace>
 		<AssemblyName>AmiKo Desitin</AssemblyName>
 		<ApplicationIcon>Resources\img\desitin_icon.ico</ApplicationIcon>
@@ -186,5 +187,12 @@
 			<Progid>AmiKo</Progid>
 			<DefaultIcon>Resources\img\desitin_icon.ico</DefaultIcon>
 		</FileAssociation>
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Properties\Resources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Resources.resx</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 </Project>

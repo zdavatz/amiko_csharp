@@ -116,7 +116,7 @@ namespace AmiKoWindows
             InitializeComponent();
         }
 
-        private void Control_Loaded(object sender, RoutedEventArgs e)
+        private async void Control_Loaded(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(e.ToString());
             ReloadTexts();
@@ -166,22 +166,22 @@ namespace AmiKoWindows
             var sdsTokens = HINSettingsManager.Instance.SDSAccessToken;
             if (sdsTokens == null)
             {
-                this.SDSLoginStatus = "[Not logged in]";
-                this.LoginToSDSButtonText = "Login to HIN (SDS)";
+                this.SDSLoginStatus = Properties.Resources.notLoggedIn;
+                this.LoginToSDSButtonText = Properties.Resources.loginWithSDS;
             } else
             {
                 this.SDSLoginStatus = sdsTokens.HINId;
-                this.LoginToSDSButtonText = "Logout from HIN (SDS)";
+                this.LoginToSDSButtonText = Properties.Resources.logoutFromSDS;
             }
             var adswissToken = HINSettingsManager.Instance.ADSwissAccessToken;
             if ( adswissToken == null)
             {
-                this.ADSwissLoginStatus = "[Not logged in]";
-                this.LoginToADSwissButtonText = "Login to HIN (ADSwiss)";
+                this.ADSwissLoginStatus = Properties.Resources.notLoggedIn;
+                this.LoginToADSwissButtonText = Properties.Resources.loginWithADSwiss;
             } else
             {
                 this.ADSwissLoginStatus = adswissToken.HINId;
-                this.LoginToADSwissButtonText = "Logout from HIN (ADSwiss)";
+                this.LoginToADSwissButtonText = Properties.Resources.logoutFromADSwiss;
             }
         }
 

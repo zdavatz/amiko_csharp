@@ -19,7 +19,7 @@ namespace AmiKoWindows.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -421,6 +421,15 @@ namespace AmiKoWindows.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Einloggen mit HIN (ADSwiss).
+        /// </summary>
+        public static string loginWithADSwiss {
+            get {
+                return ResourceManager.GetString("loginWithADSwiss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login mit Google.
         /// </summary>
         public static string loginWithGoogle {
@@ -430,11 +439,38 @@ namespace AmiKoWindows.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Einloggen mit HIN (SDS).
+        /// </summary>
+        public static string loginWithSDS {
+            get {
+                return ResourceManager.GetString("loginWithSDS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ausloggen von (ADSwiss).
+        /// </summary>
+        public static string logoutFromADSwiss {
+            get {
+                return ResourceManager.GetString("logoutFromADSwiss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Logout von Google.
         /// </summary>
         public static string logoutFromGoogle {
             get {
                 return ResourceManager.GetString("logoutFromGoogle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ausloggen von (SDS).
+        /// </summary>
+        public static string logoutFromSDS {
+            get {
+                return ResourceManager.GetString("logoutFromSDS", resourceCulture);
             }
         }
         
@@ -624,6 +660,15 @@ namespace AmiKoWindows.Properties {
         public static string nopacks {
             get {
                 return ResourceManager.GetString("nopacks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [Nicht Eingeloggt].
+        /// </summary>
+        public static string notLoggedIn {
+            get {
+                return ResourceManager.GetString("notLoggedIn", resourceCulture);
             }
         }
         

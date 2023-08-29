@@ -67,10 +67,10 @@
                         </Button>
                     </DockPanel>
                     <DockPanel Margin="7,3,0,6">
-                        <TextBlock Style="{StaticResource ContactTextBlock}" Width="313">
+                        <TextBlock Style="{StaticResource ContactTextBlock}" Width="250">
                             <Label Style="{StaticResource ContactLabel}" Content="HIN (SDS) Login" />
                         </TextBlock>
-                        <TextBlock>
+                        <TextBlock HorizontalAlignment="Right">
                             <Label Style="{StaticResource ContactLabel}" Content="{Binding Path=SDSLoginStatus}" />
                         </TextBlock>
                     </DockPanel>
@@ -88,10 +88,10 @@
                         <TextBlock></TextBlock>
                     </DockPanel>
                     <DockPanel Margin="7,3,0,6">
-                        <TextBlock Style="{StaticResource ContactTextBlock}" Width="313">
+                        <TextBlock Style="{StaticResource ContactTextBlock}" Width="250">
                             <Label Style="{StaticResource ContactLabel}" Content="HIN (ADSwiss) Login" />
                         </TextBlock>
-                        <TextBlock>
+                        <TextBlock HorizontalAlignment="Right">
                             <Label Style="{StaticResource ContactLabel}" Content="{Binding Path=ADSwissLoginStatus}" />
                         </TextBlock>
                     </DockPanel>
