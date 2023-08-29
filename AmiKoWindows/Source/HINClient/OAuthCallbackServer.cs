@@ -88,6 +88,11 @@ namespace AmiKoWindows.Source.HINClient
             }
             StopServer();
             this.callback();
+
+            var profile = await HINClient.FetchSDSProfile(tokens);
+            var account = Account.Read() ?? new Account();
+            profile.MergeToAccount(account);
+            account.Save();
         }
     }
 }

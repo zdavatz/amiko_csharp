@@ -261,15 +261,13 @@ namespace AmiKoWindows
 
         private void OnOAuthDone()
         {
-            Application.Current.Dispatcher.Invoke(() => OnOAuthDoneMain());
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                _callbackServer = null;
+                Window.GetWindow(_parent.Parent)?.Activate();
+                ReloadTexts();
+            });
         }
-        private void OnOAuthDoneMain()
-        {
-            _callbackServer = null;
-            Window.GetWindow(_parent.Parent)?.Activate();
-            ReloadTexts();
-        }
-
         #endregion
     }
 }

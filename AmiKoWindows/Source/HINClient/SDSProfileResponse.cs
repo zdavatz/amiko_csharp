@@ -24,7 +24,7 @@ namespace AmiKoWindows.Source.HINClient
         public string GLN;
         public string VerifiactionLevel;
 
-        static SDSProfileResponse FromJSON(string jsonStr)
+        static public SDSProfileResponse FromResponseJSON(string jsonStr)
         {
             SDSProfileResponseJSONPresenter o = JsonConvert.DeserializeObject<SDSProfileResponseJSONPresenter>(jsonStr);
             var p = new SDSProfileResponse();
@@ -43,6 +43,42 @@ namespace AmiKoWindows.Source.HINClient
             p.GLN = o.contactId.gln;
             p.VerifiactionLevel = o.contactId.verificationLevel;
             return p;
+        }
+
+        public void MergeToAccount(Account acc)
+        {
+            if ((acc.Email ?? "").Length == 0)
+            {
+                acc.Email = this.Email;
+            }
+            if ((acc.FamilyName ?? "").Length == 0)
+            {
+                acc.FamilyName = this.LastName;
+            }
+            if ((acc.GivenName ?? "").Length == 0)
+            {
+                acc.GivenName = this.FirstName;
+            }
+            if ((acc.Address ?? "").Length == 0)
+            {
+                acc.Address = this.Address;
+            }
+            if ((acc.Zip ?? "").Length == 0)
+            {
+                acc.Zip = this.PostalCode;
+            }
+            if ((acc.City ?? "").Length == 0)
+            {
+                acc.City = this.City;
+            }
+            if ((acc.Phone ?? "").Length == 0)
+            {
+                acc.Phone = this.PhoneNumber;
+            }
+            if ((acc.GLN ?? "").Length == 0)
+            {
+                acc.GLN = this.GLN;
+            }
         }
     }
 

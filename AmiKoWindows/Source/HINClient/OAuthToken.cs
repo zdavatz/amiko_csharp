@@ -9,10 +9,16 @@ namespace AmiKoWindows.Source.HINClient
 {
     class OAuthTokens
     {
+        public enum Application
+        {
+            SDS = 0,
+            ADSwiss = 1,
+        }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
         public DateTime ExpiresAt { get; set; }
         public string? HINId { get; set; }
+        public Application App { get; set; }
 
         public string ToJSON()
         {
@@ -26,7 +32,7 @@ namespace AmiKoWindows.Source.HINClient
             return o.OAuthTokens;
         }
 
-        public static OAuthTokens FromResponseJSON(string jsonStr)
+        public static OAuthTokens FromResponseJSON(string jsonStr, Application app)
         {
             OAuthTokenResponseJSONPresenter o = JsonConvert.DeserializeObject<OAuthTokenResponseJSONPresenter>(jsonStr);
             var tokens = new OAuthTokens();
@@ -34,6 +40,7 @@ namespace AmiKoWindows.Source.HINClient
             tokens.RefreshToken = o.refresh_token;
             tokens.ExpiresAt = DateTime.Now.AddSeconds(o.expires_in);
             tokens.HINId = o.hin_id;
+            tokens.App = app;
             return tokens;
         }
     }
@@ -44,6 +51,7 @@ namespace AmiKoWindows.Source.HINClient
         public string refresh_token { get; set; }
         public DateTime expires_at { get; set; }
         public string? hin_id { get; set; }
+        public int? app { get; set; }
 
         public OAuthTokenJSONPresenter(OAuthTokens tokens)
         {
@@ -63,6 +71,7 @@ namespace AmiKoWindows.Source.HINClient
                 o.RefreshToken = this.refresh_token;
                 o.ExpiresAt = this.expires_at;
                 o.HINId = this.hin_id;
+                o.App = (OAuthTokens.Application)this.app;
                 return o;
             }
             set
@@ -72,6 +81,7 @@ namespace AmiKoWindows.Source.HINClient
                 this.refresh_token = tokens.RefreshToken;
                 this.expires_at = tokens.ExpiresAt;
                 this.hin_id = tokens.HINId;
+                this.app = (int?)tokens.App;
             }
         }
     }
