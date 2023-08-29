@@ -273,6 +273,7 @@ namespace AmiKoWindows
         public string zip { get; set; }
         public string phone { get; set; }
         public string email { get; set; }
+        public string gln { get; set; }
 
         public SettingAccountJSONPresenter()
         {
@@ -298,6 +299,7 @@ namespace AmiKoWindows
                 account.Zip = this.zip;
                 account.Phone = this.phone;
                 account.Email = this.email;
+                account.GLN = this.gln;
                 return account;
             }
 
@@ -312,6 +314,7 @@ namespace AmiKoWindows
                 this.zip = account.Zip;
                 this.phone = account.Phone;
                 this.email = account.Email;
+                this.gln = account.GLN;
             }
         }
     }

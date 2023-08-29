@@ -358,7 +358,7 @@
             </Controls:Flyout>
             <Controls:Flyout
                 x:Name="SettingsCard"
-                Position="Top" Width="450" Height="200" Theme="Adapt" IsOpen="{Binding Path=HasSettings}"
+                Position="Top" Width="450" Height="350" Theme="Adapt" IsOpen="{Binding Path=HasSettings}"
                 IsModal="True"
                 AnimateOpacity="True"
                 TitleVisibility="Collapsed"

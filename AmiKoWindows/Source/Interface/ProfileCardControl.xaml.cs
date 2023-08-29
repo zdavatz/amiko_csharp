@@ -143,6 +143,10 @@ namespace AmiKoWindows
                     }
                 }
             };
+            Account.AccountSaved += (_sender, _eventArgs) =>
+            {
+                this.CurrentEntry = Account.Read();
+            };
         }
 
         private void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)

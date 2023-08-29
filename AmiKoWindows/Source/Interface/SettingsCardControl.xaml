@@ -66,6 +66,47 @@
                             <Label Margin="0" Padding="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{x:Static p:Resources.sync}" />
                         </Button>
                     </DockPanel>
+                    <DockPanel Margin="7,3,0,6">
+                        <TextBlock Style="{StaticResource ContactTextBlock}" Width="250">
+                            <Label Style="{StaticResource ContactLabel}" Content="HIN (SDS) Login" />
+                        </TextBlock>
+                        <TextBlock HorizontalAlignment="Right">
+                            <Label Style="{StaticResource ContactLabel}" Content="{Binding Path=SDSLoginStatus}" />
+                        </TextBlock>
+                    </DockPanel>
+                    <DockPanel Margin="7,3,0,6">
+                        <Button 
+                            Name="LoginSDS"
+                            Style="{StaticResource NoHighlightedButton}"
+                            Cursor="Hand"
+                            Click="LoginSDS_Click"
+                            Margin="0,3,24,9" 
+                            HorizontalAlignment="Left"
+                            >
+                            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Padding="0" Content="{Binding Path=LoginToSDSButtonText}"/>
+                        </Button>
+                        <TextBlock></TextBlock>
+                    </DockPanel>
+                    <DockPanel Margin="7,3,0,6">
+                        <TextBlock Style="{StaticResource ContactTextBlock}" Width="250">
+                            <Label Style="{StaticResource ContactLabel}" Content="HIN (ADSwiss) Login" />
+                        </TextBlock>
+                        <TextBlock HorizontalAlignment="Right">
+                            <Label Style="{StaticResource ContactLabel}" Content="{Binding Path=ADSwissLoginStatus}" />
+                        </TextBlock>
+                    </DockPanel>
+                    <DockPanel Margin="7,3,0,6">
+                        <Button 
+                            Name="LoginADSwiss"
+                            Style="{StaticResource NoHighlightedButton}"
+                            IsEnabled="True"
+                            Cursor="Hand"
+                            Click="LoginADSwiss_Click"
+                            >
+                            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Padding="0" Content="{Binding Path=LoginToADSwissButtonText}"/>
+                        </Button>
+                        <TextBlock></TextBlock>
+                    </DockPanel>
                 </StackPanel>
             </Grid>
             <Grid Grid.Row="1" Margin="0" Height="Auto" VerticalAlignment="Bottom">
