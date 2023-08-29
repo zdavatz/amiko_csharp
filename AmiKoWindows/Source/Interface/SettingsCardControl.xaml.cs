@@ -22,11 +22,13 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Threading.Tasks;
-
+using MahApps.Metro.Controls;
 
 namespace AmiKoWindows
 {
+    using AmiKoWindows.Source.HINClient;
     using ControlExtensions;
+    using System.Diagnostics;
 
     /// <summary>
     /// View controls for doctor's profile (account) and signature.
@@ -36,6 +38,7 @@ namespace AmiKoWindows
         #region Private Fields
         MainWindow _mainWindow;
         MahApps.Metro.Controls.Flyout _parent;
+        OAuthCallbackServer? _callbackServer;
         #endregion
 
         #region Public Fields
@@ -67,6 +70,30 @@ namespace AmiKoWindows
         {
             get { return !_IsSyncing && IsLoggedIn; }
         }
+        private String _LoginToSDSButtonText = "";
+        public String LoginToSDSButtonText
+        {
+            get { return _LoginToSDSButtonText; }
+            set { _LoginToSDSButtonText = value; OnPropertyChanged("LoginToSDSButtonText"); }
+        }
+        private String _SDSLoginStatus = "";
+        public String SDSLoginStatus
+        {
+            get { return _SDSLoginStatus; }
+            set { _SDSLoginStatus = value; OnPropertyChanged("SDSLoginStatus"); }
+        }
+        private String _LoginToADSwissButtonText = "";
+        public String LoginToADSwissButtonText
+        {
+            get { return _LoginToADSwissButtonText; }
+            set { _LoginToADSwissButtonText = value; OnPropertyChanged("LoginToADSwissButtonText"); }
+        }
+        private String _ADSwissLoginStatus = "";
+        public String ADSwissLoginStatus
+        {
+            get { return _ADSwissLoginStatus; }
+            set { _ADSwissLoginStatus = value; OnPropertyChanged("ADSwissLoginStatus"); }
+        }
         #endregion
 
         #region Event Handlers
@@ -92,7 +119,7 @@ namespace AmiKoWindows
         private void Control_Loaded(object sender, RoutedEventArgs e)
         {
             Log.WriteLine(e.ToString());
-            ReloadGoogleLoginStateAsync();
+            ReloadTexts();
             GoogleSyncManager.Instance.PropertyChanged += (_sender, prop) =>
             {
                 if (prop.PropertyName.Equals("IsSyncing"))
@@ -125,7 +152,7 @@ namespace AmiKoWindows
             }
         }
 
-        private async Task ReloadGoogleLoginStateAsync()
+        private async Task ReloadTexts()
         {
             var loggedIn = await GoogleSyncManager.Instance.IsGoogleLoggedInAsync();
             this.IsLoggedIn = loggedIn;
@@ -135,6 +162,26 @@ namespace AmiKoWindows
             } else
             {
                 this.LoginButtonText = Properties.Resources.loginWithGoogle;
+            }
+            var sdsTokens = HINSettingsManager.Instance.SDSAccessToken;
+            if (sdsTokens == null)
+            {
+                this.SDSLoginStatus = "[Not logged in]";
+                this.LoginToSDSButtonText = "Login to HIN (SDS)";
+            } else
+            {
+                this.SDSLoginStatus = sdsTokens.HINId;
+                this.LoginToSDSButtonText = "Logout from HIN (SDS)";
+            }
+            var adswissToken = HINSettingsManager.Instance.ADSwissAccessToken;
+            if ( adswissToken == null)
+            {
+                this.ADSwissLoginStatus = "[Not logged in]";
+                this.LoginToADSwissButtonText = "Login to HIN (ADSwiss)";
+            } else
+            {
+                this.ADSwissLoginStatus = adswissToken.HINId;
+                this.LoginToADSwissButtonText = "Logout from HIN (ADSwiss)";
             }
         }
 
@@ -159,7 +206,7 @@ namespace AmiKoWindows
                 {
                     await GoogleSyncManager.Instance.Login();
                 }
-                await ReloadGoogleLoginStateAsync();
+                await ReloadTexts();
                 GoogleSyncManager.Instance.Synchronise();
             });
         }
@@ -170,6 +217,57 @@ namespace AmiKoWindows
             Task.Run(() =>
                 GoogleSyncManager.Instance.Synchronise()
             );
+        }
+
+        private async void LoginSDS_Click(object sender, RoutedEventArgs e)
+        {
+            if (HINSettingsManager.Instance.SDSAccessToken == null)
+            {
+                System.Diagnostics.Process.Start(new ProcessStartInfo
+                {
+                    FileName = HINClient.SDSOAuthURL(),
+                    UseShellExecute = true
+                });
+                if (_callbackServer == null)
+                {
+                    _callbackServer = new OAuthCallbackServer(new OAuthCallbackServer.CloseCallback(OnOAuthDone));
+                }
+            } else
+            {
+                HINSettingsManager.Instance.SDSAccessToken = null;
+                ReloadTexts();
+            }
+        }
+
+        private void LoginADSwiss_Click(object sneder, RoutedEventArgs e)
+        {
+            if (HINSettingsManager.Instance.ADSwissAccessToken == null)
+            {
+                System.Diagnostics.Process.Start(new ProcessStartInfo
+                {
+                    FileName = HINClient.ADSwissAuthURL(),
+                    UseShellExecute = true
+                });
+                if (_callbackServer == null)
+                {
+                    _callbackServer = new OAuthCallbackServer(new OAuthCallbackServer.CloseCallback(OnOAuthDone));
+                }
+            } else
+            {
+                HINSettingsManager.Instance.ADSwissAccessToken = null;
+                ReloadTexts();
+            }
+        }
+
+        private void OnOAuthDone()
+        {
+            Application.Current.Dispatcher.Invoke(() => OnOAuthDoneMain());
+        }
+        private void OnOAuthDoneMain()
+        {
+            _callbackServer = null;
+            Window.GetWindow(_parent.Parent)?.Activate();
+            ReloadTexts();
         }
 
         #endregion
