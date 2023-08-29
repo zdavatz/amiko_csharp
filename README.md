@@ -172,6 +172,11 @@ user@host:/path/to/project $ nuget install AmiKoWindows/packages.config
 1. Rename `GoogleConstants.cs.sample` to `AmiKoWindows\Source\GoogleConstants.cs`
 2. Fill the the details in the file
 
+### Fill in HIN API Client ID and Secret for HIN Client
+
+1. Rename `AmiKoWindows\Source\HINClient\HINClientCredentials.cs.sample` to `AmiKoWindows\Source\HINClient\HINClientCredentials.cs`
+2. Fill the the details in the file
+
 ### Make
 
 From this step, you may need to use PowerShell on Windows.

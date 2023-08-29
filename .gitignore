@@ -16,6 +16,7 @@ AmiKoWindows/Data/**/*.html
 AmiKoWindows/Data/**/*.csv
 #AmiKoWindows/Properties/Resources.resx
 AmiKoWindows/Source/GoogleConstants.cs
+AmiKoWindows/Source/HINClient/HINClientCredentials.cs
 
 AmiKoWindows*/obj/
 AmiKoWindows*/bin/
