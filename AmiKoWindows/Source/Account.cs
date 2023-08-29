@@ -130,6 +130,20 @@ namespace AmiKoWindows
             }
         }
 
+        private string _gln;
+        [UserScopedSetting()]
+        [SettingsSerializeAs(System.Configuration.SettingsSerializeAs.Binary)]
+        [DefaultSettingValue("")]
+        public string GLN
+        {
+            get { return this._gln; }
+            set
+            {
+                this._gln = value;
+                OnPropertyChanged("GLN");
+            }
+        }
+
         #region Event Handlers
         // NOTE: The ApplicationSettingsBase has `PropertyChanged`
         public new event PropertyChangedEventHandler PropertyChanged;
@@ -206,6 +220,7 @@ namespace AmiKoWindows
             account.Zip = (string)a[nameof(Zip)];
             account.Phone = (string)a[nameof(Phone)];
             account.Email = (string)a[nameof(Email)];
+            account.GLN = (string)a[nameof(GLN)];
             account.Save();
             AmiKoWindows.Properties.Settings.Default.Reset();
         }
