@@ -37,12 +37,21 @@ steps:
   inputs:
     secureFile: GoogleConstants.cs
 
+# Download secure file
+# Download a secure file to the agent machine
+- task: DownloadSecureFile@1
+  name: downloadHINConstants
+  inputs:
+    secureFile: HINClientCredentials.cs
+
 - task: CmdLine@2
   displayName: Install dependencies
   inputs:
     script: |
       copy $(Build.SourcesDirectory)\AmiKoWindows\Source\GoogleConstants.cs.sample $(Build.SourcesDirectory)\AmiKoWindows\Source\GoogleConstants.cs
       copy /y $(downloadGoogleConstants.secureFilePath) $(Build.SourcesDirectory)\AmiKoWindows\Source\GoogleConstants.cs
+      copy $(Build.SourcesDirectory)\AmiKoWindows\Source\HINClient\HINClientCredentials.cs.sample $(Build.SourcesDirectory)\AmiKoWindows\Source\HINClient\HINClientCredentials.cs
+      copy /y $(downloadHINConstants.secureFilePath) $(Build.SourcesDirectory)\AmiKoWindows\Source\HINClient\HINClientCredentials.cs
       choco install windows-sdk-10.0 wixtoolset
 
 - task: PowerShell@2
