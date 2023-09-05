@@ -68,7 +68,8 @@ namespace AmiKoWindows
                 RemoveAllArticles();
             } else if (cmd.StartsWith("openLink:"))
             {
-                System.Diagnostics.Process.Start(cmd.Replace("openLink:", ""));
+                var startInfo = new System.Diagnostics.ProcessStartInfo { FileName = cmd.Replace("openLink:", ""), UseShellExecute = true };
+                System.Diagnostics.Process.Start(startInfo);
             }
         }
 

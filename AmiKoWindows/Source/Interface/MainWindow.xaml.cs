@@ -1531,7 +1531,8 @@ namespace AmiKoWindows
             else if (name.Equals("Feedback"))
             {
                 var url = "mailto:zdavatz@ywesee.com?subject=AmiKo%20Desitin%20Feedback";
-                Process.Start(url);
+                var startInfo = new ProcessStartInfo { FileName = url, UseShellExecute = true };
+                Process.Start(startInfo);
             }
             else if (name.Equals("Settings"))
             {
@@ -1679,7 +1680,7 @@ namespace AmiKoWindows
                 // Open new window
                 if (e.Uri != null)
                 {
-                    var startInfo = new ProcessStartInfo { FileName = e.Uri?.ToString() };
+                    var startInfo = new ProcessStartInfo { FileName = e.Uri?.ToString(), UseShellExecute = true };
                     Process.Start(startInfo);
                 }
                 e.Cancel = false;

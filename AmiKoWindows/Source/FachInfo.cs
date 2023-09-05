@@ -139,14 +139,16 @@ namespace AmiKoWindows
             {
                 await Task.Run(() =>
                 {
-                    System.Diagnostics.Process.Start(reportPath);
+                    var startInfo = new System.Diagnostics.ProcessStartInfo { FileName = reportPath, UseShellExecute = true };
+                    System.Diagnostics.Process.Start(startInfo);
                 });
             }
             else
             {
                 await Task.Run(() =>
                 {
-                    System.Diagnostics.Process.Start(reportPath);
+                    var startInfo = new System.Diagnostics.ProcessStartInfo { FileName = reportPath, UseShellExecute = true };
+                    System.Diagnostics.Process.Start(startInfo);
                 });
             }
         }
