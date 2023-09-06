@@ -28,6 +28,7 @@ using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using Microsoft.Win32;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace AmiKoWindows
 {
@@ -68,8 +69,8 @@ namespace AmiKoWindows
                 RemoveAllArticles();
             } else if (cmd.StartsWith("openLink:"))
             {
-                var startInfo = new System.Diagnostics.ProcessStartInfo { FileName = cmd.Replace("openLink:", ""), UseShellExecute = true };
-                System.Diagnostics.Process.Start(startInfo);
+                var startInfo = new ProcessStartInfo { FileName = cmd.Replace("openLink:", ""), UseShellExecute = true };
+                Process.Start(startInfo);
             }
         }
 
