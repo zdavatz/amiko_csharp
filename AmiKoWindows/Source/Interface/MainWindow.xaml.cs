@@ -1530,9 +1530,8 @@ namespace AmiKoWindows
             }
             else if (name.Equals("Feedback"))
             {
-                var url = "mailto:zdavatz@ywesee.com?subject=AmiKo%20Desitin%20Feedback";
-                var startInfo = new ProcessStartInfo { FileName = url, UseShellExecute = true };
-                Process.Start(startInfo);
+                var url = "mailto:zdavatz@ywesee.com";
+                Process.Start(new ProcessStartInfo(url) {UseShellExecute = true });
             }
             else if (name.Equals("Settings"))
             {
@@ -1672,19 +1671,17 @@ namespace AmiKoWindows
                 _willNavigate = true;
                 return;
             }
-
-            await Task.Run(() =>
+            if (e.Uri != null)
             {
                 // Cancel navigation to the clicked link in the webBrowser control
                 e.Cancel = true;
-                // Open new window
-                if (e.Uri != null)
+
+                await Task.Run(() =>
                 {
                     var startInfo = new ProcessStartInfo { FileName = e.Uri?.ToString(), UseShellExecute = true };
                     Process.Start(startInfo);
-                }
-                e.Cancel = false;
-            });
+                });
+            }
         }
 
         private void ReceivedCardResult(object sender, SmartCard.Result r) {
