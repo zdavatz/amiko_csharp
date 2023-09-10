@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
@@ -211,6 +212,38 @@ namespace AmiKoWindows.Source.HINClient
             var responseStr = await result.Content.ReadAsStringAsync();
             var res = AuthHandle.FromResponseJSON(responseStr);
             return res;
+        }
+
+        static public async Task<Image> MakeQRCodeWithAuthHandle(AuthHandle authHandle, string ePrescriptionStr)
+        {
+            var client = new HttpClient();
+            var endpoint = String.Format("https://{0}/ePrescription/create?output-format=qrcode", CertifactionDomain());
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(endpoint),
+                Method = HttpMethod.Post,
+                Content = new StringContent(ePrescriptionStr),
+                Headers = {
+                    { HttpRequestHeader.ContentType.ToString(), "text/plain" },
+                    { HttpRequestHeader.Authorization.ToString(), $"Bearer {authHandle.Token}" },
+                }
+            };
+
+            var result = await client.SendAsync(request);
+            var stream = await result.Content.ReadAsStreamAsync();
+            try
+            {
+                var image = System.Drawing.Image.FromStream(stream);
+                return image;
+            }
+            catch (Exception e)
+            {
+                StreamReader reader = new StreamReader(stream);
+                string text = reader.ReadToEnd();
+                MessageBox.Show(text, "Error response", MessageBoxButton.OK);
+                throw;
+            }
+            
         }
     }
 }
