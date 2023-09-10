@@ -12,13 +12,13 @@ namespace AmiKoWindows.Source.HINClient
 {
     public class OAuthCallbackServer
     {
-        public delegate void CloseCallback();
+        public delegate void ReceivedOAuthResultHandler(object sender, object result); // OAuthToken or AuthHandle
+        public event ReceivedOAuthResultHandler ReceivedOAuthResult;
 
-        CloseCallback callback;
-        public OAuthCallbackServer(CloseCallback callback)
+        public static OAuthCallbackServer Instance = new OAuthCallbackServer();
+
+        private OAuthCallbackServer()
         {
-            this.callback = callback;
-            this.StartServer();
         }
 
         private HttpListener? listener = null;
@@ -53,6 +53,7 @@ namespace AmiKoWindows.Source.HINClient
             var queryParam = HttpUtility.ParseQueryString(request.Url.Query);
             var code = queryParam.Get("code");
             var state = queryParam.Get("state");
+            var authCode = queryParam.Get("auth_code");
 
             // Obtain a response object.
             HttpListenerResponse response = context.Response;
@@ -69,6 +70,10 @@ namespace AmiKoWindows.Source.HINClient
             if (code != null && state != null)
             {
                 GetAccessTokenFromCodeAndClose(code, state);
+            }
+            else if (authCode != null)
+            {
+                GetAuthHandleFromAuthCodeAndClose(authCode);
             }
             else
             {
@@ -87,12 +92,21 @@ namespace AmiKoWindows.Source.HINClient
                 HINSettingsManager.Instance.ADSwissAccessToken = tokens;
             }
             StopServer();
-            this.callback();
+            this.ReceivedOAuthResult?.Invoke(this, tokens);
 
             var profile = await HINClient.FetchSDSProfile(tokens);
             var account = Account.Read() ?? new Account();
             profile.MergeToAccount(account);
             account.Save();
+        }
+
+        private async Task GetAuthHandleFromAuthCodeAndClose(string authCode)
+        {
+            var tokens = HINSettingsManager.Instance.ADSwissAccessToken;
+            var authHandle = await HINClient.FetchADSwissAuthHandle(tokens, authCode);
+            HINSettingsManager.Instance.ADSwissAuthHandle = authHandle;
+            StopServer();
+            this.ReceivedOAuthResult?.Invoke(this, authHandle);
         }
     }
 }

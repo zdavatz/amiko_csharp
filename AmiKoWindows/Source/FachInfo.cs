@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Microsoft.Win32;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
@@ -139,14 +140,16 @@ namespace AmiKoWindows
             {
                 await Task.Run(() =>
                 {
-                    System.Diagnostics.Process.Start(reportPath);
+                    var startInfo = new ProcessStartInfo { FileName = reportPath, UseShellExecute = true };
+                    Process.Start(startInfo);
                 });
             }
             else
             {
                 await Task.Run(() =>
                 {
-                    System.Diagnostics.Process.Start(reportPath);
+                    var startInfo = new ProcessStartInfo { FileName = reportPath, UseShellExecute = true };
+                    System.Diagnostics.Process.Start(startInfo);
                 });
             }
         }

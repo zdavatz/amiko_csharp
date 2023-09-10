@@ -33,14 +33,78 @@ using System.Windows.Xps.Packaging;
 
 namespace AmiKoWindows
 {
+    using AmiKoWindows.Source.HINClient;
     using ControlExtensions;
+    using System.Diagnostics;
 
     class Printer
     {
         public const double INCH = 96;
         public const double DIP = 37.8;
+        private static Prescription? tempPrescriptionForOAuth = null; // Reference the prescription when user is doing OAuth
 
         public static void PrintPrescription(Prescription prescription)
+        {
+            if (HINSettingsManager.Instance.ADSwissAccessToken == null)
+            {
+                PrintPrescription(prescription, false);
+                return;
+            }
+            if (HINSettingsManager.Instance.ADSwissAuthHandle != null)
+            {
+                PrintPrescription(prescription, true);
+                return;
+            }
+            var result = MessageBox.Show(Properties.Resources.doYouWantToSignPrescription, "", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                PrintPrescription(prescription, true);
+            } else
+            {
+                PrintPrescription(prescription, false);
+            }
+        }
+        public static async Task PrintPrescription(Prescription prescription, bool makeEPrescription)
+        {
+            var tokens = HINSettingsManager.Instance.ADSwissAccessToken;
+            var authHandle = HINSettingsManager.Instance.ADSwissAuthHandle;
+            if (makeEPrescription && tokens != null && authHandle == null)
+            {
+                OAuthCallbackServer.Instance.StartServer();
+                // Prevent adding handler twice
+                OAuthCallbackServer.Instance.ReceivedOAuthResult -= OnOAuthDone;
+                OAuthCallbackServer.Instance.ReceivedOAuthResult += OnOAuthDone;
+                var saml = await HINClient.FetchADSwissSAML(tokens);
+                Process.Start(new ProcessStartInfo()
+                {
+                    FileName = saml.EPDAutURL,
+                    UseShellExecute = true,
+                });
+                tempPrescriptionForOAuth = prescription;
+                return;
+            }
+            if (makeEPrescription && authHandle != null)
+            {
+                var image = await HINClient.MakeQRCodeWithAuthHandle(authHandle, prescription.MakeEPrescriptionForHIN());
+                PrintPrescription(prescription, image);
+                return;
+            }
+            PrintPrescription(prescription, null);
+        }
+
+        private static void OnOAuthDone(object sender, object oauthResult)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                OAuthCallbackServer.Instance.StopServer();
+                if (oauthResult is AuthHandle && tempPrescriptionForOAuth != null)
+                {
+                    PrintPrescription(tempPrescriptionForOAuth, true);
+                    tempPrescriptionForOAuth = null;
+                }
+            });
+        }
+        public static void PrintPrescription(Prescription prescription, System.Drawing.Image? ePrescriptionQRCode)
         {
             var dialog = new PrintDialog();
             dialog.PageRangeSelection = PageRangeSelection.AllPages;
@@ -73,7 +137,14 @@ namespace AmiKoWindows
 
             List<Prescription> pages = new List<Prescription>();
 
-            prescription.SetAccountPicture();
+            if (ePrescriptionQRCode != null)
+            {
+                prescription.SetEPrescriptionQRCode(ePrescriptionQRCode);
+            }
+            else
+            {
+                prescription.SetAccountPicture();
+            }
             prescription.MedicationList.DataContext = prescription;
             prescription.UpdateMedicationList();
             prescription.MedicationList.UpdateLayout();
@@ -112,7 +183,14 @@ namespace AmiKoWindows
                 toNext.Add(medication);
             }
 
-            prescription.SetAccountPicture();
+            if (ePrescriptionQRCode != null)
+            {
+                prescription.SetEPrescriptionQRCode(ePrescriptionQRCode);
+            }
+            else
+            {
+                prescription.SetAccountPicture();
+            }
 
             // Without these lines, page losts their elements if the document is
             // oen page ... why?

@@ -26,6 +26,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Newtonsoft.Json;
+using System.IO.Compression;
+using System.Text;
+using System.Globalization;
+using System.Drawing.Imaging;
 
 namespace AmiKoWindows
 {
@@ -134,6 +139,75 @@ namespace AmiKoWindows
                 else
                     throw ex;
             }
+        }
+        
+        public void SetEPrescriptionQRCode(System.Drawing.Image image)
+        {
+            BitmapImage bitmap = new BitmapImage();
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                // Save to the stream
+                image.Save(stream, ImageFormat.Png);
+
+                // Rewind the stream
+                stream.Seek(0, SeekOrigin.Begin);
+
+                // Tell the WPF BitmapImage to use this stream
+                bitmap.BeginInit();
+                bitmap.StreamSource = stream;
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+            }
+            this.AccountPicture.Source = bitmap;
+        }
+
+        public string MakeEPrescriptionForHIN()
+        {
+            List<Dictionary<string, object>> medicaments = new List<Dictionary<string, object>>();
+            foreach (var m in this.Medications)
+            {
+                medicaments.Add(new Dictionary<string, object>() {
+                    { "Id", m.Eancode },
+                    { "IdType", 2 },
+                });
+            }
+            Dictionary<string, object> ePrescriptionObj = new Dictionary<string, object>()
+            {
+                { "Patient", new Dictionary<string, string>()
+                {
+                    { "FName", this.ActiveContact.GivenName },
+                    { "LName", this.ActiveContact.FamilyName },
+                    { "BDt", FormatPatientBirthdayForEPrescription(this.ActiveContact.Birthdate) }
+                } },
+                {"Medicaments", medicaments },
+                { "MedType", 3 }, // Prescription
+                { "Id", Utilities.GenerateUUID() },
+                { "Auth", this.ActiveAccount.GLN },
+                { "Dt", DateTime.Now }
+            };
+            var jsonStr = JsonConvert.SerializeObject(ePrescriptionObj);
+            byte[] jsonBytes = Encoding.UTF8.GetBytes(jsonStr);
+            byte[] gzipBytes;
+            using (var result = new MemoryStream())
+            {
+                using (var compressionStream = new GZipStream(result,
+                    CompressionMode.Compress))
+                {
+                    compressionStream.Write(jsonBytes, 0, jsonBytes.Length);
+                    compressionStream.Flush();
+                }
+                gzipBytes = result.ToArray();
+            }
+            var base64 = Convert.ToBase64String(gzipBytes);
+            return "CHMED16A1" + base64;
+        }
+
+        private string FormatPatientBirthdayForEPrescription(string birthdayStr)
+        {
+            var date = DateTime.ParseExact(birthdayStr, "d.M.yyyy",
+                                CultureInfo.InvariantCulture, DateTimeStyles.None);
+            return date.ToString("yyyy-MM-dd");
         }
     }
 }
