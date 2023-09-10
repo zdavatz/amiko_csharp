@@ -941,5 +941,13 @@ namespace AmiKoWindows.Properties {
                 return ResourceManager.GetString("zip", resourceCulture);
             }
         }
+
+        public static string doYouWantToSignPrescription
+        {
+            get
+            {
+                return ResourceManager.GetString("doYouWantToSignPrescription", resourceCulture);
+            }
+        }
     }
 }
