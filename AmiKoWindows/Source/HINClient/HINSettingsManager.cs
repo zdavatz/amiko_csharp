@@ -77,13 +77,18 @@ namespace AmiKoWindows.Source.HINClient
                 string jsonStr = File.ReadAllText(filePath);
                 if (jsonStr == null) return null;
                 var authHandle = AuthHandle.FromJSON(jsonStr);
-                if (authHandle.ExpiresAt.CompareTo(DateTime.Now) <= 0) return null;
+                if (authHandle.IsExpired()) return null;
                 return authHandle;
             }
             set
             {
                 var filesDir = Utilities.AppRoamingDataFolder();
                 var filePath = Path.Combine(filesDir, Constants.HIN_ADSWISS_AUTH_HANDLE);
+                if (value == null)
+                {
+                    File.Delete(filePath);
+                    return;
+                }
                 var jsonStr = value.ToJSON();
                 File.WriteAllText(filePath, jsonStr);
             }
