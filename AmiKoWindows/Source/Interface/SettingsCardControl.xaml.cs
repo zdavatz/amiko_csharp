@@ -38,7 +38,6 @@ namespace AmiKoWindows
         #region Private Fields
         MainWindow _mainWindow;
         MahApps.Metro.Controls.Flyout _parent;
-        OAuthCallbackServer? _callbackServer;
         #endregion
 
         #region Public Fields
@@ -112,6 +111,9 @@ namespace AmiKoWindows
                 // This block is called after InitializeComponent
                 this.DataContext = this;
             };
+            // No duplicate
+            OAuthCallbackServer.Instance.ReceivedOAuthResult -= OnOAuthDone;
+            OAuthCallbackServer.Instance.ReceivedOAuthResult += OnOAuthDone;
 
             InitializeComponent();
         }
@@ -189,6 +191,7 @@ namespace AmiKoWindows
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            OAuthCallbackServer.Instance.StopServer();
             Log.WriteLine(sender.GetType().Name);
             if (_parent != null)
                 _parent.IsOpen = false;
@@ -228,10 +231,7 @@ namespace AmiKoWindows
                     FileName = HINClient.SDSOAuthURL(),
                     UseShellExecute = true
                 });
-                if (_callbackServer == null)
-                {
-                    _callbackServer = new OAuthCallbackServer(new OAuthCallbackServer.CloseCallback(OnOAuthDone));
-                }
+                OAuthCallbackServer.Instance.StartServer();
             } else
             {
                 HINSettingsManager.Instance.SDSAccessToken = null;
@@ -248,24 +248,25 @@ namespace AmiKoWindows
                     FileName = HINClient.ADSwissAuthURL(),
                     UseShellExecute = true
                 });
-                if (_callbackServer == null)
-                {
-                    _callbackServer = new OAuthCallbackServer(new OAuthCallbackServer.CloseCallback(OnOAuthDone));
-                }
+                OAuthCallbackServer.Instance.StartServer();
             } else
             {
                 HINSettingsManager.Instance.ADSwissAccessToken = null;
+                HINSettingsManager.Instance.ADSwissAuthHandle = null;
                 ReloadTexts();
             }
         }
 
-        private void OnOAuthDone()
+        private void OnOAuthDone(object sender, object result)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                _callbackServer = null;
-                Window.GetWindow(_parent.Parent)?.Activate();
-                ReloadTexts();
+                OAuthCallbackServer.Instance.StopServer();
+                if (_parent != null)
+                {
+                    Window.GetWindow(_parent.Parent)?.Activate();
+                    ReloadTexts();
+                }
             });
         }
         #endregion

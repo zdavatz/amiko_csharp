@@ -331,7 +331,7 @@ namespace AmiKoWindows
                     continue;
 
                 var propertyName = Utilities.ConvertSnakeCaseToTitleCase(columnName);
-                var key = String.Format("${0}", columnName);
+                var key = String.Format("@{0}", columnName);
                 result.Add(key, GetStringValue(propertyName));
             }
             return result;

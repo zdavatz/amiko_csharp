@@ -60,13 +60,9 @@ namespace AmiKoWindows
             _dbPath = dbPath;
             await Task.Run(() =>
             {
-                if (File.Exists(dbPath))
-                {
-                    _conn = new SqliteConnection("Data Source=" + dbPath);
-                    _conn.Open();
-                }
+                _conn = new SqliteConnection("Data Source=" + dbPath);
+                _conn.Open();
                 while (!IsOpen());
-                return _conn;
             });
             return null;
         }
