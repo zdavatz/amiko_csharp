@@ -188,5 +188,29 @@ namespace AmiKoWindows.Source.HINClient
             ADSwissSAMLResponse saml = ADSwissSAMLResponse.FromResponseJSON(responseStr);
             return saml;
         }
+
+        static public async Task<AuthHandle> FetchADSwissAuthHandle(OAuthTokens token, string authCode)
+        {
+            token = await RenewTokensIfNeeded(token);
+            var client = new HttpClient();
+            var endpoint = String.Format("https://{0}/authService/EPDAuth/auth_handle", HINDomainForADSwiss());
+            var content = JsonContent.Create(new { authCode = authCode });
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(endpoint),
+                Method = HttpMethod.Post,
+                Content = content,
+                Headers = {
+                    { HttpRequestHeader.Accept.ToString(), "application/json" },
+                    { HttpRequestHeader.ContentType.ToString(), "application/json" },
+                    { HttpRequestHeader.Authorization.ToString(), $"Bearer {token.AccessToken}" },
+                }
+            };
+
+            var result = await client.SendAsync(request);
+            var responseStr = await result.Content.ReadAsStringAsync();
+            var res = AuthHandle.FromResponseJSON(responseStr);
+            return res;
+        }
     }
 }
