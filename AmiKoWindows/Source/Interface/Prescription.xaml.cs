@@ -140,7 +140,7 @@ namespace AmiKoWindows
                     throw ex;
             }
         }
-        
+
         public void SetEPrescriptionQRCode(System.Drawing.Image image)
         {
             BitmapImage bitmap = new BitmapImage();
@@ -174,11 +174,18 @@ namespace AmiKoWindows
             }
             Dictionary<string, object> ePrescriptionObj = new Dictionary<string, object>()
             {
-                { "Patient", new Dictionary<string, string>()
+                { "Patient", new Dictionary<string, object>()
                 {
                     { "FName", this.ActiveContact.GivenName },
                     { "LName", this.ActiveContact.FamilyName },
-                    { "BDt", FormatPatientBirthdayForEPrescription(this.ActiveContact.Birthdate) }
+                    { "BDt", FormatPatientBirthdayForEPrescription(this.ActiveContact.Birthdate) },
+                    { "Gender", this.ActiveContact.IsMale ? 1 : 2 },
+                    { "Street", this.ActiveContact.Address },
+                    { "Zip", this.ActiveContact.Zip },
+                    { "City", this.ActiveContact.City },
+                    { "Lng", Utilities.AppLanguage() },
+                    { "Phone", this.ActiveContact.Phone },
+                    { "Email", this.ActiveContact.Email }
                 } },
                 {"Medicaments", medicaments },
                 { "MedType", 3 }, // Prescription
